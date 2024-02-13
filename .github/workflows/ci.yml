@@ -34,7 +34,8 @@ jobs:
             mkdocs-material-
       - name: Install dependencies
         run: pip install -U pip -r requirements.txt
-      - run: mkdocs gh-deploy --force
+      - name: Deploy
+        run: mkdocs gh-deploy --force
 
   lychee:
     runs-on: ubuntu-latest
