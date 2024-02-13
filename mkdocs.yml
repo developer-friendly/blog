@@ -35,10 +35,6 @@ plugins:
       archive: true
       # archive_pagination: true
       pagination: true
-  - group:
-      enabled: !ENV CI 
-      plugins:
-        - minify
   - rss:
       enabled: !ENV [CI, false]
       match_path: blog/posts/.*
