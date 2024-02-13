@@ -14,6 +14,23 @@ extra:
     - icon: fontawesome/brands/slack
       link: https://communityinviter.com/apps/developerfriendly/join-our-slack
       name: Join our Slack!
+  analytics:
+    provider: google
+    property: G-XFZYB6P2H9
+    feedback:
+      title: Was this page helpful?
+      ratings:
+        - icon: material/thumb-up-outline
+          name: This page was helpful
+          data: 1
+          note: >-
+            Thanks for your feedback!
+        - icon: material/thumb-down-outline
+          name: This page could be improved
+          data: 0
+          note: >-
+            Thanks for your feedback! Help us improve this page by
+            using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
 copyright: Copyright &copy; 2024 Meysam Azad
 plugins:
   - search:
@@ -53,6 +70,8 @@ site_description: This repo holds the technical-ish blog of Developer Friendly.
 # site_dir: mkdocs
 strict: true
 theme:
+  logo: assets/logo.png
+  favicon: assets/logo.png
   features:
     - announce.dismiss
     - content.action.edit
@@ -101,3 +120,47 @@ theme:
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - toc:
+      permalink: true
+      title: On this page
+  - tables
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.critic:
+      mode: view
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      use_pygments: true
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      pygments_lang_class: true
+      auto_title: true
+      linenums: true
+      linenums_style: pymdownx-inline
+      anchor_linenums: true
+      line_spans: __span
+  - pymdownx.snippets
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.smartsymbols
+  - pymdownx.tabbed:
+      alternate_style: true
+      combine_header_slug: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
