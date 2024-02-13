@@ -1,0 +1,107 @@
+site_name: Developer Friendly Blog
+edit_uri: blob/main/docs/
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/developer-friendly
+      name: Check out our GitHub!
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/r/developerfriendly/
+      name: Check out our Docker images!
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/developer-friendly
+      name: Follow us on LinkedIn!
+    - icon: fontawesome/brands/slack
+      link: https://communityinviter.com/apps/developerfriendly/join-our-slack
+      name: Join our Slack!
+copyright: Copyright &copy; 2024 Meysam Azad
+plugins:
+  - search:
+      lang: en
+  - tags
+  - glightbox
+  - offline:
+      enabled: !ENV [OFFLINE, false]
+  - social:
+      enabled: !ENV [CI, false]
+      cards: true
+  - blog:
+      blog_dir: .
+      # authors_profiles: true
+      post_readtime: true
+      blog_toc: true
+      post_date_format: long
+      post_readtime_words_per_minute: 238
+      archive: true
+      # archive_pagination: true
+      pagination: true
+  - group:
+      enabled: !ENV CI 
+      plugins:
+        - optimize
+        - minify
+  - rss:
+      enabled: !ENV [CI, false]
+      match_path: blog/posts/.*
+      date_from_meta:
+        as_creation: date
+      categories:
+        - categories
+        - tags
+remote_branch: gh-pages
+remote_name: origin
+repo_name: developer-friendly/blog
+repo_url: https://github.com/developer-friendly/blog
+site_author: Meysam <meysam@developer-friendly.com>
+site_description: This repo holds the technical-ish blog of Developer Friendly.
+# site_dir: mkdocs
+strict: true
+theme:
+  features:
+    - announce.dismiss
+    - content.action.edit
+    - content.action.view
+    - content.code.annotate
+    - content.code.copy
+    - content.code.select
+    - content.tabs.link
+    - content.tooltips
+    - header.autohide
+    - navigation.expand
+    - navigation.footer
+    - navigation.indexes
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.path
+    - navigation.prune
+    - navigation.sections
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.share
+    - search.suggest
+    - toc.follow
+    # - toc.integrate
+  font:
+    code: Roboto Mono
+    text: Roboto
+  icon:
+    repo: fontawesome/brands/github
+  name: material
+  palette:
+    - media: (prefers-color-scheme)
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference

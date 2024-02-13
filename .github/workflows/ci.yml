@@ -1,0 +1,37 @@
+name: ci
+
+concurrency:
+  group: ci-${{ github.ref_name }}-${{ github.event_name }}
+  cancel-in-progress: ${{ ! startsWith(github.ref, 'refs/tags/v') }}
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure Git Credentials
+        run: |
+          git config user.name ${{ github.actor }}
+          git config user.email ${{ github.actor }}@users.noreply.github.com
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+      - uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
+      - name: Install dependencies
+        run: pip install -U pip -r requirements.txt
+      - run: mkdocs gh-deploy --force
