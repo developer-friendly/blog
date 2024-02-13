@@ -3,4 +3,4 @@ mkdocs-exclude<2
 mkdocs-glightbox<1
 mkdocs-material<10
 mkdocs-rss-plugin<2
-pillow==9.5
+pillow==10.2.0
