@@ -13,7 +13,7 @@ permissions:
   contents: write
 
 jobs:
-  deploy:
+  site:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -35,3 +35,21 @@ jobs:
       - name: Install dependencies
         run: pip install -U pip -r requirements.txt
       - run: mkdocs gh-deploy --force
+
+  lychee:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Link Checker
+        id: lychee
+        uses: lycheeverse/lychee-action@v1
+        with:
+          fail: ${{ github.ref == 'refs/heads/main' }}
+      - name: Create Issue From File
+        if: env.lychee_exit_code != 0
+        uses: peter-evans/create-issue-from-file@v4
+        with:
+          title: Link Checker Report
+          content-filepath: ./lychee/out.md
+          labels: report, automated issue
