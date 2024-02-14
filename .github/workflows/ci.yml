@@ -14,10 +14,15 @@ permissions:
 
 jobs:
   site:
+    permissions:
+      pages: write
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Configure Git Credentials
         run: |
           git config user.name ${{ github.actor }}
@@ -38,7 +43,13 @@ jobs:
       - name: Install dependencies
         run: pip install -U pip -r requirements.txt
       - name: Deploy
-        run: mkdocs gh-deploy --force --dirty
+        run: mkdocs build
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
 
   lychee:
     runs-on: ubuntu-latest
