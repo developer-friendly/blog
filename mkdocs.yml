@@ -66,7 +66,8 @@ repo_name: developer-friendly/blog
 repo_url: https://github.com/developer-friendly/blog
 site_url: https://developer-friendly.blog
 site_author: Meysam <meysam@developer-friendly.com>
-site_description: This site holds the technical-ish blog of Developer Friendly.
+site_description: >-
+  A blog about SRE, Kubernetes, CI/CD, GitOps, Cloud Native, and more!
 # site_dir: mkdocs
 strict: true
 theme:
