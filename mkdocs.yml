@@ -64,9 +64,9 @@ remote_branch: gh-pages
 remote_name: origin
 repo_name: developer-friendly/blog
 repo_url: https://github.com/developer-friendly/blog
-site_url: https://tech.developer-friendly.com
+site_url: https://developer-friendly.blog
 site_author: Meysam <meysam@developer-friendly.com>
-site_description: This repo holds the technical-ish blog of Developer Friendly.
+site_description: This site holds the technical-ish blog of Developer Friendly.
 # site_dir: mkdocs
 strict: true
 theme:
