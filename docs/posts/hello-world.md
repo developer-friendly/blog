@@ -15,7 +15,7 @@ massa, nec semper lorem quam in massa.
 
 <!-- more -->
 
-```bash title="myfile.sh"
+```bash title="myfile.sh" hl_lines="2 3 18-19"
 ls
 pwd
 ```
