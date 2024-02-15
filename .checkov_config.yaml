@@ -1,0 +1,19 @@
+block-list-secret-scan: []
+branch: master
+download-external-modules: false
+evaluate-variables: true
+external-modules-download-path: .external_modules
+framework:
+  - all
+quiet: true
+secrets-scan-file-type: []
+skip-check:
+  - CKV_TF_1
+  - CKV_AWS_273 # Tried Azure AD -> AWS IAM SSO; didn't work!
+  - CKV_AZURE_50 # Azure VM Extensions are fine
+  - CKV_AZURE_119 # Public IPs for Azure NIC can be fine sometimes
+  - CKV2_AZURE_31 # I don't want to attach Azure NSG to Vnet Subnet now
+  - CKV2_ANSIBLE_3 # I have no idea how to handle block errors
+skip-framework: []
+skip-path: []
+summary-position: top

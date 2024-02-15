@@ -2,6 +2,7 @@ cairosvg<3
 mkdocs-exclude<2
 mkdocs-glightbox<1
 mkdocs-material<10
+mkdocs-minify-plugin<1
 mkdocs-rss-plugin<2
 pillow==10.2.0
 pymdown-extensions<11

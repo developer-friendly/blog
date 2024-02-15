@@ -28,3 +28,9 @@ repos:
       - id: commitlint
         stages: [commit-msg]
         additional_dependencies: ["@commitlint/config-conventional"]
+  - repo: https://github.com/bridgecrewio/checkov.git
+    rev: 3.2.21
+    hooks:
+      - id: checkov
+        args:
+          - --config-file=.checkov_config.yaml
