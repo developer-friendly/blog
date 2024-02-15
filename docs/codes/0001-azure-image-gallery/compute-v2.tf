@@ -19,7 +19,7 @@ resource "azurerm_subnet" "example" {
   address_prefixes     = ["10.0.2.0/24"]
 }
 
-resource "azurerm_public_ip" "this" {
+resource "azurerm_public_ip" "example" {
   name                = "example-public-ip"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
@@ -38,20 +38,20 @@ resource "azurerm_network_interface" "example" {
     subnet_id                     = azurerm_subnet.example.id
     private_ip_address_allocation = "Dynamic"
 
-    public_ip_address_id = azurerm_public_ip.this.id
+    public_ip_address_id = azurerm_public_ip.example.id
   }
 }
 
-resource "tls_private_key" "this" {
+resource "tls_private_key" "example" {
   algorithm = "RSA"
   rsa_bits  = 3072
 }
 
-resource "azurerm_ssh_public_key" "this" {
+resource "azurerm_ssh_public_key" "example" {
   name                = "example-ssh-public-key"
   location            = azurerm_resource_group.example.location
   resource_group_name = azurerm_resource_group.example.name
-  public_key          = tls_private_key.this.public_key_openssh
+  public_key          = tls_private_key.example.public_key_openssh
 }
 
 
@@ -67,7 +67,7 @@ resource "azurerm_linux_virtual_machine" "example" {
 
   admin_ssh_key {
     username   = "adminuser"
-    public_key = azurerm_ssh_public_key.this.public_key
+    public_key = azurerm_ssh_public_key.example.public_key
   }
 
   os_disk {
@@ -81,4 +81,32 @@ resource "azurerm_linux_virtual_machine" "example" {
     sku       = "22_04-lts"
     version   = "latest"
   }
+}
+
+data "http" "my_ip" {
+  url    = "https://ifconfig.me"
+  method = "GET"
+}
+
+resource "azurerm_network_security_group" "example" {
+  name                = "example-nsg"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+
+  security_rule {
+    name                       = "SSH"
+    priority                   = 1000
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = data.http.my_ip.body
+    destination_address_prefix = "*"
+  }
+}
+
+resource "azurerm_network_interface_security_group_association" "example" {
+  network_interface_id      = azurerm_network_interface.example.id
+  network_security_group_id = azurerm_network_security_group.example.id
 }

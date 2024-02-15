@@ -34,11 +34,13 @@ using the example provided in the OpenTofu Registry.
 This setup works just alright, except that it has no public IP address and I
 won't be able to SSH into machine for any possible reason.
 
-It also will require a public SSH key for the authentication.
+This public access will also require a proper firewall rule.
+
+On top of that, it also will require a public SSH key for the authentication.
 
 That's why, the modified version will look like the following.
 
-```terraform title="compute-v2.tf" hl_lines="22-29 41 45-55 70"
+```terraform title="compute-v2.tf" hl_lines="22-29 41 45-55 70 86-112"
 -8<- "docs/codes/0001-azure-image-gallery/compute-v2.tf"
 ```
 
