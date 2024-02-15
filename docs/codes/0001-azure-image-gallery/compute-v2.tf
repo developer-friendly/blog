@@ -1,5 +1,3 @@
-# ref: https://registry.terraform.io/providers/hashicorp/azurerm/3.91.0/docs/resources/linux_virtual_machine
-
 resource "azurerm_resource_group" "example" {
   name     = "example-resources"
   location = "West Europe"
