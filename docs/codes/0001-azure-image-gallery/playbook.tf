@@ -1,9 +1,9 @@
 resource "null_resource" "bootstrap" {
   connection {
     type        = "ssh"
-    host        = azurerm_public_ip.this.ip_address
+    host        = azurerm_public_ip.example.ip_address
     user        = "adminuser"
-    private_key = tls_private_key.this.private_key_pem
+    private_key = tls_private_key.example.private_key_pem
   }
 
   provisioner "local-exec" {
@@ -22,20 +22,20 @@ resource "null_resource" "bootstrap" {
   }
 
   provisioner "local-exec" {
-    command = "az vm deallocate --resource-group ${azurerm_resource_group.this.name} --name example-machine"
+    command = "az vm deallocate --resource-group ${azurerm_resource_group.example.name} --name example-machine"
   }
 
   provisioner "local-exec" {
-    command = "az vm generalize --resource-group ${azurerm_resource_group.this.name} --name example-machine"
+    command = "az vm generalize --resource-group ${azurerm_resource_group.example.name} --name example-machine"
   }
 
   triggers = {
-    vm_id = azurerm_linux_virtual_machine.this.id,
+    vm_id = azurerm_linux_virtual_machine.example.id,
   }
 
   depends_on = [
     local_file.inventory,
-    azurerm_linux_virtual_machine.this,
-    azurerm_public_ip.this,
+    azurerm_linux_virtual_machine.example,
+    azurerm_public_ip.example,
   ]
 }
