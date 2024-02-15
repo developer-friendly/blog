@@ -40,7 +40,7 @@ On top of that, it also will require a public SSH key for the authentication.
 
 That's why, the modified version will look like the following.
 
-```terraform title="compute-v2.tf" hl_lines="22-29 41 45-55 70 86-112"
+```terraform title="compute-v2.tf" hl_lines="20-27 39 43-53 68 84-110"
 -8<- "docs/codes/0001-azure-image-gallery/compute-v2.tf"
 ```
 
