@@ -16,6 +16,7 @@ repos:
       - id: detect-private-key
       - id: detect-aws-credentials
       - id: end-of-file-fixer
+        exclude: ads.txt
       - id: name-tests-test
       - id: file-contents-sorter
       - id: requirements-txt-fixer
