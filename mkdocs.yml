@@ -99,6 +99,7 @@ theme:
     - navigation.indexes
     - navigation.instant
     - navigation.instant.prefetch
+    - navigation.instant.progress
     - navigation.path
     - navigation.prune
     - navigation.sections
@@ -145,6 +146,9 @@ markdown_extensions:
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.betterem
+  - pymdownx.progressbar
+  - pymdownx.magiclink
+  - pymdownx.smartsymbols
   - pymdownx.caret
   - pymdownx.mark
   - pymdownx.tilde
