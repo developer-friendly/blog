@@ -27,7 +27,7 @@ struggle, so that you don't have to go through the same.
 First things first, we need to creat the Virtual Machine. I create the Linux VM
 using the example provided in the OpenTofu Registry.
 
-```terraform title="compute-v1.tf"
+```hcl title="compute-v1.tf"
 -8<- "docs/codes/0001-azure-image-gallery/sample-only/compute-v1.tf"
 ```
 
@@ -40,7 +40,7 @@ On top of that, it also will require a public SSH key for the authentication.
 
 That's why, the modified version will look like the following.
 
-```terraform title="compute-v2.tf" hl_lines="20-27 39 43-53 68 84-110"
+```hcl title="compute-v2.tf" hl_lines="20-27 39 43-53 68 84-110"
 -8<- "docs/codes/0001-azure-image-gallery/compute-v2.tf"
 ```
 
@@ -58,14 +58,14 @@ run the ad-hoc commands.
 Before being able to run Ansible on the target machine, I will need to create
 my inventory.
 
-```terraform title="inventory.tf"
+```hcl title="inventory.tf"
 -8<- "docs/codes/0001-azure-image-gallery/inventory.tf"
 ```
 
 And now, I can either use null resource, or run the `ansible-playbook` from the
 CLI. I prefer the former, since it is replicatable across runs.
 
-```terraform title="playbook.tf"
+```hcl title="playbook.tf"
 -8<- "docs/codes/0001-azure-image-gallery/playbook.tf"
 ```
 
@@ -105,7 +105,7 @@ waste of resource and money.
 
 Let's create the image with the following resources.
 
-```terraform title="image-v1.tf"
+```hcl title="image-v1.tf"
 -8<- "docs/codes/0001-azure-image-gallery/sample-only/image-v1.tf"
 ```
 
@@ -115,7 +115,7 @@ it allow you to create VM instances out of it later on.
 
 For that, you will need to create an image version.
 
-```terraform title="image-v2.tf" hl_lines="32-44"
+```hcl title="image-v2.tf" hl_lines="32-44"
 -8<- "docs/codes/0001-azure-image-gallery/sample-only/image-v2.tf"
 ```
 
@@ -147,8 +147,17 @@ And to get around it, you will need to create the image as well.
 
 Just as you see below.
 
-```terraform title="image-v3.tf" hl_lines="32-37 45"
+```hcl title="image-v3.tf" hl_lines="32-37 45"
 -8<- "docs/codes/0001-azure-image-gallery/image-v3.tf"
+```
+
+## Versions
+
+To help with reproducibility, I will include the versions of the providers in
+this post.
+
+```hcl title="versions.tf"
+-8<- "docs/codes/0001-azure-image-gallery/versions.tf"
 ```
 
 ## Conclusion

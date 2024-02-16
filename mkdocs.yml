@@ -31,7 +31,7 @@ extra:
           note: >-
             Thanks for your feedback! Help us improve this page by
             using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
-copyright: Copyright &copy; 2024 Meysam Azad
+copyright: Copyright &copy; Meysam Azad
 plugins:
   - minify:
       minify_html: true
