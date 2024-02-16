@@ -1,3 +1,4 @@
 site
 .terra*
 tfplan
+**/terraform.tfstate*
