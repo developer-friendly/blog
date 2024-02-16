@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block libs %}
+{{ super() }}
+{% include "partials/libs.html" ignore missing %}
+{% endblock %}
+
+{% block announce %}{% include "announce.html" ignore missing %}{% endblock %}
+
+{% block content %}
+  {{ super() }}
+  <footer class="sponsorship">
+    <hr>
+    <a href="https://github.com/sponsors/meysam81/" title="Become a sponsor">
+      <span class="twemoji heart-throb-hover">
+        {% set icon = "octicons/heart-fill-16" %}
+        {% include ".icons/" ~ icon ~ ".svg" %}
+      </span>
+    </a>
+    <hr>
+  </footer>
+{% endblock %}
+
+{% block script %}
+  {{ super() }}
+{% endblock %}
+
+{% block extrahead %}
+  {{ super() }}
+  <script src="https://f.convertkit.com/ckjs/ck.5.js"></script>
+  <script src="https://cdn.logr-ingest.com/LogRocket.min.js" crossorigin="anonymous"></script>
+  <script>window.LogRocket && window.LogRocket.init('zv1hga/developer-friendly');</script>
+{% endblock %}

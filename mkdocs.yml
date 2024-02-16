@@ -46,6 +46,8 @@ plugins:
   - glightbox
   - offline:
       enabled: !ENV [OFFLINE, false]
+  - privacy:
+      enabled: !ENV [OFFLINE, false]
   - social:
       enabled: !ENV [CI, false]
       cards: true
@@ -69,7 +71,7 @@ plugins:
         - tags
 remote_branch: gh-pages
 remote_name: origin
-repo_name: developer-friendly/blog
+repo_name: GitHub
 repo_url: https://github.com/developer-friendly/blog
 site_url: https://developer-friendly.blog
 site_author: Meysam <meysam@developer-friendly.com>
