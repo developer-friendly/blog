@@ -16,7 +16,7 @@ extra:
       name: Join our Slack!
   analytics:
     provider: google
-    property: G-GJFV64BGE1
+    property: G-XFZYB6P2H9
     feedback:
       title: Was this page helpful?
       ratings:
