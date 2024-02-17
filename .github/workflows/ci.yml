@@ -45,8 +45,10 @@ jobs:
             mkdocs-material-
       - name: Install dependencies
         run: pip install -U pip -r requirements.txt
-      - name: Deploy
+      - name: Build the site
         run: mkdocs build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
