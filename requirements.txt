@@ -1,5 +1,7 @@
 cairosvg<3
 mkdocs-exclude<2
+mkdocs-git-committers-plugin-2<3
+mkdocs-git-revision-date-localized-plugin<2
 mkdocs-glightbox<1
 mkdocs-material<10
 mkdocs-minify-plugin<1
