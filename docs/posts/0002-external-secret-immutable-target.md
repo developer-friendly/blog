@@ -311,5 +311,11 @@ this post.
 -8<- "docs/codes/0002-external-secrets/versions.tf"
 ```
 
+## Source Code
+
+The code for this post is available from the following link.
+
+[Source code](https://github.com/developer-friendly/blog/blob/main/docs/codes/0002-external-secrets)
+
 [^1]: https://github.com/kubernetes-sigs/kind
 [^2]: https://external-secrets.io/latest/introduction/getting-started/

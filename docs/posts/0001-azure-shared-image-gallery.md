@@ -160,6 +160,12 @@ this post.
 -8<- "docs/codes/0001-azure-image-gallery/versions.tf"
 ```
 
+## Source Code
+
+The code for this post is available from the following link.
+
+[Source code](https://github.com/developer-friendly/blog/blob/main/docs/codes/0001-azure-image-gallery)
+
 ## Conclusion
 
 That pretty much solves everything. I can't imagine having done it this way.
