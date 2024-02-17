@@ -1,6 +1,6 @@
 ---
 authors:
-  - meysam
+  - meysam@developer-friendly.blog
 date: 2024-02-13
 draft: true
 categories:
