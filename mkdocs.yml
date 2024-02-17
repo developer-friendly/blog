@@ -74,13 +74,6 @@ plugins:
       enabled: !ENV [CI, false]
       type: date
       fallback_to_build_date: true
-  - git-committers:
-      repository: developer-friendly/blog
-      branch: main
-      token: !ENV [GITHUB_TOKEN, ""]
-      enabled: !ENV [CI, false]
-  - git-authors:
-      enabled: !ENV [CI, false]
 remote_branch: gh-pages
 remote_name: origin
 repo_name: GitHub
