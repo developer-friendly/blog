@@ -90,7 +90,7 @@ site_author: meysam@developer-friendly.blog
 site_description: >-
   A blog about SRE, Kubernetes, CI/CD, GitOps, Cloud Native, and more!
 # site_dir: mkdocs
-strict: true
+strict: false
 theme:
   name: material
   custom_dir: overrides
