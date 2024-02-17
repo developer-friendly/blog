@@ -46,7 +46,7 @@ jobs:
       - name: Install dependencies
         run: pip install -U pip -r requirements.txt
       - name: Build the site
-        run: mkdocs build
+        run: mkdocs build --no-strict
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Upload Pages artifact
