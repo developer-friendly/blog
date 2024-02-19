@@ -49,6 +49,7 @@ jobs:
         run: mkdocs build --no-strict
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GA_PROPERTY: ${{ vars.GA_PROPERTY }}
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

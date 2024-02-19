@@ -3,3 +3,4 @@ site
 tfplan
 **/terraform.tfstate*
 .cache
+.secrets
