@@ -79,6 +79,7 @@ plugins:
       branch: main
       token: !ENV [GITHUB_TOKEN, ""]
       enabled: !ENV [CI, false]
+  - table-reader
 remote_branch: gh-pages
 remote_name: origin
 repo_name: GitHub
