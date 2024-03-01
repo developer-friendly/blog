@@ -93,7 +93,6 @@ plugins:
       token: !ENV [GITHUB_TOKEN, ""]
       enabled: !ENV [CI, false]
   - table-reader
-  - external-markdown
 remote_branch: gh-pages
 remote_name: origin
 repo_name: GitHub
