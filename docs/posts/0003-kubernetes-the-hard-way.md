@@ -166,12 +166,12 @@ this optimization and only specifying a directory will re-download the file.
 -8<- "https://github.com/developer-friendly/kubernetes-the-hard-way/raw/v1.29.2/Vagrantfile:50:56"
 ```
 
-The last and most impotant part of the `Vagrantfile` is the Ansible provisioner
+The last and most important part of the `Vagrantfile` is the Ansible provisioner
 section which, as you can see, is for both the Load Balancer VM as well as all
 the three nodes of the Kubernetes cluster.
 
 The difference, however, is that for the Kubernetes nodes, we want the playbook
-to run for all of them at the same tiem to benefit from parallel execution of
+to run for all of them at the same time to benefit from parallel execution of
 Ansible playbook. The alternative would be to spin up the nodes one by one and
 run the playbook on each of them, which is not efficient and consumes more time.
 
@@ -391,7 +391,7 @@ important information:
 1. The same properties as with the `admin.yml` was used to generate the TLS
    certificate. Namely the `provider` and all the `ownca_*` properties.
 
-### Step 3: Kubeconfig Files
+### Step 3: KubeConfig Files
 
 In this step, for every component that will talk to the API server, we will create
 a KubeConfig file, specifying the server address, the CA certificate, and the
@@ -440,7 +440,7 @@ the playbook.
 
 !!! tip "Ansible Variables"
 
-    As you may have noticed, incide every `vars` file, we can use the values from
+    As you may have noticed, inside every `vars` file, we can use the values from
     other variables. That's one of the many things that make Ansible so powerful!
 
 ### Step 4: Encryption Configuration
@@ -580,9 +580,20 @@ This is one of the last steps before we have a non-Ready Kubernetes cluster.
 The task includes downloading some of the binaries, passing in some of the TLS
 certificates generated earlier, and starting the systemd services.
 
-```yaml title="worker/tasks/cni-config.yml"
+```yaml title="worker/tasks/cni-config.yml" hl_lines="55 62-63"
 -8<- "https://github.com/developer-friendly/kubernetes-the-hard-way/raw/v1.29.2/worker/tasks/cni-config.yml"
 ```
+
+The CNI config for containerd is documented in their repository if you feel
+curious[^3].
+
+??? details "Worker Role Default Variables"
+
+    ```yaml title="worker/defaults/main.yml"
+    -8<- "https://github.com/developer-friendly/kubernetes-the-hard-way/raw/v1.29.2/worker/defaults/main.yml"
+    ```
+
+
 ```yaml title="worker/tasks/containerd.yml"
 -8<- "https://github.com/developer-friendly/kubernetes-the-hard-way/raw/v1.29.2/worker/tasks/containerd.yml"
 ```
@@ -594,13 +605,16 @@ The last step is straightforward.
 We plan to run the CoreDNS as Kubernetes Deployment with affinity, and install
 the Cilium using its CLI.
 
-```yaml title="coredns/tasks/main.yml"
+```yaml title="coredns/tasks/main.yml" hl_lines="6-17"
 -8<- "https://github.com/developer-friendly/kubernetes-the-hard-way/raw/v1.29.2/coredns/tasks/main.yml"
 ```
 
+Notice the slurp tasks because they will be used the pass the TLS certificates
+to the CoreDNS instance.
+
 ??? details "CoreDNS Kubernetes Manifests"
 
-    ```yaml title="coredns/templates/manifests.yml.j2"
+    ```yaml title="coredns/templates/manifests.yml.j2" hl_lines="38-40"
     -8<- "https://github.com/developer-friendly/kubernetes-the-hard-way/raw/v1.29.2/coredns/templates/manifests.yml.j2"
     ```
 
@@ -610,8 +624,57 @@ And finally the Cilium.
 -8<- "https://github.com/developer-friendly/kubernetes-the-hard-way/raw/v1.29.2/cilium/tasks/main.yml"
 ```
 
+??? details "Cilium Role Default Variables"
+
+    ```yaml title="cilium/defaults/main.yml"
+    -8<- "https://github.com/developer-friendly/kubernetes-the-hard-way/raw/v1.29.2/cilium/defaults/main.yml"
+    ```
+
+That's it. Believe it or not, the Kubernetes cluster is now ready and if you
+run the following command, you will see three nodes in the `Ready` state.
+
+```bash title=""
+export KUBECONFIG=share/admin.yml # KubeConfig generated in step 3
+kubectl get nodes
+```
+
+## Conclusion
+
+This task took me a lot of time to get right. I had to go through a lot of
+iteration to make it work. One of the most time-consuming parts was how the
+`etcd` cluster was misbehaving, leading to the Kubernetes API server hitting
+timeout errors and being inaccessible for the rest of the cluster's components.
+
+I learned a lot from this challenge. I learned how to write efficient Ansible
+playbooks, how to create the right mental model for the target host where the
+Ansible executes a command, how to deal with all those TLS certificates, and
+overall, how to set up a Kubernetes cluster from scratch.
+
+I couldn't be happier reaching the final result, having spent countless hours
+debugging and banging my head against the wall.
+
+I recommend everyone giving the challenge a try. You never know how much you
+don't know about the inner workings of Kubernetes until you try to set it up
+from scratch.
+
+Thanks for reading so far. I hope you enjoyed the journey as much as I did
+:hugging:.
+
+## Source Code
+
+As mentioned before, you can find the source code for this challenge on the
+GitHub repository[^1].
 
 ## FAQ
+
+### Why Cilium?
+
+Cilium has emerged as a cloud-native CNI tool that happens to have a lot of the
+features and characteristics of a production-grade CNI. To name a few,
+performance, security, and observability are the top ones. I have used Linkerd
+in the past but I am using Cilium for any of the current and upcoming projects
+I am working on. It will continue to prove itself as a great CNI for Kubernetes
+clusters.
 
 ### Why use Vagrant?
 
@@ -623,3 +686,4 @@ the terrible network performance of the VirtualBox VMs :shrug:.
 
 [^1]: https://github.com/developer-friendly/kubernetes-the-hard-way/tree/v1.29.2
 [^2]: https://github.com/ansible/ansible-lint
+[^3]: https://github.com/containerd/containerd/blob/v1.7.13/script/setup/install-cni

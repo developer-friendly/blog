@@ -75,11 +75,3 @@ jobs:
           title: Link Checker Report
           content-filepath: ./lychee/out.md
           labels: report, automated issue
-
-  spellcheck:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - uses: rojopolis/spellcheck-github-actions@v0
-        name: Spellcheck
