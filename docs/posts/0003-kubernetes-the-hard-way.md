@@ -638,6 +638,12 @@ export KUBECONFIG=share/admin.yml # KubeConfig generated in step 3
 kubectl get nodes
 ```
 
+## How to run it?
+
+If you clone the repository, you would only need `vagrant up` to build everything
+from scratch. It takes you sometime to all the components up and ready, but it
+will set things up without any further intervention.
+
 ## Conclusion
 
 This task took me a lot of time to get right. I had to go through a lot of
