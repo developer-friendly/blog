@@ -1,4 +1,4 @@
 Tool,Version,Link
-Ansible,2.16.3,https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
-Vagrant,2.4.1,https://www.vagrantup.com/docs/installation
+Ansible,2.16,https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+Vagrant,2.4,https://www.vagrantup.com/docs/installation
 VirtualBox,7.0,https://www.virtualbox.org/wiki/Downloads

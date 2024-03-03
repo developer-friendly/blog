@@ -8,5 +8,5 @@ mkdocs-material<10
 mkdocs-minify-plugin<1
 mkdocs-rss-plugin<2
 mkdocs-table-reader-plugin<3
-pillow==10.2.0
+pillow<11
 pymdown-extensions<11
