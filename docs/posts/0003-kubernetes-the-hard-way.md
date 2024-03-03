@@ -549,7 +549,7 @@ You will notice the following points in this systemd setup:
 
 1. The external host address is of the Load Balancer.
 1. The certificate files for both Kubernetes API server and the Etcd server are
-   being pass from the location previously generated.
+   being passed from the location previously generated.
 1. The encryption config is being fetched from a file generated in step 4.
 
 !!! question "What makes this setup HA then?"
