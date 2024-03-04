@@ -14,6 +14,9 @@ extra:
     - icon: fontawesome/brands/slack
       link: https://communityinviter.com/apps/developerfriendly/join-our-slack
       name: Join our Slack!
+    - icon: fontawesome/solid/square-rss
+      link: /feed_rss_created.xml
+      name: Subscribe to our RSS feed!
   analytics:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
