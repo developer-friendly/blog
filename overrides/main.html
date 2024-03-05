@@ -7,11 +7,11 @@
 
 {% block announce %}{% include "announce.html" ignore missing %}{% endblock %}
 
-{% block script %}
+{% block scripts %}
   {{ super() }}
 {% endblock %}
 
 {% block extrahead %}
   {{ super() }}
-  <script src="https://cdn.logr-ingest.com/LogRocket.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.logr-ingest.com/LogRocket.min.js" crossorigin="anonymous" async></script>
 {% endblock %}
