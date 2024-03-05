@@ -47,6 +47,18 @@ extra:
       logrocket:
         name: Logrocket
         checked: true
+      adstorage:
+        name: Google AdSense - Storage
+        checked: true
+      aduserdata:
+        name: Google AdSense - User Data
+        checked: true
+      adpersonalization:
+        name: Google AdSense - Personalization
+        checked: true
+      analyticsstorage:
+        name: Google Analytics - Storage
+        checked: true
 extra_javascript:
   - static/js/consent.js
 copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
