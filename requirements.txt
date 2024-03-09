@@ -1,12 +1,10 @@
-cairosvg<3
 mkdocs-exclude<2
 mkdocs-git-authors-plugin<1
 mkdocs-git-committers-plugin-2<3
 mkdocs-git-revision-date-localized-plugin<2
 mkdocs-glightbox<1
-mkdocs-material<10
+mkdocs-material[imaging]<10
 mkdocs-minify-plugin<1
 mkdocs-rss-plugin<2
 mkdocs-table-reader-plugin<3
-pillow<11
 pymdown-extensions<11

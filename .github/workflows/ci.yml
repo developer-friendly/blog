@@ -44,9 +44,11 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - name: Install dependencies
-        run: pip install -U pip -r requirements.txt
+        run: |
+          pip install -U pip -r requirements.txt
+          apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
       - name: Build the site
-        run: mkdocs build --no-strict
+        run: mkdocs build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GA_PROPERTY: ${{ vars.GA_PROPERTY }}
