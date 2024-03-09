@@ -8,6 +8,9 @@ categories:
   - Cloud Computing
   - OpenTofu
   - IaC
+social:
+  cards_layout_options:
+    description: Enhanced Reusability with Azure Compute Gallery
 ---
 
 # Azure Shared Image Gallery
