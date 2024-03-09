@@ -33,7 +33,7 @@ extra:
           data: 0
           note: >-
             Thanks for your feedback! Help us improve this page by
-            using our <a href="..." target="_blank" rel="noopener">feedback form</a>.
+            using our <a href="https://github.com/developer-friendly/blog/issues/new/?title=[Feedback]+{title}+-+{url}" target="_blank" rel="noopener">feedback form</a>.
   consent:
     title: Cookie consent
     description: >-
@@ -47,18 +47,21 @@ extra:
       logrocket:
         name: Logrocket
         checked: true
-      adstorage:
-        name: Google AdSense - Storage
-        checked: true
-      aduserdata:
-        name: Google AdSense - User Data
-        checked: true
-      adpersonalization:
-        name: Google AdSense - Personalization
-        checked: true
-      analyticsstorage:
-        name: Google Analytics - Storage
-        checked: true
+      # TODO: Until Google Adsense team considers my content "valuable", I get
+      # no revenue, nor any ads will be placed on my site. So, I'm turning it
+      # off to avoid harrassing my readers.
+      # adstorage:
+      #   name: Google AdSense - Storage
+      #   checked: true
+      # aduserdata:
+      #   name: Google AdSense - User Data
+      #   checked: true
+      # adpersonalization:
+      #   name: Google AdSense - Personalization
+      #   checked: true
+      # analyticsstorage:
+      #   name: Google Analytics - Storage
+      #   checked: true
 extra_javascript:
   - static/js/consent.js
 copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
@@ -141,6 +144,7 @@ theme:
     - navigation.instant
     - navigation.instant.prefetch
     - navigation.instant.progress
+    - navigation.instant.preview
     - navigation.path
     - navigation.prune
     - navigation.sections
