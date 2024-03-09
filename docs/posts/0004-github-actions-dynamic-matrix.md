@@ -2,7 +2,7 @@
 authors:
   - meysam@developer-friendly.blog
 date: 2024-03-09
-draft: true
+draft: false
 categories:
   - GitHub
   - CI/CD
