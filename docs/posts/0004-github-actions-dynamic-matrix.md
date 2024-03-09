@@ -51,7 +51,7 @@ This will give me the following directory structure.
 
 Now, let's create a GitHub Actions workflow file.
 
-```yaml title=".github/workflows/ci.yml" hl_lines="21 23-29"
+```yaml title=".github/workflows/ci.yml" hl_lines="21 23-29 47"
 -8<- "docs/codes/0004-dynamic-github-actions-matrix/build-rust-ci.yml"
 ```
 
