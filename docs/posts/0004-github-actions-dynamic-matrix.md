@@ -41,7 +41,7 @@ cargo new hello-world
 
 This will give me the following directory structure.
 
-```plaintext
+```plaintext title=""
 .
 └── hello-world
     ├── Cargo.toml
