@@ -4,10 +4,6 @@ terraform {
       source  = "hetznercloud/hcloud"
       version = "~> 1.45"
     }
-    http = {
-      source  = "hashicorp/http"
-      version = "~> 3.4"
-    }
   }
 
   required_version = "<2"

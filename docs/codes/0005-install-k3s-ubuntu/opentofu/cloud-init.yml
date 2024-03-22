@@ -5,9 +5,8 @@ users:
     sudo: ALL=(ALL) NOPASSWD:ALL
     shell: /bin/bash
     ssh_authorized_keys:
-      - # add your keys here, generated using either of the following commands:
-        # ssh-keygen -t ed25519 -b 521
-        # ssh-keygen -t rsa -b 4096
+      - # Place the hardcoded value of your SSH public key here
+        # Output of `ssh-keygen` .pub file
 packages:
   - fail2ban
   - python3
