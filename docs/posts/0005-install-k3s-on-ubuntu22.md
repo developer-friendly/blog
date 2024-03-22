@@ -2,7 +2,7 @@
 authors:
   - meysam@developer-friendly.blog
 date: 2024-03-22
-draft: true
+draft: false
 categories:
   - Kubernetes
   - IaC
@@ -138,7 +138,7 @@ That's an important piece of the whole puzzle. Let's create that file.
     If you don't have an SSH key pair, you can generate one using the following
     command:
 
-    ```shell title="Password-less eliptic curve key pair" linenums="0"
+    ```shell title="Password-less elliptic curve key pair" linenums="0"
     ssh-keygen -t ed25519 -f ~/.ssh/k3s-cluster.hetzner -N ''
     ```
 
@@ -246,7 +246,7 @@ As you see in the highlighted lines, we will use Kubernetes Gateway API[^6] as
 a replacement for Ingress Controller. This is a more modern approach and it
 has more capabilities than the traditional Ingress Controller.
 
-Among many other benfits, Gateway API has the ability to handle TLS, gRPC, and
+Among many other benefits, Gateway API has the ability to handle TLS, gRPC, and
 WebSockets, which are not supported by Ingress Controller.
 
 ???+ quote "Why Gateway API?"
@@ -267,7 +267,7 @@ the playbook as it runs.
 
 ???+ success "Ansible Configuration"
 
-      Infact, I have a global user configuration that has some sane defaults.
+      In fact, I have a global user configuration that has some sane defaults.
       Completely contradictory to what the Ansible *sane* defaults are.
 
       ```ini title="~/.ansible.cfg"
