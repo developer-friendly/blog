@@ -1,0 +1,46 @@
+#cloud-config
+users:
+  - name: k8s
+    groups: users, admin
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - # add your keys here, generated using either of the following commands:
+        # ssh-keygen -t ed25519 -b 521
+        # ssh-keygen -t rsa -b 4096
+packages:
+  - fail2ban
+  - python3
+  - python3-pip
+package_update: true
+package_upgrade: true
+runcmd:
+  # Allow reading the logs using journalctl
+  - usermod -aG adm k8s
+  # Ban malicious IPs from overly aggressive SSH login attempts
+  - printf "[sshd]\nenabled = true\nbanaction = iptables-multiport" > /etc/fail2ban/jail.local
+  - systemctl enable fail2ban
+  # Configure SSH daemon in a more secure way
+  - sed -i -e '/^\(#\|\)PermitRootLogin/s/^.*$/PermitRootLogin no/' /etc/ssh/sshd_config
+  - sed -i -e '/^\(#\|\)PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
+  - sed -i -e '/^\(#\|\)KbdInteractiveAuthentication/s/^.*$/KbdInteractiveAuthentication no/' /etc/ssh/sshd_config
+  - sed -i -e '/^\(#\|\)ChallengeResponseAuthentication/s/^.*$/ChallengeResponseAuthentication no/' /etc/ssh/sshd_config
+  - sed -i -e '/^\(#\|\)MaxAuthTries/s/^.*$/MaxAuthTries 2/' /etc/ssh/sshd_config
+  - sed -i -e '/^\(#\|\)AllowTcpForwarding/s/^.*$/AllowTcpForwarding no/' /etc/ssh/sshd_config
+  - sed -i -e '/^\(#\|\)X11Forwarding/s/^.*$/X11Forwarding no/' /etc/ssh/sshd_config
+  - sed -i -e '/^\(#\|\)AllowAgentForwarding/s/^.*$/AllowAgentForwarding no/' /etc/ssh/sshd_config
+  - sed -i -e '/^\(#\|\)AuthorizedKeysFile/s/^.*$/AuthorizedKeysFile .ssh\/authorized_keys/' /etc/ssh/sshd_config
+  - sed -i '$a AllowUsers k8s' /etc/ssh/sshd_config
+  # Install the Kubernetes cluster using k3s
+  - |
+    curl https://get.k3s.io | \
+      INSTALL_K3S_VERSION="v1.29.2+k3s1" \
+      INSTALL_K3S_EXEC="--disable traefik
+        --disable-network-policy
+        --flannel-backend none
+        --write-kubeconfig /home/k8s/.kube/config
+        --secrets-encryption" \
+      sh -
+  - chown -R k8s:k8s /home/k8s/.kube/
+  # Ensure all the settings are applied
+  - reboot

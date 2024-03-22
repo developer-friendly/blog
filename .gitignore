@@ -4,3 +4,4 @@ tfplan
 **/terraform.tfstate*
 .cache
 .secrets
+.pre-commit-trivy-cache
