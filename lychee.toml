@@ -1,0 +1,3 @@
+exclude = [
+  'https://accounts.hetzner.com/login',
+]

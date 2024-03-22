@@ -71,8 +71,8 @@ for high availability and fault tolerance. You will be guided with some of the
 obvious tips at the end of this post.
 
 First, you need to create an account on Hetzner Cloud[^2] and generate an API
-token[^3]. Your generated token must have write access cause we need to create
-resources on your behalf.
+token[^3]. Your generated token must have write access cause the TF files will
+create resources on your behalf.
 
 ## Step 1: Create the server
 
@@ -258,7 +258,7 @@ Cilium has native support[^7] for Gatway API.
 
 To run this ansible playbook, I will simply run the following command:
 
-```shell title=""
+```shell title="" linenums="0"
 ansible-playbook -i ansible/inventory.yml ansible/playbook.yml -v
 ```
 
@@ -307,7 +307,7 @@ Cloud Firewall to protect my server.
 -8<- "docs/codes/0005-install-k3s-ubuntu/opentofu/versions.tf"
 ```
 
-```hcl title="opentofu/network.tf"
+```hcl title="opentofu/network.tf" hl_lines="11 17-19"
 -8<- "docs/codes/0005-install-k3s-ubuntu/opentofu/network.tf"
 ```
 
