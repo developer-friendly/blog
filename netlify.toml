@@ -1,5 +1,6 @@
 [build]
     command = "mkdocs build"
     publish = "site"
+    site = "developer-friendly"
 [build.environment]
     PYTHON_VERSION = "3.11"

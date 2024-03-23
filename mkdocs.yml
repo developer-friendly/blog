@@ -215,7 +215,7 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
   - pymdownx.snippets:
-      url_download: true
+      url_download: !ENV [CI, false]
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.keys
@@ -225,3 +225,5 @@ markdown_extensions:
       combine_header_slug: true
   - pymdownx.tasklist:
       custom_checkbox: true
+watch:
+  - overrides
