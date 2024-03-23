@@ -80,7 +80,7 @@ plugins:
   - offline:
       enabled: !ENV [OFFLINE, false]
   - privacy:
-      enabled: !ENV [OFFLINE, false]
+      enabled: !ENV [CI, false]
   - social:
       enabled: !ENV [CI, false]
       cards: true
