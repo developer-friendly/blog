@@ -90,7 +90,6 @@ plugins:
       post_readtime: true
       blog_toc: true
       post_date_format: long
-      post_readtime_words_per_minute: 238
       archive: true
       # archive_pagination: true
       pagination: true
