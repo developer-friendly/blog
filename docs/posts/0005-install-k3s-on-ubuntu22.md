@@ -30,6 +30,12 @@ requires a PhD in Kubernetes.
 However, most people are not in the business of managing Kubernetes clusters,
 nor do they feel nerdy enough to spend their weekends configuring YAML files.
 
+!!! success "Complexity not an issue for you?"
+
+      If you're like me, enjoying a good challenge and have a knack for tackling
+      complexity, you will be greatly served by spinning up [Kubernetes the
+      Hard Way][k8s-the-hard-way] I have published recently.
+
 On the other hand, it's not just about the level of complexity involved in
 managing a bunch of Kubernetes components, but also the cost of running a
 full-fledged Kubernetes cluster in the cloud, be it managed or self-hosted.
@@ -337,3 +343,4 @@ All the code examples in this post are publicly available[^9] on GitHub under th
 [license]: https://github.com/developer-friendly/blog/tree/main/LICENSE
 [opentofu-github]: https://github.com/opentofu/opentofu
 [ansible-website]: https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html
+[k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
