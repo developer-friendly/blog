@@ -3,6 +3,7 @@ authors:
   - meysam@developer-friendly.blog
 date: 2024-03-24
 description: Leverage your git repository for continuous deployment, GitOps style, with FluxCD.
+icon: :arrows_counterclockwise:
 draft: true
 categories:
   - Kubernetes
