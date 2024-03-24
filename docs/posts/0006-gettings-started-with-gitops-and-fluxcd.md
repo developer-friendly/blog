@@ -1,0 +1,16 @@
+---
+authors:
+  - meysam@developer-friendly.blog
+date: 2024-02-19
+draft: true
+categories:
+  - Kubernetes
+  - FluxCD
+  - GitOps
+  - Cilium
+---
+
+# Getting Started with GitOps and FluxCD
+
+Learn how to leverage your Git repository, GitOps style, to manage your
+Kubernetes cluster with FluxCD.
