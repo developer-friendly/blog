@@ -84,6 +84,7 @@ plugins:
       enabled: !ENV [CI, false]
       cards: true
   - blog:
+      draft: !ENV [DRAFT, false]
       blog_dir: .
       # authors_profiles: true
       post_readtime: true
