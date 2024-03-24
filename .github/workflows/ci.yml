@@ -15,8 +15,12 @@ on:
 permissions:
   contents: write
 
+env:
+  PYTHON_VERSION: 3.x
+
 jobs:
-  site:
+  deploy:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       pages: write
       id-token: write
@@ -36,7 +40,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: 3.x
+          python-version: ${{ env.PYTHON_VERSION }}
       - name: Calculate cache id
         run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
       - name: Cache mkdocs-material
@@ -59,10 +63,45 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
-      - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  build:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Calculate cache id
+        run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+      - name: Cache mkdocs-material
+        uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
+      - name: Install dependencies
+        run: |
+          pip install -U pip -r requirements.txt
+          sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
+      - name: Build the site
+        run: mkdocs build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GA_PROPERTY: ${{ vars.GA_PROPERTY }}
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: build-pr${{ github.event.pull_request.number }}
+          path: site
 
   lychee:
     runs-on: ubuntu-latest
