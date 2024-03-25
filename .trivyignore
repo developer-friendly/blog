@@ -1,0 +1,2 @@
+# IAM policy document uses sensitive action 'ssm:GetParameter' on wildcarded resource '*'
+AVD-AWS-0057
