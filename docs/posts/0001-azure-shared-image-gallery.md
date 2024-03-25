@@ -182,7 +182,7 @@ In no particular order, and in a non-exhaustive list, here are some horror stori
 - Creating a parent and a child resource, updating the parent which forces a
 replacement and then the provided complains not being able to delete the parent
 because the child is still referencing it. I mean, isn't the whole point of
-[IaC](/category/iac) to be able to create, update and delete resources and the
+[IaC](/category/iac/) to be able to create, update and delete resources and the
 underlying provider takes care of the ugly work for you!?
 - The Azure Kubernetes module creates a child resource group for you, and for
 any other node-pool you want to add to the cluster, you can't create a separate
@@ -190,7 +190,7 @@ resource group, but rather, you gotta reference the same resource group to creat
 the new node-pool. :exploding_head:
 
 Some of these would have been fine if we weren't promised that
-[IaC](/category/iac) tools such as OpenTofu are supposed to protect you from a
+[IaC](/category/iac/) tools such as OpenTofu are supposed to protect you from a
 need to get into the Azure portal and do the manual chores yourself, the same
 chore the provider should've done for you.
 

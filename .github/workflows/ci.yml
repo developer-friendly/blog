@@ -120,3 +120,21 @@ jobs:
           title: Link Checker Report
           content-filepath: ./lychee/out.md
           labels: report, automated issue
+
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Trivy filesystem
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "fs"
+          scan-ref: "."
+          trivy-config: trivy.yaml
+      - name: Trivy config
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: "config"
+          scan-ref: "."
+          trivy-config: trivy.yaml
