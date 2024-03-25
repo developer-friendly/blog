@@ -58,8 +58,8 @@ environments, and edge computing. It is a fully compliant Kubernetes distributio
 that is packaged in a single binary and requires minimal dependencies.
 
 In this post, I will show you how to install k3s on Ubuntu 22.04 using [Hetzner
-Cloud](/category/hetzner/), [OpenTofu](/category/opentofu),
-[Ansible](/category/ansible), and [Cilium](/category/cilium).
+Cloud](/category/hetzner/), [OpenTofu](/category/opentofu/),
+[Ansible](/category/ansible/), and [Cilium](/category/cilium/).
 Stay with me till the end cause we got some cool stuff to cover.
 
 ## Prerequisites

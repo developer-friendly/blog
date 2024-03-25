@@ -6,6 +6,8 @@ insecure: false
 
 timeout: 1m
 
+exit-code: 1
+
 cache:
   dir: .pre-commit-trivy-cache
 
