@@ -127,18 +127,18 @@ jobs:
 
   trivy:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scan-type:
+          - fs
+          - config
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Trivy filesystem
+      - name: Trivy ${{ matrix.scan-type }}
         uses: aquasecurity/trivy-action@master
         with:
-          scan-type: "fs"
-          scan-ref: "."
-          trivy-config: trivy.yaml
-      - name: Trivy config
-        uses: aquasecurity/trivy-action@master
-        with:
-          scan-type: "config"
+          scan-type: ${{ matrix.scan-type }}
           scan-ref: "."
           trivy-config: trivy.yaml
