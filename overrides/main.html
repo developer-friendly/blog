@@ -1,18 +1,13 @@
 {% extends "base.html" %}
 
-{% block libs %}
-{{ super() }}
-{% include "partials/libs.html" ignore missing %}
+{% block extrahead %}
+  {{ super() }}
+  <script src="https://cdn.logr-ingest.com/LogRocket.min.js" crossorigin="anonymous" async></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2492369509427475" crossorigin="anonymous"></script>
 {% endblock %}
 
 {% block announce %}{% include "announce.html" ignore missing %}{% endblock %}
 
 {% block scripts %}
   {{ super() }}
-{% endblock %}
-
-{% block extrahead %}
-  {{ super() }}
-  <script src="https://cdn.logr-ingest.com/LogRocket.min.js" crossorigin="anonymous" async></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2492369509427475" crossorigin="anonymous"></script>
 {% endblock %}
