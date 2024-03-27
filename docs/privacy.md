@@ -8,7 +8,7 @@ hide:
 
 ## Introduction
 
-This Privacy Policy explains how Developer Friendly Blog ("we," "us," or "our") collects, uses, discloses, and safeguards your information when you visit our website [developer-friendly.blog](/), including any other media form, media channel, mobile website, or mobile application related or connected thereto (collectively, the "Website"). Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access the Website.
+This Privacy Policy explains how Developer Friendly Blog ("we," "us," or "our") collects, uses, discloses, and safeguards your information when you visit our website [developer-friendly.blog](./index.md), including any other media form, media channel, mobile website, or mobile application related or connected thereto (collectively, the "Website"). Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access the Website.
 
 ## Information We Collect
 
