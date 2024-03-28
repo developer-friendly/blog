@@ -98,7 +98,7 @@ plugins:
         - privacy.md
       log: true
       log_level: warn
-      debug: true
+      debug: !ENV [DEBUG, false]
       debug_on_build: !ENV [DEBUG_BUILD, false]
   - blog:
       blog_dir: .
