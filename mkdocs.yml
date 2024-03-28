@@ -99,7 +99,7 @@ plugins:
       log: true
       log_level: warn
       debug: true
-      debug_on_build: true
+      debug_on_build: !ENV [DEBUG_BUILD, false]
   - blog:
       blog_dir: .
       authors_profiles: true
