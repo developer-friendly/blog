@@ -8,6 +8,8 @@ categories:
   - Ansible
   - Vagrant
   - Cilium
+links:
+  - ./posts/0005-install-k3s-on-ubuntu22.md
 ---
 
 # Kubernetes The Hard Way

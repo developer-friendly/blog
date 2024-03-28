@@ -11,6 +11,8 @@ categories:
   - Ansible
   - Cloud Computing
   - Hetzner
+links:
+  - ./posts/0003-kubernetes-the-hard-way.md
 ---
 
 # How to Install Lightweight Kubernetes on Ubuntu 22.04

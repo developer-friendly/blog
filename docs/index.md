@@ -2,4 +2,4 @@
 hide:
   - navigation
 ---
-# Developer Friendly
+# Blog

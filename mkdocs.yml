@@ -102,7 +102,7 @@ plugins:
       debug_on_build: !ENV [DEBUG_BUILD, false]
   - blog:
       blog_dir: .
-      authors_profiles: true
+      authors_profiles: !ENV [AUTHORS_PROFILE, false]
       post_readtime: true
       blog_toc: true
       post_date_format: long
@@ -154,6 +154,7 @@ theme:
     - content.code.select
     - content.tabs.link
     - content.tooltips
+    - content.footnote.tooltips
     - header.autohide
     - navigation.expand
     - navigation.footer
