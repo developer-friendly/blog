@@ -1,6 +1,4 @@
 ---
-authors:
-  - meysam
 date: 2024-02-15
 draft: false
 categories:
