@@ -3,7 +3,7 @@ mkdocs-git-authors-plugin<1
 mkdocs-git-committers-plugin-2<3
 mkdocs-git-revision-date-localized-plugin<2
 mkdocs-glightbox<1
-# mkdocs-material[imaging] @ git+https://github.com/squidfunk/mkdocs-material-insiders.git@master
+mkdocs-material[imaging] @ git+https://github.com/squidfunk/mkdocs-material-insiders.git@master
 mkdocs-minify-plugin<1
 mkdocs-rss-plugin<2
 mkdocs-table-reader-plugin<3

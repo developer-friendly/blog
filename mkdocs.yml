@@ -84,9 +84,32 @@ plugins:
   - privacy:
       assets_exclude:
         - pagead2.googlesyndication.com/*
+  - meta:
+      enabled: !ENV [CI, false]
   - social:
       enabled: !ENV [CI, false]
       cards: true
+      # cards_layout: default/accent
+      cache: true
+      cards_include:
+        - posts/*
+      cards_exclude:
+        - index.md
+        - privacy.md
+      cards_layout_options:
+        # background_color: blue
+        # color: blue
+        background_image: null
+        # logo: assets/logo.webp
+        # font_variant: Condensed
+        # font_family: Ubuntu
+        # title: Developer Friendly Blog
+        # description: >-
+        #   A blog about SRE, Kubernetes, CI/CD, GitOps, Cloud Native, and more!
+      log: true
+      log_level: warn
+      debug: true
+      debug_on_build: true
   - blog:
       blog_dir: .
       # authors_profiles: true
@@ -127,6 +150,7 @@ site_description: >-
 # site_dir: mkdocs
 strict: true
 theme:
+  language: en
   name: material
   custom_dir: overrides
   logo: assets/logo.webp
