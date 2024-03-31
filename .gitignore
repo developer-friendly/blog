@@ -5,3 +5,6 @@ tfplan
 .cache
 .secrets
 .pre-commit-trivy-cache
+
+# Local Netlify folder
+.netlify

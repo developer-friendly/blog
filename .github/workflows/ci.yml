@@ -17,6 +17,7 @@ permissions:
 
 env:
   PYTHON_VERSION: 3.x
+  NETLIFY_SITE_ID: 6c071198-df44-4eee-8819-3b6a980a332b
 
 jobs:
   deploy:
@@ -68,6 +69,15 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Deploy to Netlify
+        uses: jsmrcaga/action-netlify-deploy@v2.1.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_DEPLOY_TO_PROD: true
+          NETLIFY_SITE_ID: ${{ env.NETLIFY_SITE_ID }}
+          build_directory: site
+          install_command: "echo Skipping installing the dependencies"
+          build_command: "echo Skipping building the web files"
 
   build:
     if: github.event_name == 'pull_request'
@@ -124,3 +134,21 @@ jobs:
           title: Link Checker Report
           content-filepath: ./lychee/out.md
           labels: report, automated issue
+
+  trivy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        scan-type:
+          - fs
+          - config
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Trivy ${{ matrix.scan-type }}
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: ${{ matrix.scan-type }}
+          scan-ref: "."
+          trivy-config: trivy.yaml
