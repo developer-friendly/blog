@@ -6,8 +6,6 @@ categories:
   - Cloud Computing
   - OpenTofu
   - IaC
-social:
-  cards: true
 ---
 
 # Azure Shared Image Gallery
