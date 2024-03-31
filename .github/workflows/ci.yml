@@ -51,13 +51,11 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - name: Install dependencies
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           pip install -U pip -r requirements.txt
           sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
-      - name: Install mkdocs-material-insiders
-        run: ./scripts/install-mkdocs-material-insiders.sh
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Build the site
         run: mkdocs build
         env:
@@ -93,13 +91,11 @@ jobs:
           restore-keys: |
             mkdocs-material-
       - name: Install dependencies
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           pip install -U pip -r requirements.txt
           sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
-      - name: Install mkdocs-material-insiders
-        run: ./scripts/install-mkdocs-material-insiders.sh
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
       - name: Build the site
         run: mkdocs build
         env:
