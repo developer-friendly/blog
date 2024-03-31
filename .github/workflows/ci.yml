@@ -50,7 +50,6 @@ jobs:
           sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
       - env:
           GA_PROPERTY: ${{ vars.GA_PROPERTY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DRAFT: ${{ github.event_name == 'pull_request' }}
         name: Build the site
         run: mkdocs build
@@ -109,7 +108,6 @@ jobs:
           sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
       - env:
           GA_PROPERTY: ${{ vars.GA_PROPERTY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         name: Build the site
         run: mkdocs build
       - name: Upload Pages artifact
@@ -129,14 +127,6 @@ jobs:
           build_command: echo Skipping building the web files
           build_directory: site
           install_command: echo Skipping installing the dependencies
-      - name: Publish preview URL
-        uses: meysam81/comment-pr@main
-        with:
-          title: "# Preview URL"
-          content: |
-            Please visit this link to preview the changes:
-            ${{ steps.netlify.outputs.NETLIFY_PREVIEW_URL }}
-          token: ${{ secrets.GITHUB_TOKEN }}
 
   lychee:
     runs-on: ubuntu-latest
