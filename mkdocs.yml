@@ -88,8 +88,11 @@ plugins:
       enabled: !ENV [CI, false]
   - social:
       enabled: !ENV [CI, false]
-      cards: !ENV [CARDS, false]
-      cards_layout: default/accent
+      cards: true
+      cards_layout: default/variant
+      cards_layout_options:
+        background_color: blue
+        color: white
       cache: true
       cards_include:
         - posts/*
