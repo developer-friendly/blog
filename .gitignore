@@ -8,3 +8,4 @@ secrets
 
 # Local Netlify folder
 .netlify
+.envrc
