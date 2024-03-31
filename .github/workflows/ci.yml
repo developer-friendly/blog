@@ -1,33 +1,70 @@
 name: ci
 
 concurrency:
-  group: ci-${{ github.ref_name }}-${{ github.event_name }}
   cancel-in-progress: ${{ ! startsWith(github.ref, 'refs/tags/v') }}
+  group: ci-${{ github.ref_name }}-${{ github.event_name }}
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
-
+  push:
+    branches:
+      - main
 permissions:
   contents: write
 
+
 env:
-  PYTHON_VERSION: 3.x
   NETLIFY_SITE_ID: 6c071198-df44-4eee-8819-3b6a980a332b
+  PYTHON_VERSION: 3.x
 
 jobs:
+  build:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Calculate cache id
+        run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+      - name: Cache mkdocs-material
+        uses: actions/cache@v4
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
+      - env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        name: Install dependencies
+        run: |
+          pip install -U pip -r requirements.txt
+          sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
+      - env:
+          GA_PROPERTY: ${{ vars.GA_PROPERTY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: Build the site
+        run: mkdocs build
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          name: build-pr${{ github.event.pull_request.number }}
+          path: site
   deploy:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    permissions:
-      pages: write
-      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    permissions:
+      id-token: write
+      pages: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -51,23 +88,23 @@ jobs:
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - name: Install dependencies
-        env:
+      - env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        name: Install dependencies
         run: |
           pip install -U pip -r requirements.txt
           sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
-      - name: Build the site
-        run: mkdocs build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - env:
           GA_PROPERTY: ${{ vars.GA_PROPERTY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: Build the site
+        run: mkdocs build
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
+        name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
       - name: Deploy to Netlify
         uses: jsmrcaga/action-netlify-deploy@v2.1.0
@@ -75,66 +112,26 @@ jobs:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_DEPLOY_TO_PROD: true
           NETLIFY_SITE_ID: ${{ env.NETLIFY_SITE_ID }}
+          build_command: echo Skipping building the web files
           build_directory: site
-          install_command: "echo Skipping installing the dependencies"
-          build_command: "echo Skipping building the web files"
-
-  build:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      - name: Calculate cache id
-        run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-      - name: Cache mkdocs-material
-        uses: actions/cache@v4
-        with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: .cache
-          restore-keys: |
-            mkdocs-material-
-      - name: Install dependencies
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          pip install -U pip -r requirements.txt
-          sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
-      - name: Build the site
-        run: mkdocs build
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GA_PROPERTY: ${{ vars.GA_PROPERTY }}
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          name: build-pr${{ github.event.pull_request.number }}
-          path: site
-
+          install_command: echo Skipping installing the dependencies
   lychee:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Link Checker
-        id: lychee
+      - id: lychee
+        name: Link Checker
         uses: lycheeverse/lychee-action@v1
         with:
           fail: ${{ github.ref == 'refs/heads/main' }}
-      - name: Create Issue From File
-        if: env.lychee_exit_code != 0
+      - if: env.lychee_exit_code != 0
+        name: Create Issue From File
         uses: peter-evans/create-issue-from-file@v5
         with:
-          title: Link Checker Report
           content-filepath: ./lychee/out.md
           labels: report, automated issue
-
+          title: Link Checker Report
   trivy:
     runs-on: ubuntu-latest
     strategy:
@@ -149,6 +146,7 @@ jobs:
       - name: Trivy ${{ matrix.scan-type }}
         uses: aquasecurity/trivy-action@master
         with:
+          exit-code: "1"
+          scan-ref: .
           scan-type: ${{ matrix.scan-type }}
-          scan-ref: "."
           trivy-config: trivy.yaml

@@ -3,7 +3,7 @@ site
 tfplan
 **/terraform.tfstate*
 .cache
-.secrets
+secrets
 .pre-commit-trivy-cache
 
 # Local Netlify folder
