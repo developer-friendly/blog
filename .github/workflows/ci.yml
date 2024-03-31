@@ -130,7 +130,7 @@ jobs:
           build_directory: site
           install_command: echo Skipping installing the dependencies
       - name: Publish preview URL
-        run: meysam81/comment-pr@main
+        uses: meysam81/comment-pr@main
         with:
           title: "# Preview URL"
           content: |
