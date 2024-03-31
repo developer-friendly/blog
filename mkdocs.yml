@@ -101,6 +101,7 @@ plugins:
       debug: !ENV [DEBUG, false]
       debug_on_build: !ENV [DEBUG_BUILD, false]
   - blog:
+      draft: !ENV [DRAFT, false]
       blog_dir: .
       authors_profiles: !ENV [AUTHORS_PROFILE, false]
       post_readtime: true

@@ -17,6 +17,7 @@ permissions:
 
 env:
   NETLIFY_SITE_ID: 6c071198-df44-4eee-8819-3b6a980a332b
+  NETLIFY_DEPLOY_TO_PROD: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
   PYTHON_VERSION: 3.x
 
 jobs:
@@ -48,8 +49,9 @@ jobs:
           pip install -U pip -r requirements.txt
           sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
       - env:
+          DRAFT: ${{ github.event_name == 'pull_request' }}
           GA_PROPERTY: ${{ vars.GA_PROPERTY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # git-committers plugin
         name: Build the site
         run: mkdocs build
       - name: Upload Pages artifact
@@ -57,6 +59,16 @@ jobs:
         with:
           name: build-pr${{ github.event.pull_request.number }}
           path: site
+      - name: Deploy to Netlify
+        uses: jsmrcaga/action-netlify-deploy@v2.1.0
+        with:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_DEPLOY_TO_PROD: ${{ env.NETLIFY_DEPLOY_TO_PROD }}
+          NETLIFY_SITE_ID: ${{ env.NETLIFY_SITE_ID }}
+          build_command: echo Skipping building the web files
+          build_directory: site
+          install_command: echo Skipping installing the dependencies
+
   deploy:
     environment:
       name: github-pages
@@ -106,15 +118,17 @@ jobs:
       - id: deployment
         name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-      - name: Deploy to Netlify
+      - id: netlify
+        name: Deploy to Netlify
         uses: jsmrcaga/action-netlify-deploy@v2.1.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_DEPLOY_TO_PROD: true
+          NETLIFY_DEPLOY_TO_PROD: ${{ env.NETLIFY_DEPLOY_TO_PROD }}
           NETLIFY_SITE_ID: ${{ env.NETLIFY_SITE_ID }}
           build_command: echo Skipping building the web files
           build_directory: site
           install_command: echo Skipping installing the dependencies
+
   lychee:
     runs-on: ubuntu-latest
     steps:
@@ -131,7 +145,7 @@ jobs:
         with:
           content-filepath: ./lychee/out.md
           labels: report, automated issue
-          title: Link Checker Report
+
   trivy:
     runs-on: ubuntu-latest
     strategy:
