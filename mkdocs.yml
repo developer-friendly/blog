@@ -91,7 +91,7 @@ plugins:
       cards: true
       cards_layout: default/variant
       cards_layout_options:
-        background_color: blue
+        background_color: indigo
         color: white
       cache: true
       cards_include:
