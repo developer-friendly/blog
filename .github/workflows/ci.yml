@@ -14,15 +14,16 @@ on:
 permissions:
   contents: write
 
-
 env:
-  NETLIFY_SITE_ID: 6c071198-df44-4eee-8819-3b6a980a332b
+  NETLIFY_SITE_ID: developer-friendly
   NETLIFY_DEPLOY_TO_PROD: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
   PYTHON_VERSION: 3.x
 
 jobs:
   build:
     if: github.event_name == 'pull_request'
+    permissions:
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -59,7 +60,8 @@ jobs:
         with:
           name: build-pr${{ github.event.pull_request.number }}
           path: site
-      - name: Deploy to Netlify
+      - id: netlify
+        name: Deploy to Netlify
         uses: jsmrcaga/action-netlify-deploy@v2.1.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
@@ -68,6 +70,14 @@ jobs:
           build_command: echo Skipping building the web files
           build_directory: site
           install_command: echo Skipping installing the dependencies
+      - name: Comment PR
+        uses: meysam81/comment-pr@master
+        with:
+          title: "# Live preview"
+          content: |
+            The live preview of the changes are available at the following URL:
+            <${{ steps.netlify.outputs.NETLIFY_LIVE_URL }}>
+          token: ${{ secrets.GITHUB_TOKEN }}
 
   deploy:
     environment:
