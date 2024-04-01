@@ -2,7 +2,7 @@
 date: 2024-03-24
 title: "GitOps Demystified: Introduction to FluxCD for Kubernetes"
 description: Explore the fundamentals of GitOps with FluxCD in our beginner-friendly guide. Learn how to automate Kubernetes deployments and enhance your delivery pipeline.
-icon: fontawesome/arrows-rotate
+icon: fontawesome/solid/arrows-rotate
 draft: true
 categories:
   - Kubernetes
