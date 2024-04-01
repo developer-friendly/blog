@@ -99,8 +99,8 @@ plugins:
       cards_exclude:
         - index.md
         - privacy.md
-      log: true
-      log_level: warn
+      log: !ENV [LOG, false]
+      log_level: !ENV [LOG_LEVEL, warn]
       debug: !ENV [DEBUG, false]
       debug_on_build: !ENV [DEBUG_BUILD, false]
   - blog:
