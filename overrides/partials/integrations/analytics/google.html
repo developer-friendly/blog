@@ -11,61 +11,7 @@
 
     /* Set up integration and send page view */
     gtag("js", new Date())
-
-    // BEGIN Google Adsense
     gtag("config", "{{ property }}")
-    gtag("consent", "default", {
-      ad_storage: "denied",
-      ad_user_data: "denied",
-      ad_personalization: "denied",
-      analytics_storage: "denied",
-    });
-    console.log(window.dataLayer)
-
-    function consentGrantedAdStorage() {
-      gtag("consent", "update", {
-        ad_storage: "granted",
-      });
-    }
-
-    function consentGrantedAdUserData() {
-      gtag("consent", "update", {
-        ad_user_data: "granted",
-      });
-    }
-
-    function consentGrantedAdPersonalization() {
-      gtag("consent", "update", {
-        ad_personalization: "granted",
-      });
-    }
-
-    function consentGrantedAnalyticsStorage() {
-      gtag("consent", "update", {
-        analytics_storage: "granted",
-      });
-    }
-
-    var consent = __md_get("__consent");
-
-    if (consent) {
-      if (consent.adstorage) {
-        consentGrantedAdStorage();
-      }
-
-      if (consent.aduserdata) {
-        consentGrantedAdUserData();
-      }
-
-      if (consent.adpersonalization) {
-        consentGrantedAdPersonalization();
-      }
-
-      if (consent.analyticsstorage) {
-        consentGrantedAnalyticsStorage();
-      }
-    }
-    // END Google Adsense
 
     /* Register event handlers after documented loaded */
     document.addEventListener("DOMContentLoaded", function() {
@@ -127,3 +73,59 @@
     container.insertAdjacentElement("afterEnd", script)
   }
 </script>
+
+<!-- BEGIN Google AdSense -->
+<!-- Ref: https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced -->
+<script>
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'analytics_storage': 'denied'
+  });
+
+  function consentGrantedAdStorage() {
+    gtag("consent", "update", {
+      ad_storage: "granted",
+    });
+  }
+
+  function consentGrantedAdUserData() {
+    gtag("consent", "update", {
+      ad_user_data: "granted",
+    });
+  }
+
+  function consentGrantedAdPersonalization() {
+    gtag("consent", "update", {
+      ad_personalization: "granted",
+    });
+  }
+
+  function consentGrantedAnalyticsStorage() {
+    gtag("consent", "update", {
+      analytics_storage: "granted",
+    });
+  }
+
+  var consent = __md_get("__consent");
+
+  if (consent) {
+    if (consent.adstorage) {
+      consentGrantedAdStorage();
+    }
+
+    if (consent.aduserdata) {
+      consentGrantedAdUserData();
+    }
+
+    if (consent.adpersonalization) {
+      consentGrantedAdPersonalization();
+    }
+
+    if (consent.analyticsstorage) {
+      consentGrantedAnalyticsStorage();
+    }
+  }
+</script>
+<!-- END Google AdSense -->
