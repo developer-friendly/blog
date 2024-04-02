@@ -77,6 +77,12 @@
 <!-- BEGIN Google AdSense -->
 <!-- Ref: https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced -->
 <script>
+  window.dataLayer = window.dataLayer || []
+  function gtag() { dataLayer.push(arguments) }
+
+  gtag("js", new Date())
+  gtag("config", "{{ property }}")
+
   gtag('consent', 'default', {
     'ad_storage': 'denied',
     'ad_user_data': 'denied',
