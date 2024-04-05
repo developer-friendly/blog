@@ -223,8 +223,18 @@ under one umbrella.
 
 We are now ready to apply these resources to our cluster.
 
+!!! tip "First Time FluxCD Installation"
+
+    Only if this is the first time installing FluxCD to the cluster, it's better
+    to install the CRDs first to avoid hitting any issues for the custom
+    resources we'll create later.
+
+    ```bash title="" linenums="0"
+    kubectl apply -f https://github.com/developer-friendly/getting-started-with-gitops/raw/main/flux-system/gotk-components.yml
+    ```
+
 ```bash title="" linenums="0"
-kubectl apply -k https://github.com/developer-friendly/getting-started-with-gitops/flux-system?ref=main
+kubectl apply -f kubectl apply -f https://github.com/developer-friendly/getting-started-with-gitops/raw/main/flux-system/gotk-sync.yml
 ```
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
