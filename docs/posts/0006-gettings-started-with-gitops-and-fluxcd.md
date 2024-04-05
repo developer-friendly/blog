@@ -199,7 +199,7 @@ flux create source git getting-started-with-gitops \
 
 flux create kustomization flux-system \
     --source=GitRepository/getting-started-with-gitops \
-    --path="./flux-system
+    --path="./flux-system \
     --prune=true \
     --interval=1m \
     --export > flux-system/gotk-sync.yml
@@ -208,23 +208,23 @@ flux create kustomization flux-system \
 The resulting resources will look simliar to the following:
 
 ```yaml title="flux-system/gotk-source.yml"
--8<- "https://github.com/developer-friendly/getting-started-with-fluxcd/raw/main/flux-system/gotk-source.yml"
+-8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/flux-system/gotk-source.yml"
 ```
 ```yaml title="flux-system/gotk-sync.yml"
--8<- "https://github.com/developer-friendly/getting-started-with-fluxcd/raw/main/flux-system/gotk-sync.yml"
+-8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/flux-system/gotk-sync.yml"
 ```
 
 Creating a `kustomization.yml` file will allow us to manage these resources
 under one umbrella.
 
 ```yaml title="flux-system/kustomization.yml"
--8<- "https://github.com/developer-friendly/getting-started-with-fluxcd/raw/main/flux-system/kustomization.yml"
+-8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/flux-system/kustomization.yml"
 ```
 
 We are now ready to apply these resources to our cluster.
 
 ```bash title="" linenums="0"
-kubectl apply -k https://github.com/developer-friendly/getting-started-with-fluxcd/flux-system?ref=main
+kubectl apply -k https://github.com/developer-friendly/getting-started-with-gitops/flux-system?ref=main
 ```
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
