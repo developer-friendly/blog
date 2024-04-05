@@ -70,6 +70,8 @@ jobs:
           build_command: echo Skipping building the web files
           build_directory: site
           install_command: echo Skipping installing the dependencies
+      - name: debug
+        run: echo ${{ steps.netlify.outputs.NETLIFY_OUTPUT }}
       - name: Comment PR
         uses: meysam81/comment-pr@main
         with:
