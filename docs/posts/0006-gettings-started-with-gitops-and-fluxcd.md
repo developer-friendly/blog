@@ -199,7 +199,7 @@ flux create source git getting-started-with-gitops \
 
 flux create kustomization flux-system \
     --source=GitRepository/getting-started-with-gitops \
-    --path="./flux-system \
+    --path=./flux-system \
     --prune=true \
     --interval=1m \
     --export > flux-system/gotk-sync.yml
