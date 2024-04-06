@@ -413,11 +413,15 @@ route the notifications on Alertmanager to external services like Slack,
 Discord, etc. and how to manage your secrets in a secure way so that you
 wouldn't have to commit them to your repository.
 
+Another topic we didn't cover here was `Receiver` resource. That will require
+internet access to your cluster, which we'll cover at a later post when
+discussing the Kubernetes Gateway API[^11].
+
 Until next time, *ciao* & happy coding!
 
 ## Source Code
 
-The full repository is publicly available on GitHub[^11] under the
+The full repository is publicly available on GitHub[^12] under the
 [Apache 2.0 license][license].
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
@@ -437,4 +441,5 @@ The full repository is publicly available on GitHub[^11] under the
 [^8]: https://prometheus.io/docs/alerting/latest/alertmanager/
 [^9]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/configmapgenerator/
 [^10]: https://en.wikipedia.org/wiki/Minimal_reproducible_example
-[^11]: https://github.com/developer-friendly/getting-started-with-gitops
+[^11]: https://gateway-api.sigs.k8s.io/
+[^12]: https://github.com/developer-friendly/getting-started-with-gitops
