@@ -138,7 +138,7 @@ gh repo create getting-started-with-gitops --clone --public
 cd getting-started-with-gitops
 ```
 
-### Monitoring
+### Root Reconcialer
 
 FluxCD bootstrap is able to create any initial resource you place in its bootstrap
 path. Which means we will be able to spin up any and all the resources we need
@@ -251,6 +251,10 @@ can decide how to handle them.
     Alertmanager to send notifications to various channels like Slack, Email,
     and more.
 
+    That post will cover External Secrets operator and how to manage your
+    secrets in a secure and encrypted way when dealing with the Kubernetes
+    deployments.
+
 === "dev/notifications/kustomization.yml"
     ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/kustomization.yml"
@@ -265,6 +269,17 @@ can decide how to handle them.
     ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager.yml"
     ```
+
+There are at least two important notes worth mentioning here:
+
+1. We didn't run any `kubectl apply` command after writing our new manifests and
+committing them to the repository. FluxCD took care of that behind the scenes.
+The [root reconciler](#root-reconciler) is a `Kustomization` resource which
+has a recursive nature and will apply all the `kustomization.yml` files in the
+subdirectories.
+2. The `alertmanager-address` Secret will need to be in the same namespace as
+the `Provider` resource. This is due to the design of the Kubernetes itself
+and has less to do with FluxCD.
 
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
