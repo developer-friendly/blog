@@ -240,7 +240,7 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
   - pymdownx.snippets:
-      url_download: !ENV [CI, false]
+      url_download: !ENV [URL_DOWNLOAD, false]
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.keys
