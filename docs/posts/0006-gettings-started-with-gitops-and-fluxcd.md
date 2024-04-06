@@ -245,6 +245,10 @@ We now have the monitoring stack up and running in our Kubernetes cluster.
 Let's leverage it to deliver our alerts and notifications to the Prometheus
 Alertmanager[^8].
 
+Because of the necessity of monitoring and sane alerting, we need a mechanism
+to be notified about the events of our cluster based on different severities.
+That's where FluxCD's notification controller[^6] comes into play.
+
 In this step we will create a `Provider` for FluxCD to send notifications
 and alerts to our in-cluster Alertmanager, after which the admin/operator
 can decide how to handle them using the `AlertmanagerConfig` resource.
@@ -260,25 +264,25 @@ can decide how to handle them using the `AlertmanagerConfig` resource.
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/kustomization.yml"
     ```
 
-=== "dev/notifications/alertmanager-address.yml" hl_lines="4"
-    ```yaml title=""
+=== "dev/notifications/alertmanager-address.yml"
+    ```yaml title="" hl_lines="4"
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager-address.yml"
     ```
 
-===+ "dev/notifications/alertmanager.yml" hl_lines="8"
-    ```yaml title=""
+===+ "dev/notifications/alertmanager.yml"
+    ```yaml title="" hl_lines="8"
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager.yml"
     ```
 
 And the notification resources are as follows:
 
-=== "dev/notifications/alert.yml" hl_lines="7"
-    ```yaml title=""
+=== "dev/notifications/alert.yml"
+    ```yaml title="" hl_lines="7"
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alert.yml"
     ```
 
-=== "dev/notifications/info.yml" hl_lines="7"
-    ```yaml title=""
+=== "dev/notifications/info.yml"
+    ```yaml title="" hl_lines="7"
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/info.yml"
     ```
 
@@ -306,7 +310,7 @@ people at the right time.
     those resources and as long as we write and commit all our manifests under
     the same tree structure, FluxCD will create them in the cluster.
 
-## Step 3: Trigger Alerts
+## Step 3: Trigger a Notification
 
 We have created the required resource for the notifications to be sent to the
 Prometheus' Alertmanager.
