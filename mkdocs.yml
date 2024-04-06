@@ -95,10 +95,7 @@ plugins:
         background_color: indigo
         color: white
       cache: true
-      cards_include:
-        - posts/*
       cards_exclude:
-        - index.md
         - privacy.md
       log: !ENV [LOG, false]
       log_level: !ENV [LOG_LEVEL, warn]
