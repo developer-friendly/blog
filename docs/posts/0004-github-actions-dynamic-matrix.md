@@ -62,7 +62,7 @@ Now, the CI workflow above is great, and it works perfectly fine. Here's
 proof of the successful run and its uploaded artifacts.
 
 <figure markdown="span">
-  ![Successful run](../static/img/0004/stage0.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Successful run](../static/img/0004/successful-ci-run.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Static matrix result</figcaption>
 </figure>
 
