@@ -157,7 +157,7 @@ This will later be used to create the monitoring stack and all the bells and
 whistles that come with it.
 
 ```yaml title="clusters/dev/k8s.yml" hl_lines="8"
--8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/clusters/dev/k8s.yml"
+-8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/clusters/dev/k8s.yml"
 ```
 
 And one of the stacks that will be managed by this root `Kustomization` are as
@@ -165,22 +165,22 @@ follows:
 
 === "dev/monitoring/kustomization.yml"
     ```yaml title=""
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/kustomization.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/monitoring/kustomization.yml"
     ```
 
 === "dev/monitoring/namespace.yml"
     ```yaml title=""
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/namespace.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/monitoring/namespace.yml"
     ```
 
 === "dev/monitoring/repository.yml"
     ```yaml title=""
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/repository.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/monitoring/repository.yml"
     ```
 
 ===+ "dev/monitoring/release.yml"
     ```yaml title=""
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/release.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/monitoring/release.yml"
     ```
 
 ### Create a GitHub Personal Access Token
@@ -263,29 +263,29 @@ can decide how to handle them using the `AlertmanagerConfig` resource.
 
 === "dev/notifications/kustomization.yml"
     ```yaml title=""
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/kustomization.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/notifications/kustomization.yml"
     ```
 
 === "dev/notifications/alertmanager-address.yml"
     ```yaml title="" hl_lines="4"
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager-address.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/notifications/alertmanager-address.yml"
     ```
 
 ===+ "dev/notifications/alertmanager.yml"
     ```yaml title="" hl_lines="8"
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/notifications/alertmanager.yml"
     ```
 
 And the notification resources are as follows:
 
 === "dev/notifications/alert.yml"
     ```yaml title="" hl_lines="7"
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alert.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/notifications/alert.yml"
     ```
 
 === "dev/notifications/info.yml"
     ```yaml title="" hl_lines="7"
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/info.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/notifications/info.yml"
     ```
 
 There are some important notes worth mentioning here:
@@ -322,22 +322,22 @@ info notification.
 
 === "dev/echo-server/kustomization.yml"
     ```yaml title="" hl_lines="5-8"
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/kustomization.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/echo-server/kustomization.yml"
     ```
 
 === "dev/echo-server/configs.env"
     ```yaml title=""
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/configs.env"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/echo-server/configs.env"
     ```
 
 ===+ "dev/echo-server/deployment.yml"
     ```yaml title="" hl_lines="11-15"
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/deployment.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/echo-server/deployment.yml"
     ```
 
 === "dev/echo-server/service.yml"
     ```yaml title=""
-    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/service.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/v2.2.3/dev/echo-server/service.yml"
     ```
 
 We won't go into much detail for the Kustomize resource as that is a topic for
@@ -444,4 +444,4 @@ The full repository is publicly available on GitHub[^12] under the
 [^9]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/configmapgenerator/
 [^10]: https://en.wikipedia.org/wiki/Minimal_reproducible_example
 [^11]: https://gateway-api.sigs.k8s.io/
-[^12]: https://github.com/developer-friendly/getting-started-with-gitops
+[^12]: https://github.com/developer-friendly/getting-started-with-gitops/tree/v2.2.3/
