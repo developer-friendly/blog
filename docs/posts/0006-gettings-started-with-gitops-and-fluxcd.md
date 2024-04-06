@@ -10,6 +10,7 @@ categories:
   - Kubernetes
   - FluxCD
   - GitOps
+  - CI/CD
 links:
   - ./posts/0003-kubernetes-the-hard-way.md
   - ./posts/0005-install-k3s-on-ubuntu22.md
