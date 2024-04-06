@@ -138,7 +138,7 @@ gh repo create getting-started-with-gitops --clone --public
 cd getting-started-with-gitops
 ```
 
-### Root Reconcialer
+### Root Reconciler
 
 FluxCD bootstrap is able to create any initial resource you place in its bootstrap
 path. Which means we will be able to spin up any and all the resources we need
@@ -270,7 +270,19 @@ can decide how to handle them.
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager.yml"
     ```
 
-There are at least two important notes worth mentioning here:
+And the notification resources are as follows:
+
+=== "dev/notifications/alert.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alert.yml"
+    ```
+
+=== "dev/notifications/info.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/info.yml"
+    ```
+
+There are some important notes worth mentioning here:
 
 1. We didn't run any `kubectl apply` command after writing our new manifests and
 committing them to the repository. FluxCD took care of that behind the scenes.
@@ -280,6 +292,56 @@ subdirectories.
 2. The `alertmanager-address` Secret will need to be in the same namespace as
 the `Provider` resource. This is due to the design of the Kubernetes itself
 and has less to do with FluxCD.
+3. Having notifications on different severities allow you and your team
+receive highlights about the live state of your cluster as you see fit. This
+means that you might be interested to route the informational notifications
+to a muted Slack channel which is likely noisier than the critical alerts,
+while sending the critical alerts to a pager system that will notify the right
+people at the right time.
+
+## Step 3: Trigger Alerts
+
+We have created the required resource for the notifications to be sent to the
+Prometheus' Alertmanager.
+
+To take it for a spin, we can create a sample application to trigger the
+info notification.
+
+=== "dev/echo-server/kustomization.yml"
+    ```yaml title="" hl_lines="5-8"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/kustomization.yml"
+    ```
+
+===+ "dev/echo-server/configs.env"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/configs.env"
+    ```
+
+===+ "dev/echo-server/deployment.yml"
+    ```yaml title="" hl_lines="11-15"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/deployment.yml"
+    ```
+
+=== "dev/echo-server/service.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/service.yml"
+    ```
+
+We won't go into much detail for the Kustomize resource as that is a topic for
+another post and deserves more depth.
+
+However, pay close attention to the syntax of `configs.env` and the way we have
+employed `configMapGenerator` in the `kustomization.yml` file.
+
+This will ensure for every change to the `configs.env` file, the `ConfigMap`
+resource will be re-created with a new hash-suffixed name, which will
+consequently restart the `Deployment` resource and re-read the new values[^8].
+
+This is an important highlight cause you have to specify your Deployment
+strategy carefully if you want to avoid downtime in your applications.
+
+We will dive into Kustomize and all its powerful and expressive features in a
+future post. Stay tuned to learn more about it. :white_check_mark:
 
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
@@ -296,4 +358,5 @@ and has less to do with FluxCD.
 [^5]: https://fluxcd.io/flux/flux-gh-action/
 [^6]: https://fluxcd.io/flux/components/notification/
 [^7]: https://prometheus.io/docs/alerting/latest/alertmanager/
+[^8]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/configmapgenerator/
 <!-- [^7]: https://github.com/developer-friendly/getting-started-with-gitops -->
