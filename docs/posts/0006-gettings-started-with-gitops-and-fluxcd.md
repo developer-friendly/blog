@@ -312,7 +312,7 @@ info notification.
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/kustomization.yml"
     ```
 
-===+ "dev/echo-server/configs.env"
+=== "dev/echo-server/configs.env"
     ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/configs.env"
     ```
@@ -340,8 +340,39 @@ consequently restart the `Deployment` resource and re-read the new values[^8].
 This is an important highlight cause you have to specify your Deployment
 strategy carefully if you want to avoid downtime in your applications.
 
-We will dive into Kustomize and all its powerful and expressive features in a
-future post. Stay tuned to learn more about it. :white_check_mark:
+!!! success "Kustomize"
+
+    We will dive into Kustomize and all its powerful and expressive features in a
+    future post. Stay tuned to learn more about it.
+
+To see that our notification has arrived at Alertmanager, we will jump over to
+the Alertmanager service using port forwarding technique, although in a real
+world scenario, you'd expose it through either an Ingress Controller or a
+Gateway API (a topic for another post :wink:).
+
+```shell title="" linenums="0"
+kubectl port-forward -n monitoring svc/loki-stack-alertmanager 9093:9093 &
+```
+
+Sure enough, if we open <http://localhost:9093>, we will see the notification
+in the Alertmanager UI as seen in the screenshot below.
+
+<figure markdown="span">
+  ![Alertmanager UI info triggered](../static/img/0006/alertmanager-ui-info.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Alertmanager UI info triggered</figcaption>
+</figure>
+
+### Trigger a Critical Alert
+
+Now, let's break the app to see if the severity of the notification changes as
+expected.
+
+"dev/echo-server/kustomization.yml"
+```yaml title="" hl_lines="12"
+-8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/6aa47c9700c525069eac4c60dc2f1f6d6ecb30a7/dev/echo-server/kustomization.yml"
+```
+
+# Conclusion
 
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
