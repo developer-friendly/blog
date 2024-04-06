@@ -354,7 +354,7 @@ Gateway API (a topic for another post :wink:).
 kubectl port-forward -n monitoring svc/loki-stack-alertmanager 9093:9093 &
 ```
 
-Sure enough, if we open <http://localhost:9093>, we will see the notification
+Sure enough, if we open [http://localhost:9093](#), we will see the notification
 in the Alertmanager UI as seen in the screenshot below.
 
 <figure markdown="span">
@@ -367,8 +367,7 @@ in the Alertmanager UI as seen in the screenshot below.
 Now, let's break the app to see if the severity of the notification changes as
 expected.
 
-"dev/echo-server/kustomization.yml"
-```yaml title="" hl_lines="12"
+```yaml title="dev/echo-server/kustomization.yml" hl_lines="12"
 -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/6aa47c9700c525069eac4c60dc2f1f6d6ecb30a7/dev/echo-server/kustomization.yml"
 ```
 
