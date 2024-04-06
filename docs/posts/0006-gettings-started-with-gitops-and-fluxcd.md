@@ -235,6 +235,37 @@ To this:
 Helm install succeeded for release monitoring/loki-stack.v1 with chart loki-stack@2.10.2
 ```
 
+## Step 2: Monitoring the Cluster
+
+We now have the monitoring stack up and running in our Kubernetes cluster.
+Let's leverage it to deliver our alerts and notifications to the Prometheus
+Alertmanager[^7].
+
+In this step we will create a `Provider` for FluxCD to send notifications
+and alerts to our in-cluster Alertmanager, after which the admin/operator
+can decide how to handle them.
+
+!!! success "Alertmanager Configuration"
+
+    Stay tuned for a future post where we will explore how to configure
+    Alertmanager to send notifications to various channels like Slack, Email,
+    and more.
+
+=== "dev/notifications/kustomization.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/kustomization.yml"
+    ```
+
+=== "dev/notifications/alertmanager-address.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager-address.yml"
+    ```
+
+===+ "dev/notifications/alertmanager.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager.yml"
+    ```
+
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
 [minikube]: https://minikube.sigs.k8s.io/docs/
@@ -249,4 +280,5 @@ Helm install succeeded for release monitoring/loki-stack.v1 with chart loki-stac
 [^4]: https://fluxcd.io/flux/installation/upgrade/#upgrade-with-flux-cli
 [^5]: https://fluxcd.io/flux/flux-gh-action/
 [^6]: https://fluxcd.io/flux/components/notification/
+[^7]: https://prometheus.io/docs/alerting/latest/alertmanager/
 <!-- [^7]: https://github.com/developer-friendly/getting-started-with-gitops -->
