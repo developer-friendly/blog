@@ -163,14 +163,17 @@ And the resources that will be managed by this `Kustomization` are as follows:
     ```
 
 === "dev/monitoring/namespace.yml"
+    ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/namespace.yml"
     ```
 
 === "dev/monitoring/repository.yml"
+    ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/repository.yml"
     ```
 
 ===+ "dev/monitoring/release.yml"
+    ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/release.yml"
     ```
 
