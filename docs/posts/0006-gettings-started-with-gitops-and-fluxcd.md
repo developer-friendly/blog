@@ -152,74 +152,26 @@ This will later be used to create the monitoring stack and all the bells and
 whistles that come with it.
 
 ```yaml title="clusters/dev/k8s.yml"
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: k8s
-  namespace: flux-system
-spec:
-  interval: 10m
-  path: ./k8s
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  timeout: 10m
-  wait: true
+-8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/clusters/dev/k8s.yml"
 ```
 
 And the resources that will be managed by this `Kustomization` are as follows:
 
-=== "k8s/monitoring/kustomization.yml"
+=== "dev/monitoring/kustomization.yml"
     ```yaml title=""
-    resources:
-      - namespace.yml
-      - repository.yml
-      - release.yml
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/kustomization.yml"
     ```
 
-=== "k8s/monitoring/namespace.yml"
-    ```yaml title=""
-    apiVersion: v1
-    kind: Namespace
-    metadata:
-      name: monitoring
+=== "dev/monitoring/namespace.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/namespace.yml"
     ```
 
-=== "k8s/monitoring/repository.yml"
-    ```yaml title=""
-    apiVersion: source.toolkit.fluxcd.io/v1beta2
-    kind: HelmRepository
-    metadata:
-      name: grafana
-      namespace: monitoring
-    spec:
-      interval: 10m
-      url: https://grafana.github.io/helm-charts
+=== "dev/monitoring/repository.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/repository.yml"
     ```
 
-===+ "k8s/monitoring/release.yml"
-    ```yaml title=""
-    apiVersion: helm.toolkit.fluxcd.io/v2beta2
-    kind: HelmRelease
-    metadata:
-      name: loki-stack
-      namespace: monitoring
-    spec:
-      chart:
-        spec:
-          chart: loki-stack
-          sourceRef:
-            kind: HelmRepository
-            name: grafana
-          version: 2.x
-      interval: 10m
-      timeout: 2m
-      values:
-        grafana:
-          enabled: true
-        prometheus:
-          enabled: true
+===+ "dev/monitoring/release.yml"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/release.yml"
     ```
 
 ### Create a GitHub Personal Access Token
