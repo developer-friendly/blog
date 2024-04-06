@@ -417,7 +417,7 @@ Another topic we didn't cover here was `Receiver` resource. That will require
 internet access to your cluster, which we'll cover at a later post when
 discussing the Kubernetes Gateway API[^11].
 
-Until next time, *ciao* & happy coding!
+Until next time, *ciao* :crab: & happy coding! :nerd:
 
 ## Source Code
 
