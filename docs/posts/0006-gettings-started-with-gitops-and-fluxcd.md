@@ -3,7 +3,7 @@ date: 2024-03-24
 title: "GitOps Demystified: Introduction to FluxCD for Kubernetes"
 description: Explore the fundamentals of GitOps with FluxCD in our beginner-friendly guide. Learn how to automate Kubernetes deployments and enhance your delivery pipeline.
 icon: fontawesome/solid/arrows-rotate
-draft: true
+draft: false
 status: new
 categories:
   - Kubernetes
@@ -53,7 +53,7 @@ Before we start, you need to have the following prerequisites:
 - [x] FluxCD[^1] binary installed in your `PATH` (`v2.2.3` at the time of writing)
 - [ ] Optionally, the GitHub CLI (`gh`)[^2] for easier GitHub operations (
       `v2.47.0` at the time of writing).
-- [ ] A basic understanding of [Kustomize][kustomize]. A topic for a future post.
+- [x] A basic understanding of [Kustomize][kustomize]. A topic for a future post.
 
 ## What is GitOps?
 
@@ -97,7 +97,7 @@ cannot have enough automation in my life :grin:.
 ???+ info "Automated FluxCD Upgrade"
 
     Since this will not be the topic of today's post, it's worth mentioning
-    as a side note that you can automated the FluxCD upgrade process using the
+    as a side note that you can automate the FluxCD upgrade process using the
     power of your CI/CD pipelines.
 
     For example, you can see a `step` of a GitHub Action workflow that upgrades
@@ -129,10 +129,12 @@ flux check --pre
 
 Skip this step if you already have a GitHub repository ready for FluxCD.
 
-**NOTE**: FluxCD will create the repository as part of the bootstrap process.
-This step will only give you flexibility for better customization.
+!!! note "Repository"
 
-You will need GitHub CLI[^2] installed for the following to work.
+    FluxCD will create the repository as part of the bootstrap process.
+    This step will only give you flexibility for better customization.
+
+You will need the GitHub CLI[^2] installed for the following to work.
 
 ```bash title="" linenums="0"
 gh repo create getting-started-with-gitops --clone --public
@@ -152,11 +154,12 @@ resources as needed.
 This will later be used to create the monitoring stack and all the bells and
 whistles that come with it.
 
-```yaml title="clusters/dev/k8s.yml"
+```yaml title="clusters/dev/k8s.yml" hl_lines="8"
 -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/clusters/dev/k8s.yml"
 ```
 
-And the resources that will be managed by this `Kustomization` are as follows:
+And one of the stacks that will be managed by this root `Kustomization` are as
+follows:
 
 === "dev/monitoring/kustomization.yml"
     ```yaml title=""
@@ -180,12 +183,12 @@ And the resources that will be managed by this `Kustomization` are as follows:
 
 ### Create a GitHub Personal Access Token
 
-We will need a [GitHub Personal Access Token][gh-pat] with the `repo` scope.
+We will need a GitHub Personal Access Token[^7] with the `repo` scope.
 You can see token creation screenshot below:
 
 <figure markdown="span">
   ![Generating GitHub PAT](../static/img/0006/pat-token.webp "Click to zoom in"){ loading=lazy }
-  <figcaption>Generating GitHub PAT</figcaption>
+  <figcaption>Generating GitHub Personal Access Token (PAT)</figcaption>
 </figure>
 
 Use the newly created token for the next step.
@@ -240,11 +243,11 @@ Helm install succeeded for release monitoring/loki-stack.v1 with chart loki-stac
 
 We now have the monitoring stack up and running in our Kubernetes cluster.
 Let's leverage it to deliver our alerts and notifications to the Prometheus
-Alertmanager[^7].
+Alertmanager[^8].
 
 In this step we will create a `Provider` for FluxCD to send notifications
 and alerts to our in-cluster Alertmanager, after which the admin/operator
-can decide how to handle them.
+can decide how to handle them using the `AlertmanagerConfig` resource.
 
 !!! success "Alertmanager Configuration"
 
@@ -252,33 +255,29 @@ can decide how to handle them.
     Alertmanager to send notifications to various channels like Slack, Email,
     and more.
 
-    That post will cover External Secrets operator and how to manage your
-    secrets in a secure and encrypted way when dealing with the Kubernetes
-    deployments.
-
 === "dev/notifications/kustomization.yml"
     ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/kustomization.yml"
     ```
 
-=== "dev/notifications/alertmanager-address.yml"
+=== "dev/notifications/alertmanager-address.yml" hl_lines="4"
     ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager-address.yml"
     ```
 
-===+ "dev/notifications/alertmanager.yml"
+===+ "dev/notifications/alertmanager.yml" hl_lines="8"
     ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager.yml"
     ```
 
 And the notification resources are as follows:
 
-=== "dev/notifications/alert.yml"
+=== "dev/notifications/alert.yml" hl_lines="7"
     ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alert.yml"
     ```
 
-=== "dev/notifications/info.yml"
+=== "dev/notifications/info.yml" hl_lines="7"
     ```yaml title=""
     -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/info.yml"
     ```
@@ -293,12 +292,19 @@ subdirectories.
 2. The `alertmanager-address` Secret will need to be in the same namespace as
 the `Provider` resource. This is due to the design of the Kubernetes itself
 and has less to do with FluxCD.
-3. Having notifications on different severities allow you and your team
+3. Having notifications on different severities allow you and your team to
 receive highlights about the live state of your cluster as you see fit. This
 means that you might be interested to route the informational notifications
 to a muted Slack channel which is likely noisier than the critical alerts,
 while sending the critical alerts to a pager system that will notify the right
 people at the right time.
+
+!!! tip "Reconciliation"
+
+    All the manifests we created so far are committed to the repository and
+    pushed to the remote. We didn't need any `kubectl apply` command to apply
+    those resources and as long as we write and commit all our manifests under
+    the same tree structure, FluxCD will create them in the cluster.
 
 ## Step 3: Trigger Alerts
 
@@ -334,9 +340,9 @@ another post and deserves more depth.
 However, pay close attention to the syntax of `configs.env` and the way we have
 employed `configMapGenerator` in the `kustomization.yml` file.
 
-This will ensure for every change to the `configs.env` file, the `ConfigMap`
-resource will be re-created with a new hash-suffixed name, which will
-consequently restart the `Deployment` resource and re-read the new values[^8].
+This will ensure that for every change to the `configs.env` file, the resulting
+`ConfigMap` resource will be re-created with a new hash-suffixed name, which will
+consequently restart the `Deployment` resource and re-read the new values[^9].
 
 This is an important highlight cause you have to specify your Deployment
 strategy carefully if you want to avoid downtime in your applications.
@@ -355,7 +361,7 @@ Gateway API (a topic for another post :wink:).
 kubectl port-forward -n monitoring svc/loki-stack-alertmanager 9093:9093 &
 ```
 
-Sure enough, if we open [http://localhost:9093](#), we will see the notification
+Sure enough, if we open <http://localhost:9093>, we will see the notification
 in the Alertmanager UI as seen in the screenshot below.
 
 <figure markdown="span">
@@ -373,7 +379,7 @@ expected.
 ```
 
 And lo and behold, the Alertmanager UI will now show the critical alert as seen
-in the screenshot below.
+below.
 
 <figure markdown="span">
   ![Alertmanager UI error triggered](../static/img/0006/alertmanager-ui-error.webp "Click to zoom in"){ loading=lazy }
@@ -389,7 +395,7 @@ That concludes our guide on getting started with GitOps and FluxCD. We have
 covered most of the essential components and concepts of GitOps and FluxCD.
 
 We have deployed the monitoring stack right out of the box and provided the
-[minimum working example][min-working-example] on how to structure your
+minimum working example[^10] on how to structure your
 repository in a way that reduces the friction of your deployments in an
 automated and GitOps fashion.
 
@@ -407,7 +413,7 @@ Until next time, *ciao* & happy coding!
 
 ## Source Code
 
-The full repository is publicly available on GitHub[^9] under the
+The full repository is publicly available on GitHub[^11] under the
 [Apache 2.0 license][license].
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
@@ -415,8 +421,6 @@ The full repository is publicly available on GitHub[^9] under the
 [kind]: https://kind.sigs.k8s.io/
 [k3s-setup]: ./0005-install-k3s-on-ubuntu22.md
 [kustomize]: https://kustomize.io/
-[gh-pat]: https://github.com/settings/tokens/new
-[min-working-example]: https://en.wikipedia.org/wiki/Minimal_reproducible_example
 [license]: https://github.com/developer-friendly/blog/tree/main/LICENSE
 
 [^1]: https://github.com/fluxcd/flux2/releases/
@@ -425,6 +429,8 @@ The full repository is publicly available on GitHub[^9] under the
 [^4]: https://fluxcd.io/flux/installation/upgrade/#upgrade-with-flux-cli
 [^5]: https://fluxcd.io/flux/flux-gh-action/
 [^6]: https://fluxcd.io/flux/components/notification/
-[^7]: https://prometheus.io/docs/alerting/latest/alertmanager/
-[^8]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/configmapgenerator/
-[^9]: https://github.com/developer-friendly/getting-started-with-gitops
+[^7]: https://github.com/settings/tokens/new
+[^8]: https://prometheus.io/docs/alerting/latest/alertmanager/
+[^9]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/configmapgenerator/
+[^10]: https://en.wikipedia.org/wiki/Minimal_reproducible_example
+[^11]: https://github.com/developer-friendly/getting-started-with-gitops
