@@ -4,6 +4,7 @@ title: "GitOps Demystified: Introduction to FluxCD for Kubernetes"
 description: Explore the fundamentals of GitOps with FluxCD in our beginner-friendly guide. Learn how to automate Kubernetes deployments and enhance your delivery pipeline.
 icon: fontawesome/solid/arrows-rotate
 draft: true
+status: new
 categories:
   - Kubernetes
   - FluxCD
@@ -371,8 +372,43 @@ expected.
 -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/6aa47c9700c525069eac4c60dc2f1f6d6ecb30a7/dev/echo-server/kustomization.yml"
 ```
 
-# Conclusion
+And lo and behold, the Alertmanager UI will now show the critical alert as seen
+in the screenshot below.
 
+<figure markdown="span">
+  ![Alertmanager UI error triggered](../static/img/0006/alertmanager-ui-error.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Alertmanager UI <strong>error</strong> triggered</figcaption>
+</figure>
+
+To restore the application to its normal state, you can revert the changes,
+commit to the repository and let FluxCD do its magic.
+
+## Conclusion
+
+That concludes our guide on getting started with GitOps and FluxCD. We have
+covered most of the essential components and concepts of GitOps and FluxCD.
+
+We have deployed the monitoring stack right out of the box and provided the
+[minimum working example][min-working-example] on how to structure your
+repository in a way that reduces the friction of your deployments in an
+automated and GitOps fashion.
+
+Lastly, we have deployed an application and triggered both informational and
+critical alerts to the Prometheus Alertmanager. By observing the notifications
+in the Alertmanager UI, we have seen how the notifications are routed based on
+their severity.
+
+In a future post, we will explore more integrations with this setup on how to
+route the notifications on Alertmanager to external services like Slack,
+Discord, etc. and how to manage your secrets in a secure way so that you
+wouldn't have to commit them to your repository.
+
+Until next time, *ciao* & happy coding!
+
+## Source Code
+
+The full repository is publicly available on GitHub[^9] under the
+[Apache 2.0 license][license].
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
 [minikube]: https://minikube.sigs.k8s.io/docs/
@@ -380,6 +416,8 @@ expected.
 [k3s-setup]: ./0005-install-k3s-on-ubuntu22.md
 [kustomize]: https://kustomize.io/
 [gh-pat]: https://github.com/settings/tokens/new
+[min-working-example]: https://en.wikipedia.org/wiki/Minimal_reproducible_example
+[license]: https://github.com/developer-friendly/blog/tree/main/LICENSE
 
 [^1]: https://github.com/fluxcd/flux2/releases/
 [^2]: https://cli.github.com/
@@ -389,4 +427,4 @@ expected.
 [^6]: https://fluxcd.io/flux/components/notification/
 [^7]: https://prometheus.io/docs/alerting/latest/alertmanager/
 [^8]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/configmapgenerator/
-<!-- [^7]: https://github.com/developer-friendly/getting-started-with-gitops -->
+[^9]: https://github.com/developer-friendly/getting-started-with-gitops
