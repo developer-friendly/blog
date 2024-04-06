@@ -183,7 +183,7 @@ We will need a [GitHub Personal Access Token][gh-pat] with the `repo` scope.
 You can see token creation screenshot below:
 
 <figure markdown="span">
-  ![Generating GitHub PAT](/static/img/0006/pat-token.webp "Click to zoom in"){ loading=lazy }
+  ![Generating GitHub PAT](../static/img/0006/pat-token.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Generating GitHub PAT</figcaption>
 </figure>
 

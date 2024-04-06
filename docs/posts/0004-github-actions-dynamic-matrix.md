@@ -62,7 +62,7 @@ Now, the CI workflow above is great, and it works perfectly fine. Here's
 proof of the successful run and its uploaded artifacts.
 
 <figure markdown="span">
-  ![Successful run](/static/img/0004/successful-ci-run.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Successful run](../static/img/0004/stage0.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Static matrix result</figcaption>
 </figure>
 
@@ -222,22 +222,22 @@ Now that you've seen the definitions, let's see how it looks like in action
 <div class="grid cards" markdown>
 
 - <figure markdown="span">
-    ![Preparing the dynamic matrix](/static/img/0004/stage0.webp "Click to zoom in"){ width="300" loading=lazy }
+    ![Preparing the dynamic matrix](../static/img/0004/stage0.webp "Click to zoom in"){ width="300" loading=lazy }
     <figcaption>Step 0: Preparing the dynamic `matrix`</figcaption>
   </figure>
 
 - <figure markdown="span">
-    ![Running the dynamic matrix](/static/img/0004/stage1.webp "Click to zoom in"){ width="300" loading=lazy }
+    ![Running the dynamic matrix](../static/img/0004/stage1.webp "Click to zoom in"){ width="300" loading=lazy }
     <figcaption>Step 1: Running the dynamic `matrix`</figcaption>
   </figure>
 
 - <figure markdown="span">
-    ![Expand the two jobs](/static/img/0004/stage2.webp "Click to zoom in"){ width="300" loading=lazy }
+    ![Expand the two jobs](../static/img/0004/stage2.webp "Click to zoom in"){ width="300" loading=lazy }
     <figcaption>Step 2: Click open the two jobs</figcaption>
   </figure>
 
 - <figure markdown="span">
-    ![Successful run of all jobs](/static/img/0004/stage3.webp "Click to zoom in"){ width="300" loading=lazy }
+    ![Successful run of all jobs](../static/img/0004/stage3.webp "Click to zoom in"){ width="300" loading=lazy }
     <figcaption>Step 3: Successful run of all jobs</figcaption>
   </figure>
 
@@ -247,7 +247,7 @@ And in case you push a commit that hasn't changed any service, the second
 job will be skipped, as expected.
 
 <figure markdown="span">
-  ![no-run](/static/img/0004/no-run.webp "Click to zoom in"){ loading=lazy }
+  ![no-run](../static/img/0004/no-run.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Skipped build</figcaption>
 </figure>
 
