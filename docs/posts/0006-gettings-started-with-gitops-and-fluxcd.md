@@ -1,9 +1,11 @@
 ---
-date: 2024-03-24
+date: 2024-04-06
 title: "GitOps Demystified: Introduction to FluxCD for Kubernetes"
 description: Explore the fundamentals of GitOps with FluxCD in our beginner-friendly guide. Learn how to automate Kubernetes deployments and enhance your delivery pipeline.
+subtitle: Automate your Kubernetes deployments with GitOps and FluxCD
 icon: fontawesome/solid/arrows-rotate
-draft: true
+draft: false
+status: new
 categories:
   - Kubernetes
   - FluxCD
@@ -52,7 +54,7 @@ Before we start, you need to have the following prerequisites:
 - [x] FluxCD[^1] binary installed in your `PATH` (`v2.2.3` at the time of writing)
 - [ ] Optionally, the GitHub CLI (`gh`)[^2] for easier GitHub operations (
       `v2.47.0` at the time of writing).
-- [ ] A basic understanding of [Kustomize][kustomize]. A topic for a future post.
+- [x] A basic understanding of [Kustomize][kustomize]. A topic for a future post.
 
 ## What is GitOps?
 
@@ -79,7 +81,7 @@ of your applications and infrastructure configurations by syncing them with your
 Git repository. FluxCD watches your Git repository for changes and applies them
 to your Kubernetes cluster.
 
-## Bootstrap FluxCD
+## FluxCD Setup & Automation
 
 Bootstrap refers to the initial setup of FluxCD in your Kubernetes cluster.
 After which, FluxCD will continuously watch your Git repository for changes and
@@ -96,7 +98,7 @@ cannot have enough automation in my life :grin:.
 ???+ info "Automated FluxCD Upgrade"
 
     Since this will not be the topic of today's post, it's worth mentioning
-    as a side note that you can automated the FluxCD upgrade process using the
+    as a side note that you can automate the FluxCD upgrade process using the
     power of your CI/CD pipelines.
 
     For example, you can see a `step` of a GitHub Action workflow that upgrades
@@ -115,7 +117,7 @@ cannot have enough automation in my life :grin:.
         bindir: ''
     ```
 
-### Step 0: Check Pre-requisites
+## Step 0: Check Pre-requisites
 
 You can check your if your initial setup is acceptable by FluxCD using the
 following command:
@@ -124,119 +126,321 @@ following command:
 flux check --pre
 ```
 
-### Step 1: Install FluxCD
-
-The FluxCD official documentation recommends the usage of `bootstrap` subcommand.
-However, as easy as it may sound, it abstracts you away way too much in my
-opinion in that it will commit a couple of resources to your cluster, creates
-some Kubernetes CRD resources and returns back a successful message.
-
-You generally don't get to see what has really happened under the hood unless
-you investigate on your own.
-
-I personally prefer to know exactly what is being created in my cluster!
-
-It even gets more hectic when the target git repository is not empty and have
-other resources in it[^6].
-
-!!! quote ""
-
-    *If you want to use an existing repository, the Flux user must have **admin**
-    permissions for that repository.*
-
-Therefore, I generally prefer being explicit and knowing exactly what I'm deploying to
-my cluster(s). As such, my preferred method of bootstrapping FluxCD is to
-use `flux install` command.
-
-#### Creating the GitHub Repository
+### Creating the GitHub Repository
 
 Skip this step if you already have a GitHub repository ready for FluxCD.
 
-You will need GitHub CLI[^2] installed for the following to work.
+!!! note "Repository"
+
+    FluxCD will create the repository as part of the bootstrap process.
+    This step will only give you flexibility for better customization.
+
+You will need the GitHub CLI[^2] installed for the following to work.
 
 ```bash title="" linenums="0"
-gh repo create getting-started-with-fluxcd --clone --public
-cd getting-started-with-fluxcd
+gh repo create getting-started-with-gitops --clone --public
+cd getting-started-with-gitops
 ```
 
-#### Installing FluxCD Components
+### Root Reconciler
 
-```bash title="" linenums="0"
-mkdir flux-system
-flux install \
-  --components-extra="image-reflector-controller,image-automation-controller" \
-  --export > flux-system/gotk-components.yml
+FluxCD bootstrap is able to create any initial resource you place in its bootstrap
+path. Which means we will be able to spin up any and all the resources we need
+alongside FluxCD with only a single command.
+
+That's why, in the same path to the FluxCD bootstrap, we will create a root
+`Kustomization` that will control all the subdirectories and reconcile the
+resources as needed.
+
+This will later be used to create the monitoring stack and all the bells and
+whistles that come with it.
+
+```yaml title="clusters/dev/k8s.yml" hl_lines="8"
+-8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/clusters/dev/k8s.yml"
 ```
 
-The resulting manifest is a long one, but if you're curious to see a detailed
-view, head over to the repository of this post[^7].
+And one of the stacks that will be managed by this root `Kustomization` are as
+follows:
 
-Now, why `flux-system/` directory and why that odd-looking name `gotk-components.yml`
-you might ask.
+=== "dev/monitoring/kustomization.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/kustomization.yml"
+    ```
 
-It's always a good idea to logically separate
-the resources of your infrastructure in a meaningful directory structure. This
-ensures enhanced maintainability and readability of your codebase.
+=== "dev/monitoring/namespace.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/namespace.yml"
+    ```
 
-As for the `gotk`, it stands for GitOps Toolkit. Nothing extra and nothing
-fancy, just a naming convention that FluxCD uses for its components.
+=== "dev/monitoring/repository.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/repository.yml"
+    ```
 
-It would be the same name if you had used the `flux bootstrap` command.
+===+ "dev/monitoring/release.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/monitoring/release.yml"
+    ```
 
-#### GitOps the GitOps
+### Create a GitHub Personal Access Token
 
-Now we have done nothing so far in terms of changing the live state of our
-cluster. We have only created a manifest file waiting for some more love.
+We will need a GitHub Personal Access Token[^7] with the `repo` scope.
+You can see token creation screenshot below:
 
-That's why we need two more resources before actually creating any resources
-using FluxCD.
+<figure markdown="span">
+  ![Generating GitHub PAT](../static/img/0006/pat-token.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Generating GitHub Personal Access Token (PAT)</figcaption>
+</figure>
 
-```bash title="" linenums="0"
-flux create source git getting-started-with-gitops \
-  --url=https://github.com/developer-friendly/getting-started-with-gitops \
-  --branch=main \
-  --export > flux-system/gotk-source.yml
+Use the newly created token for the next step.
 
-flux create kustomization flux-system \
-    --source=GitRepository/getting-started-with-gitops \
-    --path="./flux-system
-    --prune=true \
-    --interval=1m \
-    --export > flux-system/gotk-sync.yml
+## Step 1: Bootstrapping FluxCD
+
+We can now spin up FluxCD in our Kubernetes cluster using the following command:
+
+```shell title="" linenums="0"
+export GITHUB_TOKEN="TOKEN_FROM_THE_LAST_STEP"
+export GITHUB_ACCOUNT="developer-friendly"
+export GITHUB_REPO="getting-started-with-gitops"
+flux bootstrap github \
+  --owner=${GITHUB_ACCOUNT} \
+  --repository=${GITHUB_REPO} \
+  --private=false \
+  --personal=true \
+  --path=clusters/dev
 ```
 
-The resulting resources will look simliar to the following:
+It will take a moment or two for everything to reconcile, but after that,
+FluxCD will be up and running in your Kubernetes cluster.
 
-```yaml title="flux-system/gotk-source.yml"
--8<- "https://github.com/developer-friendly/getting-started-with-fluxcd/raw/main/flux-system/gotk-source.yml"
-```
-```yaml title="flux-system/gotk-sync.yml"
--8<- "https://github.com/developer-friendly/getting-started-with-fluxcd/raw/main/flux-system/gotk-sync.yml"
-```
+### Check the state of the cluster
 
-Creating a `kustomization.yml` file will allow us to manage these resources
-under one umbrella.
+You can check the status using the following command.
 
-```yaml title="flux-system/kustomization.yml"
--8<- "https://github.com/developer-friendly/getting-started-with-fluxcd/raw/main/flux-system/kustomization.yml"
+```shell title="" linenums="0"
+flux check
 ```
 
-We are now ready to apply these resources to our cluster.
+We can also check the pods, `Kustomization` and `HelmRelease` resources.
 
-```bash title="" linenums="0"
-kubectl apply -k https://github.com/developer-friendly/getting-started-with-fluxcd/flux-system?ref=main
+```shell title="" linenums="0"
+kubectl get pods -A
+kubectl get kustomizations,helmreleases -A # ks,hr for short
 ```
+
+The final status of our loki-stack `HelmRelease` will transition from this:
+
+```shell title="" linenums="0"
+Running 'install' action with timeout of 2m0s
+```
+
+To this:
+
+```shell title="" linenums="0"
+Helm install succeeded for release monitoring/loki-stack.v1 with chart loki-stack@2.10.2
+```
+
+## Step 2: Monitoring the Cluster
+
+We now have the monitoring stack up and running in our Kubernetes cluster.
+Let's leverage it to deliver our alerts and notifications to the Prometheus
+Alertmanager[^8].
+
+Because of the necessity of monitoring and sane alerting, we need a mechanism
+to be notified about the events of our cluster based on different severities.
+That's where FluxCD's notification controller[^6] comes into play.
+
+In this step we will create a `Provider` for FluxCD to send notifications
+and alerts to our in-cluster Alertmanager, after which the admin/operator
+can decide how to handle them using the `AlertmanagerConfig` resource.
+
+!!! success "Alertmanager Configuration"
+
+    Stay tuned for a future post where we will explore how to configure
+    Alertmanager to send notifications to various channels like Slack, Email,
+    and more.
+
+=== "dev/notifications/kustomization.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/kustomization.yml"
+    ```
+
+=== "dev/notifications/alertmanager-address.yml"
+    ```yaml title="" hl_lines="4"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager-address.yml"
+    ```
+
+===+ "dev/notifications/alertmanager.yml"
+    ```yaml title="" hl_lines="8"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alertmanager.yml"
+    ```
+
+And the notification resources are as follows:
+
+=== "dev/notifications/alert.yml"
+    ```yaml title="" hl_lines="7"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/alert.yml"
+    ```
+
+=== "dev/notifications/info.yml"
+    ```yaml title="" hl_lines="7"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/notifications/info.yml"
+    ```
+
+There are some important notes worth mentioning here:
+
+1. We didn't run any `kubectl apply` command after writing our new manifests and
+committing them to the repository. FluxCD took care of that behind the scenes.
+The [root reconciler](#root-reconciler) is a `Kustomization` resource which
+has a recursive nature and will apply all the `kustomization.yml` files in the
+subdirectories.
+2. The `alertmanager-address` Secret will need to be in the same namespace as
+the `Provider` resource. This is due to the design of the Kubernetes itself
+and has less to do with FluxCD.
+3. Having notifications on different severities allow you and your team to
+receive highlights about the live state of your cluster as you see fit. This
+means that you might be interested to route the informational notifications
+to a muted Slack channel which is likely noisier than the critical alerts,
+while sending the critical alerts to a pager system that will notify the right
+people at the right time.
+
+!!! tip "Reconciliation"
+
+    All the manifests we created so far are committed to the repository and
+    pushed to the remote. We didn't need any `kubectl apply` command to apply
+    those resources and as long as we write and commit all our manifests under
+    the same tree structure, FluxCD will create them in the cluster.
+
+## Step 3: Trigger a Notification
+
+We have created the required resource for the notifications to be sent to the
+Prometheus' Alertmanager.
+
+To take it for a spin, we can create a sample application to trigger the
+info notification.
+
+=== "dev/echo-server/kustomization.yml"
+    ```yaml title="" hl_lines="5-8"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/kustomization.yml"
+    ```
+
+=== "dev/echo-server/configs.env"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/configs.env"
+    ```
+
+===+ "dev/echo-server/deployment.yml"
+    ```yaml title="" hl_lines="11-15"
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/deployment.yml"
+    ```
+
+=== "dev/echo-server/service.yml"
+    ```yaml title=""
+    -8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/dev/echo-server/service.yml"
+    ```
+
+We won't go into much detail for the Kustomize resource as that is a topic for
+another post and deserves more depth.
+
+However, pay close attention to the syntax of `configs.env` and the way we have
+employed `configMapGenerator` in the `kustomization.yml` file.
+
+This will ensure that for every change to the `configs.env` file, the resulting
+`ConfigMap` resource will be re-created with a new hash-suffixed name, which will
+consequently restart the `Deployment` resource and re-read the new values[^9].
+
+This is an important highlight cause you have to specify your Deployment
+strategy carefully if you want to avoid downtime in your applications.
+
+!!! success "Kustomize"
+
+    We will dive into Kustomize and all its powerful and expressive features in a
+    future post. Stay tuned to learn more about it.
+
+To see that our notification has arrived at Alertmanager, we will jump over to
+the Alertmanager service using port forwarding technique, although in a real
+world scenario, you'd expose it through either an Ingress Controller or a
+Gateway API (a topic for another post :wink:).
+
+```shell title="" linenums="0"
+kubectl port-forward -n monitoring svc/loki-stack-alertmanager 9093:9093 &
+```
+
+Sure enough, if we open <http://localhost:9093>, we will see the notification
+in the Alertmanager UI as seen in the screenshot below.
+
+<figure markdown="span">
+  ![Alertmanager UI info triggered](../static/img/0006/alertmanager-ui-info.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Alertmanager UI info triggered</figcaption>
+</figure>
+
+### Trigger a Critical Alert
+
+Now, let's break the app to see if the severity of the notification changes as
+expected.
+
+```yaml title="dev/echo-server/kustomization.yml" hl_lines="12"
+-8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/6aa47c9700c525069eac4c60dc2f1f6d6ecb30a7/dev/echo-server/kustomization.yml"
+```
+
+And lo and behold, the Alertmanager UI will now show the critical alert as seen
+below.
+
+<figure markdown="span">
+  ![Alertmanager UI error triggered](../static/img/0006/alertmanager-ui-error.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Alertmanager UI <strong>error</strong> triggered</figcaption>
+</figure>
+
+To restore the application to its normal state, you can revert the changes,
+commit to the repository and let FluxCD do its magic.
+
+## Conclusion
+
+That concludes our guide on getting started with GitOps and FluxCD. We have
+covered most of the essential components and concepts of GitOps and FluxCD.
+
+We have deployed the monitoring stack right out of the box and provided the
+minimum working example[^10] on how to structure your
+repository in a way that reduces the friction of your deployments in an
+automated and GitOps fashion.
+
+Lastly, we have deployed an application and triggered both informational and
+critical alerts to the Prometheus Alertmanager. By observing the notifications
+in the Alertmanager UI, we have seen how the notifications are routed based on
+their severity.
+
+In a future post, we will explore more integrations with this setup on how to
+route the notifications on Alertmanager to external services like Slack,
+Discord, etc. and how to manage your secrets in a secure way so that you
+wouldn't have to commit them to your repository.
+
+Another topic we didn't cover here was `Receiver` resource. That will require
+internet access to your cluster, which we'll cover at a later post when
+discussing the Kubernetes Gateway API[^11].
+
+Until next time, *ciao* :penguin: :crab: & happy coding! :nerd:
+
+## Source Code
+
+The full repository is publicly available on GitHub[^12] under the
+[Apache 2.0 license][license].
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
 [minikube]: https://minikube.sigs.k8s.io/docs/
 [kind]: https://kind.sigs.k8s.io/
 [k3s-setup]: ./0005-install-k3s-on-ubuntu22.md
 [kustomize]: https://kustomize.io/
+[license]: https://github.com/developer-friendly/blog/tree/main/LICENSE
 
 [^1]: https://github.com/fluxcd/flux2/releases/
 [^2]: https://cli.github.com/
 [^3]: https://en.wikipedia.org/wiki/DevOps#GitOps
 [^4]: https://fluxcd.io/flux/installation/upgrade/#upgrade-with-flux-cli
 [^5]: https://fluxcd.io/flux/flux-gh-action/
-[^6]: https://fluxcd.io/flux/installation/bootstrap/github/#github-organization
-[^7]: https://github.com/developer-friendly/getting-started-with-gitops
+[^6]: https://fluxcd.io/flux/components/notification/
+[^7]: https://github.com/settings/tokens/new
+[^8]: https://prometheus.io/docs/alerting/latest/alertmanager/
+[^9]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/configmapgenerator/
+[^10]: https://en.wikipedia.org/wiki/Minimal_reproducible_example
+[^11]: https://gateway-api.sigs.k8s.io/
+[^12]: https://github.com/developer-friendly/getting-started-with-gitops
