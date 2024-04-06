@@ -79,7 +79,7 @@ of your applications and infrastructure configurations by syncing them with your
 Git repository. FluxCD watches your Git repository for changes and applies them
 to your Kubernetes cluster.
 
-## Bootstrap FluxCD
+## FluxCD Setup & Automation
 
 Bootstrap refers to the initial setup of FluxCD in your Kubernetes cluster.
 After which, FluxCD will continuously watch your Git repository for changes and
@@ -115,7 +115,7 @@ cannot have enough automation in my life :grin:.
         bindir: ''
     ```
 
-### Step 0: Check Pre-requisites
+## Step 0: Check Pre-requisites
 
 You can check your if your initial setup is acceptable by FluxCD using the
 following command:
@@ -124,129 +124,174 @@ following command:
 flux check --pre
 ```
 
-### Step 1: Install FluxCD
-
-The FluxCD official documentation recommends the usage of `bootstrap` subcommand.
-However, as easy as it may sound, it abstracts you away way too much in my
-opinion in that it will commit a couple of resources to your cluster, creates
-some Kubernetes CRD resources and returns back a successful message.
-
-You generally don't get to see what has really happened under the hood unless
-you investigate on your own.
-
-I personally prefer to know exactly what is being created in my cluster!
-
-It even gets more hectic when the target git repository is not empty and have
-other resources in it[^6].
-
-!!! quote ""
-
-    *If you want to use an existing repository, the Flux user must have **admin**
-    permissions for that repository.*
-
-Therefore, I generally prefer being explicit and knowing exactly what I'm deploying to
-my cluster(s). As such, my preferred method of bootstrapping FluxCD is to
-use `flux install` command.
-
-#### Creating the GitHub Repository
+### Creating the GitHub Repository
 
 Skip this step if you already have a GitHub repository ready for FluxCD.
+
+**NOTE**: FluxCD will create the repository as part of the bootstrap process.
+This step will only give you flexibility for better customization.
 
 You will need GitHub CLI[^2] installed for the following to work.
 
 ```bash title="" linenums="0"
-gh repo create getting-started-with-fluxcd --clone --public
-cd getting-started-with-fluxcd
+gh repo create getting-started-with-gitops --clone --public
+cd getting-started-with-gitops
 ```
 
-#### Installing FluxCD Components
+### Monitoring
 
-```bash title="" linenums="0"
-mkdir flux-system
-flux install \
-  --components-extra="image-reflector-controller,image-automation-controller" \
-  --export > flux-system/gotk-components.yml
+FluxCD bootstrap is able to create any initial resource you place in its bootstrap
+path. Which means we will be able to spin up any and all the resources we need
+alongside FluxCD with only a single command.
+
+That's why, in the same path to the FluxCD bootstrap, we will create a root
+`Kustomization` that will control all the subdirectories and reconcile the
+resources as needed.
+
+This will later be used to create the monitoring stack and all the bells and
+whistles that come with it.
+
+```yaml title="clusters/dev/k8s.yml"
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: k8s
+  namespace: flux-system
+spec:
+  interval: 10m
+  path: ./k8s
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  timeout: 10m
+  wait: true
 ```
 
-The resulting manifest is a long one, but if you're curious to see a detailed
-view, head over to the repository of this post[^7].
+And the resources that will be managed by this `Kustomization` are as follows:
 
-Now, why `flux-system/` directory and why that odd-looking name `gotk-components.yml`
-you might ask.
-
-It's always a good idea to logically separate
-the resources of your infrastructure in a meaningful directory structure. This
-ensures enhanced maintainability and readability of your codebase.
-
-As for the `gotk`, it stands for GitOps Toolkit. Nothing extra and nothing
-fancy, just a naming convention that FluxCD uses for its components.
-
-It would be the same name if you had used the `flux bootstrap` command.
-
-#### GitOps the GitOps
-
-Now we have done nothing so far in terms of changing the live state of our
-cluster. We have only created a manifest file waiting for some more love.
-
-That's why we need two more resources before actually creating any resources
-using FluxCD.
-
-```bash title="" linenums="0"
-flux create source git getting-started-with-gitops \
-  --url=https://github.com/developer-friendly/getting-started-with-gitops \
-  --branch=main \
-  --export > flux-system/gotk-source.yml
-
-flux create kustomization flux-system \
-    --source=GitRepository/getting-started-with-gitops \
-    --path=./flux-system \
-    --prune=true \
-    --interval=1m \
-    --export > flux-system/gotk-sync.yml
-```
-
-The resulting resources will look simliar to the following:
-
-```yaml title="flux-system/gotk-source.yml"
--8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/flux-system/gotk-source.yml"
-```
-```yaml title="flux-system/gotk-sync.yml"
--8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/flux-system/gotk-sync.yml"
-```
-
-Creating a `kustomization.yml` file will allow us to manage these resources
-under one umbrella.
-
-```yaml title="flux-system/kustomization.yml"
--8<- "https://github.com/developer-friendly/getting-started-with-gitops/raw/main/flux-system/kustomization.yml"
-```
-
-We are now ready to apply these resources to our cluster.
-
-!!! tip "First Time FluxCD Installation"
-
-    Only if this is the first time installing FluxCD to the cluster, it's better
-    to install the CRDs first to avoid hitting any issues for the custom
-    resources we'll create later.
-
-    ```bash title="" linenums="0"
-    kubectl apply -f https://github.com/developer-friendly/getting-started-with-gitops/raw/main/flux-system/gotk-components.yml
+=== "k8s/monitoring/kustomization.yml"
+    ```yaml title=""
+    resources:
+      - namespace.yml
+      - repository.yml
+      - release.yml
     ```
 
-```bash title="" linenums="0"
-kubectl apply -f kubectl apply -f https://github.com/developer-friendly/getting-started-with-gitops/raw/main/flux-system/gotk-sync.yml
+=== "k8s/monitoring/namespace.yml"
+    ```yaml title=""
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: monitoring
+    ```
+
+=== "k8s/monitoring/repository.yml"
+    ```yaml title=""
+    apiVersion: source.toolkit.fluxcd.io/v1beta2
+    kind: HelmRepository
+    metadata:
+      name: grafana
+      namespace: monitoring
+    spec:
+      interval: 10m
+      url: https://grafana.github.io/helm-charts
+    ```
+
+===+ "k8s/monitoring/release.yml"
+    ```yaml title=""
+    apiVersion: helm.toolkit.fluxcd.io/v2beta2
+    kind: HelmRelease
+    metadata:
+      name: loki-stack
+      namespace: monitoring
+    spec:
+      chart:
+        spec:
+          chart: loki-stack
+          sourceRef:
+            kind: HelmRepository
+            name: grafana
+          version: 2.x
+      interval: 10m
+      timeout: 2m
+      values:
+        grafana:
+          enabled: true
+        prometheus:
+          enabled: true
+    ```
+
+### Create a GitHub Personal Access Token
+
+We will need a [GitHub Personal Access Token][gh-pat] with the `repo` scope.
+You can see token creation screenshot below:
+
+<figure markdown="span">
+  ![Generating GitHub PAT](/static/img/0006/pat-token.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Generating GitHub PAT</figcaption>
+</figure>
+
+Use the newly created token for the next step.
+
+## Step 1: Bootstrapping FluxCD
+
+We can now spin up FluxCD in our Kubernetes cluster using the following command:
+
+```shell title="" linenums="0"
+export GITHUB_TOKEN="TOKEN_FROM_THE_LAST_STEP"
+export GITHUB_ACCOUNT="developer-friendly"
+export GITHUB_REPO="getting-started-with-gitops"
+flux bootstrap github \
+  --owner=${GITHUB_ACCOUNT} \
+  --repository=${GITHUB_REPO} \
+  --private=false \
+  --personal=true \
+  --path=clusters/dev
 ```
+
+It will take a moment or two for everything to reconcile, but after that,
+FluxCD will be up and running in your Kubernetes cluster.
+
+### Check the state of the cluster
+
+You can check the status using the following command.
+
+```shell title="" linenums="0"
+flux check
+```
+
+We can also check the pods, `Kustomization` and `HelmRelease` resources.
+
+```shell title="" linenums="0"
+kubectl get pods -A
+kubectl get kustomizations,helmreleases -A # ks,hr for short
+```
+
+The final status of our loki-stack `HelmRelease` will transition from this:
+
+```shell title="" linenums="0"
+Running 'install' action with timeout of 2m0s
+```
+
+To this:
+
+```shell title="" linenums="0"
+Helm install succeeded for release monitoring/loki-stack.v1 with chart loki-stack@2.10.2
+```
+
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
 [minikube]: https://minikube.sigs.k8s.io/docs/
 [kind]: https://kind.sigs.k8s.io/
 [k3s-setup]: ./0005-install-k3s-on-ubuntu22.md
 [kustomize]: https://kustomize.io/
+[gh-pat]: https://github.com/settings/tokens/new
 
 [^1]: https://github.com/fluxcd/flux2/releases/
 [^2]: https://cli.github.com/
 [^3]: https://en.wikipedia.org/wiki/DevOps#GitOps
 [^4]: https://fluxcd.io/flux/installation/upgrade/#upgrade-with-flux-cli
 [^5]: https://fluxcd.io/flux/flux-gh-action/
-[^6]: https://fluxcd.io/flux/installation/bootstrap/github/#github-organization
-[^7]: https://github.com/developer-friendly/getting-started-with-gitops
+[^6]: https://fluxcd.io/flux/components/notification/
+<!-- [^7]: https://github.com/developer-friendly/getting-started-with-gitops -->
