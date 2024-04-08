@@ -62,6 +62,7 @@ extra:
       # analyticsstorage:
       #   name: Google Analytics - Storage
       #   checked: true
+  status:
 extra_javascript:
   - static/js/consent.js
 copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
