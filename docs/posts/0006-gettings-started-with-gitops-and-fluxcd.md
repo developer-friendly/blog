@@ -231,13 +231,13 @@ kubectl get kustomizations,helmreleases -A # ks,hr for short
 
 The final status of our loki-stack `HelmRelease` will transition from this:
 
-```shell title="" linenums="0"
+```plaintext title="" linenums="0"
 Running 'install' action with timeout of 2m0s
 ```
 
 To this:
 
-```shell title="" linenums="0"
+```plaintext title="" linenums="0"
 Helm install succeeded for release monitoring/loki-stack.v1 with chart loki-stack@2.10.2
 ```
 
