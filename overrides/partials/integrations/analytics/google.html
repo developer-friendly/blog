@@ -13,6 +13,62 @@
     gtag("js", new Date())
     gtag("config", "{{ property }}")
 
+    /* BEGIN Google AdSense */
+    /* Ref: https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced */
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied',
+      'analytics_storage': 'denied'
+    });
+
+    function consentGrantedAdStorage() {
+      gtag("consent", "update", {
+        ad_storage: "granted",
+      });
+    }
+
+    function consentGrantedAdUserData() {
+      gtag("consent", "update", {
+        ad_user_data: "granted",
+      });
+    }
+
+    function consentGrantedAdPersonalization() {
+      gtag("consent", "update", {
+        ad_personalization: "granted",
+      });
+    }
+
+    function consentGrantedAnalyticsStorage() {
+      gtag("consent", "update", {
+        analytics_storage: "granted",
+      });
+    }
+
+    function setupGoogleAdsense() {
+      var consent = __md_get("__consent");
+
+      if (consent) {
+        if (consent.adstorage) {
+          consentGrantedAdStorage();
+        }
+
+        if (consent.aduserdata) {
+          consentGrantedAdUserData();
+        }
+
+        if (consent.adpersonalization) {
+          consentGrantedAdPersonalization();
+        }
+
+        if (consent.analyticsstorage) {
+          consentGrantedAnalyticsStorage();
+        }
+      }
+    }
+    /* END Google AdSense /*
+
     /* Register event handlers after documented loaded */
     document.addEventListener("DOMContentLoaded", function() {
 
@@ -61,6 +117,9 @@
           page_path: url.pathname
         })
       })
+
+      /* Set up Google AdSense */
+      document$.subscribe(setupGoogleAdsense)
     })
 
     /* Create script tag */
@@ -73,65 +132,3 @@
     container.insertAdjacentElement("afterEnd", script)
   }
 </script>
-
-<!-- BEGIN Google AdSense -->
-<!-- Ref: https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced -->
-<script>
-  window.dataLayer = window.dataLayer || []
-  function gtag() { dataLayer.push(arguments) }
-
-  gtag("js", new Date())
-  gtag("config", "{{ property }}")
-
-  gtag('consent', 'default', {
-    'ad_storage': 'denied',
-    'ad_user_data': 'denied',
-    'ad_personalization': 'denied',
-    'analytics_storage': 'denied'
-  });
-
-  function consentGrantedAdStorage() {
-    gtag("consent", "update", {
-      ad_storage: "granted",
-    });
-  }
-
-  function consentGrantedAdUserData() {
-    gtag("consent", "update", {
-      ad_user_data: "granted",
-    });
-  }
-
-  function consentGrantedAdPersonalization() {
-    gtag("consent", "update", {
-      ad_personalization: "granted",
-    });
-  }
-
-  function consentGrantedAnalyticsStorage() {
-    gtag("consent", "update", {
-      analytics_storage: "granted",
-    });
-  }
-
-  var consent = __md_get("__consent");
-
-  if (consent) {
-    if (consent.adstorage) {
-      consentGrantedAdStorage();
-    }
-
-    if (consent.aduserdata) {
-      consentGrantedAdUserData();
-    }
-
-    if (consent.adpersonalization) {
-      consentGrantedAdPersonalization();
-    }
-
-    if (consent.analyticsstorage) {
-      consentGrantedAnalyticsStorage();
-    }
-  }
-</script>
-<!-- END Google AdSense -->
