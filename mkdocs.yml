@@ -23,6 +23,10 @@ extra:
     - icon: fontawesome/brands/instagram
       link: https://www.instagram.com/developer_friendly/
       name: Follow us on Instagram!
+    - icon: fontawesome/solid/paper-plane
+      link: mailto:hi@developer-friendly.blog
+    - icon: fontawesome/brands/youtube
+      link: https://youtube.com/@meysam
   analytics:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
