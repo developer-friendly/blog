@@ -20,6 +20,9 @@ extra:
     - icon: fontawesome/brands/x-twitter
       link: https://x.com/devfriendly_
       name: Follow us on Twitter!
+    - icon: fontawesome/brands/instagram
+      link: https://www.instagram.com/developer_friendly/
+      name: Follow us on Instagram!
   analytics:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
