@@ -17,6 +17,9 @@ extra:
     - icon: fontawesome/solid/square-rss
       link: /feed_rss_created.xml
       name: Subscribe to our RSS feed!
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/devfriendly_
+      name: Follow us on Twitter!
   analytics:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
@@ -63,6 +66,7 @@ extra:
       #   name: Google Analytics - Storage
       #   checked: true
   status:
+    new: Recently added
 extra_javascript:
   - static/js/consent.js
 copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
