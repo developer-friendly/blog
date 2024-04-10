@@ -105,12 +105,7 @@ plugins:
       enabled: !ENV [CI, false]
       cards: true
       cards_layout: default/variant
-      cards_layout_options:
-        background_color: indigo
-        color: white
       cache: true
-      cards_exclude:
-        - privacy.md
       log: !ENV [LOG, false]
       log_level: !ENV [LOG_LEVEL, warn]
       debug: !ENV [DEBUG, false]
