@@ -26,7 +26,7 @@ extra:
     - icon: fontawesome/solid/paper-plane
       link: mailto:hi@developer-friendly.blog
     - icon: fontawesome/brands/youtube
-      link: https://youtube.com/@meysam
+      link: https://youtube.com/@developer-friendly
   analytics:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
