@@ -102,6 +102,7 @@ plugins:
   - privacy:
       assets_exclude:
         - pagead2.googlesyndication.com/*
+        - www.googletagmanager.com/*
   - meta:
       enabled: !ENV [CI, false]
   - social:
