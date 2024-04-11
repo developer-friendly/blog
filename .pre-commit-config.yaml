@@ -43,6 +43,8 @@ repos:
       - id: forbid-submodules
       - id: mixed-line-ending
       - id: pretty-format-json
+        args:
+          - --autofix
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
     rev: v9.14.0
     hooks:

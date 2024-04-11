@@ -77,7 +77,20 @@ secure secrets from AWS Parameter Store and passing them to runner.
 in GitHub Secrets and use OIDC mechanism to authenticate the runner jobs to the
 AWS services instead.
 
-That said, let's simplify the definitions above with our example.
+<figure markdown="span">
+  ![GitHub Actions OIDC](../static/img/0007/oidc-scenario-diagram.svg "Click to zoom in"){ loading=lazy }
+  <figcaption>GitHub Actions runner talking to AWS Parameter Store</figcaption>
+</figure>
+
+Let's break down what's happening in the diagram above:
+
+1. The CI runner authenticates itself to GitHub Actions identity server and
+fetches an access token.
+2. The runner will use the access token for the next step to talk to AWS API.
+3. The AWS IAM will verify the access token to make sure the trusted identity
+provider has issued it. If so, the request will be granted access to the AWS SSM.
+
+With that in mind, let's simplify the definitions above with our example.
 
 - The *user* (1) is the entity trying to access a service, e.g., a runner job in
 GitHub Actions trying to access the services of AWS.
@@ -348,6 +361,61 @@ and how many times it has run, it will always be able to access the AWS SSM
 without any manual intervention.
 
 That is the true power of adopting OIDC as an authentication mechanism.
+
+The successful CI job run will look like this:
+
+<figure markdown="span">
+  ![Successful CI run](../static/img/0007/successful-ci-run.png "Click to zoom in"){ loading=lazy }
+  <figcaption>Successful GitHub Actions CI run</figcaption>
+</figure>
+
+You will notice that the caller ID ARN has an `assumed-role` in it. This is
+what it means to grab the temporary credentials from the IAM role and use them
+to access the AWS services.
+
+You can also notice the `UserId` which is the name assigned to the runner job
+by the GitHub Actions identity provider. For the record, AWS has no username
+representing that identifier, but only because it trusts the recently added
+identity provider, it acknowledges the request as being valid and grants access.
+
+## Bonus: CloudTrail Logs
+
+We have done all the required steps to authenticate and grant access to the
+runner job in GitHub Actions to access the AWS Parameter Store.
+
+Let's take a look at the CloudTrail logs to see the successful request and
+response.
+
+??? example "Click to see more"
+
+      ```json title="" hl_lines="5-6 43-48"
+      -8<- "docs/codes/0007/cloudtrail-ci-log.json"
+      ```
+
+Notice the principal ID and the assumed role ARN in the log is the same as what
+we saw in the CI job run. This confirms that the authentication has been
+successful and the identity provider and the service provider were able to
+work together to grant access to the runner job.
+
+## Conclusion
+
+That concludes are tutorial on OpenID Connect and how to use it to authenticate
+GitHub Actions runner jobs to access AWS services securely.
+
+On a day to day operations job, you will find yourself needing to grant access
+from one one service to another. OpenID Connect (OIDC) is the modern-day
+solution to this problem. It has a neat approach to handle authentication that
+won't require any long-lived credentials, yet still be flexible enough for you
+to define a granular access control on the service provider side.
+
+I am guilty of passing long-lived credentials in the past, but I am glad that
+with this new finding, I can alter my past and current workflows for a more
+secure and robust and yet less overhead approach.
+
+I hope you too can find spots in your workflows where you can adopt OIDC and
+make your services more secure and flexible.
+
+Thanks for reading thus far, *ciao*, and till next time! :saluting_face:
 
 
 [^1]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_oidc.html
