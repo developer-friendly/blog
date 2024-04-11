@@ -1,6 +1,0 @@
-[build]
-    command = "mkdocs build"
-    publish = "site"
-[build.environment]
-    PYTHON_VERSION = "3.8"
-    CI = "true"
