@@ -342,7 +342,7 @@ We have prepared everything from AWS & GitHub side. Now, it's time to trigger
 a workflow in the said repository and test if it is able to read the secrets
 from AWS Parameter Store.
 
-```yaml title=".github/workflows/ci.yml" hl_lines="12"
+```yaml title=".github/workflows/ci.yml" hl_lines="15"
 -8<- "https://github.com/developer-friendly/oidc-github-aws/raw/v0.1.0/.github/workflows/ci.yml"
 ```
 
@@ -377,6 +377,21 @@ You can also notice the `UserId` which is the name assigned to the runner job
 by the GitHub Actions identity provider. For the record, AWS has no username
 representing that identifier, but only because it trusts the recently added
 identity provider, it acknowledges the request as being valid and grants access.
+
+???+ tip "GitHub CLI watch CI from terminal"
+
+    A neat technique I use quite often in my day to day job is to use my terminal
+    for more than the required tasks. I tend to avoid the browser to reduce
+    the context switching and keep my focus on the terminal.
+
+    One of the powerful commands I use quite often is the watch command that
+    allows me to track the CI job from the terminal itself.
+
+    ```shell title=""
+    gh run watch \
+      $(gh run list -b $(git branch --show-current) \
+        --limit 1 --json databaseId --jq .[].databaseId)
+    ```
 
 ## Bonus: CloudTrail Logs
 
