@@ -19,6 +19,7 @@ skip-check:
   - CKV_K8S_21 # I use default namespace as much as I want
   - CKV_AWS_337 # I don't mind using the default aws/ssm key
   - CKV_SECRET_6 # No strong password required here
+  - CKV2_AWS_34 # no need for encryption, this is a plaintext value
 skip-framework: []
 skip-path: []
 summary-position: top
