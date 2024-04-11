@@ -14,6 +14,8 @@ cache:
 scan:
   skip-dirs:
     - secrets
+  skip-files:
+    - docs/codes/0007/cloudtrail-ci-log.json
 
 misconfiguration:
   terraform:
