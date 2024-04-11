@@ -343,7 +343,7 @@ a workflow in the said repository and test if it is able to read the secrets
 from AWS Parameter Store.
 
 ```yaml title=".github/workflows/ci.yml" hl_lines="12"
--8<- "https://github.com/developer-friendly/oidc-github-aws/raw/main/.github/workflows/ci.yml"
+-8<- "https://github.com/developer-friendly/oidc-github-aws/raw/v0.1.0/.github/workflows/ci.yml"
 ```
 
 What's important here is that we are not passing in any credentials to the
