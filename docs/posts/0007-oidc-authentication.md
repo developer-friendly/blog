@@ -3,12 +3,14 @@ date: 2024-04-14
 description: "OpenID Connect is the modern-day solution to an ever-lasting problem: to authenticate users when the identity provider and the service provider are different entities."
 draft: true
 categories:
-  - GitHub Actions
+  - OAuth2
+  - OpenID Connect
   - OIDC
   - Authentication
   - Security
-  - OAuth2
+  - GitHub Actions
   - OpenTofu
+  - AWS
 links:
   - ./posts/0004-github-actions-dynamic-matrix.md
 ---
