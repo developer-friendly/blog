@@ -388,7 +388,7 @@ response.
 
 ??? example "Click to see more"
 
-      ```json title="" hl_lines="5-6 43-48"
+      ```json title="" hl_lines="20-25 37-38"
       -8<- "docs/codes/0007/cloudtrail-ci-log.json"
       ```
 
