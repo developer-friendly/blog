@@ -29,6 +29,9 @@ extra:
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/@developer-friendly
       name: Subscribe to our YouTube channel!
+    - icon: fontawesome/brands/threads
+      link: https://www.threads.net/@developer_friendly
+      name: Follow us on Threads!
   analytics:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
@@ -138,6 +141,7 @@ plugins:
         utm_medium: "RSS"
         utm_campaign: "feed-syndication"
       use_git: true
+      pretty_print: true
       use_material_social_cards: true
   - git-revision-date-localized:
       enable_creation_date: true
@@ -150,6 +154,9 @@ plugins:
       token: !ENV [GITHUB_TOKEN, ""]
       enabled: !ENV [CI, false]
   - table-reader
+  - exclude:
+      glob:
+        - "**/.terra*"
 remote_branch: gh-pages
 remote_name: origin
 repo_name: GitHub
