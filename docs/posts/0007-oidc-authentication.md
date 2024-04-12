@@ -53,7 +53,7 @@ Another great definition is provided by the Mozilla[^3]:
   attribute information.
 
 > The communication with the OpenID Connect Provider (OP) is done using tokens.
-  An ID token is provided to the web application (RP) by the Open ID Connect
+  An ID token is provided to the web application (RP) by the OpenID Connect
   Provider (OP) once the user has authenticated. It contains a JSON document
   which informs the web application (RP) about how, when the user has
   authenticated, various attributes, and for how long the user session can be
@@ -70,11 +70,22 @@ In this guide, we will cover a practical example. Let's break down the
 requirements of this scenario:
 
 - [x] The requirement for this scenario is to allow GitHub Actions' job(s) running
-in a specific repository to access AWS Parameter Store securely. This may be
+in a specific repository to access AWS Parameter Store (1) securely. This may be
 the repository of your infrastructure or your applications trying to read the
-secure secrets from AWS Parameter Store and passing them to runner.
+secure secrets from AWS Parameter Store and passing them to the runner.
+{ .annotate }
+
+    1.  > Parameter Store, a capability of AWS Systems Manager, provides secure,
+          hierarchical storage for configuration data management and secrets
+          management. You can store data such as passwords, database strings,
+          Amazon Machine Image (AMI) IDs, and license codes as parameter values.
+          You can store values as plain text or encrypted data. You can reference
+          Systems Manager parameters in your scripts, commands, SSM documents,
+          and configuration and automation workflows by using the unique name
+          that you specified when you created the parameter.[^4]
+
 - [x] The hard requirement for our scenario is to avoid storing any credentials
-in GitHub Secrets and use OIDC mechanism to authenticate the runner jobs to the
+in GitHub Secrets[^5] and use OIDC mechanism to authenticate the runner jobs to the
 AWS services instead.
 
 <figure markdown="span">
@@ -90,6 +101,23 @@ fetches an access token.
 3. The AWS IAM will verify the access token to make sure the trusted identity
 provider has issued it. If so, the request will be granted access to the AWS SSM.
 
+!!! tip "Identity Provider vs. OpenID Connect Provider vs. Service Provider :nerd:"
+
+    The terms Identity Provider and OpenID Connect Provider are used
+    interchangeably in the context of OIDC. The **identity provider** is the service
+    that authenticates the user and issues the access token. The **OpenID Connect
+    Provider** is the service that verifies the access token and grants access to
+    the **service provider**.
+
+    For the remainder of this blog post, the impotant thing to keep in mind is
+    that the GitHub Actions act as both the identity provider and the OpenID
+    Connect Provider, authenticate the runner on one hand and verify the access
+    token on the other when the runner tries to access the AWS services.
+
+    Lastly, **service provider** is the service that the user is trying to access,
+    possibly to do some read, write, or a combination of both. For example,
+    in our scenario, the AWS Parameter Store is the service provider.
+
 With that in mind, let's simplify the definitions above with our example.
 
 - The *user* (1) is the entity trying to access a service, e.g., a runner job in
@@ -101,9 +129,9 @@ GitHub Actions trying to access the services of AWS.
 
 - The service provider is the service the user is trying to access, e.g.,
 AWS Parameter Store.
-- The Open ID Connect identity provider is the service that authenticates the
-user, e.g., GitHub Actions (1). It can be a separate entity from the Identity
-Provider, but in our case, it is the same.
+- The OpenID Connect provider **and** identity provider is the service that
+authenticates the user, e.g., GitHub Actions (1). The OIDC provider can be a
+separate entity from the Identity Provider, but in our case, it is the same.
 { .annotate }
 
     1.  GitHub Actions is an identity provider to each of the jobs running inside
@@ -115,19 +143,19 @@ Provider, but in our case, it is the same.
     A hard requirement on implementing and adopting OIDC as an authentication
     mechanism is that both the service provider and the identity provider must
     support OIDC. In other words, they should be OIDC compatible and implement
-    the corresponding RFCs[^4].
+    the corresponding RFCs[^6].
 
 ???+ abstract "SAML vs. OIDC"
 
     SAML (Security Assertion Markup Language) is another protocol that is used
     for authentication. The main difference between SAML and OIDC is that SAML
     was initially designed for single sign-on (SSO) and is XML-based, whereas
-    OIDC is JSON-based and is more modern and flexible with a more focus on
-    authentication for modern [mobile] applications [^5].
+    OIDC is JSON-based and is more modern and flexible with more focus on
+    authentication for modern [mobile] applications [^7].
 
     OIDC is built on top of OAuth2 and is more modern and flexible than SAML.
 
-    On a personal note, I would rather the JSON-based OIDC than the XML-based.
+    On a personal note, I would rather the JSON-based OIDC than the XML-based SAML.
     But, since that protocol is usually the reponsibility of my upstream
     services, I rarely care how they talk to each other and just use the
     proper tool to address the problem at hand.
@@ -155,31 +183,31 @@ If we try it locally, we will get the following output:
 ```shell title="" linenums="0"
 curl -s \
   https://token.actions.githubusercontent.com/.well-known/openid-configuration \
-  | tee github-oidc-endpoint.json
+  | tee github-actions-oidc-endpoint.json
 ```
 
-??? example "github-oidc-endpoint.json"
+??? example "github-actions-oidc-endpoint.json"
 
     ```json title="" hl_lines="3"
-    -8<- "docs/codes/0007/github-oidc-endpoint.json"
+    -8<- "docs/codes/0007/github-actions-oidc-endpoint.json"
     ```
 
 ```shell title="" linenums="0"
 curl -s \
   https://token.actions.githubusercontent.com/.well-known/jwks \
-  | tee github-oidc-jwks.json
+  | tee github-actions-oidc-jwks.json
 ```
 
-??? example "github-oidc-jwks.json"
+??? example "github-actions-oidc-jwks.json"
 
     ```json title=""
-    -8<- "docs/codes/0007/github-oidc-jwks.json"
+    -8<- "docs/codes/0007/github-actions-oidc-jwks.json"
     ```
 
 This process can numb your brain if you're new to OIDC. But the idea is
 straightforward: some other services keep the username-password (GitHub
 Actions) and will generate access token for it to authenticate to other services
-(AWS SSM).
+(AWS IAM).
 
 ## Why use OpenID Connect?
 
@@ -187,7 +215,7 @@ Among countless obvious and non-obvious reasons, here are a few, and by no means
 exhaustive:
 
 - You can use one identity provider for all your services and not creating
-multiple accounts for each service in each environment.
+multiple accounts for each service in every environment.
 - You never have to store long-lived credentials and take the overhead of
 rotating them (1).
 { .annotate }
@@ -219,7 +247,7 @@ without passing any access-key and secret-key to the runner jobs.
 ### OIDC Provider
 
 To start with, you need to create an OIDC identity provider in your AWS
-account[^6].
+account[^8].
 
 ```hcl title="versions.tf"
 -8<- "docs/codes/0007/previous-versions/versions.tf"
@@ -260,7 +288,7 @@ AWS IAM role and IAM policy.
     can still access the AWS services securely.
 
     AWS recommends using IAM roles over long-lived credentials whenever
-    possible[^7].
+    possible[^9].
 
 To create the IAM role, we use the following TF code:
 
@@ -283,7 +311,7 @@ the specified repository are allowed to assume the role and none other.
 3. The attached managed policy (line 34) is tailored to our scenario. Your
 requiments may vary; you can also attach custom policies to the IAM role.
 
-The final IAM role will have a trusted policy **similar** to this[^6]:
+The final IAM role will have a trusted policy **similar** to this[^8]:
 
 ```json title=""
 {
@@ -311,7 +339,7 @@ The final IAM role will have a trusted policy **similar** to this[^6]:
 Before we move on to the GitHub side, let's also create a sample secret in the
 AWS Parameter Store so that we can later fetch that value for testing.
 
-We would also create the necessary GitHub Variables to be used inside the
+We would also create the necessary GitHub Variables[^10] to be used inside the
 CI workflow definition later on.
 
 ```hcl title="versions.tf" hl_lines="13-16 20-22"
@@ -335,10 +363,10 @@ CI workflow definition later on.
 ```
 
 Applying the above TF files will require you to have the GitHub CLI installed
-and authenticated[^8].
+and authenticated[^11].
 
 If you don't want to install the extra binary on your system, you can also
-pass a GitHub Personal Access Token (PAT) as specified in the docs[^9].
+pass a GitHub Personal Access Token (PAT) as specified in the docs[^12].
 
 ### GitHub Actions Workflow
 
@@ -375,7 +403,7 @@ The successful CI job run will look like this:
 
 You will notice that the caller ID ARN has an `assumed-role` in it. This is
 what it means to grab the temporary credentials from the IAM role and use them
-to access the AWS services.
+to access the AWS services[^13].
 
 You can also notice the `UserId` which is the name assigned to the runner job
 by the GitHub Actions identity provider. For the record, AWS has no username
@@ -408,7 +436,7 @@ response.
 ???+ note "CloudTrail TF Code"
 
       There is a minimal reproducible example TF code available if you haven't setup
-      your CloudTrail Logs yet[^10].
+      your CloudTrail Logs yet[^14].
 
 
 ??? example "Click to expand"
@@ -445,10 +473,14 @@ Thanks for reading thus far, *ciao*, and till next time! :saluting_face:
 [^1]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_oidc.html
 [^2]: https://openid.net/developers/how-connect-works/
 [^3]: https://infosec.mozilla.org/guidelines/iam/openid_connect.html#oidc-in-a-nutshell
-[^4]: https://openid.net/specs/openid-connect-core-1_0.html
-[^5]: https://www.onelogin.com/learn/oidc-vs-saml
-[^6]: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services#adding-the-identity-provider-to-aws
-[^7]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-[^8]: https://cli.github.com/manual/gh_auth_login
-[^9]: https://registry.terraform.io/providers/integrations/github/6.2.0/docs#authentication
-[^10]: https://registry.terraform.io/providers/hashicorp/aws/5.45.0/docs/resources/cloudtrail
+[^4]: https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html
+[^5]: https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions
+[^6]: https://openid.net/specs/openid-connect-core-1_0.html
+[^7]: https://www.onelogin.com/learn/oidc-vs-saml
+[^8]: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services#adding-the-identity-provider-to-aws
+[^9]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+[^10]: https://docs.github.com/en/actions/learn-github-actions/variables
+[^11]: https://cli.github.com/manual/gh_auth_login
+[^12]: https://registry.terraform.io/providers/integrations/github/6.2.0/docs#authentication
+[^13]: https://docs.aws.amazon.com/cli/latest/reference/sts/assume-role.html
+[^14]: https://registry.terraform.io/providers/hashicorp/aws/5.45.0/docs/resources/cloudtrail
