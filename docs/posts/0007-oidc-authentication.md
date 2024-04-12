@@ -160,7 +160,7 @@ curl -s \
 
 ??? example "github-oidc-endpoint.json"
 
-    ```json title=""
+    ```json title="" hl_lines="3"
     -8<- "docs/codes/0007/github-oidc-endpoint.json"
     ```
 
@@ -314,12 +314,16 @@ AWS Parameter Store so that we can later fetch that value for testing.
 We would also create the necessary GitHub Variables to be used inside the
 CI workflow definition later on.
 
+```hcl title="versions.tf" hl_lines="13-16 20-22"
+-8<- "docs/codes/0007/versions.tf"
+```
+
 ```hcl title="variables.tf" hl_lines="11-14"
 -8<- "docs/codes/0007/variables.tf"
 ```
 
-```hcl title="versions.tf" hl_lines="13-16 20-22"
--8<- "docs/codes/0007/versions.tf"
+```hcl title="providers.tf" hl_lines="13-16 20-22"
+-8<- "docs/codes/0007/providers.tf"
 ```
 
 ```hcl title="ssm.tf"
@@ -401,7 +405,13 @@ runner job in GitHub Actions to access the AWS Parameter Store.
 Let's take a look at the CloudTrail logs to see the successful request and
 response.
 
-??? example "Click to see more"
+???+ note "CloudTrail TF Code"
+
+      There is a minimal reproducible example TF code available if you haven't setup
+      your CloudTrail Logs yet[^10].
+
+
+??? example "Click to expand"
 
       ```json title="" hl_lines="20-25 37-38"
       -8<- "docs/codes/0007/cloudtrail-ci-log.json"
@@ -432,7 +442,6 @@ make your services more secure and flexible.
 
 Thanks for reading thus far, *ciao*, and till next time! :saluting_face:
 
-
 [^1]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_oidc.html
 [^2]: https://openid.net/developers/how-connect-works/
 [^3]: https://infosec.mozilla.org/guidelines/iam/openid_connect.html#oidc-in-a-nutshell
@@ -442,3 +451,4 @@ Thanks for reading thus far, *ciao*, and till next time! :saluting_face:
 [^7]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
 [^8]: https://cli.github.com/manual/gh_auth_login
 [^9]: https://registry.terraform.io/providers/integrations/github/6.2.0/docs#authentication
+[^10]: https://registry.terraform.io/providers/hashicorp/aws/5.45.0/docs/resources/cloudtrail
