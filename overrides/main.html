@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 
 {% block extrahead %}
-  <meta name="monetag" content="d96e947ebecf1fbf788817d71214115d">
-  {{ super() }}
-  <meta name='impact-site-verification' value='2d6de1ea-2160-426e-84ac-f248f6816999' />
+{{ super() }}
+  <!-- LogRocket -->
   <script src="https://cdn.logr-ingest.com/LogRocket.min.js" crossorigin="anonymous" async></script>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2492369509427475" crossorigin="anonymous"></script>
+  <!-- MoneTag -->
+  <meta name="monetag" content="d96e947ebecf1fbf788817d71214115d">
+  <script src="https://alwingulla.com/88/tag.min.js" data-zone="57882" async data-cfasync="false"></script>
 {% endblock %}
 
 {% block announce %}{% include "partials/announce.html" ignore missing %}{% endblock %}
