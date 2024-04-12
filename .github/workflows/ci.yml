@@ -176,7 +176,7 @@ jobs:
           scan-type: ${{ matrix.scan-type }}
           trivy-config: trivy.yaml
 
-  scan:
+  checkov:
     permissions:
       contents: read
       security-events: write
@@ -187,6 +187,7 @@ jobs:
       - name: Checkov GitHub Action
         uses: bridgecrewio/checkov-action@v12
         with:
+          config_file: .checkov_config.yaml
           output_format: cli,sarif
           output_file_path: console,results.sarif
       - name: Upload SARIF file
