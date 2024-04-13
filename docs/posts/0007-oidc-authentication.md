@@ -4,7 +4,7 @@ description: >-
   Learn how to grant GitHub Actions runner jobs access to the AWS services
   without storing long-lived credentials and avoiding the overhead of secrets
   rotation.
-draft: true
+draft: false
 categories:
   - OpenID Connect
   - OAuth2
