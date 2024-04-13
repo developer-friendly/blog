@@ -1,23 +1,26 @@
 ---
 date: 2024-04-14
 description: >-
-  An intro to OpenID Connect and how to use it to grant GitHub Actions access
-  to AWS account securely, without storing long-lived credentials anywhere.
+  Learn how to grant GitHub Actions runner jobs access to the AWS services
+  without storing long-lived credentials and avoiding the overhead of secrets
+  rotation.
 draft: true
 categories:
-  - OAuth2
   - OpenID Connect
+  - OAuth2
+  - GitHub Actions
+  - AWS
+  - OpenTofu
   - OIDC
   - Authentication
+  - Authorization
   - Security
-  - GitHub Actions
-  - OpenTofu
-  - AWS
 links:
+  - ./posts/0002-external-secret-immutable-target.md
   - ./posts/0004-github-actions-dynamic-matrix.md
 ---
 
-# What is OIDC Authentication? A Practical Guide
+# What is OpenID Connect Authentication? A Practical Guide
 
 OpenID Connect is the modern-day solution to an ever-lasting problem: to
 authenticate users when the identity provider and the service provider are
