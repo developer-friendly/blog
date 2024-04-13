@@ -4,7 +4,7 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.44"
+      version = "~> 5.45"
     }
     tls = {
       source  = "hashicorp/tls"
@@ -15,8 +15,4 @@ terraform {
       version = "~> 6.2"
     }
   }
-}
-
-provider "github" {
-  owner = var.github_owner
 }
