@@ -197,7 +197,7 @@ curl -s \
 
 ??? example "github-actions-oidc-endpoint.json"
 
-    ```json title="" hl_lines="3"
+    ```json title="" hl_lines="43"
     -8<- "docs/codes/0007/github-actions-oidc-endpoint.json"
     ```
 
