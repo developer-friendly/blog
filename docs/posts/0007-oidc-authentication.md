@@ -62,7 +62,7 @@ Another great definition is provided by the Mozilla[^3]:
   and up to date.
 
 <div class="annotate" markdown>
-Best of them all, is the definition in the abstract of the RFC itself (1) [^15]:
+Best of them all, is the definition in the abstract of the RFC itself (1) [^4]:
 </div>
 
 1.  If you've never read any RFC before, I highly recommend starting with
@@ -98,10 +98,10 @@ secure secrets from AWS Parameter Store and passing them to the runner.
           You can store values as plain text or encrypted data. You can reference
           Systems Manager parameters in your scripts, commands, SSM documents,
           and configuration and automation workflows by using the unique name
-          that you specified when you created the parameter.[^4]
+          that you specified when you created the parameter.[^5]
 
 - [x] The hard requirement for our scenario is to avoid storing any credentials
-in GitHub Secrets[^5] and use OIDC mechanism to authenticate the runner jobs to the
+in GitHub Secrets[^6] and use OIDC mechanism to authenticate the runner jobs to the
 AWS services instead.
 
 The following image is an over simplified diagram of the scenario we are trying
@@ -162,7 +162,7 @@ separate entity from the Identity Provider, but in our case, it is the same.
     A hard requirement on implementing and adopting OIDC as an authentication
     mechanism is that both the service provider and the identity provider must
     support OIDC. In other words, they should be OIDC compatible and implement
-    the corresponding RFCs[^6].
+    the corresponding RFCs[^7].
 
 ???+ abstract "SAML vs. OIDC"
 
@@ -170,7 +170,7 @@ separate entity from the Identity Provider, but in our case, it is the same.
     for authentication. The main difference between SAML and OIDC is that SAML
     was initially designed for single sign-on (SSO) and is XML-based, whereas
     OIDC is JSON-based and is more modern and flexible with more focus on
-    authentication for modern [mobile] applications [^7].
+    authentication for modern [mobile] applications [^8].
 
     OIDC is built on top of OAuth2 and is more modern and flexible than SAML.
 
@@ -270,7 +270,7 @@ without passing any access-key and secret-key to the runner jobs.
 ### OIDC Provider
 
 To start with, you need to create an OIDC identity provider in your AWS
-account[^8].
+account[^9].
 
 ```hcl title="versions.tf"
 -8<- "docs/codes/0007/previous-versions/versions.tf"
@@ -311,7 +311,7 @@ AWS IAM role and IAM policy.
     can still access the AWS services securely.
 
     AWS recommends using IAM roles over long-lived credentials whenever
-    possible[^9].
+    possible[^10].
 
 To create the IAM role, we use the following TF code:
 
@@ -334,7 +334,7 @@ the specified repository are allowed to assume the role and none other.
 3. The attached managed policy (line 34) is tailored to our scenario. Your
 requiments may vary; you can also attach custom policies to the IAM role.
 
-The final IAM role will have a trusted policy **similar** to this[^8]:
+The final IAM role will have a trusted policy **similar** to this[^9]:
 
 ```json title=""
 {
@@ -362,7 +362,7 @@ The final IAM role will have a trusted policy **similar** to this[^8]:
 Before we move on to the GitHub side, let's also create a sample secret in the
 AWS Parameter Store so that we can later fetch that value for testing.
 
-We would also create the necessary GitHub Variables[^10] to be used inside the
+We would also create the necessary GitHub Variables[^11] to be used inside the
 CI workflow definition later on.
 
 ```hcl title="versions.tf" hl_lines="13-16 20-22"
