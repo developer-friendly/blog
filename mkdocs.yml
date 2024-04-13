@@ -5,14 +5,14 @@ extra:
     - icon: fontawesome/brands/paypal
       link: http://paypal.me/meysamazad
       name: Thank the author!
+    - icon: simple/githubsponsors
+      link: https://github.com/sponsors/meysam81/
+      name: Sponsor the author!
     - icon: fontawesome/brands/github
       link: https://github.com/developer-friendly
       name: Check out our GitHub!
-    - icon: fontawesome/brands/docker
-      link: https://hub.docker.com/r/developerfriendly/
-      name: Check out our Docker images!
     - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/company/developer-friendly
+      link: https://www.linkedin.com/in/meysamazad
       name: Follow us on LinkedIn!
     - icon: fontawesome/brands/slack
       link: https://communityinviter.com/apps/developerfriendly/join-our-slack
@@ -22,19 +22,13 @@ extra:
       name: Subscribe to our RSS feed!
     - icon: fontawesome/brands/x-twitter
       link: https://x.com/devfriendly_
-      name: Follow us on Twitter!
-    - icon: fontawesome/brands/instagram
-      link: https://www.instagram.com/developer_friendly/
-      name: Follow us on Instagram!
-    - icon: fontawesome/solid/paper-plane
-      link: mailto:hi@developer-friendly.blog
-      name: Send us an email!
+      name: Follow us on X!
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/@developer-friendly
       name: Subscribe to our YouTube channel!
-    - icon: fontawesome/brands/threads
-      link: https://www.threads.net/@developer_friendly
-      name: Follow us on Threads!
+    - icon: fontawesome/solid/paper-plane
+      link: mailto:hi@developer-friendly.blog
+      name: Send us an email!
   analytics:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
