@@ -2,12 +2,12 @@ site_name: Developer Friendly Blog
 edit_uri: blob/main/docs/
 extra:
   social:
-    - icon: fontawesome/brands/paypal
-      link: http://paypal.me/meysamazad
-      name: Thank the author!
     - icon: simple/githubsponsors
       link: https://github.com/sponsors/meysam81/
       name: Sponsor the author!
+    - icon: fontawesome/brands/paypal
+      link: http://paypal.me/meysamazad
+      name: Thank the author!
     - icon: fontawesome/brands/github
       link: https://github.com/developer-friendly
       name: Check out our GitHub!
