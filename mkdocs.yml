@@ -173,7 +173,7 @@ theme:
     - navigation.instant
     - navigation.instant.prefetch
     - navigation.instant.progress
-    - navigation.instant.preview
+    # - navigation.instant.preview
     - navigation.path
     - navigation.prune
     - navigation.sections
@@ -213,7 +213,7 @@ theme:
         icon: material/brightness-4
         name: Switch to system preference
 markdown_extensions:
-  - material.extensions.preview
+  # - material.extensions.preview
   - abbr
   - admonition
   - attr_list
