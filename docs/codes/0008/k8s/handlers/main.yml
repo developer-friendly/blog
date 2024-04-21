@@ -1,0 +1,6 @@
+---
+- name: Restart wellknown-server
+  ansible.builtin.systemd:
+    name: wellknown-server
+    state: restarted
+    daemon_reload: true

@@ -19,6 +19,6 @@ output "ansible_inventory_yaml" {
           ansible_host: ${hcloud_server.this.ipv4_address}
           ansible_user: ${var.username}
           ansible_ssh_private_key_file: ~/.ssh/k3s-cluster
-          ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+          ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o PasswordAuthentication=no'
   EOF
 }

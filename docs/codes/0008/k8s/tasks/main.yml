@@ -1,0 +1,9 @@
+---
+- name: Cilium
+  ansible.builtin.include_tasks: cilium.yml
+  tags:
+    - cilium
+- name: Certbot
+  ansible.builtin.include_tasks: certbot.yml
+  tags:
+    - certbot

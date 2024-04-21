@@ -1,0 +1,3 @@
+---
+cilium_version: 1.15.4
+acme_home: /var/www/html

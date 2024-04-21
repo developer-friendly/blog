@@ -234,6 +234,59 @@ tofu output -raw ansible_inventory_yaml > ./inventory/k3s-cluster.yml
 
 At this stage we're ready to move on to the next step.
 
+## Step 3: Bootstrap the Cluster
+
+At this point we have installed the Cilium binary in our host machine, yet we
+haven't installed the CNI plugin in our Kubernetes cluster.
+
+Let's create an Ansible role and a playbook to take care of all the Day 1 operations.
+
+```shell title="" linenums="0"
+ansible-galaxy init k8s
+touch playbook.yml
+```
+
+The first step is to install the Cilium CNI.
+
+```yaml title="k8s/defaults/main.yml"
+-8<- "docs/codes/0008/v1/k8s-defaults-main.yml"
+```
+
+```yaml title="k8s/tasks/cilium.yml"
+-8<- "docs/codes/0008/k8s/tasks/cilium.yml"
+```
+
+```yaml title="k8s/tasks/main.yml"
+-8<- "docs/codes/0008/v1/k8s-tasks-main.yml"
+```
+
+```yaml title="playbook.yml"
+-8<- "docs/codes/0008/playbook.yml"
+```
+
+To run the playbook:
+
+```shell title="" linenums="0"
+ansible-playbook playbook.yml
+```
+
+## Step 4: Fetch the TLS Certificate
+
+At this point, we need a CA verified TLS certificate for the domain name we
+created in the first step.
+
+We will carry our tasks with Ansible throughout the entire Day 1 to Day n
+operations.
+
+```yaml title="k8s/tasks/certbot.yml"
+-8<- "docs/codes/0008/k8s/tasks/certbot.yml"
+```
+
+```yaml title="k8s/tasks/main.yml" hl_lines="5-7"
+-8<- "docs/codes/0008/k8s/tasks/main.yml"
+```
+
+
 <!--
 ## Step 1: Publicly Accessible Domain Name
 

@@ -16,6 +16,17 @@ resource "hcloud_firewall" "this" {
   rule {
     direction = "in"
     protocol  = "tcp"
+    port      = 80
+    source_ips = [
+      "0.0.0.0/0",
+      "::/0",
+    ]
+    description = "Allow HTTP access from everywhere"
+  }
+
+  rule {
+    direction = "in"
+    protocol  = "tcp"
     port      = 443
     source_ips = [
       "0.0.0.0/0",
