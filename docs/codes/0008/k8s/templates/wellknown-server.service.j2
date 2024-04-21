@@ -3,7 +3,7 @@ Description=Wellknown Server
 
 [Service]
 ExecStartPre=/bin/mkdir -p {{ acme_home }}/.well-known/acme-challenge
-ExecStart=python -m http.server -d {{ acme_home }} 80
+ExecStart=/usr/bin/python3 -m http.server -d {{ acme_home }} 80
 Restart=on-failure
 User=acme
 Group=acme

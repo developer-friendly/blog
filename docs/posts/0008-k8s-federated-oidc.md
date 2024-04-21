@@ -4,8 +4,9 @@ draft: true
 categories:
   - Kubernetes
   - AWS
-  - OpenTofu
   - OpenID Connect
+  - OpenTofu
+  - Ansible
 links:
   - ./posts/0007-oidc-authentication.md
   - ./posts/0005-install-k3s-on-ubuntu22.md
@@ -193,7 +194,7 @@ some minor tweaks here and there.
 -8<- "docs/codes/0008/firewall.tf"
 ```
 
-```hcl title="outputs.tf" hl_lines="9-24"
+```hcl title="outputs.tf" hl_lines="9-30"
 -8<- "docs/codes/0008/outputs.tf"
 ```
 
@@ -223,8 +224,9 @@ inventory where Ansible expects them.
     ```
 
 ```shell title="" linenums="0"
-mkdir ./inventory
+mkdir -p ./inventory/group_vars
 tofu output -raw ansible_inventory_yaml > ./inventory/k3s-cluster.yml
+tofu output -raw ansible_vars > ./inventory/group_vars/all.yml
 ```
 
 ??? example "ansible-inventory --list"
@@ -261,7 +263,7 @@ The first step is to install the Cilium CNI.
 ```
 
 ```yaml title="playbook.yml"
--8<- "docs/codes/0008/playbook.yml"
+-8<- "docs/codes/0008/v1/playbook.yml"
 ```
 
 To run the playbook:
@@ -278,14 +280,44 @@ created in the first step.
 We will carry our tasks with Ansible throughout the entire Day 1 to Day n
 operations.
 
+```ini title="k8s/templates/wellknown-server.service.j2"
+-8<- "docs/codes/0008/k8s/templates/wellknown-server.service.j2"
+```
+
+```yaml title="k8s/defaults/main.yml" hl_lines="3"
+-8<- "docs/codes/0008/k8s/defaults/main.yml"
+```
+
 ```yaml title="k8s/tasks/certbot.yml"
 -8<- "docs/codes/0008/k8s/tasks/certbot.yml"
 ```
 
-```yaml title="k8s/tasks/main.yml" hl_lines="5-7"
+```yaml title="k8s/tasks/main.yml" hl_lines="6-9"
 -8<- "docs/codes/0008/k8s/tasks/main.yml"
 ```
 
+???+ success "Certificate Renewal"
+
+    Although not required, one of the benefits of using `certbot` for
+    TLS certificates is the ease of renewal.
+
+    After your initial `certbot` command, you will find the following two
+    `systemd` files in your system.
+
+    ```ini title="/lib/systemd/system/certbot.service"
+    -8<- "docs/codes/0008/outputs/certbot.service"
+    ```
+
+    ```ini title="/lib/systemd/system/certbot.timer"
+    -8<- "docs/codes/0008/outputs/certbot.timer"
+    ```
+
+After adding another task to our Ansible role, we can run the new tasks with
+the following command:
+
+```shell title="" linenums="0"
+ansible-playbook playbook.yml --tags certbot
+```
 
 <!--
 ## Step 1: Publicly Accessible Domain Name

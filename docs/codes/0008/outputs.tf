@@ -22,3 +22,9 @@ output "ansible_inventory_yaml" {
           ansible_ssh_common_args: '-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o PasswordAuthentication=no'
   EOF
 }
+
+output "ansible_vars" {
+  value = <<-EOF
+    domain_name: ${cloudflare_record.this.name}
+  EOF
+}
