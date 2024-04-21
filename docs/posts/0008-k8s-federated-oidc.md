@@ -160,7 +160,7 @@ Any DNS provider will do, but for our example, we're using Cloudflare.
 We would need the required access token which you can get from their respective
 account settings.
 
-```shell title=""
+```shell title="" linenums="0"
 export TF_VAR_cloudflare_api_token="PLACEHOLDER"
 export TF_VAR_hetzner_api_token="PLACEHOLDER"
 
@@ -193,26 +193,44 @@ some minor tweaks here and there.
 -8<- "docs/codes/0008/firewall.tf"
 ```
 
-```hcl title="outputs.tf" hl_lines="9-12"
+```hcl title="outputs.tf" hl_lines="9-24"
 -8<- "docs/codes/0008/outputs.tf"
 ```
 
 Business as usual, we apply the stack as below.
 
-```shell title=""
+```shell title="" linenums="0"
 tofu plan -out tfplan
 tofu apply tfplan
 ```
 
 And for connecting to the machine:
 
-```shell title=""
+```shell title="" linenums="0"
 tofu output -raw ssh_private_key > ~/.ssh/k3s-cluster
 chmod 600 ~/.ssh/k3s-cluster
 
 IP_ADDRESS=$(tofu output -raw public_ip)
 ssh -i ~/.ssh/k3s-cluster k8s@$IP_ADDRESS
 ```
+
+To be able to use the Ansible playbook in the next steps, we shall write the
+inventory where Ansible expects them.
+
+??? example "ansible.cfg"
+    ```ini title="" hl_lines="8"
+    -8<- "docs/codes/0008/ansible.cfg"
+    ```
+
+```shell title="" linenums="0"
+mkdir ./inventory
+tofu output -raw ansible_inventory_yaml > ./inventory/k3s-cluster.yml
+```
+
+??? example "ansible-inventory --list"
+    ```json title=""
+    -8<- "docs/codes/0008/outputs/ansible-inventory-list.json"
+    ```
 
 At this stage we're ready to move on to the next step.
 
