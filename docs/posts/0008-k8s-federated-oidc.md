@@ -11,82 +11,14 @@ links:
   - ./posts/0005-install-k3s-on-ubuntu22.md
   - ./posts/0003-kubernetes-the-hard-way.md
 ---
-<!--
-important keyworkds:
-AWS
-kubernetes
-pods
-OpenID Connect
-
-bare-metal
-Azure
-ts
-service account
-K3s
-
-OIDC
-IAM
-trust relationship
- -->
-
-<!--
-# for aks
-az aks show -n lware-dev-aks -g lware-dev-rg --query "oidcIssuerProfile.issuerUrl" -otsv
-
-add that to AWS as OIDC and specify the audience appropriately
-
-# for bear metal
-you need a way to expose /.well-known/openid-configuration and /openid/v1/jwks
-one of the simplest and tiniest way is to use static-web-server
-you need a verified tls signed by a trusted CA
-serving those OIDC files should be behind the said static server with the aforementioned tls
-finally, the AWS IAM role looks like the following:
-
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "Federated": "arn:aws:iam::591342154473:oidc-provider/4f0fce7c-9efa-9ee3-5fe0-467d95d2584c.developer-friendly.blog"
-            },
-            "Action": "sts:AssumeRoleWithWebIdentity",
-            "Condition": {
-                "StringEquals": {
-                    "4f0fce7c-9efa-9ee3-5fe0-467d95d2584c.developer-friendly.blog:aud": "sts.amazonaws.com",
-                    "4f0fce7c-9efa-9ee3-5fe0-467d95d2584c.developer-friendly.blog:sub": "system:serviceaccount:default:default"
-                }
-            }
-        }
-    ]
-} -->
-
-<!--
-high level structure for this document:
-1. [x] refer to the previous post
-2. [x] recap the most important points
-3. [x] specify the OIDC compliance through exposing certain endpoints
-4. how to achieve that in a bare-metal cluster
-   1. [x] A domain name mapped to the VM IP address
-   2. [ ] a live k8s cluster
-   3. accessible through the internet, or use ngrok if ran locally
-      1. domain name record in DNS provider
-      2. TLS using certbot
-   4. separate OIDC provider and API server
-   5. fetch OIDC config and jwks and expose them
-   6. use simple static web server to serve them
-   7. add a dns record to the owned domain name
-   8. TLS certificate for said domain
-5. add the OIDC to AWS
-6. add the IAM role with the trust relationship to the OIDC provider
-7. test the setup with a sample pod with and without SA attached
--->
 
 # Grant Kubernetes Pods Access to AWS Services Using OpenID Connect
 
 Learn how to establish a trust relationship between a Kubernetes cluster and
 AWS IAM to grant cluster generated Service Account tokens access to AWS
 services using OIDC & without storing long-lived credentials.
+
+<!-- more -->
 
 ## Introduction
 
@@ -133,11 +65,11 @@ Make sure you have the following prerequisites in place before proceeding:
 - [x] A Kubernetes cluster that can be exposed to the internet. (1)
 { .annotate }
 
-1.  A local Kubernetes cluster will do, however, you will need to expose
-    the required endpoints to the internet. This can be done using a
-    service like [ngrok](https://ngrok.com/).
+    1.  A local Kubernetes cluster will do, however, you will need to expose
+        the required endpoints to the internet. This can be done using a
+        service like [ngrok](https://ngrok.com/).
 
-    Not the topic of today's post!
+        Not the topic of today's post!
 
 - [x] An AWS account to create an OIDC provider and IAM roles.
 - [x] A verified root domain name that YOU own. Skip this if you're using a
@@ -284,6 +216,7 @@ ssh -i ~/.ssh/k3s-cluster k8s@$IP_ADDRESS
 
 At this stage we're ready to move on to the next step.
 
+<!--
 ## Step 1: Publicly Accessible Domain Name
 
 Now that we have a Kubernetes cluster, it's time to create a domain name that
@@ -309,7 +242,7 @@ export TF_VAR_cloudflare_api_token="PLACEHOLDER"
 tofu plan -out tfplan
 tofu apply tfplan
 ```
-
+ -->
 
 <!--
 ## Step 2: Fetch the OIDC Configurations
@@ -397,3 +330,69 @@ the
 [oidc-tls]: https://openid.net/specs/openid-connect-core-1_0.html
 [static-web-server]: https://static-web-server.net/
  -->
+
+<!--
+important keyworkds:
+AWS
+kubernetes
+pods
+OpenID Connect
+
+bare-metal
+Azure
+ts
+service account
+K3s
+
+OIDC
+IAM
+trust relationship
+ -->
+
+<!--
+# for aks
+az aks show -n lware-dev-aks -g lware-dev-rg --query "oidcIssuerProfile.issuerUrl" -otsv
+
+add that to AWS as OIDC and specify the audience appropriately
+
+# for bear metal
+you need a way to expose /.well-known/openid-configuration and /openid/v1/jwks
+one of the simplest and tiniest way is to use static-web-server
+you need a verified tls signed by a trusted CA
+serving those OIDC files should be behind the said static server with the aforementioned tls
+finally, the AWS IAM role looks like the following:
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::591342154473:oidc-provider/4f0fce7c-9efa-9ee3-5fe0-467d95d2584c.developer-friendly.blog"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "4f0fce7c-9efa-9ee3-5fe0-467d95d2584c.developer-friendly.blog:aud": "sts.amazonaws.com",
+                    "4f0fce7c-9efa-9ee3-5fe0-467d95d2584c.developer-friendly.blog:sub": "system:serviceaccount:default:default"
+                }
+            }
+        }
+    ]
+} -->
+
+<!--
+high level structure for this document:
+1. [x] refer to the previous post
+2. [x] recap the most important points
+3. [x] specify the OIDC compliance through exposing certain endpoints
+4. how to achieve that in a bare-metal cluster
+   1. [x] A domain name mapped to the VM IP address
+   2. [x] a live k8s cluster
+   3. [ ] fetch tls certificate using certbot
+   4. [ ] fetch OIDC config and jwks and write them to disk
+   5. [ ] start the static web server using that tls
+5. add the OIDC to AWS
+6. add the IAM role with the trust relationship to the OIDC provider
+7. test the setup with a sample pod with and without SA attached
+-->

@@ -27,7 +27,7 @@ resource "hcloud_server" "this" {
     #cloud-config
     users:
       - name: ${var.username}
-        groups: users, admin
+        groups: users, admin, adm
         sudo: ALL=(ALL) NOPASSWD:ALL
         shell: /bin/bash
         ssh_authorized_keys:
@@ -37,7 +37,6 @@ resource "hcloud_server" "this" {
     package_update: true
     package_upgrade: true
     runcmd:
-      - usermod -aG adm ${var.username}
       - sed -i -e '/^\(#\|\)PermitRootLogin/s/^.*$/PermitRootLogin no/' /etc/ssh/sshd_config
       - sed -i -e '/^\(#\|\)PasswordAuthentication/s/^.*$/PasswordAuthentication no/' /etc/ssh/sshd_config
       - sed -i '$a AllowUsers ${var.username}' /etc/ssh/sshd_config
@@ -53,12 +52,17 @@ resource "hcloud_server" "this" {
       - chown -R ${var.username}:${var.username} /home/${var.username}/.kube/
       - |
         CILIUM_CLI_VERSION=v0.16.4
-        CILIUM_VERSION=1.15.4
         CLI_ARCH=arm64
         curl -L --fail --remote-name-all https://github.com/cilium/cilium-cli/releases/download/$CILIUM_CLI_VERSION/cilium-linux-$CLI_ARCH.tar.gz{,.sha256sum}
         sha256sum --check cilium-linux-$CLI_ARCH.tar.gz.sha256sum
         sudo tar xzvfC cilium-linux-$CLI_ARCH.tar.gz /usr/local/bin
-        cilium install --set kubeProxyReplacement=true --wait --version $CILIUM_VERSION
+      - kubectl completion bash | tee /etc/bash_completion.d/kubectl
+      - k3s completion bash | tee /etc/bash_completion.d/k3s
+      - |
+        cat << 'EOF2' >> /home/${var.username}/.bashrc
+        alias k=kubectl
+        complete -F __start_kubectl k
+        EOF2
       - reboot
   EOF
 }
