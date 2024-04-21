@@ -79,6 +79,7 @@ plugins:
   - optimize:
       enabled: !ENV [CI, false]
   - privacy:
+      enabled: !ENV [PRIVACY, false]
       assets_exclude:
         - pagead2.googlesyndication.com/*
         - www.googletagmanager.com/*
