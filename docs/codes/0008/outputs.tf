@@ -5,3 +5,8 @@ output "public_ip" {
 output "public_ipv6" {
   value = hcloud_primary_ip.this["ipv6"].ip_address
 }
+
+output "ssh_private_key" {
+  value     = tls_private_key.this.private_key_pem
+  sensitive = true
+}

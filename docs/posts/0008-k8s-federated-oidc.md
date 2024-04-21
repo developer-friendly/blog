@@ -68,7 +68,7 @@ high level structure for this document:
 3. [x] specify the OIDC compliance through exposing certain endpoints
 4. how to achieve that in a bare-metal cluster
    1. [x] A domain name mapped to the VM IP address
-   2. [x] a live k8s cluster
+   2. [ ] a live k8s cluster
    3. accessible through the internet, or use ngrok if ran locally
       1. domain name record in DNS provider
       2. TLS using certbot
@@ -245,31 +245,29 @@ before and so, we won't go too deep into it.
 But for the sake of completeness, we'll resurface the code one more time, with
 some minor tweaks here and there.
 
-```hcl title="variables.tf"
--8<- "docs/codes/0008/v1/variables.tf"
+```hcl title="variables.tf" hl_lines="28-36"
+-8<- "docs/codes/0008/variables.tf"
 ```
 
-```hcl title="versions.tf"
--8<- "docs/codes/0008/v1/versions.tf"
+```hcl title="versions.tf" hl_lines="15-22"
+-8<- "docs/codes/0008/versions.tf"
 ```
 
-```hcl title="main.tf"
--8<- "docs/codes/0008/main.tf"
+```hcl title="server.tf"
+-8<- "docs/codes/0008/server.tf"
 ```
 
-```hcl title="network.tf"
--8<- "docs/codes/0008/network.tf"
+```hcl title="firewall.tf"
+-8<- "docs/codes/0008/firewall.tf"
 ```
 
-```hcl title="outputs.tf"
+```hcl title="outputs.tf" hl_lines="9-12"
 -8<- "docs/codes/0008/outputs.tf"
 ```
 
 Business as usual, we apply the stack as below.
 
 ```shell title=""
-export TF_VAR_hetzner_api_token="PLACEHOLDER"
-
 tofu plan -out tfplan
 tofu apply tfplan
 ```

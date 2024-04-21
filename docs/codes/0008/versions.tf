@@ -1,16 +1,8 @@
 terraform {
   required_providers {
-    tls = {
-      source  = "hashicorp/tls"
-      version = "~> 4.0"
-    }
     hcloud = {
       source  = "hetznercloud/hcloud"
       version = "~> 1.46"
-    }
-    http = {
-      source  = "hashicorp/http"
-      version = "~> 3.4"
     }
     cloudflare = {
       source  = "cloudflare/cloudflare"
@@ -19,6 +11,14 @@ terraform {
     random = {
       source  = "hashicorp/random"
       version = "~> 3.6"
+    }
+    http = {
+      source  = "hashicorp/http"
+      version = "~> 3.4"
+    }
+    tls = {
+      source  = "hashicorp/tls"
+      version = "~> 4.0"
     }
   }
 }
