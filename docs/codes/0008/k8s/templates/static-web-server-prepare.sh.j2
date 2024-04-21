@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+set -eu
+
+mkdir -p .well-known openid/v1
+
+kubectl get --raw /.well-known/openid-configuration > .well-known/openid-configuration
+kubectl get --raw /openid/v1/jwks > openid/v1/jwks
+
+cp /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem cert.pem
+cp /etc/letsencrypt/live/{{ domain_name }}/privkey.pem key.pem
+
+
+chown -R static-web-server:static-web-server .

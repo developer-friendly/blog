@@ -1,0 +1,86 @@
+- name: Create static-web-server group
+  ansible.builtin.group:
+    name: static-web-server
+    state: present
+    system: true
+- name: Create static-web-server user
+  ansible.builtin.user:
+    name: static-web-server
+    state: present
+    group: static-web-server
+    shell: /bin/false
+    system: true
+    create_home: false
+- name: Create working dir for static-web-server user
+  ansible.builtin.file:
+    path: "{{ static_web_server_home }}"
+    state: directory
+    owner: static-web-server
+    group: static-web-server
+    mode: "0755"
+- name: Download static web server binary
+  ansible.builtin.get_url:
+    url: "{{ static_web_server_download_url }}"
+    dest: "/tmp/{{ static_web_server_download_url | basename }}"
+    checksum: "sha256:{{ static_web_server_checksum }}"
+    owner: root
+    group: root
+    mode: "0644"
+  register: download_static_web_server
+- name: Extract static web server binary
+  ansible.builtin.unarchive:
+    src: "{{ download_static_web_server.dest }}"
+    dest: /usr/local/bin/
+    owner: root
+    group: root
+    mode: "0755"
+    remote_src: true
+    extra_opts:
+      - --strip-components=1
+      - --wildcards
+      - "**/static-web-server"
+  notify: Restart static-web-server
+- name: Create static-web-server-prepare script
+  ansible.builtin.template:
+    src: static-web-server-prepare.sh.j2
+    dest: /usr/local/bin/static-web-server-prepare
+    owner: root
+    group: root
+    mode: "0755"
+  notify: Restart static-web-server-prepare
+- name: Create static-web-server-prepare service
+  ansible.builtin.template:
+    src: static-web-server-prepare.service.j2
+    dest: /etc/systemd/system/static-web-server-prepare.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart static-web-server-prepare
+- name: Create static-web-server-prepare timer
+  ansible.builtin.template:
+    src: static-web-server-prepare.timer.j2
+    dest: /etc/systemd/system/static-web-server-prepare.timer
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart static-web-server-prepare
+- name: Start static-web-server-prepare
+  ansible.builtin.systemd:
+    name: static-web-server-prepare.timer
+    state: started
+    enabled: true
+    daemon_reload: true
+- name: Create static-web-server service
+  ansible.builtin.template:
+    src: static-web-server.service.j2
+    dest: /etc/systemd/system/static-web-server.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart static-web-server
+- name: Start static-web-server service
+  ansible.builtin.systemd:
+    name: static-web-server
+    state: started
+    enabled: true
+    daemon_reload: true

@@ -1,11 +1,9 @@
 ---
 - name: Bootstrap k8s node
   hosts: k3s-cluster
-  gather_facts: true
+  gather_facts: false
   become: true
   vars:
     domain_email: admin@developer-friendly.blog
-  vars_files:
-    - vars/{{ ansible_architecture }}.yml
   roles:
     - k8s

@@ -44,6 +44,7 @@ resource "hcloud_server" "this" {
         curl https://get.k3s.io | \
           INSTALL_K3S_VERSION="v1.29.3+k3s1" \
           INSTALL_K3S_EXEC="--disable traefik
+            --kube-apiserver-arg=service-account-jwks-uri=https://${cloudflare_record.this.name}/openid/v1/jwks
             --disable-network-policy
             --flannel-backend none
             --write-kubeconfig /home/${var.username}/.kube/config

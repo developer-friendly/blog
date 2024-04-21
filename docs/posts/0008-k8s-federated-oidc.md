@@ -7,6 +7,7 @@ categories:
   - OpenID Connect
   - OpenTofu
   - Ansible
+  - Cilium
 links:
   - ./posts/0007-oidc-authentication.md
   - ./posts/0005-install-k3s-on-ubuntu22.md
@@ -186,7 +187,7 @@ some minor tweaks here and there.
 -8<- "docs/codes/0008/versions.tf"
 ```
 
-```hcl title="server.tf"
+```hcl title="server.tf" hl_lines="47"
 -8<- "docs/codes/0008/server.tf"
 ```
 
@@ -197,6 +198,12 @@ some minor tweaks here and there.
 ```hcl title="outputs.tf" hl_lines="9-30"
 -8<- "docs/codes/0008/outputs.tf"
 ```
+
+Notice the line where we specify the JWK URL for the Kubernetes API server and
+pass it as an argument to the `k3s` server. If not specified, the rest of this
+guide will need to be adjusted accordingly. In summary, this is the URL that will
+be used by the Service Provider when trying to verify the access tokens of the
+Service Account tokens.
 
 Business as usual, we apply the stack as below.
 
@@ -280,12 +287,16 @@ created in the first step.
 We will carry our tasks with Ansible throughout the entire Day 1 to Day n
 operations.
 
-```ini title="k8s/templates/wellknown-server.service.j2"
+```yaml title="k8s/defaults/main.yml" hl_lines="3"
+-8<- "docs/codes/0008/v2/k8s-defaults-main.yml"
+```
+
+```jinja title="k8s/templates/wellknown-server.service.j2"
 -8<- "docs/codes/0008/k8s/templates/wellknown-server.service.j2"
 ```
 
-```yaml title="k8s/defaults/main.yml" hl_lines="3"
--8<- "docs/codes/0008/k8s/defaults/main.yml"
+```yaml title="k8s/handlers/main.yml"
+-8<- "docs/codes/0008/k8s/handlers/main.yml"
 ```
 
 ```yaml title="k8s/tasks/certbot.yml"
@@ -293,7 +304,11 @@ operations.
 ```
 
 ```yaml title="k8s/tasks/main.yml" hl_lines="6-9"
--8<- "docs/codes/0008/k8s/tasks/main.yml"
+-8<- "docs/codes/0008/v2/k8s-tasks-main.yml"
+```
+
+```yaml title="playbook.yml" hl_lines="6-7"
+-8<- "docs/codes/0008/v2/playbook.yml"
 ```
 
 ???+ success "Certificate Renewal"
@@ -318,6 +333,98 @@ the following command:
 ```shell title="" linenums="0"
 ansible-playbook playbook.yml --tags certbot
 ```
+
+## Step 5: Expose OIDC Configuration to the Internet
+
+We've prepared all these works so far for this next step.
+
+In here, we will fetch the OIDC configuration from the Kubernetes API server
+and expose them to the internet on HTTPS using the newly acquired TLS
+certificate with the help of [static web server][static-web-server].
+
+```yaml title="k8s/defaults/main.yml" hl_lines="4-5"
+-8<- "docs/codes/0008/k8s/defaults/main.yml"
+```
+
+```yaml title="k8s/handlers/main.yml" hl_lines="7-16"
+-8<- "docs/codes/0008/k8s/handlers/main.yml"
+```
+
+```jinja title="k8s/templates/static-web-server.service.j2"
+-8<- "docs/codes/0008/k8s/templates/static-web-server.service.j2"
+```
+
+```yaml title="k8s/tasks/static-server.yml" hl_lines="46 54 62"
+-8<- "docs/codes/0008/k8s/tasks/static-server.yml"
+```
+
+```yaml title="k8s/tasks/main.yml" hl_lines="10-13"
+-8<- "docs/codes/0008/k8s/tasks/main.yml"
+```
+
+```yaml title="vars/aarch64.yml"
+-8<- "docs/codes/0008/vars/aarch64.yml"
+```
+
+```yaml title="playbook.yml" hl_lines="4 8-9"
+-8<- "docs/codes/0008/playbook.yml"
+```
+
+You can notice that we have turned on fact gathering in this step. This is due
+to our desire to include host-specific variables as you see with `vars_files`
+entry.
+
+From the above tasks, there are references to a couple of important files.
+One is the `static-web-server-prepare` which has both a `service` file as well
+as a `timer` file.
+
+This gives us flexibility to define `oneshot` services which
+will only run to completion on every tick of the `timer`. Effectively, we'll
+be able to separate the executable task and the scheduling of the task.
+
+The definitions for those files are as following:
+
+```jinja title="k8s/templates/static-web-server-prepare.sh.j2"
+-8<- "docs/codes/0008/k8s/templates/static-web-server-prepare.sh.j2"
+```
+
+Notice how we are manually fetching the OIDC configurations from the Kubernetes
+as well as the TLS certificate. This is due to a possibility of renewal for
+any of the given files:
+
+1. Firstly, the Kubernetes API server might rotate its Service Account issuer
+key pair and with that, the JWKs URL will have different output.
+2. Secondly, the TLS certificate will be renewed by `certbot` in the background
+and we have to keep up with that.
+
+```jinja title="k8s/templates/static-web-server-prepare.service.j2" hl_lines="10"
+-8<- "docs/codes/0008/k8s/templates/static-web-server-prepare.service.j2"
+```
+
+```jinja title="k8s/templates/static-web-server-prepare.timer.j2"
+-8<- "docs/codes/0008/k8s/templates/static-web-server-prepare.timer.j2"
+```
+
+Notice that the service file specifies the working directory for the script.
+Which means the `static-web-server-prepare` shell script will be executed in
+the specified directory.
+
+Also, watch out for `oneshot` systemd service type. These services are not
+long-running processes in an infitie loop. Instead, they will run to completion
+and the systemd will not report their state as `Active` as it would with
+`simple` [services][systemd-timer].
+
+## Step 6: Add the OIDC Provider to AWS
+
+That's it. We have done all the hard work. Anything after this will be a breeze
+compared to what we've done so far.
+
+Now, we have a domain name that is publishing its OIDC configuration and JWKs
+over the HTTPS endpoint and is ready to be used as a trusted OIDC provider.
+
+All we need right now, is a couple of TF resource in the AWS account and after
+that, we can ==test the setup using a sample Job that takes a Service Account
+in its definition and uses its token to talk to AWS==.
 
 <!--
 ## Step 1: Publicly Accessible Domain Name
@@ -429,9 +536,6 @@ This example assumes you have only one public IP addressfor the machine hosting
 the
 
 
-[aws-create-idp]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html
-[oidc-tls]: https://openid.net/specs/openid-connect-core-1_0.html
-[static-web-server]: https://static-web-server.net/
  -->
 
 <!--
@@ -492,10 +596,15 @@ high level structure for this document:
 4. how to achieve that in a bare-metal cluster
    1. [x] A domain name mapped to the VM IP address
    2. [x] a live k8s cluster
-   3. [ ] fetch tls certificate using certbot
-   4. [ ] fetch OIDC config and jwks and write them to disk
-   5. [ ] start the static web server using that tls
+   3. [x] fetch tls certificate using certbot
+   4. [x] fetch OIDC config and jwks and write them to disk
+   5. [x] start the static web server using that tls
 5. add the OIDC to AWS
 6. add the IAM role with the trust relationship to the OIDC provider
 7. test the setup with a sample pod with and without SA attached
 -->
+
+[aws-create-idp]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html
+[oidc-tls]: https://openid.net/specs/openid-connect-core-1_0.html
+[static-web-server]: https://static-web-server.net/
+[systemd-timer]: https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html

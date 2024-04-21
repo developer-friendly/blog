@@ -1,3 +1,5 @@
 ---
 cilium_version: 1.15.4
 acme_home: /var/www/html
+static_web_server_home: /var/www/static-web-server
+kubeconfig: /etc/rancher/k3s/k3s.yaml
