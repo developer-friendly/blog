@@ -9,3 +9,36 @@
     - vars/{{ ansible_architecture }}.yml
   roles:
     - k8s
+  tags:
+    - provision
+- name: Test the AWS Access
+  hosts: k3s-cluster
+  gather_facts: false
+  become: true
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  pre_tasks:
+    - name: Install pip3
+      ansible.builtin.package:
+        name: python3-pip
+        state: present
+    - name: Install kubernetes library
+      ansible.builtin.pip:
+        name: kubernetes<30
+        state: present
+    - name: Read Tofu output from ./configure-oidc
+      ansible.builtin.command:
+        cmd: tofu output -raw iam_role_arn
+        chdir: "{{ playbook_dir }}/configure-oidc"
+      delegate_to: localhost
+      become: false
+      changed_when: false
+      register: configure_oidc
+    - name: Set the AWS role arn
+      ansible.builtin.set_fact:
+        role_arn: "{{ configure_oidc.stdout }}"
+  roles:
+    - app
+  tags:
+    - test
+    - never

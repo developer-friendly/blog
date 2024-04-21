@@ -28,3 +28,7 @@ output "ansible_vars" {
     domain_name: ${cloudflare_record.this.name}
   EOF
 }
+
+output "oidc_provider_url" {
+  value = cloudflare_record.this.name
+}

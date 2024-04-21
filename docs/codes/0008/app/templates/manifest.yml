@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: demo-service-account
+  namespace: default
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: demo-app
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      job-name: demo-app
+  template:
+    metadata:
+      labels:
+        job-name: demo-app
+    spec:
+      restartPolicy: Never
+      containers:
+        - image: amazon/aws-cli:2.15.40
+          name: demo-app
+          command:
+            - sh
+            - -c
+            - |
+              aws sts get-caller-identity
+
+              aws ssm get-parameters-by-path --path / --recursive --with-decryption --query "Parameters[*].[Name]" --output text
+          env:
+            - name: AWS_REGION
+              value: "{{ aws_region }}"
+            - name: AWS_ROLE_ARN
+              value: "{{ role_arn }}"
+            - name: AWS_ROLE_SESSION_NAME
+              value: "{{ role_session_name }}"
+            - name: AWS_WEB_IDENTITY_TOKEN_FILE
+              value: /var/run/secrets/tokens/token
+          volumeMounts:
+            - name: token
+              mountPath: /var/run/secrets/tokens
+              readOnly: true
+      serviceAccountName: demo-service-account
+      volumes:
+        - name: token
+          projected:
+            sources:
+              - serviceAccountToken:
+                  path: token
+                  audience: sts.amazonaws.com

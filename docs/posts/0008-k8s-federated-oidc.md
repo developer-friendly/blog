@@ -65,13 +65,13 @@ With that intro out of the way, let's dive in!
 Make sure you have the following prerequisites in place before proceeding:
 
 - [x] A Kubernetes cluster that can be exposed to the internet. (1)
-{ .annotate }
+      { .annotate }
 
-    1.  A local Kubernetes cluster will do, however, you will need to expose
-        the required endpoints to the internet. This can be done using a
-        service like [ngrok](https://ngrok.com/).
+      1.  A local Kubernetes cluster will do, however, you will need to expose
+          the required endpoints to the internet. This can be done using a
+          service like [ngrok](https://ngrok.com/).
 
-        Not the topic of today's post!
+          Not the topic of today's post!
 
 - [x] An AWS account to create an OIDC provider and IAM roles.
 - [x] A verified root domain name that YOU own. Skip this if you're using a
@@ -139,23 +139,23 @@ This will be the address we will add to the AWS IAM as an Identity Provider.
 
 Any DNS provider will do, but for our example, we're using Cloudflare.
 
-```hcl title="variables.tf"
+```hcl title="provision-k8s/variables.tf"
 -8<- "docs/codes/0008/v0/variables.tf"
 ```
 
-```hcl title="versions.tf"
+```hcl title="provision-k8s/versions.tf"
 -8<- "docs/codes/0008/v0/versions.tf"
 ```
 
-```hcl title="network.tf"
--8<- "docs/codes/0008/network.tf"
+```hcl title="provision-k8s/network.tf"
+-8<- "docs/codes/0008/provision-k8s/network.tf"
 ```
 
-```hcl title="dns.tf"
--8<- "docs/codes/0008/dns.tf"
+```hcl title="provision-k8s/dns.tf"
+-8<- "docs/codes/0008/provision-k8s/dns.tf"
 ```
 
-```hcl title="outputs.tf"
+```hcl title="provision-k8s/outputs.tf"
 -8<- "docs/codes/0008/v0/outputs.tf"
 ```
 
@@ -179,24 +179,24 @@ before and so, we won't go too deep into it.
 But for the sake of completeness, we'll resurface the code one more time, with
 some minor tweaks here and there.
 
-```hcl title="variables.tf" hl_lines="28-36"
--8<- "docs/codes/0008/variables.tf"
+```hcl title="provision-k8s/variables.tf" hl_lines="28-36"
+-8<- "docs/codes/0008/provision-k8s/variables.tf"
 ```
 
-```hcl title="versions.tf" hl_lines="15-22"
--8<- "docs/codes/0008/versions.tf"
+```hcl title="provision-k8s/versions.tf" hl_lines="15-22"
+-8<- "docs/codes/0008/v1/versions.tf"
 ```
 
-```hcl title="server.tf" hl_lines="47"
--8<- "docs/codes/0008/server.tf"
+```hcl title="provision-k8s/server.tf" hl_lines="47"
+-8<- "docs/codes/0008/provision-k8s/server.tf"
 ```
 
-```hcl title="firewall.tf"
--8<- "docs/codes/0008/firewall.tf"
+```hcl title="provision-k8s/firewall.tf"
+-8<- "docs/codes/0008/provision-k8s/firewall.tf"
 ```
 
-```hcl title="outputs.tf" hl_lines="9-30"
--8<- "docs/codes/0008/outputs.tf"
+```hcl title="provision-k8s/outputs.tf" hl_lines="9-34"
+-8<- "docs/codes/0008/provision-k8s/outputs.tf"
 ```
 
 Notice the line where we specify the JWK URL for the Kubernetes API server and
@@ -227,7 +227,7 @@ inventory where Ansible expects them.
 
 ??? example "ansible.cfg"
     ```ini title="" hl_lines="8"
-    -8<- "docs/codes/0008/ansible.cfg"
+        -8<- "docs/codes/0008/ansible.cfg"
     ```
 
 ```shell title="" linenums="0"
@@ -236,10 +236,10 @@ tofu output -raw ansible_inventory_yaml > ./inventory/k3s-cluster.yml
 tofu output -raw ansible_vars > ./inventory/group_vars/all.yml
 ```
 
-??? example "ansible-inventory --list"
+??? example "`ansible-inventory --list`"
     ```json title=""
-    -8<- "docs/codes/0008/outputs/ansible-inventory-list.json"
-    ```
+        -8<- "docs/codes/0008/outputs/ansible-inventory-list.json"
+    ````
 
 At this stage we're ready to move on to the next step.
 
@@ -367,7 +367,13 @@ certificate with the help of [static web server][static-web-server].
 ```
 
 ```yaml title="playbook.yml" hl_lines="4 8-9"
--8<- "docs/codes/0008/playbook.yml"
+-8<- "docs/codes/0008/v3/playbook.yml"
+```
+
+Running this will be as follows:
+
+```shell title="" linenums="0"
+ansible-playbook playbook.yml --tags static-web-server
 ```
 
 You can notice that we have turned on fact gathering in this step. This is due
@@ -393,9 +399,9 @@ as well as the TLS certificate. This is due to a possibility of renewal for
 any of the given files:
 
 1. Firstly, the Kubernetes API server might rotate its Service Account issuer
-key pair and with that, the JWKs URL will have different output.
+   key pair and with that, the JWKs URL will have different output.
 2. Secondly, the TLS certificate will be renewed by `certbot` in the background
-and we have to keep up with that.
+   and we have to keep up with that.
 
 ```jinja title="k8s/templates/static-web-server-prepare.service.j2" hl_lines="10"
 -8<- "docs/codes/0008/k8s/templates/static-web-server-prepare.service.j2"
@@ -417,7 +423,7 @@ and the systemd will not report their state as `Active` as it would with
 ## Step 6: Add the OIDC Provider to AWS
 
 That's it. We have done all the hard work. Anything after this will be a breeze
-compared to what we've done so far.
+compared to what we've done so far as you shall see shortly.
 
 Now, we have a domain name that is publishing its OIDC configuration and JWKs
 over the HTTPS endpoint and is ready to be used as a trusted OIDC provider.
@@ -426,22 +432,165 @@ All we need right now, is a couple of TF resource in the AWS account and after
 that, we can ==test the setup using a sample Job that takes a Service Account
 in its definition and uses its token to talk to AWS==.
 
+```hcl title="configure-oidc/versions.tf"
+-8<- "docs/codes/0008/configure-oidc/versions.tf"
+```
+
+```hcl title="configure-oidc/main.tf"
+-8<- "docs/codes/0008/configure-oidc/main.tf"
+```
+
+```hcl title="configure-oidc/oidc_provider.tf"
+-8<- "docs/codes/0008/configure-oidc/oidc_provider.tf"
+```
+
+Believe it or not, but after all these efforts, it is finally done.
+
+Now it is time for the test.
+
+In order to be able to assume a role from inside a pod of our cluster, we will
+create a sample IAM Role with a trust relationship to the OIDC provider we just
+created.
+
+```hcl title="configure-oidc/iam_role.tf" hl_lines="18 21 27 30"
+-8<- "docs/codes/0008/configure-oidc/iam_role.tf"
+```
+
+```hcl title="configure-oidc/outputs.tf"
+-8<- "docs/codes/0008/configure-oidc/outputs.tf"
+```
+
+## Step 7: Test the Setup
+
+We have created the IAM Role with the trust relationship to the OIDC provider
+of the cluster. With the conditional in the AWS IAM Role you se in the previous
+step, only the Service Accounts with the specified audience, in the `default`
+namespace and with the Service Account name `demo-service-account` will be able
+to assume the role.
+
+That said, let's use create another Ansible role to create a Kuberentes Job.
+
+```shell title="" linenums="0"
+ansible-galaxy init app
+```
+
+We will need the Kubernetes core Ansible collection, so let's install that.
+
+```yaml title="requirements.yml"
+-8<- "docs/codes/0008/requirements.yml"
+```
+
+```shell title="" linenums="0"
+ansible-galaxy collection install -r requirements.yml
+```
+
+```yaml title="app/defaults/main.yml"
+-8<- "docs/codes/0008/app/defaults/main.yml"
+```
+
+```yaml title="app/templates/manifest.yml"
+-8<- "docs/codes/0008/app/templates/manifest.yml"
+```
+
+```yaml title="app/tasks/main.yml"
+-8<- "docs/codes/0008/app/tasks/main.yml"
+```
+
+```yaml title="playbook.yml" hl_lines="14-44"
+-8<- "docs/codes/0008/playbook.yml"
+```
+
+A few important notes are worth mentioning here:
+
+1. The second playbook is tagged with `never`. That is because there is a
+dependency on the second TF module. We have to manually resolve it before being
+able to run the second playbook. As soon as the dependency is resolved, we can
+run the second playbook with the `--tags test` flag.
+2. There is a fact gathering in the `pre_task` of the second playbook. That is,
+again, because of the dependency to the TF module. We will grab the output of
+the TF module and pass it to our next role.
+3. In the fact gathering step, there is an Ansible delegation happening. This
+will ensure that the task is running in our own machine and not the target
+machine. The reason is that the TF module is in our local machine. We also
+do not need the `become` and as such it is turned off.
+4. You will notice that the job manifest is using AWS CLI Docker image. By
+specifying some of the expected [environment variables][aws-cli-env-var], we
+are able to use the AWS CLI without the requirement of manual `aws configure`.
+
+This playbook can be run after the second TF module with the following command:
+
+```shell title="" linenums="0"
+ansible-playbook playbook.yml --tags test
+```
+
+When checking the logs of the deployed Kubernetes Job, we can see that it has
+been successful.
+
+??? example "`kubectl logs job/demp-app`"
+
+    ```json title=""
+    -8<- "docs/codes/0008/outputs/kubectl-logs-job-demo-app.json"
+    ```
+
+Lastly, to test if the Service Account and the IAM Role trust policy plays any
+role in any of this, we can remove the `serviceAccountToken` and try to recreate
+the job.
+
+The output is as expected:
+
+```plaintext title="" linenums="0"
+An error occurred (AccessDenied) when calling the AssumeRoleWithWebIdentity operation: Not authorized to perform sts:AssumeRoleWithWebIdentity
+```
+
+That's all folks! We can now wrap this up.
+
+## Conclusion
+
+OpenID Connect is one of the most powerful protocols that powers the internet.
+Yet, it is so underestimated and easily overlooked. If you look closely enough
+on any system around you, you will see a lot of practical applications of OIDC.
+
+One of the cues that you can look for when trying to identify applicability of
+OIDC is when trying to authenticate an identity of one system to another. You
+will almost always never need to create another identity in the target system,
+nor do you need to pass any credentials around. All that's needed is to establish
+a trust relationship between the two systems and you're good to go.
+
+This gives you a lot of flexibility and enhances your security posture. You
+will also remove the overhead of secret rotations from your workload.
+
+In this post, we have seen how to establish a trust relationship between a
+Kubernetes cluster and AWS IAM to grant cluster generated Service Account tokens
+access to AWS services using OIDC.
+
+Having this foundation in place, it's easy to extend this pattern to managed
+Kubernetes clusters such as Azure Kubernetes Service (AKS) or Google Kubernetes
+Engine (GKE). All you need from the managed Kubernetes cluster is the OIDC
+configuration endpoint, which in turn has the JWKs URL. With that, you can
+create the trust relationship in AWS or any other Service Provider and grant
+the relevant access to your services as needed.
+
+Hope you've enjoyed reading the post as much as I've enjoyed writing it. I wish
+you have learned something new and useful from it.
+
+Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
+
 <!--
 ## Step 1: Publicly Accessible Domain Name
 
 Now that we have a Kubernetes cluster, it's time to create a domain name that
 points to the public IP address of the machine hosting the cluster.
 
-```hcl title="versions.tf" hl_lines="15-22 26-28"
--8<- "docs/codes/0008/versions.tf"
+```hcl title="provision-k8s/versions.tf" hl_lines="15-22 26-28"
+-8<- "docs/codes/0008/provision-k8s/versions.tf"
 ```
 
-```hcl title="variables.tf" hl_lines="17-26"
--8<- "docs/codes/0008/variables.tf"
+```hcl title="provision-k8s/variables.tf" hl_lines="17-26"
+-8<- "docs/codes/0008/provision-k8s/variables.tf"
 ```
 
-```hcl title="dns.tf"
--8<- "docs/codes/0008/dns.tf"
+```hcl title="provision-k8s/dns.tf"
+-8<- "docs/codes/0008/provision-k8s/dns.tf"
 ```
 
 In this example we are using Cloudflare as the DNS provider. You can use any
@@ -516,20 +665,20 @@ We will need a verified TLS certificate for the domain name that we will use to
 expose the OIDC endpoints. This is the domain name that we own and will use to
 create the trusted identity provider in AWS.
 
-```hcl title="versions.tf"
--8<- "docs/codes/0008/versions.tf"
+```hcl title="provision-k8s/versions.tf"
+-8<- "docs/codes/0008/provision-k8s/versions.tf"
 ```
 
-```hcl title="variables.tf"
--8<- "docs/codes/0008/variables.tf"
+```hcl title="provision-k8s/variables.tf"
+-8<- "docs/codes/0008/provision-k8s/variables.tf"
 ```
 
-```hcl title="main.tf"
--8<- "docs/codes/0008/main.tf"
+```hcl title="provision-k8s/main.tf"
+-8<- "docs/codes/0008/provision-k8s/main.tf"
 ```
 
-```hcl title="output.tf"
--8<- "docs/codes/0008/output.tf"
+```hcl title="provision-k8s/output.tf"
+-8<- "docs/codes/0008/provision-k8s/output.tf"
 ```
 
 This example assumes you have only one public IP addressfor the machine hosting
@@ -608,3 +757,4 @@ high level structure for this document:
 [oidc-tls]: https://openid.net/specs/openid-connect-core-1_0.html
 [static-web-server]: https://static-web-server.net/
 [systemd-timer]: https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html
+[aws-cli-env-var]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html
