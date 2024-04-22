@@ -2,8 +2,8 @@
 date: 2024-04-22
 draft: true
 description: >-
-  How to access AWS from bear-metal Kubernetes (K3s) Service Accounts using
-  OIDC by establishing a trust relationship between the Kubernetes and AWS IAM.
+  How to access AWS with bear-metal Kubernetes (K3s) Service Accounts tokens
+  by establishing an OIDC trust relationship between the Kubernetes and AWS IAM.
 categories:
   - Kubernetes
   - AWS
@@ -25,24 +25,6 @@ links:
 ---
 
 # Grant Kubernetes Pods Access to AWS Services Using OpenID Connect
-
-<!--
-important keyworkds:
-AWS
-kubernetes
-pods
-OpenID Connect
-
-bare-metal
-Azure
-ts
-service account
-K3s
-
-OIDC
-IAM
-trust relationship
- -->
 
 Learn how to establish a trust relationship between a Kubernetes cluster and
 AWS IAM to grant cluster generated Service Account tokens access to AWS
@@ -577,6 +559,15 @@ created.
 -8<- "docs/codes/0008/configure-oidc/outputs.tf"
 ```
 
+The AWS IAM Role trust relationship will look something like this:
+
+```json title="AWS IAM Role Trust Relationship"
+-8<- "docs/codes/0008/junk/outputs/aws-iam-role-trust-relationship.json"
+```
+
+This, of course, shouldn't come as a surprise. We have already seen this in the
+TF definition above.
+
 ## Step 7: Test the Setup
 
 We have created the IAM Role with the trust relationship to the OIDC provider
@@ -729,166 +720,6 @@ you have learned something new and useful from it.
 
 Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
 
-<!--
-## Step 1: Publicly Accessible Domain Name
-
-Now that we have a Kubernetes cluster, it's time to create a domain name that
-points to the public IP address of the machine hosting the cluster.
-
-```hcl title="provision-k8s/versions.tf" hl_lines="15-22 26-28"
--8<- "docs/codes/0008/provision-k8s/versions.tf"
-```
-
-```hcl title="provision-k8s/variables.tf" hl_lines="17-26"
--8<- "docs/codes/0008/provision-k8s/variables.tf"
-```
-
-```hcl title="provision-k8s/dns.tf"
--8<- "docs/codes/0008/provision-k8s/dns.tf"
-```
-
-In this example we are using Cloudflare as the DNS provider. You can use any
-other DNS provider of your choice.
-
-```shell title=""
-export TF_VAR_cloudflare_api_token="PLACEHOLDER"
-tofu plan -out tfplan
-tofu apply tfplan
-```
- -->
-
-<!--
-## Step 2: Fetch the OIDC Configurations
-
-As mentioned in the [Roadmap](#roadmap), we need to expose the following two
-endpoints:
-
-- `/.well-known/openid-configuration`
-- `/openid/v1/jwks`
-
-The Kubernetes API server exposes these two endpoints on its own.
-
-To try them out, you can use the following commands:
-
-```shell title=""
-kubectl get --raw /.well-known/openid-configuration
-kubectl get --raw /openid/v1/jwks
-```
-
-However they are not accessible to anonymous users by default.
-
-Additionally, it is generally frowed upon to expose the API server to the
-internet as it may expose you to obvious security risks.
-
-For those reasons, we will try to treat the API server and the OIDC provider as
-two separate entities; keeping the API server in its own protected network and
-exposing the OIDC provider to the internet.
-
-In our one-node example, they are
-on the same node, however, with this approach, we can easily separate them in
-a real-world scenario.
-
-There are countless ways we can achieve this, HAProxy and other reverse proxies
-are some of the most popular ones.
-
-We are aiming for simplicity in this guide. Therefore, we will use a simple
-static web server to serve the OIDC configurations.
-
-The idea is to receive the configurations with the `kubectl` command, save those
-files and serve them with an static web server.
-
-So, in a nutshell, this is what we'll do:
-
-```shell title=""
-mkdir -p .well-known/ openid/v1/
-
-kubectl get --raw /.well-known/openid-configuration > .well-known/openid-configuration
-kubectl get --raw /openid/v1/jwks > openid/v1/jwks
-```
-
-After this point, any static web server can do. You can use `serve`, Python's
-`http.server`, or any other static web server.
-
-In our guide, we will use [`static-web-server`][static-web-server]
-
-
-
-## Step 1: TLS Certificates
-
-We will need a verified TLS certificate for the domain name that we will use to
-expose the OIDC endpoints. This is the domain name that we own and will use to
-create the trusted identity provider in AWS.
-
-```hcl title="provision-k8s/versions.tf"
--8<- "docs/codes/0008/provision-k8s/versions.tf"
-```
-
-```hcl title="provision-k8s/variables.tf"
--8<- "docs/codes/0008/provision-k8s/variables.tf"
-```
-
-```hcl title="provision-k8s/main.tf"
--8<- "docs/codes/0008/provision-k8s/main.tf"
-```
-
-```hcl title="provision-k8s/output.tf"
--8<- "docs/codes/0008/provision-k8s/output.tf"
-```
-
-This example assumes you have only one public IP addressfor the machine hosting
-the
-
-
- -->
-
-
-<!--
-# for aks
-az aks show -n lware-dev-aks -g lware-dev-rg --query "oidcIssuerProfile.issuerUrl" -otsv
-
-add that to AWS as OIDC and specify the audience appropriately
-
-# for bear metal
-you need a way to expose /.well-known/openid-configuration and /openid/v1/jwks
-one of the simplest and tiniest way is to use static-web-server
-you need a verified tls signed by a trusted CA
-serving those OIDC files should be behind the said static server with the aforementioned tls
-finally, the AWS IAM role looks like the following:
-
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "Federated": "arn:aws:iam::591342154473:oidc-provider/4f0fce7c-9efa-9ee3-5fe0-467d95d2584c.developer-friendly.blog"
-            },
-            "Action": "sts:AssumeRoleWithWebIdentity",
-            "Condition": {
-                "StringEquals": {
-                    "4f0fce7c-9efa-9ee3-5fe0-467d95d2584c.developer-friendly.blog:aud": "sts.amazonaws.com",
-                    "4f0fce7c-9efa-9ee3-5fe0-467d95d2584c.developer-friendly.blog:sub": "system:serviceaccount:default:default"
-                }
-            }
-        }
-    ]
-} -->
-
-<!--
-high level structure for this document:
-1. [x] refer to the previous post
-2. [x] recap the most important points
-3. [x] specify the OIDC compliance through exposing certain endpoints
-4. how to achieve that in a bare-metal cluster
-   1. [x] A domain name mapped to the VM IP address
-   2. [x] a live k8s cluster
-   3. [x] fetch tls certificate using certbot
-   4. [x] fetch OIDC config and jwks and write them to disk
-   5. [x] start the static web server using that tls
-5. add the OIDC to AWS
-6. add the IAM role with the trust relationship to the OIDC provider
-7. test the setup with a sample pod with and without SA attached
--->
 
 [k3s]: https://docs.k3s.io/
 [aks]: https://learn.microsoft.com/en-us/azure/aks/
