@@ -307,7 +307,7 @@ inventory where Ansible expects them.
     ```
 
 ```shell title="" linenums="0"
-mkdir -p ./inventory/group_vars
+mkdir -p ../inventory/group_vars
 tofu output -raw ansible_inventory_yaml > ../inventory/k3s-cluster.yml
 tofu output -raw ansible_vars > ../inventory/group_vars/all.yml
 ```
