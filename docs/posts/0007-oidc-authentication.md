@@ -460,7 +460,7 @@ That is the true power of adopting OIDC as an authentication mechanism.
 The successful CI job run will look like this:
 
 <figure markdown="span">
-  ![Successful CI run](../static/img/0007/successful-ci-run.png "Click to zoom in"){ loading=lazy }
+  ![Successful CI run](../static/img/0007/successful-ci-run.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Successful GitHub Actions CI run</figcaption>
 </figure>
 

@@ -227,6 +227,20 @@ We would need the required access token which you can get from their respective
 account settings. Grab your Cloudflare token from [here][cf-token] and learn
 how to generate the Hetzner API token from [here][hcloud-token].
 
+??? example "Get Hetzner Cloud API Token"
+
+      <figure markdown="span">
+        ![Get Hetzner Cloud API Token](../static/img/0008/hcloud-token.webp "Click to zoom in"){ loading=lazy }
+        <figcaption>Get Hetzner Cloud API Token</figcaption>
+      </figure>
+
+??? example "Get Cloudflare API Token"
+
+      <figure markdown="span">
+        ![Get Cloudflare API Token](../static/img/0008/cf-token.webp "Click to zoom in"){ loading=lazy }
+        <figcaption>Get Cloudflare API Token</figcaption>
+      </figure>
+
 ```shell title="" linenums="0"
 export TF_VAR_cloudflare_api_token="PLACEHOLDER"
 export TF_VAR_hetzner_api_token="PLACEHOLDER"
