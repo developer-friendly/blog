@@ -303,7 +303,7 @@ inventory where Ansible expects them.
 
 ??? example "ansible.cfg"
     ```ini title="" hl_lines="8"
-        -8<- "docs/codes/0008/ansible.cfg"
+    -8<- "docs/codes/0008/ansible.cfg"
     ```
 
 ```shell title="" linenums="0"
