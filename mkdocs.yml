@@ -15,7 +15,7 @@ extra:
       link: https://www.linkedin.com/in/meysamazad
       name: Follow us on LinkedIn!
     - icon: fontawesome/solid/square-rss
-      link: /feed_rss_created.xml
+      link: /feed_rss_updated.xml
       name: Subscribe to our RSS feed!
     - icon: fontawesome/brands/x-twitter
       link: https://x.com/devfriendly_
@@ -23,6 +23,9 @@ extra:
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/@developer-friendly
       name: Subscribe to our YouTube channel!
+    - icon: simple/stackoverflow
+      link: https://stackoverflow.com/users/8282345/meysam
+      name: Follow us on Stack Overflow!
     - icon: fontawesome/solid/paper-plane
       link: mailto:hi@developer-friendly.blog
       name: Send us an email!
