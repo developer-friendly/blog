@@ -534,6 +534,15 @@ Note that we're starting a new TF module below.
 -8<- "docs/codes/0008/configure-oidc/oidc_provider.tf"
 ```
 
+Let's apply this stack:
+
+```shell title="" linenums="0"
+export AWS_PROFILE="PLACEHOLDER"
+
+tofu plan -out tfplan
+tofu apply tfplan
+```
+
 Believe it or not, but after all these efforts, it is finally done.
 
 Now it is time for the test.
