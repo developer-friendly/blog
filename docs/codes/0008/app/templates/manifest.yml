@@ -28,7 +28,11 @@ spec:
             - |
               aws sts get-caller-identity
 
-              aws ssm get-parameters-by-path --path / --recursive --with-decryption --query "Parameters[*].[Name]" --output text
+              aws ssm get-parameters-by-path \
+                --path / --recursive \
+                --with-decryption \
+                --query "Parameters[*].[Name]" \
+                --output text
           env:
             - name: AWS_REGION
               value: "{{ aws_region }}"
@@ -38,6 +42,8 @@ spec:
               value: "{{ role_session_name }}"
             - name: AWS_WEB_IDENTITY_TOKEN_FILE
               value: /var/run/secrets/tokens/token
+          securityContext:
+            readOnlyRootFilesystem: true
           volumeMounts:
             - name: token
               mountPath: /var/run/secrets/tokens

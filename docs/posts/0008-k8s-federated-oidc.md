@@ -1,6 +1,9 @@
 ---
 date: 2024-04-22
 draft: true
+description: >-
+  How to access AWS from bear-metal Kubernetes (K3s) Service Accounts using
+  OIDC by establishing a trust relationship between the Kubernetes and AWS IAM.
 categories:
   - Kubernetes
   - AWS
@@ -16,6 +19,24 @@ links:
 
 # Grant Kubernetes Pods Access to AWS Services Using OpenID Connect
 
+<!--
+important keyworkds:
+AWS
+kubernetes
+pods
+OpenID Connect
+
+bare-metal
+Azure
+ts
+service account
+K3s
+
+OIDC
+IAM
+trust relationship
+ -->
+
 Learn how to establish a trust relationship between a Kubernetes cluster and
 AWS IAM to grant cluster generated Service Account tokens access to AWS
 services using OIDC & without storing long-lived credentials.
@@ -29,19 +50,24 @@ OpenID Connect (OIDC) is and how to use it to authenticate identities from one
 system to another.
 
 We covered why it is crucial to avoid storing long-lived
-credentials and the benefits of employing OIDC for the task authentication.
+credentials and the benefits of employing OIDC for the task of authentication.
 
 If you haven't read that one already, here's a recap:
 
 - [x] OIDC is an authentication protocol that allows the identities in one system
       to authenticate to another system.
 - [x] It is based on OAuth 2.0 and JSON Web Tokens (JWT).
-- [x] Storing long-lived credentials is risky and should be avoided.
+- [x] Storing long-lived credentials is risky and should be avoided at all cost
+      if possible.
 - [x] OIDC provides a secure way to authenticate identities without storing
       long-lived credentials.
 - [x] It is widely used in modern applications and systems.
 - [x] The hard requirements is that both the Service Provider and the Identity
       Provider must be OIDC compliant.
+- [x] With OIDC you will only keep the identities and their credentials in one
+      system and authenticate them to another system without storing any
+      long-lived credentials. The former is called the ^^Identity Provider^^ and
+      the latter is called the ^^Service Provider^^.
 
 We also covered a practical example of authenticating GitHub runners to AWS IAM
 by establishing a trust relationship between GitHub and AWS using OIDC.
@@ -50,10 +76,11 @@ In this post, we will take it one step further and provide a way for the pods
 of our Kubernetes cluster to authenticate to AWS services using OIDC.
 
 This post will provide a walkthrough of granting such access to a
-bear-metal Kubernetes cluster (k3s) using only the power of OpenID Connect
+bear-metal Kubernetes cluster ([k3s][k3s]) using only the power of OpenID Connect
 protocol. In a later post, we'll show you how easy it is to achieve the same
-with a managed Kubernetes cluster like Azure Kubernetes Service (AKS). But, first
-let's understand the fundamentals by trying it on a bear-metal cluster.
+with a managed Kubernetes cluster like [Azure Kubernetes Service (AKS)][aks].
+But, first let's understand the fundamentals by trying it on a bear-metal
+cluster.
 
 We will not store any credentials in our pods and as such, won't ever have to
 worry about other security concerns such as secret rotations!
@@ -76,17 +103,20 @@ Make sure you have the following prerequisites in place before proceeding:
 - [x] An AWS account to create an OIDC provider and IAM roles.
 - [x] A verified root domain name that YOU own. Skip this if you're using a
       managed Kubernetes cluster.
+- [x] [OpenTofu v1.6][opentofu-v1.6]
+- [x] [Ansible v2.16][ansible-v2.16]
 
 ## Roadmap
 
 Let's see what we are trying to achieve in this guide.
 
-Our end goal is to create an [Identity Provider (IdP)][aws-create-idp] in AWS.
-After doing so, we will be able to create an IAM Role with a trust relationship
+Our end goal is to create an [Identity Provider (IdP) in AWS][aws-create-idp].
+After doing so, we will be able to create an [IAM Role][aws-iam-role] with a trust relationship
 to the IdP.
 
-Ultimately, the pods in our Kubernetes cluster that have the
-desired Service Account(s) will be able to talk to the AWS services.
+**Ultimately, the pods in our Kubernetes cluster that have the
+desired [Service Account(s)][k8s-sa] will be able to talk to the AWS
+services**.
 
 To achieve this, and as per the OIDC specification, the following endpoints
 must be exposed through an
@@ -114,9 +144,9 @@ to trust our OIDC provider.
 !!! tip "OIDC Compliant"
 
     For an OIDC provider and a Service Provider to trust each other, they must
-    be OIDC compliant. This means that the OIDC provider must expose certain
-    endpoints and the Service Provider must be able to validate the OIDC
-    provider through those endpoints.
+    both be OIDC compliant. This means that the OIDC provider must expose
+    certain endpoints and the Service Provider must be able to validate the
+    OIDC provider through those endpoints.
 
 In practice, we will need the following two absolute URLs to be accessible
 publicly through internet with a verified TLS certificate signed by a trusted
@@ -126,11 +156,45 @@ Certificate Authority (CA):
 - `https://mydomain.com/openid/v1/jwks`
 
 Again, and just to reiterate, as per the OIDC specification the HTTPS is a must
-and the TLS certificate has to be verified by a trusted Certificate
+and the TLS certificate has to be signed by a trusted Certificate
 Authority (CA).
 
 When all this is set up, we shall be able to add the `https://mydomain.com` to
 the AWS as an OIDC provider.
+
+## Step 0: Directory Structure
+
+There are a lot of codes we will cover in this post. It is good to know that
+to expect. Here's the layout of the directories we will be working with:
+
+<div class="annotate" markdown>
+```plaintext title="" linenums="0"
+.
+├── ansible.cfg
+├── app/(1)
+├── configure-oidc/(2)
+├── inventory/(3)
+├── k8s/(4)
+├── playbook.yml(5)
+├── provision-k8s/(6)
+├── requirements.yml(7)
+└── vars/(8)
+```
+</div>
+
+1. Ansible role to test out the setup at the end.
+2. TF files that will create OIDC provider in AWS after the `provision-k8s`
+   stack is applied.
+3. Inventory files for Ansible to use. The TF files in `provision-k8s` will
+   create the inventory files.
+4. Ansible role to bootstrap the Kubernetes cluster. Including the Cilium CNI
+   installation, TLS certificate fetching and the static web server setup.
+5. Our main playbook and the Ansible entrypoint for all the tasks we do against
+   the target `inventory`.
+6. The starting point for this guide begins here where we provision a server
+   in Hetzner Cloud and spin up a lightweight Kubernetes cluster using `k3s`.
+7. The Ansible collection requirements file.
+8. The host-specific variables that will be used in the Ansible tasks.
 
 ## Step 1: Dedicated Domain Name
 
@@ -160,7 +224,8 @@ Any DNS provider will do, but for our example, we're using Cloudflare.
 ```
 
 We would need the required access token which you can get from their respective
-account settings.
+account settings. Grab your Cloudflare token from [here][cf-token] and learn
+how to generate the Hetzner API token from [here][hcloud-token].
 
 ```shell title="" linenums="0"
 export TF_VAR_cloudflare_api_token="PLACEHOLDER"
@@ -174,7 +239,7 @@ tofu apply tfplan
 
 At this point, we should have a live Kuberntes cluster. We've already covered
 [how to set up a lightweight Kubernetes cluster on an Ubuntu 22.04 machine](./0005-install-k3s-on-ubuntu22.md)
-before and so, we won't go too deep into it.
+before and so, we won't go too deep into that.
 
 But for the sake of completeness, we'll resurface the code one more time, with
 some minor tweaks here and there.
@@ -187,7 +252,7 @@ some minor tweaks here and there.
 -8<- "docs/codes/0008/v1/versions.tf"
 ```
 
-```hcl title="provision-k8s/server.tf" hl_lines="47"
+```hcl title="provision-k8s/server.tf" hl_lines="47-48"
 -8<- "docs/codes/0008/provision-k8s/server.tf"
 ```
 
@@ -199,11 +264,18 @@ some minor tweaks here and there.
 -8<- "docs/codes/0008/provision-k8s/outputs.tf"
 ```
 
-Notice the line where we specify the JWK URL for the Kubernetes API server and
-pass it as an argument to the `k3s` server. If not specified, the rest of this
-guide will need to be adjusted accordingly. In summary, this is the URL that will
-be used by the Service Provider when trying to verify the access tokens of the
-Service Account tokens.
+Notice the lines where we specify the OIDC issuer URL & JWK URL for the
+Kubernetes API server to be a publicly accessible address and
+pass it as an argument to the `k3s` server.
+
+```shell title="provision-k8s/server.tf" linenums="47"
+-8<- "docs/codes/0008/provision-k8s/server.tf:47:48"
+```
+
+If not specified, the rest of this
+guide won't work and additional configuration is required. In summary, these
+are the URLs that will be used by the Service Provider when trying to verify
+the OIDC provider & the access tokens of the Service Accounts.
 
 Business as usual, we apply the stack as below.
 
@@ -238,8 +310,8 @@ tofu output -raw ansible_vars > ./inventory/group_vars/all.yml
 
 ??? example "`ansible-inventory --list`"
     ```json title=""
-        -8<- "docs/codes/0008/outputs/ansible-inventory-list.json"
-    ````
+    -8<- "docs/codes/0008/outputs/ansible-inventory-list.json"
+    ```
 
 At this stage we're ready to move on to the next step.
 
@@ -296,7 +368,7 @@ operations.
 ```
 
 ```yaml title="k8s/handlers/main.yml"
--8<- "docs/codes/0008/k8s/handlers/main.yml"
+-8<- "docs/codes/0008/v1/k8s-handlers-main.yml"
 ```
 
 ```yaml title="k8s/tasks/certbot.yml"
@@ -403,6 +475,8 @@ any of the given files:
 2. Secondly, the TLS certificate will be renewed by `certbot` in the background
    and we have to keep up with that.
 
+Now, let's take a look at our preparation service and timer definition.
+
 ```jinja title="k8s/templates/static-web-server-prepare.service.j2" hl_lines="10"
 -8<- "docs/codes/0008/k8s/templates/static-web-server-prepare.service.j2"
 ```
@@ -429,8 +503,10 @@ Now, we have a domain name that is publishing its OIDC configuration and JWKs
 over the HTTPS endpoint and is ready to be used as a trusted OIDC provider.
 
 All we need right now, is a couple of TF resource in the AWS account and after
-that, we can ==test the setup using a sample Job that takes a Service Account
-in its definition and uses its token to talk to AWS==.
+that, we can test the setup using a sample Job that takes a Service Account
+in its definition and uses its token to talk to AWS.
+
+Note that we're starting a new TF module below.
 
 ```hcl title="configure-oidc/versions.tf"
 -8<- "docs/codes/0008/configure-oidc/versions.tf"
@@ -488,7 +564,7 @@ ansible-galaxy collection install -r requirements.yml
 -8<- "docs/codes/0008/app/defaults/main.yml"
 ```
 
-```yaml title="app/templates/manifest.yml"
+```yaml title="app/templates/manifest.yml" hl_lines="43-44 49 51 53-58"
 -8<- "docs/codes/0008/app/templates/manifest.yml"
 ```
 
@@ -502,20 +578,30 @@ ansible-galaxy collection install -r requirements.yml
 
 A few important notes are worth mentioning here:
 
+<div class="annotate" markdown>
 1. The second playbook is tagged with `never`. That is because there is a
 dependency on the second TF module. We have to manually resolve it before being
 able to run the second playbook. As soon as the dependency is resolved, we can
 run the second playbook with the `--tags test` flag.
 2. There is a fact gathering in the `pre_task` of the second playbook. That is,
 again, because of the dependency to the TF module. We will grab the output of
-the TF module and pass it to our next role.
+the TF module and pass it to our next role. If you notice there is a
+`aws_region` variable in the Jinja template that is being initialized by this
+fact gathering step. (1)
 3. In the fact gathering step, there is an Ansible delegation happening. This
 will ensure that the task is running in our own machine and not the target
-machine. The reason is that the TF module is in our local machine. We also
-do not need the `become` and as such it is turned off.
+machine. The reason is that the TF module and its TF state file is in our local
+machine. We also do not need the `become` and as such it is turned off.
 4. You will notice that the job manifest is using AWS CLI Docker image. By
 specifying some of the expected [environment variables][aws-cli-env-var], we
 are able to use the AWS CLI without the requirement of manual `aws configure`.
+</div>
+
+1. These two steps:
+   ```yaml title="playbook.yml" linenums="29"
+   -8<- "docs/codes/0008/playbook.yml:29:39"
+   ```
+
 
 This playbook can be run after the second TF module with the following command:
 
@@ -526,7 +612,10 @@ ansible-playbook playbook.yml --tags test
 When checking the logs of the deployed Kubernetes Job, we can see that it has
 been successful.
 
-??? example "`kubectl logs job/demp-app`"
+???+ example "`kubectl logs job/demp-app`"
+
+    There is no AWS SSM Parameter in the target AWS account and as such, the
+    AWS CLI will not return an empty list; it will return nothing!
 
     ```json title=""
     -8<- "docs/codes/0008/outputs/kubectl-logs-job-demo-app.json"
@@ -560,15 +649,15 @@ This gives you a lot of flexibility and enhances your security posture. You
 will also remove the overhead of secret rotations from your workload.
 
 In this post, we have seen how to establish a trust relationship between a
-Kubernetes cluster and AWS IAM to grant cluster generated Service Account tokens
-access to AWS services using OIDC.
+bear-metal Kubernetes cluster and AWS IAM to grant cluster generated Service
+Account tokens access to AWS services using OIDC.
 
 Having this foundation in place, it's easy to extend this pattern to managed
-Kubernetes clusters such as Azure Kubernetes Service (AKS) or Google Kubernetes
-Engine (GKE). All you need from the managed Kubernetes cluster is the OIDC
-configuration endpoint, which in turn has the JWKs URL. With that, you can
-create the trust relationship in AWS or any other Service Provider and grant
-the relevant access to your services as needed.
+Kubernetes clusters such as [Azure Kubernetes Service (AKS)][aks] or [Google
+Kubernetes Engine (GKE)][gke]. All you need from the managed Kubernetes cluster is
+the OIDC configuration endpoint, which in turn has the JWKs URL. With that,
+you can create the trust relationship in AWS or any other Service Provider and
+grant the relevant access to your services as needed.
 
 Hope you've enjoyed reading the post as much as I've enjoyed writing it. I wish
 you have learned something new and useful from it.
@@ -687,23 +776,6 @@ the
 
  -->
 
-<!--
-important keyworkds:
-AWS
-kubernetes
-pods
-OpenID Connect
-
-bare-metal
-Azure
-ts
-service account
-K3s
-
-OIDC
-IAM
-trust relationship
- -->
 
 <!--
 # for aks
@@ -753,8 +825,17 @@ high level structure for this document:
 7. test the setup with a sample pod with and without SA attached
 -->
 
+[k3s]: https://docs.k3s.io/
+[aks]: https://learn.microsoft.com/en-us/azure/aks/
+[ansible-v2.16]: https://github.com/ansible/ansible/releases/tag/v2.16.6
+[opentofu-v1.6]: https://github.com/opentofu/opentofu/releases/tag/v1.6.2
 [aws-create-idp]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html
 [oidc-tls]: https://openid.net/specs/openid-connect-core-1_0.html
 [static-web-server]: https://static-web-server.net/
 [systemd-timer]: https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html
 [aws-cli-env-var]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html
+[aws-iam-role]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+[k8s-sa]: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+[cf-token]: https://dash.cloudflare.com/profile/api-tokens
+[hcloud-token]: https://docs.hetzner.com/cloud/api/getting-started/generating-api-token/
+[gke]: https://cloud.google.com/kubernetes-engine/docs

@@ -5,7 +5,7 @@ data "tls_certificate" "this" {
 resource "aws_iam_openid_connect_provider" "this" {
   url = "https://${data.terraform_remote_state.k8s.outputs.oidc_provider_url}"
 
-  # audience
+  # JWT token audience (aud)
   client_id_list = [
     "sts.amazonaws.com"
   ]
