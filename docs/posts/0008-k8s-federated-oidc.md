@@ -22,6 +22,7 @@ links:
   - ./posts/0007-oidc-authentication.md
   - ./posts/0005-install-k3s-on-ubuntu22.md
   - ./posts/0003-kubernetes-the-hard-way.md
+  - Source Code: https://github.com/developer-friendly/oidc-k8s-aws
 ---
 
 # Grant Kubernetes Pods Access to AWS Services Using OpenID Connect
