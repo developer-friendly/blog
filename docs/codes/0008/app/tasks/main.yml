@@ -4,3 +4,4 @@
     template: manifest.yml
     state: present
     force: true
+    wait: true

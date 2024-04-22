@@ -11,6 +11,13 @@ categories:
   - OpenTofu
   - Ansible
   - Cilium
+  - OAuth2
+  - Authentication
+  - OIDC
+  - Security
+  - Cloud Computing
+  - Hetzner
+  - IaC
 links:
   - ./posts/0007-oidc-authentication.md
   - ./posts/0005-install-k3s-on-ubuntu22.md
@@ -204,11 +211,11 @@ This will be the address we will add to the AWS IAM as an Identity Provider.
 Any DNS provider will do, but for our example, we're using Cloudflare.
 
 ```hcl title="provision-k8s/variables.tf"
--8<- "docs/codes/0008/v0/variables.tf"
+-8<- "docs/codes/0008/junk/v0/variables.tf"
 ```
 
 ```hcl title="provision-k8s/versions.tf"
--8<- "docs/codes/0008/v0/versions.tf"
+-8<- "docs/codes/0008/junk/v0/versions.tf"
 ```
 
 ```hcl title="provision-k8s/network.tf"
@@ -220,7 +227,7 @@ Any DNS provider will do, but for our example, we're using Cloudflare.
 ```
 
 ```hcl title="provision-k8s/outputs.tf"
--8<- "docs/codes/0008/v0/outputs.tf"
+-8<- "docs/codes/0008/junk/v0/outputs.tf"
 ```
 
 We would need the required access token which you can get from their respective
@@ -263,7 +270,7 @@ some minor tweaks here and there.
 ```
 
 ```hcl title="provision-k8s/versions.tf" hl_lines="15-22"
--8<- "docs/codes/0008/v1/versions.tf"
+-8<- "docs/codes/0008/junk/v1/versions.tf"
 ```
 
 ```hcl title="provision-k8s/server.tf" hl_lines="47-48"
@@ -318,13 +325,13 @@ inventory where Ansible expects them.
 
 ```shell title="" linenums="0"
 mkdir -p ./inventory/group_vars
-tofu output -raw ansible_inventory_yaml > ./inventory/k3s-cluster.yml
-tofu output -raw ansible_vars > ./inventory/group_vars/all.yml
+tofu output -raw ansible_inventory_yaml > ../inventory/k3s-cluster.yml
+tofu output -raw ansible_vars > ../inventory/group_vars/all.yml
 ```
 
 ??? example "`ansible-inventory --list`"
     ```json title=""
-    -8<- "docs/codes/0008/outputs/ansible-inventory-list.json"
+    -8<- "docs/codes/0008/junk/outputs/ansible-inventory-list.json"
     ```
 
 At this stage we're ready to move on to the next step.
@@ -344,7 +351,7 @@ touch playbook.yml
 The first step is to install the Cilium CNI.
 
 ```yaml title="k8s/defaults/main.yml"
--8<- "docs/codes/0008/v1/k8s-defaults-main.yml"
+-8<- "docs/codes/0008/junk/v1/k8s-defaults-main.yml"
 ```
 
 ```yaml title="k8s/tasks/cilium.yml"
@@ -352,11 +359,11 @@ The first step is to install the Cilium CNI.
 ```
 
 ```yaml title="k8s/tasks/main.yml"
--8<- "docs/codes/0008/v1/k8s-tasks-main.yml"
+-8<- "docs/codes/0008/junk/v1/k8s-tasks-main.yml"
 ```
 
 ```yaml title="playbook.yml"
--8<- "docs/codes/0008/v1/playbook.yml"
+-8<- "docs/codes/0008/junk/v1/playbook.yml"
 ```
 
 To run the playbook:
@@ -374,7 +381,7 @@ We will carry our tasks with Ansible throughout the entire Day 1 to Day n
 operations.
 
 ```yaml title="k8s/defaults/main.yml" hl_lines="3"
--8<- "docs/codes/0008/v2/k8s-defaults-main.yml"
+-8<- "docs/codes/0008/junk/v2/k8s-defaults-main.yml"
 ```
 
 ```jinja title="k8s/templates/wellknown-server.service.j2"
@@ -382,7 +389,7 @@ operations.
 ```
 
 ```yaml title="k8s/handlers/main.yml"
--8<- "docs/codes/0008/v1/k8s-handlers-main.yml"
+-8<- "docs/codes/0008/junk/v1/k8s-handlers-main.yml"
 ```
 
 ```yaml title="k8s/tasks/certbot.yml"
@@ -390,11 +397,11 @@ operations.
 ```
 
 ```yaml title="k8s/tasks/main.yml" hl_lines="6-9"
--8<- "docs/codes/0008/v2/k8s-tasks-main.yml"
+-8<- "docs/codes/0008/junk/v2/k8s-tasks-main.yml"
 ```
 
 ```yaml title="playbook.yml" hl_lines="6-7"
--8<- "docs/codes/0008/v2/playbook.yml"
+-8<- "docs/codes/0008/junk/v2/playbook.yml"
 ```
 
 ???+ success "Certificate Renewal"
@@ -406,12 +413,23 @@ operations.
     `systemd` files in your system.
 
     ```ini title="/lib/systemd/system/certbot.service"
-    -8<- "docs/codes/0008/outputs/certbot.service"
+    -8<- "docs/codes/0008/junk/outputs/certbot.service"
     ```
 
     ```ini title="/lib/systemd/system/certbot.timer"
-    -8<- "docs/codes/0008/outputs/certbot.timer"
+    -8<- "docs/codes/0008/junk/outputs/certbot.timer"
     ```
+
+    Although on the same host, you will find a crontab entry for the `certbot`
+    as you see below:
+
+    ```plaintext title="/etc/cron.d/certbot"
+    -8<- "docs/codes/0008/junk/outputs/certbot-crontab"
+    ```
+
+    All of these files are created by the `certbot` binary during the initial
+    run. You are free to modify and customize it, although it's unlikely that
+    you will need to.
 
 After adding another task to our Ansible role, we can run the new tasks with
 the following command:
@@ -440,7 +458,7 @@ certificate with the help of [static web server][static-web-server].
 -8<- "docs/codes/0008/k8s/templates/static-web-server.service.j2"
 ```
 
-```yaml title="k8s/tasks/static-server.yml" hl_lines="46 54 62"
+```yaml title="k8s/tasks/static-server.yml" hl_lines="45-46 53-54 61-62"
 -8<- "docs/codes/0008/k8s/tasks/static-server.yml"
 ```
 
@@ -453,7 +471,7 @@ certificate with the help of [static web server][static-web-server].
 ```
 
 ```yaml title="playbook.yml" hl_lines="4 8-9"
--8<- "docs/codes/0008/v3/playbook.yml"
+-8<- "docs/codes/0008/junk/v3/playbook.yml"
 ```
 
 Running this will be as follows:
@@ -587,7 +605,7 @@ ansible-galaxy collection install -r requirements.yml
 -8<- "docs/codes/0008/app/defaults/main.yml"
 ```
 
-```yaml title="app/templates/manifest.yml" hl_lines="43-44 49 51 53-58"
+```yaml title="app/templates/manifest.yml" hl_lines="43-44 49 53-60"
 -8<- "docs/codes/0008/app/templates/manifest.yml"
 ```
 
@@ -641,7 +659,7 @@ been successful.
     AWS CLI will not return an empty list; it will return nothing!
 
     ```json title=""
-    -8<- "docs/codes/0008/outputs/kubectl-logs-job-demo-app.json"
+    -8<- "docs/codes/0008/junk/outputs/kubectl-logs-job-demo-app.json"
     ```
 
 Lastly, to test if the Service Account and the IAM Role trust policy plays any
@@ -655,6 +673,30 @@ An error occurred (AccessDenied) when calling the AssumeRoleWithWebIdentity oper
 ```
 
 That's all folks! We can now wrap this up.
+
+## Bonus: JWKs URL
+
+Remember at the beginning of this guide when we mentioned that the JWKs URL is
+configurable through the OIDC configuration endpoint?
+
+Let's see it in action.
+
+```shell title=""
+DOMAIN=$(grep domain_name inventory/group_vars/all.yml | awk '{print $2}')
+curl https://$DOMAIN/.well-known/openid-configuration | jq -r .jwks_uri
+```
+
+This means that you can host your JWKs on a different server than the OIDC
+server. Although I don't suggest this to be a good idea because of all the
+maintenance overhead.
+
+That said, if your JWKs URL is at a different server or hosted on a different
+endpoint, all you gotta do, is pass the value to the `kube-apiserver` as
+you see below:
+
+```shell title="" linenums="0"
+kube-apiserver --service-account-jwks-uri=https://mydomain.com/some/different/endpoint
+```
 
 ## Conclusion
 

@@ -48,6 +48,8 @@ spec:
             - name: token
               mountPath: /var/run/secrets/tokens
               readOnly: true
+            - name: aws-config
+              mountPath: /root/.aws
       serviceAccountName: demo-service-account
       volumes:
         - name: token
@@ -56,3 +58,5 @@ spec:
               - serviceAccountToken:
                   path: token
                   audience: sts.amazonaws.com
+        - name: aws-config
+          emptyDir: {}
