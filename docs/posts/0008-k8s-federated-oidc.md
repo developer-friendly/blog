@@ -1,6 +1,6 @@
 ---
 date: 2024-04-22
-draft: true
+draft: false
 description: >-
   How to access AWS with bear-metal Kubernetes (K3s) Service Accounts tokens
   by establishing an OIDC trust relationship between the Kubernetes and AWS IAM.
