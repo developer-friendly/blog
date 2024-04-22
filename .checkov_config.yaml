@@ -20,6 +20,7 @@ skip-check:
   - CKV_AWS_337 # I don't mind using the default aws/ssm key
   - CKV_SECRET_6 # No strong password required here
   - CKV2_AWS_34 # no need for encryption, this is a plaintext value
+  - CKV2_ANSIBLE_2 # I promise all my URLs are starting with HTTPS
 skip-framework: []
 skip-path: []
 summary-position: top
