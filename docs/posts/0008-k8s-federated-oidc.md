@@ -2,7 +2,7 @@
 date: 2024-04-22
 draft: false
 description: >-
-  How to access AWS with bear-metal Kubernetes (K3s) Service Accounts tokens
+  How to access AWS with bare-metal Kubernetes (K3s) Service Accounts tokens
   by establishing an OIDC trust relationship between the Kubernetes and AWS IAM.
 categories:
   - Kubernetes
@@ -66,10 +66,10 @@ In this post, we will take it one step further and provide a way for the pods
 of our Kubernetes cluster to authenticate to AWS services using OIDC.
 
 This post will provide a walkthrough of granting such access to a
-bear-metal Kubernetes cluster (k3s[^1]) using only the power of OpenID Connect
+bare-metal Kubernetes cluster (k3s[^1]) using only the power of OpenID Connect
 protocol. In a later post, we'll show you how easy it is to achieve the same
 with a managed Kubernetes cluster like Azure Kubernetes Service (AKS)[^2].
-But, first let's understand the fundamentals by trying it on a bear-metal
+But, first let's understand the fundamentals by trying it on a bare-metal
 cluster.
 
 We will not store any credentials in our pods and as such, won't ever have to
@@ -706,7 +706,7 @@ This gives you a lot of flexibility and enhances your security posture. You
 will also remove the overhead of secret rotations from your workload.
 
 In this post, we have seen how to establish a trust relationship between a
-bear-metal Kubernetes cluster and AWS IAM to grant cluster generated Service
+bare-metal Kubernetes cluster and AWS IAM to grant cluster generated Service
 Account tokens access to AWS services using OIDC.
 
 Having this foundation in place, it's easy to extend this pattern to managed
