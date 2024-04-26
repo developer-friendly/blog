@@ -1,6 +1,9 @@
 ---
 date: 2024-03-22
 draft: false
+description: >-
+  Install K3s Kubernetes cluster on Ubuntu 22.04 using Infrastructure as Code
+  with OpenTofu and Ansible on Hetzner Cloud with Cilium as the CNI.
 categories:
   - Kubernetes
   - IaC

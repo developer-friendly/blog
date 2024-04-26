@@ -1,6 +1,9 @@
 ---
 date: 2024-02-16
 draft: false
+description: >-
+  What does the immutable flag on External Secrets operator entails and how it
+  can affect your secret management in the Kubernetes cluster.
 categories:
   - Kubernetes
   - Secrets Management

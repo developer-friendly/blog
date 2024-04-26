@@ -1,6 +1,9 @@
 ---
 date: 2024-02-15
 draft: false
+description: >-
+  Learn how Azure facilitates immutable infrastructure with The Azure Compute
+  Gallery to reuse and share VM images across different regions.
 categories:
   - Azure
   - Cloud Computing

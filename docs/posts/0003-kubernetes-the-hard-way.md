@@ -1,7 +1,9 @@
 ---
 date: 2024-03-03
 draft: false
-pin: false
+description: >-
+  How to set up Kubernetes components from scratch using Vagrant, VirtualBox,
+  and Ansible on your local machine without any cloud provider.
 categories:
   - Kubernetes
   - Ansible

@@ -1,7 +1,9 @@
 ---
 date: 2024-03-09
 draft: false
-description: Learn how to leverage GitHub Actions to define a dynamic matrix that can parallelize your jobs and increases your CI/CD throughput on-demand.
+description: >-
+  Learn how to leverage GitHub Actions to define a dynamic matrix that can
+  parallelize your jobs and increases your CI/CD throughput on-demand.
 categories:
   - GitHub
   - CI/CD
