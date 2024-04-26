@@ -52,10 +52,10 @@ the value it was meant to.
 One of the most common things that applications need is secrets. Secrets are
 sensitive information that the application needs to function properly. This
 can be database passwords, API keys, or any other sensitive information the
-app needs to function correctly.
+app uses to function and communicate with all the relevant external services.
 
 In Kubernetes, the most common way to pass secrets to the application is by
-creating a Kubernetes Secret resource. This resource is a Kubernetes object
+creating a [Kubernetes Secret resource]. This resource is a Kubernetes object
 that stores sensitive information in the cluster. The application can then
 access this information by mounting the secret as a volume or by using
 environment variables.
@@ -79,20 +79,44 @@ source code or manually creating the Kubernetes Secret resource.
 Before we start, let's set a clear objective of what we want to achieve in
 this article.
 
-We aim to create a couple of AWS SSM Parameters in an AWS account. Having our
-Kubernetes cluster's OpenID Configuration URL exposed to the internet, we will
-leverage the trust relationship between the Kubernetes cluster and the AWS
-IAM to allow the External Secrets operator to assume an IAM Role with web
-identity to read those Parameters and create Kubernetes Secrets from them as
-configured in the External Secret CRD.
+First off, we'll create an Azure AKS Kubernetes cluster using the
+[OpenTofu](/category/opentofu) module. The AKS cluster will have its OpenID
+Connect endpoint exposed to the internet.
 
-The Kubernetes cluster we'll use in this guide will be Azure AKS. But, that is
-only an implementation detail and you can leverage
-[OpenID Connect](/category/openid-connect) for any type of Kubernetes cluster.
-In last week's article, we have provided a guide on how to set up
-[OpenID Connect for bare-meta Kubernetes clusters](./0008-k8s-federated-oidc.md).
+We will use that OpenID Connect endpoint to establish a trust relationship
+between the Kubernetes cluster and the AWS IAM, leveraging
+[OpenID Connect](/category/openid-connect). This trust relationship will
+allow the Kubernetes cluster's Service Accounts to assume an IAM Role with
+web identity to access AWS resources.
 
-If that interests you, let's get started.
+Afterwards, we will deploy the External Secrets operator in the Kubernetes
+cluster passing the right Service Account to its running pod so that it can
+assume the proper [AWS IAM Role].
+
+With that set up, the External Secrets operator will be able to read the
+secrets from the AWS SSM Parameter Store and create Kubernetes Secrets from
+them.
+
+At this point, any pod in the same namespace as the target Secret will be able
+to mount and read its values business as usual.
+
+Optionally, we'll also cover how to allow the External Secrets operator to
+write back to the AWS SSM Parameter Store the values of the Kubernetes Secrets
+we want it to. An example include deploying a database with a generated
+password and storing that password back in the AWS SSM Parameter Store for
+references by other services or applications.
+
+!!! success "OpenID Connect"
+
+      OpenID Connect, in simple terms, is a protocol that allows one service
+      to authenticate and authorize another service, optionally on behalf of
+      a user. It is an authentication layer on top of OAuth2.0 protocol.
+
+      If you're new to the topic, we have a practical example to solidify your
+      understanding in our guide on
+      [OIDC Authentication](./0007-oidc-authentication.md).
+
+With that said, let's get started!
 
 ## Prerequisites
 
@@ -120,14 +144,15 @@ Before we start, you need to have the following prerequisites:
 
 ## Step 0: Setting up Kubernetes and Establishing Trust with AWS IAM
 
-This step has already been covered in our last week's guide on
-[Creating Kubernetes OIDC in AWS](./0008-k8s-federated-oidc.md). So we won't
-repeat ourselves here. If you already have an internet-accessible Kubernetes
-API server or have followed the guide to set it up, you're good to go.
+First things first, let's set up the Azure AKS Kubernetes cluster using the
+official TF module.
 
-If not, do yourself a favor and read that one first to have a better
-understanding of what we're doing here.
+```shell title="" linenums="0"
+export ARM_SUBSCRIPTION_ID=159f2485-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+export ARM_TENANT_ID=72f988bf-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+```
 
+<!--
 ## Step 1: Creating an AWS IAM Role for External Secrets Operator
 
 The External Secrets operator will require some permissions to be able to read
@@ -145,6 +170,7 @@ AWS SSM Parameters the Secrets created inside the cluster. This is useful when
 those values are first initialized inside the cluster and need to be stored
 back in the AWS SSM Parameter Store, possibly used by other services or
 applications.
+-->
 
 [external-secret]: https://external-secrets.io/v0.9.16/
 [telepresence]: https://www.telepresence.io/
@@ -152,3 +178,5 @@ applications.
 [aws-ssm]: https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html
 [aks-tf-mod]: https://registry.terraform.io/modules/Azure/aks/azurerm/8.0.0
 [aks-oidc]: https://learn.microsoft.com/en-us/azure/aks/use-oidc-issuer
+[Kubernetes Secret resource]: https://kubernetes.io/docs/concepts/configuration/secret/
+[AWS IAM Role]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
