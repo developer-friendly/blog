@@ -2,4 +2,5 @@ exclude = [
   "https://accounts.hetzner.com/login",
   "http://localhost:9093",
   "https://api.star-history.com/svg",
+  "https://dash.cloudflare.com/profile/api-tokens",
 ]
