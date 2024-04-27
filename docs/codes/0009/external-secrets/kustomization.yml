@@ -1,0 +1,11 @@
+configMapGenerator:
+  - name: external-secrets-values
+    files:
+      - values.yaml=./values.yml
+
+resources:
+  - namespace.yml
+  - repository.yml
+
+configurations:
+  - kustomizeconfig.yml

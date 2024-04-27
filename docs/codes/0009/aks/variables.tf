@@ -30,5 +30,5 @@ variable "agents_size" {
 
 variable "prefix" {
   type    = string
-  default = "dev"
+  default = "developer-friendly"
 }
