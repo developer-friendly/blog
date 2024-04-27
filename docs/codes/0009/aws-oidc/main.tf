@@ -57,7 +57,7 @@ data "aws_iam_policy_document" "this" {
       variable = "${aws_iam_openid_connect_provider.this.url}:sub"
 
       values = [
-        "system:serviceaccount:${var.service_account_namespace}:${var.service_account_name}"
+        "system:serviceaccount:${var.service_account_namespace}:${var.service_account_name}",
       ]
     }
   }

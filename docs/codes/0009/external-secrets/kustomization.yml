@@ -6,6 +6,7 @@ configMapGenerator:
 resources:
   - namespace.yml
   - repository.yml
+  - release.yml
 
 configurations:
   - kustomizeconfig.yml

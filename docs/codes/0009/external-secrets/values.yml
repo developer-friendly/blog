@@ -1,2 +1,3 @@
 # ... truncated for brevity ...
-# NOTE: In a production scenario, this would be the actual contents of the file!
+# NOTE: In a production scenario, this would contain the full contents of
+# the source helm values file.

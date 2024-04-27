@@ -17,3 +17,8 @@ variable "kubeconfig_context" {
   type    = string
   default = "developer-friendly-aks-admin"
 }
+
+variable "field_manager" {
+  type    = string
+  default = "flux-client-side-apply"
+}

@@ -24,6 +24,7 @@ spec:
     cleanupOnFail: true
     crds: CreateReplace
     force: true
+    preserveValues: true
     remediation:
       remediateLastFailure: true
   valuesFrom:
