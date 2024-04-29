@@ -519,7 +519,7 @@ later be used by other parts or applications.
       This is possibly a known issue, one which I can see being
       discussed in their GitHub repository[^22].
 
-      Although I haven't found a fixed by now, specifying
+      Although I haven't found a fix by now, specifying
       `updatePolicy: IfNotExists` for the `PushSecret` makes sure that we won't
       lose the actual password initially used by the script to bootstrap the
       MongoDB database.
