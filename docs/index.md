@@ -2,4 +2,4 @@
 hide:
   - navigation
 ---
-# Blog
+# Posts
