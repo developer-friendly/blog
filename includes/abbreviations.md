@@ -5,3 +5,6 @@
 *[ESO]: External Secrets Operator
 *[K8s]: Kubernetes
 *[API]: Application Programming Interface
+*[IAM]: Identity and Access Management
+*[EKS]: Elastic Kubernetes Service
+*[HCL]: HashiCorp Configuration Language

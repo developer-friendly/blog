@@ -2,9 +2,9 @@
 date: 2024-04-29
 draft: true
 description: >-
-  Get started with External Secrets Operator in Kubernetes to fetch secrets
-  from external secrets management systems using OpenID Connect & IAM trust
-  relationship.
+  Get started with ESO in Kubernetes to fetch secrets
+  from external secrets management systems using OpenID Connect &
+  IAM Role trust relationship.
 categories:
   - Kubernetes
   - External Secrets
@@ -13,7 +13,6 @@ categories:
   - OpenID Connect
   - OpenTofu
   - Azure
-  - Ansible
   - Cilium
   - OAuth2
   - Authentication
@@ -24,12 +23,9 @@ categories:
   - GitOps
   - FluxCD
 links:
-  - ./posts/0007-oidc-authentication.md
-  - ./posts/0005-install-k3s-on-ubuntu22.md
-  - ./posts/0003-kubernetes-the-hard-way.md
   - ./posts/0008-k8s-federated-oidc.md
   - ./posts/0002-external-secret-immutable-target.md
-  - ./posts/0006-gettings-started-with-gitops-and-fluxcd.md
+  - Source Code: https://github.com/developer-friendly/external-secrets-guide
 ---
 
 # External Secrets Operator: Fetching AWS SSM Parameters into Azure AKS
@@ -47,6 +43,7 @@ optional:
 - AWS IAM
 - IAM Role
 - AWS SSM Parameters
+- OpenTofu
 -->
 
 How to pass your secrets to the Kubernetes cluster without hard-coding them
@@ -99,7 +96,7 @@ source code or manually creating the Kubernetes Secret resource.
 Before we start, let's set a clear objective of what we want to achieve in
 this article.
 
-First off, we'll create an Azure AKS Kubernetes cluster using the
+First off, we'll create an Azure AKS Kubernetes cluster using the official
 [OpenTofu](/category/opentofu) module. The AKS cluster will have its OpenID
 Connect endpoint exposed to the internet.
 
@@ -165,9 +162,10 @@ Before we start, you need to have the following prerequisites:
       [OpenID Connect](/category/openid-connect) endpoint [by default][aks-oidc].
 - [x] An AWS account with the permissions to read and write SSM parameters and
       to create OIDC provider and IAM roles.
-- [ ] Optionally, FluxCD installed in your cluster. Not required if you aim to
-      use bare Helm commands for installations. There is a beginner friendly
-      [guide to FluxCD](./0006-gettings-started-with-gitops-and-fluxcd.md)
+- [x] [OpenTofu v1.6][opentofu]
+- [ ] Optionally, [FluxCD v2.2 installed] in your cluster. Not required if you
+      aim to use bare Helm commands for installations. There is a beginner
+      friendly [guide to FluxCD](./0006-gettings-started-with-gitops-and-fluxcd.md)
       in our archive if you're new to the topic.
 </div>
 
@@ -177,7 +175,7 @@ Before we start, you need to have the following prerequisites:
 ## Step 0: Setting up Azure Managed Kubernetes Cluster
 
 First things first, let's set up the Azure AKS Kubernetes cluster using the
-official TF module.
+[official TF module][aks-tf-mod].
 
 ```hcl title="aks/variables.tf"
 -8<- "docs/codes/0009/aks/variables.tf"
@@ -252,16 +250,8 @@ The output of this TF code will, as specified in our code, be an OIDC issuer
 URL. We are going to use this URL to establish a trust relationship between
 the Kubernetes cluster and the AWS IAM in the next step.
 
-To get the [kubeconfig file], you can run the following command:
-
-```shell title="" linenums="0"
-az aks get-credentials \
-  --resource-group developer-friendly-aks \
-  --name developer-friendly-aks --admin
-```
-
-This will add or update your current kubeconfig file with the new AKS cluster
-credentials. We will use this in a later step.
+The null resource in our TF code will add or update your current kubeconfig
+file with the new AKS cluster credentials. We will use this in a later step.
 
 ## Step 1: Establishing Azure AKS Trust Relationship with AWS IAM
 
@@ -288,7 +278,7 @@ Let's write the TF code to create the OIDC provider in the AWS.
 -8<- "docs/codes/0009/aws-oidc/outputs.tf"
 ```
 
-The code should be self-explanatory, especially at this point after coverying
+The code should be self-explanatory, especially at this point after covering
 three blog posts on the topic of [OpenID Connect](/category/openid-connect).
 
 But, let's emphasize the highlighting points:
@@ -299,8 +289,8 @@ But, let's emphasize the highlighting points:
 2. Having the principal as `Federated` is just as the name suggests; it is
    a federated identity provider. In this case, it is the Azure AKS OIDC
    issuer URL. In simple english, it allows the Kubernetes cluster to sign
-   the access tokens, and the AWS IAM will trust those tokens if signed by
-   the specified Kubernetes cluster's OIDC issuer URL.
+   the access tokens, and the AWS IAM will trust those tokens if the `iss`
+   claim of their tokens match the same URL as the OIDC issuer.
 3. Having two conditionals on the audience (`aud`) and the subject (`sub`) allows
    for a tighter security control and to enforce the principle of least privilege.
    The target Kubernetes Service Account is the only one who is able to assume
@@ -311,14 +301,16 @@ Fortunately, there isn't any signing key issue with this TF provider. To apply
 this, we can simply use `tofu`:
 
 ```shell title="" linenums="0"
+export AWS_PROFILE="PLACEHOLDER"
+
 tofu plan -out tfplan
 tofu apply tfplan
 ```
 
 ### IAM Policy Document
 
-You may have seen the IAM policy document as JSON string in the TF code. Truth
-be told, there is no one-size-fits-all. Do whatever works best for you.
+You may have seen the IAM policy document as JSON string in other TF codes.
+Truth be told, there is no one-size-fits-all. Do whatever works best for you.
 
 I prefer writing my IAM policy documents as TF code because every other code
 in this module is written in HCL format. It is easier to maintain and read
@@ -334,6 +326,8 @@ format:
 ```hcl title=""
 -8<- "docs/codes/0009/junk/iam-role/main.tf"
 ```
+
+Pick what's best and more appealing for you and your team and stick with it.
 
 ## Step 2: Deploying External Secrets Operator
 
@@ -351,6 +345,14 @@ FluxCD is my go-to tool for that.
 
 ```yaml title="external-secrets/release.yml" hl_lines="31"
 -8<- "docs/codes/0009/external-secrets/release.yml"
+```
+
+```yaml title="external-secrets/kustomizeconfig.yml"
+-8<- "docs/codes/0009/external-secrets/kustomizeconfig.yml"
+```
+
+```yaml title="external-secrets/kustomization.yml" hl_lines="2"
+-8<- "docs/codes/0009/external-secrets/kustomization.yml"
 ```
 
 ???+ example "Helm Values File"
@@ -373,27 +375,18 @@ FluxCD is my go-to tool for that.
       -8<- "docs/codes/0009/external-secrets/values.yml"
       ```
 
-      We have covered the reason behind [volume projection] in our
-      [last week's guide](./0008-k8s-federated-oidc.md). The gist of it is that we
-      instruct Kubernetes issuer how to sign the access token and where to store it
-      in the pod.
-
-```yaml title="external-secrets/kustomizeconfig.yml"
--8<- "docs/codes/0009/external-secrets/kustomizeconfig.yml"
-```
-
-```yaml title="external-secrets/kustomization.yml" hl_lines="2"
--8<- "docs/codes/0009/external-secrets/kustomization.yml"
-```
-
 If you have set up your directory structure to be traversed in a recursive
 fashion by FluxCD, you'd only push this to the upstream and the live state
 will reconcile as specified.
 
 Otherwise, apply the following manifest to create the FluxCD Kustomization:
 
-```yaml title="external-secrets/kustomize.yml"
--8<- "docs/codes/0009/external-secrets/kustomize.yml"
+```yaml title="gitops/gitrepo.yml"
+-8<- "docs/codes/0009/junk/repo/gitrepo.yml"
+```
+
+```yaml title="gitops/external-secrets.yml"
+-8<- "docs/codes/0009/junk/es/kustomize.yml"
 ```
 
 ## Step 3: Create the Secret Store
@@ -427,7 +420,7 @@ or creating AWS SSM Parameters.
 
 You will notice that there are two annotations to the
 `external-secrets` Service Account that are, suspiciously, sounding like an
-AWS EKS Kubernetes cluster. That is, these are specifically the annotations
+AWS EKS Kubernetes cluster thing. That is, these are specifically the annotations
 that only AWS EKS understands and acts upon.
 
 This is an unfortunate mishap. If you're curious to read the full details,
@@ -512,11 +505,7 @@ This Kustomization is valid and can be applied as is. I generally prefer
 reconciling my Kubernetes resource using FluxCD and GitOps. Here's the
 `Kustomization` resource for FluxCD:
 
-```yaml title="gitrepo.yml"
--8<- "docs/codes/0009/junk/mongo/gitrepo.yml"
-```
-
-```yaml title="kustomize.yml"
+```yaml title="gitops/mongodb.yml"
 -8<- "docs/codes/0009/junk/mongo/kustomize.yml"
 ```
 
@@ -543,9 +532,27 @@ later be used by other parts or applications.
 -8<- "docs/codes/0009/mongodb/kustomization.yml"
 ```
 
+<div class="annotate" markdown>
 ```yaml title="mongodb/pushsecret.yml"
 -8<- "docs/codes/0009/mongodb/pushsecret.yml"
 ```
+</div>
+
+   1. As of writing this article, the External Secrets operator and FluxCD do not
+      work well together when it comes to generator API. Specifically, the FluxCD
+      will try to recreate the [Password resource] resource on every tick of
+      the `refreshInterval`.
+
+      This means that the initial password is gone by the time the second tick
+      comes around.
+
+      This is possibly a known issue, one which I can see being
+      [discussed in their GitHub repository].
+
+      Although I haven't found a fixed by now, specifying
+      `updatePolicy: IfNotExists` for the `PushSecret` makes sure that we won't
+      lose the actual password initially used by the script to bootstrap the
+      MongoDB database.
 
 This will result in the following parameter to be created in our AWS account.
 
@@ -554,9 +561,12 @@ This will result in the following parameter to be created in our AWS account.
    <figcaption>AWS SSM Parameter Store</figcaption>
 </figure>
 
-As you can see in the screenshot, the parameter type is set to string. This is
+As you can see in the screenshot, the parameter type is set to `String`. This is
 a bug and you can follow the discussion on the
 [GitHub issue][pushsecret-parameter-type-string].
+
+Ideally, this parameter should be customizable in `PushSecret.spec` and allow
+us to specify `SecureString` instead.
 
 ## Step 5: Deploying the Application that Uses the Secret
 
@@ -611,14 +621,14 @@ operations of the secrets in the daily operations of the Kubernetes cluster.
 
 You have also seen the power of OIDC and how it can enhance the security
 posture of the system, as well as reducing the need and overhead of passing
-credentials around having to worry about their rotations.
+credentials around or having to worry about their rotations.
 
 With the knowledge you have gained in this article, you should be able to
 deploy the External Secrets operator in your Kubernetes cluster and manage
 your secrets in a secure & efficient way and with a peace of mind.
 
 I hope you have enjoyed reading this article as much as I have enjoyed writing
-it. Feel free to reach out through the links provided at the top of this
+it. Feel free to reach out through the links provided at the bottom of this
 article if you have any questions or feedback.
 
 Until next time, *ciao* :cowboy: happy coding! :crab: :penguin:
@@ -678,3 +688,7 @@ really don't have to.
 [the Kubernetes Secrets from them]: https://external-secrets.io/v0.9.16/api/clustersecretstore/
 [pushsecret-parameter-type-string]: https://github.com/external-secrets/external-secrets/issues/3422
 [mongodb-arm64-support]: https://github.com/bitnami/charts/issues/3635
+[opentofu]: https://github.com/opentofu/opentofu/releases/tag/v1.6.2
+[FluxCD v2.2 installed]: https://github.com/fluxcd/flux2/releases/tag/v2.2.3
+[Password resource]: https://external-secrets.io/latest/api/generator/password/
+[discussed in their GitHub repository]: https://github.com/external-secrets/external-secrets/discussions/2402

@@ -26,6 +26,9 @@ extra:
     - icon: simple/stackoverflow
       link: https://stackoverflow.com/users/8282345/meysam
       name: Follow us on Stack Overflow!
+    - icon: fontawesome/brands/hacker-news
+      link: https://news.ycombinator.com/user?id=meysamazad
+      name: Follow us on Hacker News!
     - icon: fontawesome/solid/paper-plane
       link: mailto:hi@developer-friendly.blog
       name: Send us an email!
@@ -268,3 +271,4 @@ markdown_extensions:
       custom_checkbox: true
 watch:
   - overrides
+  - includes

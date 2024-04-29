@@ -47,9 +47,25 @@ module "aks" {
 
   identity_type = "SystemAssigned"
 
-  api_server_authorized_ip_ranges = ["${trimspace(data.http.this.response_body)}/32"]
+  api_server_authorized_ip_ranges = [
+    "${trimspace(data.http.this.response_body)}/32",
+  ]
 
   depends_on = [
     azurerm_resource_group.this
+  ]
+}
+
+resource "null_resource" "this" {
+  triggers = {
+    aks_id = module.aks.aks_id
+  }
+
+  provisioner "local-exec" {
+    command = "az aks get-credentials --resource-group ${var.resource_group_name} --name ${module.aks.aks_name} --admin"
+  }
+
+  depends_on = [
+    module.aks
   ]
 }

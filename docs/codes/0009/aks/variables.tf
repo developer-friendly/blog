@@ -21,6 +21,7 @@ variable "admin_username" {
 variable "agents_count" {
   type    = number
   default = 1
+  description = "Number of worker nodes as Azure call it."
 }
 
 variable "agents_size" {
