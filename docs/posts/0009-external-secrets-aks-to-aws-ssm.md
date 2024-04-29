@@ -465,6 +465,143 @@ The objective for this section is as follows:
 If that gets you excited, let's get started! Although, I have to warn you, the
 rest of this tutorial is a piece of cake compared to what we have done so far.
 
+### Deploying MongoDB
+
+!!! bug "MongoDB ARM64 Support"
+
+      As of the writing of this blog post, the bitnami MongoDB Helm chart
+      does not support ARM64 architecture. This is a known issue and there is
+      an [open issue for it][mongodb-arm64-support].
+
+      If you're running on ARM64 architecture, you may want to either:
+
+      1. Use a different Helm chart that supports ARM64.
+      2. Deploy MongoDB manually using StatefulSet; the same approach I'll
+         employ in this tutorial.
+
+
+```yaml title="mongodb/namespace.yml"
+-8<- "docs/codes/0009/mongodb/namespace.yml"
+```
+
+```ini title="mongodb/configs.env"
+-8<- "docs/codes/0009/mongodb/configs.env"
+```
+
+```yaml title="mongodb/password.yml"
+-8<- "docs/codes/0009/mongodb/password.yml"
+```
+
+```yaml title="mongodb/externalsecret.yml"
+-8<- "docs/codes/0009/mongodb/externalsecret.yml"
+```
+
+```yaml title="mongodb/service.yml"
+-8<- "docs/codes/0009/mongodb/service.yml"
+```
+
+```yaml title="mongodb/statefulset.yml"
+-8<- "docs/codes/0009/mongodb/statefulset.yml"
+```
+
+```yaml title="mongodb/kustomization.yml"
+-8<- "docs/codes/0009/junk/mongo/kustomization.yml"
+```
+
+This Kustomization is valid and can be applied as is. I generally prefer
+reconciling my Kubernetes resource using FluxCD and GitOps. Here's the
+`Kustomization` resource for FluxCD:
+
+```yaml title="gitrepo.yml"
+-8<- "docs/codes/0009/junk/mongo/gitrepo.yml"
+```
+
+```yaml title="kustomize.yml"
+-8<- "docs/codes/0009/junk/mongo/kustomize.yml"
+```
+
+This stack will be deployed in whole and as is. Here's what the
+`Secret/mongodb-secrets` will look like.
+
+```yaml title="mongodb-secrets.yml"
+-8<- "docs/codes/0009/junk/mongo/mongodb-secrets.yml"
+```
+
+It's a bit out of scope for this guide, but notice that I am creating the
+`Kustsomization` resource in the `flux-system` namespace, whereas the final
+MongDB Kustomization will be deployed in the `mongodb` namespace. It's only
+because **I want FluxCD to take care of GitOps, while MongoDB is deployed in
+its dedicated namespace**.
+
+### PushSecret to AWS SSM Parameter Store
+
+We have generated the MongoDB password using the External Secrets operator
+generator API. It is now time to store it in our secrets management system to
+later be used by other parts or applications.
+
+```yaml title="mongodb/kustomization.yml" hl_lines="12"
+-8<- "docs/codes/0009/mongodb/kustomization.yml"
+```
+
+```yaml title="mongodb/pushsecret.yml"
+-8<- "docs/codes/0009/mongodb/pushsecret.yml"
+```
+
+This will result in the following parameter to be created in our AWS account.
+
+<figure markdown="span">
+   ![AWS SSM](../static/img/0009/ssm.webp "Click to zoom in"){ loading=lazy }
+   <figcaption>AWS SSM Parameter Store</figcaption>
+</figure>
+
+As you can see in the screenshot, the parameter type is set to string. This is
+a bug and you can follow the discussion on the
+[GitHub issue][pushsecret-parameter-type-string].
+
+## Step 5: Deploying the Application that Uses the Secret
+
+Now that we have our database set up and the password stored in the AWS SSM
+Parameter Store, we can deploy an application that uses this password to
+connect to the database.
+
+```yaml title="app/namespace.yml"
+-8<- "docs/codes/0009/app/namespace.yml"
+```
+
+```yaml title="app/externalsecret.yml"
+-8<- "docs/codes/0009/app/externalsecret.yml"
+```
+
+```yaml title="app/job.yml"
+-8<- "docs/codes/0009/app/job.yml"
+```
+
+```yaml title="app/kustomization.yml"
+-8<- "docs/codes/0009/app/kustomization.yml"
+```
+
+Again, you can apply this stack as is, or create is FluxCD Kustomization.
+
+```yaml title="app-kustomize.yml" hl_lines="7"
+-8<- "docs/codes/0009/junk/mongo-client/kustomize.yml"
+```
+
+We have intentionally enabled the `force` flag for this stack because
+Kubernetes jobs will complain if you modify any of the immutable fields.
+Forcing the stack to reconcile means that the job will be recreated with the
+new changes.
+
+**NOTE**: You should evaluate the impact of the `force` flag in your
+production environment. It may cause downtime if not used carefully. You should
+specifically consider the idempotency behavior of a recreated job for your
+appliction(s).
+
+
+## FAQ
+
+### Why not use the SOPS, Sealed Secrets, or Vault?
+
+<!-- TODO -->
 
 [external-secret]: https://external-secrets.io/v0.9.16/
 [telepresence]: https://www.telepresence.io/
@@ -484,3 +621,5 @@ rest of this tutorial is a piece of cake compared to what we have done so far.
 [their GitHub repository's issue]: https://github.com/external-secrets/external-secrets/issues/660#issuecomment-2080421742
 [only you're within AWS]: https://external-secrets.io/v0.9.16/provider/aws-parameter-store/#eks-service-account-credentials
 [the Kubernetes Secrets from them]: https://external-secrets.io/v0.9.16/api/clustersecretstore/
+[pushsecret-parameter-type-string]: https://github.com/external-secrets/external-secrets/issues/3422
+[mongodb-arm64-support]: https://github.com/bitnami/charts/issues/3635
