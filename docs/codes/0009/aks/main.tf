@@ -62,7 +62,12 @@ resource "null_resource" "this" {
   }
 
   provisioner "local-exec" {
-    command = "az aks get-credentials --resource-group ${var.resource_group_name} --name ${module.aks.aks_name} --admin"
+    command = <<-EOT
+      az aks get-credentials \
+      --resource-group ${var.resource_group_name} \
+      --name ${module.aks.aks_name} \
+      --admin
+    EOT
   }
 
   depends_on = [

@@ -74,7 +74,7 @@ app uses to function and communicate with all the relevant external services.
 In Kubernetes, the most common way to pass secrets to the application is by
 creating a [Kubernetes Secret resource]. This resource is a Kubernetes object
 that stores sensitive information in the cluster. The application can then
-access this information by mounting the secret as a volume or by using
+access this information by mounting the secret as a volume or by passing it as
 environment variables.
 
 However, creating a Kubernetes Secret resource manually is a tedious task,
@@ -94,34 +94,44 @@ source code or manually creating the Kubernetes Secret resource.
 ## Roadmap
 
 Before we start, let's set a clear objective of what we want to achieve in
-this article.
+this article. The links will take you to the respective sections of this
+article.
 
-First off, we'll create an Azure AKS Kubernetes cluster using the official
+First off, we'll
+[create an Azure AKS Kubernetes cluster](#step-0-setting-up-azure-managed-kubernetes-cluster)
+using the official
 [OpenTofu](/category/opentofu) module. The AKS cluster will have its OpenID
 Connect endpoint exposed to the internet.
 
-We will use that OpenID Connect endpoint to establish a trust relationship
-between the Kubernetes cluster and the AWS IAM, leveraging
+We will use that OpenID Connect endpoint to
+[establish a trust relationship between the Kubernetes cluster and the AWS IAM](#step-1-establishing-azure-aks-trust-relationship-with-aws-iam)
+, leveraging
 [OpenID Connect](/category/openid-connect). This trust relationship will
 allow the Kubernetes cluster's Service Accounts to assume an IAM Role with
 web identity to access AWS resources.
 
-Afterwards, we will deploy the External Secrets operator in the Kubernetes
+Afterwards, we will
+[deploy the External Secrets operator](#step-2-deploying-external-secrets-operator)
+in the Kubernetes
 cluster passing the right Service Account to its running pod so that it can
 assume the proper [AWS IAM Role].
 
-With that set up, the External Secrets operator will be able to read the
-secrets from the AWS SSM Parameter Store and create Kubernetes Secrets from
+With that set up, the External Secrets operator will be able to
+[read the secrets from the AWS SSM Parameter Store](#step-5-deploying-the-application-that-uses-the-secret)
+and create Kubernetes Secrets from
 them.
 
 At this point, any pod in the same namespace as the target Secret will be able
 to mount and read its values business as usual.
 
-Optionally, we'll also cover how to allow the External Secrets operator to
-write back to the AWS SSM Parameter Store the values of the Kubernetes Secrets
+Ultimately, we'll also cover how to allow the External Secrets operator to
+[write back to the AWS SSM Parameter Store](#pushsecret-to-aws-ssm-parameter-store)
+the values of the Kubernetes Secrets
 we want it to. An example include deploying a database with a generated
-password and storing that password back in the AWS SSM Parameter Store for
+password and storing that password back to the AWS SSM Parameter Store for
 references by other services or applications.
+
+With that said, let's get started!
 
 !!! success "OpenID Connect"
 
@@ -132,8 +142,6 @@ references by other services or applications.
       If you're new to the topic, we have a practical example to solidify your
       understanding in our guide on
       [OIDC Authentication](./0007-oidc-authentication.md).
-
-With that said, let's get started!
 
 !!! question "Why AWS SSM instead of Azure Key Vault?"
 
@@ -193,17 +201,6 @@ First things first, let's set up the Azure AKS Kubernetes cluster using the
 -8<- "docs/codes/0009/aks/outputs.tf"
 ```
 
-!!! bug "`azapi` signing key"
-
-      As of the writing of this blog post, there is a bug in the `azapi` TF
-      provider that causes the `tofu init` to fail cause of a
-      [changed signing key].
-
-We would normally use `tofu` for the task, as per our tradition in this blog.
-But because of this bug, and because we can't wait for the world to fix itself
-before publishing our next article, we'll compromise on `terraform` just for
-this one time. :sweat: :grimacing:
-
 Having this TF code, we now need to apply it to our Azure account.
 
 ### Authenticating to Azure
@@ -235,6 +232,17 @@ export ARM_TENANT_ID=72f988bf-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 ### Applying the TF Code
 
 Lastly, once all is set, you can apply the TF code to create the AKS cluster.
+
+!!! bug "`azapi` signing key"
+
+      As of the writing of this blog post, there is a bug in the `azapi` TF
+      provider that causes the `tofu init` to fail cause of a
+      [changed signing key].
+
+We would normally use `tofu` for the task, as per our tradition in this blog.
+But because of this bug, and because we can't wait for the world to fix itself
+before publishing our next article, we'll compromise on `terraform` just for
+this one time. :sweat: :grimacing:
 
 ```shell title="" linenums="0"
 terraform init
@@ -328,6 +336,7 @@ format:
 ```
 
 Pick what's best and more appealing for you and your team and stick with it.
+Don't let any clown :clown: tell you otherwise, including me! :sunglasses:
 
 ## Step 2: Deploying External Secrets Operator
 
