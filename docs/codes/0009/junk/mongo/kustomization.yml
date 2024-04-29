@@ -1,0 +1,16 @@
+configMapGenerator:
+  - name: mongodb-config
+    envs:
+      - configs.env
+
+resources:
+  - namespace.yml
+  - password.yml
+  - externalsecret.yml
+  - statefulset.yml
+
+images:
+  - name: mongo
+    newTag: "7"
+
+namespace: mongodb

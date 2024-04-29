@@ -1,0 +1,10 @@
+resources:
+  - namespace.yml
+  - externalsecret.yml
+  - job.yml
+
+images:
+  - name: mongo
+    newTag: "7"
+
+namespace: app
