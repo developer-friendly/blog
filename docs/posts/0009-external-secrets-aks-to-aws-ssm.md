@@ -1,6 +1,6 @@
 ---
 date: 2024-04-29
-draft: true
+draft: false
 description: >-
   Get started with ESO in Kubernetes to fetch secrets
   from external secrets management systems using OpenID Connect &
