@@ -30,35 +30,8 @@ links:
 
 # External Secrets Operator: Fetching AWS SSM Parameters into Azure AKS
 
-<!--
-high priority keywords to aim for in the SEO optimization tactics:
-- Kubernetes
-- External Secrets Operator
-- AWS
-- AKS
-- OpenID Connect
-
-optional:
-- Azure
-- AWS IAM
-- IAM Role
-- AWS SSM Parameters
-- OpenTofu
--->
-
 How to pass your secrets to the Kubernetes cluster without hard-coding them
 into your source code or manually creating the Kubernetes Secret resource.
-
-<!-- more -->
-
-<!--
-high level overview:
-
-1. setting up azure aks with TF module
-2. establishing a trust relationship using OIDC with AWS IAM
-3. creating two IAM roles for external secrets operator (read and write)
-4. test the set up by creating ExternalSecret and PushSecrets
--->
 
 ## Introduction
 
@@ -72,7 +45,7 @@ can be database passwords, API keys, or any other sensitive information the
 app uses to function and communicate with all the relevant external services.
 
 In Kubernetes, the most common way to pass secrets to the application is by
-creating a [Kubernetes Secret resource]. This resource is a Kubernetes object
+creating a Kubernetes Secret resource[^1]. This resource is a Kubernetes object
 that stores sensitive information in the cluster. The application can then
 access this information by mounting the secret as a volume or by passing it as
 environment variables.
@@ -87,8 +60,8 @@ industry and seeing how people hard-code their secrets into the source code
 pains my soul.
 
 In this article, we will explore how to use the
-[External Secrets Operator][external-secret] to
-pass secrets to the Kubernetes cluster without hard-coding them into your
+External Secrets Operator[^2] to
+pass secrets to the Kubernetes cluster without hard-coding them into the
 source code or manually creating the Kubernetes Secret resource.
 
 ## Roadmap
@@ -112,14 +85,13 @@ web identity to access AWS resources.
 
 Afterwards, we will
 [deploy the External Secrets operator](#step-2-deploying-external-secrets-operator)
-in the Kubernetes
+to the Kubernetes
 cluster passing the right Service Account to its running pod so that it can
-assume the proper [AWS IAM Role].
+assume the proper AWS IAM Role[^3].
 
 With that set up, the External Secrets operator will be able to
 [read the secrets from the AWS SSM Parameter Store](#step-5-deploying-the-application-that-uses-the-secret)
-and create Kubernetes Secrets from
-them.
+and create Kubernetes Secrets from them.
 
 At this point, any pod in the same namespace as the target Secret will be able
 to mount and read its values business as usual.
@@ -163,27 +135,27 @@ Before we start, you need to have the following prerequisites:
 - [x] A Kubernetes cluster v1.29-ish. Feel free to follow earlier guides to
       set up the Kubernetes cluster [the Hard Way](./0003-kubernetes-the-hard-way.md)
       or [using k3s](./0005-install-k3s-on-ubuntu22.md). Although we'll spin
-      up a new Kubernetes cluster using [Azure AKS TF module][aks-tf-mod].
+      up a new Kubernetes cluster using Azure AKS TF module[^4].
 - [x] Internet accessible endpoint to your Kubernetes API server (1). We have
       covered [how to expose your Kubernetes API server](./0008-k8s-federated-oidc.md)
       in last week's guide. Azure AKS, however, comes with a public
-      [OpenID Connect](/category/openid-connect) endpoint [by default][aks-oidc].
+      [OpenID Connect](/category/openid-connect) endpoint by default[^7].
 - [x] An AWS account with the permissions to read and write SSM parameters and
       to create OIDC provider and IAM roles.
-- [x] [OpenTofu v1.6][opentofu]
-- [ ] Optionally, [FluxCD v2.2 installed] in your cluster. Not required if you
+- [x] OpenTofu v1.6[^8]
+- [ ] Optionally, FluxCD v2.2[^9] installed in your cluster. Not required if you
       aim to use bare Helm commands for installations. There is a beginner
       friendly [guide to FluxCD](./0006-gettings-started-with-gitops-and-fluxcd.md)
       in our archive if you're new to the topic.
 </div>
 
 1. You're free to run a local Kubernetes cluster and expose it to the internet
-   using tools like [ngrok][ngrok] or [telepresence][telepresence].
+   using tools like ngrok[^5] or telepresence[^6].
 
 ## Step 0: Setting up Azure Managed Kubernetes Cluster
 
 First things first, let's set up the Azure AKS Kubernetes cluster using the
-[official TF module][aks-tf-mod].
+official TF module[^4].
 
 ```hcl title="aks/variables.tf"
 -8<- "docs/codes/0009/aks/variables.tf"
@@ -206,8 +178,8 @@ Having this TF code, we now need to apply it to our Azure account.
 ### Authenticating to Azure
 
 The first requirement is to be authenticated to Azure API. There are more than
-one ways to [authenticate to Azure]. The most common way, and the one we'll use
-today, is by [authenticating to Azure CLI].
+one ways to authenticate to Azure[^10]. The most common way, and the one we'll
+use today, is by authenticating to Azure CLI[^11].
 
 ???+ example "Authenticate to Azure Using AZ CLI"
 
@@ -248,7 +220,7 @@ URL. We are going to use this URL to establish a trust relationship between
 the Kubernetes cluster and the AWS IAM in the next step.
 
 The null resource in our TF code will add or update your current kubeconfig
-file with the new AKS cluster credentials. We will use this in a later step.
+file with the new AKS cluster credentials[^12]. We will use this in a later step.
 
 ## Step 1: Establishing Azure AKS Trust Relationship with AWS IAM
 
@@ -281,15 +253,15 @@ three blog posts on the topic of [OpenID Connect](/category/openid-connect).
 But, let's emphasize the highlighting points:
 
 1. When it comes to AWS IAM assume role, there are
-   [five types of trust relationships]. In this scenario, we are using the
-   [Web Identity trust relationship type].
+   five types of trust relationships[^13]. In this scenario, we are using the
+   Web Identity trust relationship type[^14].
 2. Having the principal as `Federated` is just as the name suggests; it is
    a federated identity provider. In this case, it is the Azure AKS OIDC
    issuer URL. In simple english, it allows the Kubernetes cluster to sign
    the access tokens, and the AWS IAM will trust those tokens if the `iss`
    claim of their tokens match the trusted URL.
 3. Having two conditionals on the audience (`aud`) and the subject (`sub`) allows
-   for a tighter security control and to enforce the [principle of least privilege].
+   for a tighter security control and to enforce the principle of least privilege[^15].
    The target Kubernetes Service Account is the only one who is able to assume
    this IAM Role and is only capable of doing the permissions assigned, but no
    more. This enhances the overall security posture of the system.
@@ -393,11 +365,10 @@ we created earlier by leveraging the OIDC trust relationship.
 In External Secrets operator, the `SecretStore` and `ClusterSecretStore` are
 the proxies to the external secrets management systems. They are responsible
 for fetching or creating the secrets from the external systems and creating
-[the Kubernetes Secrets from them].
+the Kubernetes Secrets from them[^16].
 
 Let us create a `ClusterSecretStore` that will be responsible for fetching
 or creating AWS SSM Parameters.
-
 
 ```hcl title="cluster-secret-store/variables.tf"
 -8<- "docs/codes/0009/cluster-secret-store/variables.tf"
@@ -420,13 +391,13 @@ that only AWS EKS understands and acts upon.
 
 This is an unfortunate mishap. If you're curious to read the full details,
 I have provided a very long and detailed explanation in
-[their GitHub repository's issue].
+their GitHub repository's issue[^17].
 
 The gist of that discussion, if you're not feeling like reading my whole
 rambling, is that the External Secrets operator is not able to assume IAM Role
 with Web Identity outside the AWS EKS Kubernetes cluster; that is, you'll only
 get the benefit of [OpenID Connect](/category/openid-connect) if
-[only you're within AWS] as far as External Secrets operator is concerned.
+only you're within AWS[^18] as far as External Secrets operator is concerned.
 
 That is something I consider to be a bug! It shouldn't be the case and they
 should be able to handle Kubernetes clusters where we wouldn't want to manually
@@ -459,14 +430,13 @@ rest of this tutorial is a piece of cake compared to what we have done so far.
 
       As of the writing of this blog post, the bitnami MongoDB Helm chart
       does not support ARM64 architecture. This is a known issue and there is
-      an [open issue for it][mongodb-arm64-support].
+      an open issue for it[^19].
 
       If you're running on ARM64 architecture, you may want to either:
 
       1. Use a different Helm chart that supports ARM64.
       2. Deploy MongoDB manually using StatefulSet; the same approach I'll
          employ in this tutorial.
-
 
 ```yaml title="mongodb/namespace.yml"
 -8<- "docs/codes/0009/mongodb/namespace.yml"
@@ -535,14 +505,14 @@ later be used by other parts or applications.
 
    1. As of writing this article, the External Secrets operator and FluxCD do not
       work well together when it comes to generator API. Specifically, the FluxCD
-      will try to recreate the [Password resource] resource on every tick of
+      will try to recreate the Password[^20] resource resource on every tick of
       the `Kustomization.spec.interval`.
 
       This means that the initial password is gone by the time the second tick
       comes around.
 
       This is possibly a known issue, one which I can see being
-      [discussed in their GitHub repository].
+      discussed in their GitHub repository[^21].
 
       Although I haven't found a fixed by now, specifying
       `updatePolicy: IfNotExists` for the `PushSecret` makes sure that we won't
@@ -560,7 +530,7 @@ This will result in the following parameter to be created in our AWS account.
 
 As you can see in the screenshot, the parameter type is set to `String`. This is
 a bug and you can follow the discussion on the
-[GitHub issue][pushsecret-parameter-type-string].
+GitHub issue[^22].
 
 Ideally, this parameter should be customizable in `PushSecret.spec` and allow
 us to specify `SecureString` instead.
@@ -660,33 +630,31 @@ Secrets operator, but that's a story for another day.
 
 ### Why not use the AWS Secrets Manager?
 
-The AWS SSM Parameter Store, in its standard tier, is free to use and offers
+The AWS SSM Parameter Store[^23], in its standard tier, is free to use and offers
 encryption out of the box. I wouldn't want to be charged extra money if I
 really don't have to.
 
 <!-- References -->
-[external-secret]: https://external-secrets.io/v0.9.16/
-[telepresence]: https://www.telepresence.io/
-[ngrok]: https://ngrok.com/
-[aws-ssm]: https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html
-[aks-tf-mod]: https://registry.terraform.io/modules/Azure/aks/azurerm/8.0.0
-[aks-oidc]: https://learn.microsoft.com/en-us/azure/aks/use-oidc-issuer
-[Kubernetes Secret resource]: https://kubernetes.io/docs/concepts/configuration/secret/
-[AWS IAM Role]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-[changed signing key]: https://github.com/Azure/terraform-provider-azapi/issues/477
-[authenticate to Azure]: https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs#authenticating-to-azure
-[authenticating to Azure CLI]: https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/guides/azure_cli
-[five types of trust relationships]: https://spacelift.io/blog/aws-iam-roles
-[Web Identity trust relationship type]: https://docs.aws.amazon.com/cli/latest/reference/sts/assume-role-with-web-identity.html
-[kubeconfig file]: https://learn.microsoft.com/en-us/azure/aks/control-kubeconfig-access
-[volume projection]: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/#service-account-token-volume-projection
-[their GitHub repository's issue]: https://github.com/external-secrets/external-secrets/issues/660#issuecomment-2080421742
-[only you're within AWS]: https://external-secrets.io/v0.9.16/provider/aws-parameter-store/#eks-service-account-credentials
-[the Kubernetes Secrets from them]: https://external-secrets.io/v0.9.16/api/clustersecretstore/
-[pushsecret-parameter-type-string]: https://github.com/external-secrets/external-secrets/issues/3422
-[mongodb-arm64-support]: https://github.com/bitnami/charts/issues/3635
-[opentofu]: https://github.com/opentofu/opentofu/releases/tag/v1.6.2
-[FluxCD v2.2 installed]: https://github.com/fluxcd/flux2/releases/tag/v2.2.3
-[Password resource]: https://external-secrets.io/latest/api/generator/password/
-[discussed in their GitHub repository]: https://github.com/external-secrets/external-secrets/discussions/2402
-[principle of least privilege]: https://en.wikipedia.org/wiki/Principle_of_least_privilege
+[^1]: https://kubernetes.io/docs/concepts/configuration/secret/
+[^2]: https://external-secrets.io/v0.9.16/
+[^3]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+[^4]: https://registry.terraform.io/modules/Azure/aks/azurerm/8.0.0
+[^5]: https://ngrok.com/
+[^6]: https://www.telepresence.io/
+[^7]: https://learn.microsoft.com/en-us/azure/aks/use-oidc-issuer
+[^8]: https://github.com/opentofu/opentofu/releases/tag/v1.6.2
+[^9]: https://github.com/fluxcd/flux2/releases/tag/v2.2.3
+[^10]: https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs#authenticating-to-azure
+[^11]: https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/guides/azure_cli
+[^12]: https://learn.microsoft.com/en-us/azure/aks/control-kubeconfig-access
+[^13]: https://spacelift.io/blog/aws-iam-roles
+[^14]: https://docs.aws.amazon.com/cli/latest/reference/sts/assume-role-with-web-identity.html
+[^15]: https://en.wikipedia.org/wiki/Principle_of_least_privilege
+[^16]: https://external-secrets.io/v0.9.16/api/clustersecretstore/
+[^17]: https://github.com/external-secrets/external-secrets/issues/660#issuecomment-2080421742
+[^18]: https://external-secrets.io/v0.9.16/provider/aws-parameter-store/#eks-service-account-credentials
+[^19]: https://github.com/bitnami/charts/issues/3635
+[^20]: https://external-secrets.io/latest/api/generator/password/
+[^21]: https://github.com/external-secrets/external-secrets/discussions/2402
+[^22]: https://github.com/external-secrets/external-secrets/issues/3422
+[^23]: https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html
