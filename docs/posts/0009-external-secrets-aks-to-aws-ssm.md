@@ -2,7 +2,7 @@
 date: 2024-04-29
 draft: false
 description: >-
-  Get started with ESO in Kubernetes to fetch secrets
+  Get started with ESO to create Kubernetes Secret resources
   from external secrets management systems using OpenID Connect &
   IAM Role trust relationship.
 categories:
