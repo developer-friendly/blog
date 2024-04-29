@@ -33,6 +33,8 @@ links:
 How to pass your secrets to the Kubernetes cluster without hard-coding them
 into your source code or manually creating the Kubernetes Secret resource.
 
+<!-- more -->
+
 ## Introduction
 
 Deploying an application rarely is just the application itself. It is usually
