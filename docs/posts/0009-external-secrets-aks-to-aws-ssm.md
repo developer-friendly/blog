@@ -244,9 +244,9 @@ terraform plan -out tfplan
 terraform apply tfplan
 ```
 
-This shall take about ~20 minutes to complete. Once done, you should have a
-fully functional Azure AKS cluster with the OpenID Connect endpoint exposed
-to the internet.
+Creating the resources in this stack shall take about ~20 minutes to complete.
+Once done, you should have a fully functional Azure AKS cluster with the
+OpenID Connect endpoint exposed to the internet.
 
 The output of this TF code will, as specified in our code, be an OIDC issuer
 URL. We are going to use this URL to establish a trust relationship between
@@ -596,13 +596,68 @@ production environment. It may cause downtime if not used carefully. You should
 specifically consider the idempotency behavior of a recreated job for your
 appliction(s).
 
+## Conclusion
+
+External Secrets operator is a really appealing tool for fetching secrets from
+external secrets management systems.
+
+It empowers you to use your desired secrets management system without having
+to compromise on the security aspect of passing credentials around! I have
+always opted in for the External Secrets operator when it comes to day-to-day
+operations of a Kubernetes cluster.
+
+With the mechanisms and APIs provided by the ESO, one can easily enhance the
+operations of the secrets in the daily operations of the Kubernetes cluster.
+
+You have also seen the power of OIDC and how it can enhance the security
+posture of the system, as well as reducing the need and overhead of passing
+credentials around having to worry about their rotations.
+
+With the knowledge you have gained in this article, you should be able to
+deploy the External Secrets operator in your Kubernetes cluster and manage
+your secrets in a secure & efficient way and with a peace of mind.
+
+I hope you have enjoyed reading this article as much as I have enjoyed writing
+it. Feel free to reach out through the links provided at the top of this
+article if you have any questions or feedback.
+
+Until next time, *ciao* :cowboy: happy coding! :crab: :penguin:
 
 ## FAQ
 
-### Why not use the SOPS, Sealed Secrets, or Vault?
+### Why not use the SOPS?
 
-<!-- TODO -->
+I'm not here to dictate what you should and shouldn't use in your stack. But,
+if you're here and reading this, I will give you my honest opinion.
 
+I think Sops is great for what it's worth.
+
+Yet, I find it truly concerning to commit even the encrypted versions of my
+secrets to the repository and hoping that no computer will ever be powerful
+enough to break or decompose them into their plaintext versions.
+
+I find it disturbing to let myself at the mercy of the wild internet and
+push my luck with the most critical part of my workloads, that is, the
+secrets.
+
+You are more than welcome to disagree, but I just wanted to say why I would
+never use Sops in my stack.
+
+### Why not use the Sealed Secrets, or Vault?
+
+I have never used these tools. In fact, you're free to pick your stack as you
+please, if you find a good enough reason to do so.
+
+I may, at some point, use Azure or Hashicorp Vault as a backend to the External
+Secrets operator, but that's a story for another day.
+
+### Why not use the AWS Secrets Manager?
+
+The AWS SSM Parameter Store, in its standard tier, is free to use and offers
+encryption out of the box. I wouldn't want to be charged extra money if I
+really don't have to.
+
+<!-- References -->
 [external-secret]: https://external-secrets.io/v0.9.16/
 [telepresence]: https://www.telepresence.io/
 [ngrok]: https://ngrok.com/

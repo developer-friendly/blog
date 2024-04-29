@@ -255,6 +255,8 @@ markdown_extensions:
       line_spans: __span
   - pymdownx.snippets:
       url_download: !ENV [URL_DOWNLOAD, false]
+      auto_append:
+        - includes/abbreviations.md
   - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.keys
