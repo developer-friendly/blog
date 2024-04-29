@@ -10,3 +10,5 @@ resources:
 
 configurations:
   - kustomizeconfig.yml
+
+namespace: external-secrets

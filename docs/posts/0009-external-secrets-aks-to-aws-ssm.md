@@ -233,21 +233,10 @@ export ARM_TENANT_ID=72f988bf-xxxx-xxxx-xxxx-xxxxxxxxxxxx
 
 Lastly, once all is set, you can apply the TF code to create the AKS cluster.
 
-!!! bug "`azapi` signing key"
-
-      As of the writing of this blog post, there is a bug in the `azapi` TF
-      provider that causes the `tofu init` to fail cause of a
-      [changed signing key].
-
-We would normally use `tofu` for the task, as per our tradition in this blog.
-But because of this bug, and because we can't wait for the world to fix itself
-before publishing our next article, we'll compromise on `terraform` just for
-this one time. :sweat: :grimacing:
-
 ```shell title="" linenums="0"
-terraform init
-terraform plan -out tfplan
-terraform apply tfplan
+tofu init
+tofu plan -out tfplan
+tofu apply tfplan
 ```
 
 Creating the resources in this stack shall take about ~20 minutes to complete.
@@ -298,15 +287,12 @@ But, let's emphasize the highlighting points:
    a federated identity provider. In this case, it is the Azure AKS OIDC
    issuer URL. In simple english, it allows the Kubernetes cluster to sign
    the access tokens, and the AWS IAM will trust those tokens if the `iss`
-   claim of their tokens match the same URL as the OIDC issuer.
+   claim of their tokens match the trusted URL.
 3. Having two conditionals on the audience (`aud`) and the subject (`sub`) allows
-   for a tighter security control and to enforce the principle of least privilege.
+   for a tighter security control and to enforce the [principle of least privilege].
    The target Kubernetes Service Account is the only one who is able to assume
    this IAM Role and is only capable of doing the permissions assigned, but no
    more. This enhances the overall security posture of the system.
-
-Fortunately, there isn't any signing key issue with this TF provider. To apply
-this, we can simply use `tofu`:
 
 ```shell title="" linenums="0"
 export AWS_PROFILE="PLACEHOLDER"
@@ -336,7 +322,7 @@ format:
 ```
 
 Pick what's best and more appealing for you and your team and stick with it.
-Don't let any clown :clown: tell you otherwise, including me! :sunglasses:
+Don't let any clown :clown: tell you otherwise, including myself! :sunglasses:
 
 ## Step 2: Deploying External Secrets Operator
 
@@ -388,14 +374,14 @@ If you have set up your directory structure to be traversed in a recursive
 fashion by FluxCD, you'd only push this to the upstream and the live state
 will reconcile as specified.
 
-Otherwise, apply the following manifest to create the FluxCD Kustomization:
+Otherwise, apply the following manifests to create the FluxCD Kustomization:
 
-```yaml title="gitops/gitrepo.yml"
--8<- "docs/codes/0009/junk/repo/gitrepo.yml"
+```yaml title="gitops/gitrepo.yml" hl_lines="4"
+-8<- "docs/codes/0009/gitops/gitrepo.yml"
 ```
 
-```yaml title="gitops/external-secrets.yml"
--8<- "docs/codes/0009/junk/es/kustomize.yml"
+```yaml title="gitops/external-secrets.yml" hl_lines="18"
+-8<- "docs/codes/0009/gitops/external-secrets.yml"
 ```
 
 ## Step 3: Create the Secret Store
@@ -413,16 +399,16 @@ Let us create a `ClusterSecretStore` that will be responsible for fetching
 or creating AWS SSM Parameters.
 
 
-```hcl title="configure-secrets/variables.tf"
--8<- "docs/codes/0009/configure-secrets/variables.tf"
+```hcl title="cluster-secret-store/variables.tf"
+-8<- "docs/codes/0009/cluster-secret-store/variables.tf"
 ```
 
-```hcl title="configure-secrets/versions.tf"
--8<- "docs/codes/0009/configure-secrets/versions.tf"
+```hcl title="cluster-secret-store/versions.tf"
+-8<- "docs/codes/0009/cluster-secret-store/versions.tf"
 ```
 
-```hcl title="configure-secrets/main.tf" hl_lines="17-18"
--8<- "docs/codes/0009/configure-secrets/main.tf"
+```hcl title="cluster-secret-store/main.tf" hl_lines="17-18"
+-8<- "docs/codes/0009/cluster-secret-store/main.tf"
 ```
 
 ### Service Account Annotations Hack
@@ -440,7 +426,7 @@ The gist of that discussion, if you're not feeling like reading my whole
 rambling, is that the External Secrets operator is not able to assume IAM Role
 with Web Identity outside the AWS EKS Kubernetes cluster; that is, you'll only
 get the benefit of [OpenID Connect](/category/openid-connect) if
-[only you're within AWS].
+[only you're within AWS] as far as External Secrets operator is concerned.
 
 That is something I consider to be a bug! It shouldn't be the case and they
 should be able to handle Kubernetes clusters where we wouldn't want to manually
@@ -515,7 +501,7 @@ reconciling my Kubernetes resource using FluxCD and GitOps. Here's the
 `Kustomization` resource for FluxCD:
 
 ```yaml title="gitops/mongodb.yml"
--8<- "docs/codes/0009/junk/mongo/kustomize.yml"
+-8<- "docs/codes/0009/gitops/mongodb.yml"
 ```
 
 This stack will be deployed in whole and as is. Here's what the
@@ -550,7 +536,7 @@ later be used by other parts or applications.
    1. As of writing this article, the External Secrets operator and FluxCD do not
       work well together when it comes to generator API. Specifically, the FluxCD
       will try to recreate the [Password resource] resource on every tick of
-      the `refreshInterval`.
+      the `Kustomization.spec.interval`.
 
       This means that the initial password is gone by the time the second tick
       comes around.
@@ -562,6 +548,8 @@ later be used by other parts or applications.
       `updatePolicy: IfNotExists` for the `PushSecret` makes sure that we won't
       lose the actual password initially used by the script to bootstrap the
       MongoDB database.
+
+      **There may be a better way!**
 
 This will result in the following parameter to be created in our AWS account.
 
@@ -601,8 +589,8 @@ connect to the database.
 
 Again, you can apply this stack as is, or create is FluxCD Kustomization.
 
-```yaml title="app-kustomize.yml" hl_lines="7"
--8<- "docs/codes/0009/junk/mongo-client/kustomize.yml"
+```yaml title="gitops/app.yml" hl_lines="7"
+-8<- "docs/codes/0009/gitops/app.yml"
 ```
 
 We have intentionally enabled the `force` flag for this stack because
@@ -640,7 +628,7 @@ I hope you have enjoyed reading this article as much as I have enjoyed writing
 it. Feel free to reach out through the links provided at the bottom of this
 article if you have any questions or feedback.
 
-Until next time, *ciao* :cowboy: happy coding! :crab: :penguin:
+Until next time, *ciao* :cowboy: & happy coding! :crab: :penguin:
 
 ## FAQ
 
@@ -701,3 +689,4 @@ really don't have to.
 [FluxCD v2.2 installed]: https://github.com/fluxcd/flux2/releases/tag/v2.2.3
 [Password resource]: https://external-secrets.io/latest/api/generator/password/
 [discussed in their GitHub repository]: https://github.com/external-secrets/external-secrets/discussions/2402
+[principle of least privilege]: https://en.wikipedia.org/wiki/Principle_of_least_privilege
