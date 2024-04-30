@@ -482,7 +482,7 @@ reconciling my Kubernetes resource using FluxCD and GitOps. Here's the
 This stack will be deployed in whole and as is. Here's what the
 `Secret/mongodb-secrets` will look like.
 
-```yaml title="mongodb-secrets.yml"
+```yaml title=""
 -8<- "docs/codes/0009/junk/mongo/mongodb-secrets.yml"
 ```
 
