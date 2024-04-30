@@ -1,9 +1,7 @@
 ---
-title: Developer Friendly Blog
-description: >-
-  Kubernetes, GitOps, CI/CD, Infrastructure as Code (IaC), and Site Reliability
-  Engineering topics from seven years of production deployments.
+cards_layout_options:
+  title: Developer Friendly Blog
 hide:
-  - navigation
+- navigation
 ---
 # Posts

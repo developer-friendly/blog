@@ -150,8 +150,8 @@ repo_url: https://github.com/developer-friendly/blog
 site_url: !ENV [URL, https://developer-friendly.blog]
 site_author: meysam@developer-friendly.blog (Meysam Azad)
 site_description: >-
-  A blog about SRE, Kubernetes, CI/CD, GitOps, Cloud Native, and more!
-# site_dir: mkdocs
+  Kubernetes, GitOps, CI/CD, Infrastructure as Code (IaC), and Site Reliability
+  Engineering topics from seven years of production deployments.
 strict: true
 theme:
   language: en
