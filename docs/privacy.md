@@ -8,13 +8,44 @@ hide:
 
 ## Introduction
 
-This Privacy Policy explains how Developer Friendly Blog ("we," "us," or "our") collects, uses, discloses, and safeguards your information when you visit our website [developer-friendly.blog](./index.md), including any other media form, media channel, mobile website, or mobile application related or connected thereto (collectively, the "Website"). Please read this Privacy Policy carefully. If you do not agree with the terms of this Privacy Policy, please do not access the Website.
+This Privacy Policy explains how Developer Friendly Blog ("we," "us," or "our")
+collects, uses, discloses, and safeguards your information when you visit our
+website [developer-friendly.blog](./index.md), including any other media form,
+media channel, mobile website, or mobile application related or connected
+thereto (collectively, the "Website"). Please read this Privacy Policy
+carefully. If you do not agree with the terms of this Privacy Policy, please do
+not access the Website.
 
 ## Information We Collect
 
-- Cookies: We use cookies and similar tracking technologies to track the activity on our Website and hold certain information. Cookies are files with small amounts of data may include an anonymous unique identifier. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent. However, if you do not accept cookies, you may not be able to use some portions of our Website. Customize how we store cookies on your browser using the link at the bottom of all our pages. Learn more about cookies in Mozilla docs, https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies, or from this link: https://www.allaboutcookies.org/.
-- Google Analytics: We use Google Analytics to analyze the use of our Website. Google Analytics is a web analytics service offered by Google that tracks and reports website traffic. Google uses the data collected to track and monitor the use of our Website. This data is shared with other Google services. Google may use the collected data to contextualize and personalize the ads of its advertising network. You can opt out of having made your activity on the Website available to Google Analytics by either adjusting the Cookies or by installing the Google Analytics opt-out browser add-on. The add-on prevents Google Analytics JavaScript (ga.js, analytics.js, and dc.js) from sharing information with Google Analytics. You can learn more about Google Analytics' privacy practices here: https://policies.google.com/privacy.
-- LogRocket: We use LogRocket to understand how users interact with our Website. LogRocket records sessions anonymously, including user actions, JavaScript errors, and network requests. This helps us identify bugs and improve the user experience. LogRocket does not track personal information or sensitive data. You can learn more about Logrocket's privacy practices here: https://logrocket.com/privacy/. You can opt out of LogRocket tracking by customizing the cookies on your browser using the link at the bottom of all our pages.
+- Cookies: We use cookies and similar tracking technologies to track the
+  activity on our Website and hold certain information. Cookies are files with
+  small amounts of data may include an anonymous unique identifier. You can
+  instruct your browser to refuse all cookies or to indicate when a cookie is
+  being sent. However, if you do not accept cookies, you may not be able to use
+  some portions of our Website. Customize how we store cookies on your browser
+  using the link at the bottom of all our pages. Learn more about cookies in
+  Mozilla docs, https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies, or
+  from this link: https://www.allaboutcookies.org/.
+- Google Analytics: We use Google Analytics to analyze the use of our Website.
+  Google Analytics is a web analytics service offered by Google that tracks and
+  reports website traffic. Google uses the data collected to track and monitor
+  the use of our Website. This data is shared with other Google services.
+  Google may use the collected data to contextualize and personalize the ads of
+  its advertising network. You can opt out of having made your activity on the
+  Website available to Google Analytics by either adjusting the Cookies or by
+  installing the Google Analytics opt-out browser add-on. The add-on prevents
+  Google Analytics JavaScript (ga.js, analytics.js, and dc.js) from sharing
+  information with Google Analytics. You can learn more about Google Analytics'
+  privacy practices here: https://policies.google.com/privacy.
+- LogRocket: We use LogRocket to understand how users interact with our
+  Website. LogRocket records sessions anonymously, including user actions,
+  JavaScript errors, and network requests. This helps us identify bugs and
+  improve the user experience. LogRocket does not track personal information or
+  sensitive data. You can learn more about Logrocket's privacy practices here:
+  https://logrocket.com/privacy/. You can opt out of LogRocket tracking by
+  customizing the cookies on your browser using the link at the bottom of all
+  our pages.
 
 ## Use of Information
 
@@ -24,26 +55,27 @@ We use the information we collect to:
 - Analyze how users interact with the Website
 - To detect, prevent, and address technical issues
 - To improve the user experience
-- Deliver targeted advertising (through Google Adsense)
-
-## Third-Party Services
-
-We use the following third-party services to help us operate and improve the Website:
-
-- Google Adsense: We use Google Adsense to display advertisements on the Website. This is how we keep the lights on by monetizing the free content on the Website (remember, _nothing is ever really free_). Google Adsense may collect information about your interests to deliver targeted advertising. You can learn more about Google Adsense's privacy practices here: https://www.google.com/policies/technologies/ads/.
 
 ### Sharing Your Information
 
-We may share your information with third-party service providers to perform services on our behalf, such as hosting, analytics, and customer support. These service providers are prohibited from using your personal information for any other purpose.
+We may share your information with third-party service providers to perform
+services on our behalf, such as hosting, analytics, and customer support. These
+service providers are prohibited from using your personal information for any
+other purpose.
 
 ## Data Security
 
-We take reasonable steps to protect the information you provide to us from loss, misuse, unauthorized access, disclosure, alteration, and destruction. However, _no internet transmission or electronic storage is ever 100% secure_.
+We take reasonable steps to protect the information you provide to us from
+loss, misuse, unauthorized access, disclosure, alteration, and destruction.
+However, _no internet transmission or electronic storage is ever 100% secure_.
 
 ## Changes to this Privacy Policy
 
-We reserve the right to make changes to this Privacy Policy at any time and for any reason. We will alert you about any changes by updating the "Effective Date" of this Privacy Policy.
+We reserve the right to make changes to this Privacy Policy at any time and for
+any reason. We will alert you about any changes by updating the
+"Effective Date" of this Privacy Policy.
 
 ## Contact Us
 
-If you have any questions about this Privacy Policy, please contact us at privacy@developer-friendly.blog.
+If you have any questions about this Privacy Policy, please contact us at
+privacy@developer-friendly.blog.
