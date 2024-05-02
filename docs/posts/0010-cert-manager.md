@@ -78,7 +78,7 @@ Before we start, make sure you have the following set up:
         you're new to it:
         [External Secrets Operator](./0009-external-secrets-aks-to-aws-ssm.md)
 
-## Installation
+## Step 0: Installation
 
 cert-manager comes with a first-class support for Helm chart installation.
 This makes the installation rather straightforward.
@@ -100,8 +100,10 @@ As mentioned earlier, we will install the Helm chart using FluxCD CRDs.
 Although not required, it is hugely beneficial to store the Helm values as it
 is in your VCS. This makes your future upgrades and code reviews easier.
 
-```shell title=""
-helm show values jetstack/cert-manager > values.yml
+```shell title="" linenums="0"
+helm repo add jetstack https://charts.jetstack.io
+helm repo update jetstack
+helm show values jetstack/cert-manager > cert-manager/values.yml
 ```
 
 ```yaml title="cert-manager/values.yml"
@@ -147,6 +149,87 @@ kubectl apply -f cert-manager/kustomize.yml
     ```yaml title=""
     -8<- "docs/codes/0010/junk/cert-manager/manifests.yml"
     ```
+
+## Step 1: Issuer
+
+In general, you can fetch your TLS certificate in two ways: either by verifying
+your domain using the HTTP01 challenge or the DNS01 challenge. Each have their
+own pros and cons, but both are just to make sure that you own the domain you're
+requesting the certificate for. Imagine a world where you could request a
+certificate for `google.com` without owning it! :scream:
+
+the HTTP01 challenge requires you to expose a specific path on your web server
+for the CA to verify your domain. This is not always possible, especially if
+you're running a private service or if you're using a managed service like
+AWS ELB or Cloudflare.
+
+On a personal note, the HTTP01 feels like a complete hack to me and not at all
+standard. The feeling you get when you bypass a trivially best practice!
+
+As such, in this guide, we'll use the DNS01 challenge. This challenge requires
+you to create a specific DNS record in your domain's DNS zone. That said, you
+will need to have access to your domain's DNS zone to create the record and
+grant cert-manager that access.
+
+Providing access to cert-manager to create the DNS records is not mandatory and
+you can do it on your own, though this beats the purpose of automation, where
+you can sleep well knowing that your certificates will be renewed automatically
+and on time without any manual intervention.
+
+For the DNS01 challenge, there are many supported DNS providers natively by
+cert-manager. You can find the list of supported providers on their website.
+
+For the purpose of this guide, we will provide example for two different DNS
+providers: AWS Route53 and Cloudflare.
+
+AWS services are the indudstry standard for many companies, and Route53 is one
+of the most popular DNS services (fame where it's due). Cloudflare, on the other
+hand, is handling a significant portion of the internet's traffic and is known
+for its networking capabilities across the globe.
+
+If you have other needs, you won't find it too difficult to find support for
+your DNS provider in the cert-manager documentation.
+
+### AWS Route53 Issuer
+
+The developer-friendly.blog domain is hosted in Cloudflare and to demonstrate
+the AWS Route53 issuer, we will make it so that a subdomain will be resolved
+using Route53. That way, we can grab the TLS certificates later by cert-manager
+using the DNS01 challenge from Route53.
+
+```hcl title="route53/variables.tf"
+-8<- "docs/codes/0010/route53/variables.tf"
+```
+
+```hcl title="route53/versions.tf"
+-8<- "docs/codes/0010/route53/versions.tf"
+```
+
+```hcl title="route53/main.tf"
+-8<- "docs/codes/0010/route53/main.tf"
+```
+
+```hcl title="route53/outputs.tf"
+-8<- "docs/codes/0010/route53/outputs.tf"
+```
+
+To apply this stack we'll use [OpenTofu](/category/opentofu). We could've either
+separated the stacks to create the Route53 zone beforehand, or we will go ahead
+and target our resources separately from command line as you see below.
+
+```shell title=""
+export AWS_PROFILE="PLACEHOLDER"
+
+tofu plan -out tfplan -target=aws_route53_zone.this
+tofu apply tfplan
+
+# And now the rest of the resources
+
+tofu plan -out tfplan
+tofu apply tfplan
+```
+
+
 
 [certbot]: https://certbot.eff.org/
 [ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
