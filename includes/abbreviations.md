@@ -8,3 +8,7 @@
 *[IAM]: Identity and Access Management
 *[EKS]: Elastic Kubernetes Service
 *[HCL]: HashiCorp Configuration Language
+*[CNCF]: Cloud Native Computing Foundation
+*[TLS]: Transport Layer Security
+*[CA]: Certificate Authority
+*[VCS]: Version Control System
