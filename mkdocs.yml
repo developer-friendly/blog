@@ -189,22 +189,20 @@ theme:
     repo: fontawesome/brands/github
   palette:
     - media: (prefers-color-scheme)
-      primary: indigo
-      accent: indigo
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: indigo
+      primary: teal
+      accent: red
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: indigo
+      primary: teal
+      accent: red
       toggle:
         icon: material/brightness-4
         name: Switch to system preference
