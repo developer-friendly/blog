@@ -192,7 +192,7 @@ your DNS provider in the cert-manager documentation.
 
 ### AWS Route53 Issuer
 
-The developer-friendly.blog domain is hosted in Cloudflare and to demonstrate
+The [developer-friendly.blog](/) domain is hosted in Cloudflare and to demonstrate
 the AWS Route53 issuer, we will make it so that a subdomain will be resolved
 using Route53. That way, we can grab the TLS certificates later by cert-manager
 using the DNS01 challenge from Route53.
@@ -229,7 +229,37 @@ tofu plan -out tfplan
 tofu apply tfplan
 ```
 
+We should have our AWS Route53 Hosted Zone created as you see in the screenshot
+below.
 
+<figure markdown="span">
+   ![AWS Route53](../static/img/0010/route53.webp "Click to zoom in"){ loading=lazy }
+   <figcaption>AWS Route53</figcaption>
+</figure>
+
+Now that we have our Route53 zone created, we can proceed with the cert-manager
+configuration.
+
+Again, we'll be using FluxCD to deploy the resources. Feel free to use the bare
+commands if you're not using FluxCD.
+
+```yaml title="roue53-issuer/externalsecret.yml"
+-8<- "docs/codes/0010/roue53-issuer/externalsecret.yml"
+```
+
+```yaml title="roue53-issuer/issuer.yml"
+-8<- "docs/codes/0010/roue53-issuer/issuer.yml"
+```
+
+```yaml title="roue53-issuer/kustomization.yml"
+-8<- "docs/codes/0010/roue53-issuer/kustomization.yml"
+```
+
+And to apply this stack:
+
+```yaml title="roue53-issuer/kustomize.yml"
+-8<- "docs/codes/0010/roue53-issuer/kustomize.yml"
+```
 
 [certbot]: https://certbot.eff.org/
 [ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
