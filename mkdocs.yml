@@ -152,7 +152,7 @@ theme:
   name: material
   custom_dir: overrides
   logo: assets/logo.webp
-  favicon: assets/favicon.ico
+  favicon: assets/logo.webp
   features:
     - announce.dismiss
     - content.action.edit
