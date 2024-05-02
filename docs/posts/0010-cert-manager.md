@@ -68,6 +68,7 @@ Before we start, make sure you have the following set up:
       - [Kubernetes the Hard Way](./0003-kubernetes-the-hard-way.md)
       - [Lightweight K3s installation on Ubuntu](./0005-install-k3s-on-ubuntu22.md)
       - [Azure AKS TF Module](./0009-external-secrets-aks-to-aws-ssm.md)
+- [x] [OpenTofu v1.7]
 - [ ] Although not required, we will use FluxCD as a GitOps approach for our
       deployments. You can either follow along and use the Helm CLI, or follow
       our earlier guide for
@@ -158,28 +159,28 @@ own pros and cons, but both are just to make sure that you own the domain you're
 requesting the certificate for. Imagine a world where you could request a
 certificate for `google.com` without owning it! :scream:
 
-the HTTP01 challenge requires you to expose a specific path on your web server
+The HTTP01 challenge requires you to expose a specific path on your web server
 for the CA to verify your domain. This is not always possible, especially if
 you're running a private service or if you're using a managed service like
 AWS ELB or Cloudflare.
 
 On a personal note, the HTTP01 feels like a complete hack to me and not at all
-standard. The feeling you get when you bypass a trivially best practice!
+standard. The feeling you get when you bypass a trivially best practice! :sweat:
 
-As such, in this guide, we'll use the DNS01 challenge. This challenge requires
-you to create a specific DNS record in your domain's DNS zone. That said, you
-will need to have access to your domain's DNS zone to create the record and
-grant cert-manager that access.
+As such, **in this guide, we'll use the DNS01 challenge**. This challenge
+requires you to create a specific DNS record in your domain's DNS zone. That
+said, you will need to have access to your domain's DNS zone to create the
+record and grant cert-manager that level of access.
 
 Providing access to cert-manager to create the DNS records is not mandatory and
 you can do it on your own, though this beats the purpose of automation, where
 you can sleep well knowing that your certificates will be renewed automatically
 and on time without any manual intervention.
 
-For the DNS01 challenge, there are many supported DNS providers natively by
-cert-manager. You can find the list of supported providers on their website.
+For the DNS01 challenge, there are a couple of supported DNS providers natively
+by cert-manager. You can find the list of [supported providers on their website].
 
-For the purpose of this guide, we will provide example for two different DNS
+For the purpose of this guide, we will provide examples for two different DNS
 providers: AWS Route53 and Cloudflare.
 
 AWS services are the indudstry standard for many companies, and Route53 is one
@@ -192,25 +193,31 @@ your DNS provider in the cert-manager documentation.
 
 ### AWS Route53 Issuer
 
-The [developer-friendly.blog](/) domain is hosted in Cloudflare and to demonstrate
+The [developer-friendly.blog] domain is hosted in Cloudflare and to demonstrate
 the AWS Route53 issuer, we will make it so that a subdomain will be resolved
 using Route53. That way, we can grab the TLS certificates later by cert-manager
 using the DNS01 challenge from Route53.
 
-```hcl title="route53/variables.tf"
--8<- "docs/codes/0010/route53/variables.tf"
+<figure markdown="span" style="border: 1px solid #000">
+   ![Nameservers](../static/img/0010/ns-providers.webp "Click to zoom in"){ loading=lazy }
+   <figcaption>Nameserver Diagrams</figcaption>
+</figure>
+
+
+```hcl title="hosted-zone/variables.tf"
+-8<- "docs/codes/0010/hosted-zone/variables.tf"
 ```
 
-```hcl title="route53/versions.tf"
--8<- "docs/codes/0010/route53/versions.tf"
+```hcl title="hosted-zone/versions.tf"
+-8<- "docs/codes/0010/hosted-zone/versions.tf"
 ```
 
-```hcl title="route53/main.tf"
--8<- "docs/codes/0010/route53/main.tf"
+```hcl title="hosted-zone/main.tf"
+-8<- "docs/codes/0010/hosted-zone/main.tf"
 ```
 
-```hcl title="route53/outputs.tf"
--8<- "docs/codes/0010/route53/outputs.tf"
+```hcl title="hosted-zone/outputs.tf"
+-8<- "docs/codes/0010/hosted-zone/outputs.tf"
 ```
 
 To apply this stack we'll use [OpenTofu](/category/opentofu). We could've either
@@ -229,6 +236,15 @@ tofu plan -out tfplan
 tofu apply tfplan
 ```
 
+???+ question "Why Applying Two Times?"
+
+      The values in a TF `for_each` must be known at the time of planning,
+      [aka, static values].
+
+      And since that is not the case with `aws_route53_zone.this.name_servers`,
+      we have to make sure to create the Hosted Zone first before passing its
+      output to another resource.
+
 We should have our AWS Route53 Hosted Zone created as you see in the screenshot
 below.
 
@@ -240,26 +256,82 @@ below.
 Now that we have our Route53 zone created, we can proceed with the cert-manager
 configuration.
 
-Again, we'll be using FluxCD to deploy the resources. Feel free to use the bare
-commands if you're not using FluxCD.
+#### AWS IAM Role
 
-```yaml title="roue53-issuer/externalsecret.yml"
--8<- "docs/codes/0010/roue53-issuer/externalsecret.yml"
+We now need an IAM Role with enough permissions to create the DNS records to
+satisfy the DNS01 challenge.
+
+```hcl title="route53-iam-role/variables.tf"
+-8<- "docs/codes/0010/route53-iam-role/variables.tf"
 ```
 
-```yaml title="roue53-issuer/issuer.yml"
--8<- "docs/codes/0010/roue53-issuer/issuer.yml"
+```hcl title="route53-iam-role/versions.tf"
+-8<- "docs/codes/0010/route53-iam-role/versions.tf"
 ```
 
-```yaml title="roue53-issuer/kustomization.yml"
--8<- "docs/codes/0010/roue53-issuer/kustomization.yml"
+```hcl title="route53-iam-role/main.tf"
+-8<- "docs/codes/0010/route53-iam-role/main.tf"
 ```
 
-And to apply this stack:
-
-```yaml title="roue53-issuer/kustomize.yml"
--8<- "docs/codes/0010/roue53-issuer/kustomize.yml"
+```hcl title="route53-iam-role/outputs.tf"
+-8<- "docs/codes/0010/route53-iam-role/outputs.tf"
 ```
+
+```shell title="" linenums="0"
+tofu plan -out tfplan
+tofu apply tfplan
+```
+
+If you don't know what [OpenID Connect](/category/openid-connect) is and what
+we're doing here, you might want to check out our ealier guides on the topic:
+
+- [x] Establishing a trust relationship between
+      [bare-metal Kubernetes cluster and AWS IAM](./0008-k8s-federated-oidc.md)
+- [x] Same concept of trust relationship, this time between
+      [Azure AKS and AWS IAM](./0009-external-secrets-aks-to-aws-ssm.md)
+
+The gist of both articles is that we are providing a means for the two services
+to talk to each other securely and without storing long-lived credentials.
+
+In essence, one service will issue the tokens (Kubernetes cluster), and the
+other will trust the tokens of the said service (AWS IAM).
+
+#### Kubernetes Service Account
+
+Now that we have our IAM role set up, we can pass that as an annotation to the
+Service Account of the cert-manager Deployment. This way the cert-manager will
+assume that role with the [Web Identity Token flow] (there are five in total).
+
+We will also create a ClusterIssuer CRD to be responsible for fetching the TLS
+certificates from the trusted CA.
+
+```hcl title="route53-serviceaccount/variables.tf"
+-8<- "docs/codes/0010/route53-serviceaccount/variables.tf"
+```
+
+```hcl title="route53-serviceaccount/versions.tf"
+-8<- "docs/codes/0010/route53-serviceaccount/versions.tf"
+```
+
+```hcl title="route53-serviceaccount/main.tf"
+-8<- "docs/codes/0010/route53-serviceaccount/main.tf"
+```
+
+```hcl title="route53-serviceaccount/outputs.tf"
+-8<- "docs/codes/0010/route53-serviceaccount/outputs.tf"
+```
+
+```shell title="" linenums="0"
+tofu plan -out tfplan
+tofu apply tfplan
+```
+
+This stack allows the cert-manager controller to talk to AWS Route53.
+
+Notice that we didn't pass any credentials, nor did we have to create any IAM
+User for this communication to work. It's all the power of OpenID Connect and
+allows us to establish a trust relationship and never have to worry about any
+credentials in the client service. :white_check_mark:
 
 [certbot]: https://certbot.eff.org/
 [ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
@@ -269,3 +341,9 @@ And to apply this stack:
 [CNCF]: https://www.cncf.io/
 [Kustomization resource]: https://fluxcd.io/flux/components/kustomize/kustomizations/
 [Kubernetes Kustomize]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
+[supported providers on their website]: https://cert-manager.io/docs/configuration/acme/dns01/
+[developer-friendly.blog]: https://developer-friendly.blog
+[aka, static values]: https://developer.hashicorp.com/terraform/language/meta-arguments/for_each#limitations-on-values-used-in-for_each
+[OpenTofu v1.7]: https://github.com/opentofu/opentofu/releases/tag/v1.7.0
+[Web Identity Token flow]: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html
+[Kubernetes Reflector]: https://github.com/emberstack/kubernetes-reflector
