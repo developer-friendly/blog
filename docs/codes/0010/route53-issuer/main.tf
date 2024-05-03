@@ -30,31 +30,23 @@ resource "kubernetes_annotations" "this" {
 }
 
 resource "kubernetes_manifest" "cluster_issuer" {
-  manifest = {
-    "apiVersion" = "cert-manager.io/v1"
-    "kind"       = "ClusterIssuer"
-    "metadata" = {
-      "name" = "aws-route53"
-    }
-    "spec" = {
-      "acme" = {
-        "email"                 = "admin@developer-friendly.blog"
-        "enableDurationFeature" = true
-        "privateKeySecretRef" = {
-          "name" = "aws-route53"
-        }
-        "server" = "https://acme-v02.api.letsencrypt.org/directory"
-        "solvers" = [
-          {
-            "dns01" = {
-              "route53" = {
-                "hostedZoneID" = data.terraform_remote_state.hosted_zone.outputs.hosted_zone_id
-                "region"       = "eu-central-1"
-              }
-            }
-          }
-        ]
-      }
-    }
-  }
+  manifest = yamldecode(<<-EOF
+    apiVersion: cert-manager.io/v1
+    kind: ClusterIssuer
+    metadata:
+      name: route53-issuer
+    spec:
+      acme:
+        email: admin@developer-friendly.blog
+        enableDurationFeature: true
+        privateKeySecretRef:
+          name: route53-issuer
+        server: https://acme-v02.api.letsencrypt.org/directory
+        solvers:
+        - dns01:
+            route53:
+              hostedZoneID: ${data.terraform_remote_state.hosted_zone.outputs.hosted_zone_id}
+              region: eu-central-1
+  EOF
+  )
 }

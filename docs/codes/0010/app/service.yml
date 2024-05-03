@@ -7,6 +7,4 @@ spec:
     - name: http
       port: 80
       targetPort: http
-  selector:
-    app: echo-server
   type: ClusterIP

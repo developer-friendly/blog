@@ -1,4 +1,4 @@
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
   name: cert-manager
@@ -10,26 +10,11 @@ spec:
         kind: HelmRepository
         name: cert-manager
       version: v1.14.x
-  install:
-    crds: Create
-    createNamespace: false
-    remediation:
-      retries: 3
-    skipCRDs: false
   interval: 30m
   maxHistory: 10
   releaseName: cert-manager
   targetNamespace: cert-manager
-  test:
-    enable: true
-    ignoreFailures: true
-    timeout: 1m
-  timeout: 10m
-  upgrade:
-    cleanupOnFail: true
-    crds: CreateReplace
-    remediation:
-      remediateLastFailure: true
+  timeout: 2m
   valuesFrom:
     - kind: ConfigMap
       name: cert-manager-config

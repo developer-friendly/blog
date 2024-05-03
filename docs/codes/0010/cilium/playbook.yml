@@ -1,6 +1,6 @@
 - name: Bootstrap the Kubernetes cluster
   hosts: localhost
-  gather_facts: true
+  gather_facts: false
   become: true
   environment:
     KUBECONFIG: ~/.kube/config
@@ -22,6 +22,7 @@
       kubernetes.core.k8s:
         src: "{{ item }}"
         state: present
+        context: "{{ kube_context }}"
       loop:
         - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/standard-install.yaml
         - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/experimental-install.yaml
@@ -38,6 +39,7 @@
             namespace: kube-system
             state: present
             chart_version: 1.15.4
+            kube_context: "{{ kube_context }}"
             values:
               gatewayAPI:
                 enabled: true

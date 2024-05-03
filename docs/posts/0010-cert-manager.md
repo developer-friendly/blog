@@ -2,13 +2,29 @@
 date: 2024-05-06
 draft: true
 description: >-
-  TODO
+  Install and configure cert-manager operator in your Kubernetes cluster to
+  issue and renew TLS certificates for your applications automatically.
+categories:
+  - Kubernetes
+  - AWS
+  - Cloudflare
+  - cert-manager
+  - Cilium
+  - OpenTofu
+  - Terraform
+  - Gateway API
+  - Route53
+  - TLS
+links:
+  - ./posts/0005-install-k3s-on-ubuntu22.md
+  - ./posts/0008-k8s-federated-oidc.md
+  - ./posts/0006-gettings-started-with-gitops-and-fluxcd.md
 ---
 
-# cert-manager: A Kubernetes Certificate Manager
+# cert-manager: All-in-One Kubernetes Certificate Manager
 
 Kubernetes is a great orchestration tool for managing your applications and all
-its dependencies. However, it comes with an extendable architecture and with an
+its dependencies. However, it comes with an extensible architecture and with an
 unopinionated approach to many of the day-to-day operational tasks.
 
 One of these tasks is the management of TLS certificates. This includes issuing
@@ -17,9 +33,15 @@ This CA may be a public internet-facing application or an internal service that
 needs encrypted communication between parties.
 
 In this post, we will introduce the industry de-facto tool of choice for
-managing certificates in Kubernetes: `cert-manager`. We will walk you through
-the installation, configuring the issuer(s), and receiving a TLS certificate
-as a Kubernetes Secret for the [ingress] or [gateway] of your application.
+managing certificates in Kubernetes: cert-manager. We will walk you through
+the installation of the operator, configuring the issuer(s), and receiving a
+TLS certificate as a Kubernetes Secret for the Ingress or Gateway of your
+application.
+
+Finally, we will create the Gateway CRD and expose an application securely
+over HTTPS to the internet.
+
+If that gets you excited, hop on and let's get started!
 
 <!--
 SEO keywords:
@@ -53,9 +75,14 @@ tool for managing certificates on a single server. However, when you're working
 at scale with many applications and services, you will benefit from the
 automation and integration that [cert-manager] provides.
 
-Cert-manager is a Kubernetes-native tool that extends the Kubernetes API with
-custom resources for managing certificates. It is built on top of the
+cert-manager is a Kubernetes-native tool that extends the Kubernetes API
+with custom resources for managing certificates. It is built on top of the
 [Operator pattern], and is a graduated project of the [CNCF].
+
+With cert-manager, you can fetch and renew your TLS certificates with ease,
+passing them along to the [Ingress] or [Gateway] of your platform to host your
+applications securely over HTTPS without losing the comfort of hosting your
+applications in a Kubernetes cluster.
 
 With that introduction, let's kick off the installation of cert-manager.
 
@@ -70,8 +97,8 @@ Before we start, make sure you have the following set up:
       - [Azure AKS TF Module](./0009-external-secrets-aks-to-aws-ssm.md)
 - [x] [OpenTofu v1.7]
 - [ ] Although not required, we will use FluxCD as a GitOps approach for our
-      deployments. You can either follow along and use the Helm CLI, or follow
-      our earlier guide for
+      deployments. You can either follow along and use the Helm CLI instead,
+      or follow our earlier guide for
       [introduction to FluxCD](./0006-gettings-started-with-gitops-and-fluxcd.md).
 - [ ] Optionally, External Secrets Operator installed. We will use it in this
       guide to store the credentials for the DNS01 challenge.
@@ -94,7 +121,7 @@ As mentioned earlier, we will install the Helm chart using FluxCD CRDs.
 -8<- "docs/codes/0010/cert-manager/repository.yml"
 ```
 
-```yaml title="cert-manager/release.yml"
+```yaml title="cert-manager/release.yml" hl_lines="20"
 -8<- "docs/codes/0010/cert-manager/release.yml"
 ```
 
@@ -117,13 +144,13 @@ Additionally, we will use [Kubernetes Kustomize]:
 -8<- "docs/codes/0010/cert-manager/kustomizeconfig.yml"
 ```
 
-```yaml title="cert-manager/kustomization.yml" hl_lines="14"
+```yaml title="cert-manager/kustomization.yml" hl_lines="7"
 -8<- "docs/codes/0010/cert-manager/kustomization.yml"
 ```
 
 Notice the namespace we are instructing Kustomization to place the resources in.
 
-Ultimately, to create this stack, we will create a [Kustomization resource]:
+Ultimately, to create this stack, we will create a FluxCD [Kustomization resource]:
 
 ```yaml title="cert-manager/kustomize.yml"
 -8<- "docs/codes/0010/cert-manager/kustomize.yml"
@@ -138,7 +165,7 @@ kubectl apply -f cert-manager/kustomize.yml
 
 ??? example "Build Kustomization"
 
-    A good practice is to build your resources locally and optionally apply
+    A good practice is to build your Kustomization locally and optionally apply
     them as a dry-run to debug any potential typo or misconfiguration.
 
     ```shell title="" linenums="0"
@@ -160,49 +187,46 @@ requesting the certificate for. Imagine a world where you could request a
 certificate for `google.com` without owning it! :scream:
 
 The HTTP01 challenge requires you to expose a specific path on your web server
-for the CA to verify your domain. This is not always possible, especially if
-you're running a private service or if you're using a managed service like
-AWS ELB or Cloudflare.
+and asking the CA to send a GET request to that endpoint, expecting a specific
+file to be present in the response.
 
-On a personal note, the HTTP01 feels like a complete hack to me and not at all
-standard. The feeling you get when you bypass a trivially best practice! :sweat:
+This is not always possible, especially if you're running a private service.
+
+On a personal note, the HTTP01 feels like a complete hack to me. :sweat:
 
 As such, **in this guide, we'll use the DNS01 challenge**. This challenge
-requires you to create a specific DNS record in your domain's DNS zone. That
-said, you will need to have access to your domain's DNS zone to create the
-record and grant cert-manager that level of access.
+will create a specific DNS record in your nameserver. You don't specifically
+have to manually do it yourself, as that is the whole point of automation that
+cert-manager will bring to the table.
 
-Providing access to cert-manager to create the DNS records is not mandatory and
-you can do it on your own, though this beats the purpose of automation, where
-you can sleep well knowing that your certificates will be renewed automatically
-and on time without any manual intervention.
+For the DNS01 challenge, there are a couple of nameserver providers
+natively supported by cert-manager. You can find the list of
+[supported providers on their website].
 
-For the DNS01 challenge, there are a couple of supported DNS providers natively
-by cert-manager. You can find the list of [supported providers on their website].
-
-For the purpose of this guide, we will provide examples for two different DNS
-providers: AWS Route53 and Cloudflare.
+For the purpose of this guide, we will provide examples for two different
+nameserver providers: AWS Route53 and Cloudflare.
 
 AWS services are the indudstry standard for many companies, and Route53 is one
-of the most popular DNS services (fame where it's due). Cloudflare, on the other
-hand, is handling a significant portion of the internet's traffic and is known
-for its networking capabilities across the globe.
+of the most popular DNS services (fame where it's due).
+
+Cloudflare, on the other hand, is handling a significant portion of the
+internet's traffic and is known for its networking capabilities across the
+globe.
 
 If you have other needs, you won't find it too difficult to find support for
-your DNS provider in the cert-manager documentation.
+your nameserver provider in the cert-manager documentation.
 
 ## Step 1.1: AWS Route53 Issuer
 
 The [developer-friendly.blog] domain is hosted in Cloudflare and to demonstrate
 the AWS Route53 issuer, we will make it so that a subdomain will be resolved
-using Route53. That way, we can grab the TLS certificates later by cert-manager
-using the DNS01 challenge from Route53.
+by a Route53 Hosted Zone. That way, we can instruct the cert-manager controller
+to talk to the Route53 API for record creation and domain verfication.
 
 <figure markdown="span" style="border: 1px solid #000">
    ![Nameservers](../static/img/0010/ns-providers.webp "Click to zoom in"){ loading=lazy }
    <figcaption>Nameserver Diagrams</figcaption>
 </figure>
-
 
 ```hcl title="hosted-zone/variables.tf"
 -8<- "docs/codes/0010/hosted-zone/variables.tf"
@@ -259,7 +283,7 @@ configuration.
 ### AWS IAM Role
 
 We now need an IAM Role with enough permissions to create the DNS records to
-satisfy the DNS01 challenge.
+[satisfy the DNS01 challenge].
 
 ```hcl title="route53-iam-role/variables.tf"
 -8<- "docs/codes/0010/route53-iam-role/variables.tf"
@@ -329,13 +353,14 @@ tofu apply tfplan
 This stack allows the cert-manager controller to talk to AWS Route53.
 
 Notice that we didn't pass any credentials, nor did we have to create any IAM
-User for this communication to work. It's all the power of OpenID Connect and
+User for this communication to work. It's all the power of
+[OpenID Connect](/category/openid-connect) and
 allows us to establish a trust relationship and never have to worry about any
 credentials in the client service. :white_check_mark:
 
 We're now done with the AWS issuer. Let's switch gear for a bit to create the
 Cloudflare issuer before finally creating a TLS certificate for our desired
-domain.
+domain(s).
 
 ## Step 1.2: Cloudflare Issuer
 
@@ -346,16 +371,16 @@ records on our behalf.
 That's where the [External Secrets Operator] comes into play and I invite you
 to take a look at our last week's guide if you haven't done so already. Cause
 we will not repeat ourselves here and will only use the ExternalSecret CRD to
-fetch an API token from AWS SSM Parameter Store down to our Kubernetes cluster
-as a Secret resource.
+fetch an API token from the AWS SSM Parameter Store and pass it down to our
+Kubernetes cluster as a Secret resource.
 
 Notice the highlighted lines.
 
-```yaml title="cloudflare-issuer/externalsecret.yml" hl_lines="9"
+```yaml title="cloudflare-issuer/externalsecret.yml" hl_lines="4 9"
 -8<- "docs/codes/0010/cloudflare-issuer/externalsecret.yml"
 ```
 
-```yaml title="cloudflare-issuer/clusterissuer.yml" hl_lines="16"
+```yaml title="cloudflare-issuer/clusterissuer.yml" hl_lines="4 16"
 -8<- "docs/codes/0010/cloudflare-issuer/clusterissuer.yml"
 ```
 
@@ -377,7 +402,7 @@ another for Cloudflare.
 We are now equipped with enough access in our Kubernetes cluster to just create
 the TLS certificate and never have to worry about how to verify their ownership.
 
-With that promise, let's wrap this up with the easiest part!
+With that promise, let's wrap this up with the easiest part! :sunglasses:
 
 ## Step 2: TLS Certificate
 
@@ -387,9 +412,9 @@ and a Hosted Zone in AWS Route53 to resolve the `aws.` subdomain using Route53
 as its nameserver.
 
 We can now fetch a TLS certificate for each of them using our newly created
-ClusterIssuer resource. The rest is the responsbiility of the cert-manager to
-verify the ownership within the cluster using the DNS01 challenge and the access
-we've provided to it.
+ClusterIssuer resource. The rest is the responsbility of the cert-manager to
+verify the ownership within the cluster through the DNS01 challenge and using
+the access we've provided to it.
 
 ```yaml title="tls-certificates/aws-subdomain.yml" hl_lines="10"
 -8<- "docs/codes/0010/tls-certificates/aws-subdomain.yml"
@@ -424,24 +449,25 @@ This will look similar to what you see below.
 ## Step 3: Use the TLS Certificates in Gateway
 
 At this point, we have the required ingredients to host an application within
-cluster and exposing securely through HTTPS into the world.
+cluster and exposing it securely through HTTPS into the world.
 
 That's exactly what we aim for at this step. But, first, let's create a Gateway
-CRD that will be the entrypoint to our cluster. The Gateway is to our cluster
-what an Ingress Controller is, [yet more powerful].
+CRD that will be the entrypoint to our cluster. The Gateway can be thought of
+as the sibling of Ingress resource, yet more handsome, more successful and
+[educated and more charming].
 
 The key point to keep in mind is that the Gateway API doesn't come with the
 implementation. Infact, it is unopinionated about the implementation and you
-can use any networking solution that fits your needs.
+can use any networking solution that fits your needs and has support for it.
 
 In our case, and based on the personal preference and tendency of the author
-:innocent:, we'll use Cilium as the networking solution, both as the CNI, as
-well as the implementation for our Gateway API.
+:innocent:, we'll use [Cilium](/category/cilium) as the networking solution,
+both as the CNI, as well as the implementation for our Gateway API.
 
 We have covered the [Cilium installation before], but, for the sake of
 completeness, here's [the way to do it] using [Cilium CLI].
 
-```yaml title="cilium/playbook" hl_lines="42-44"
+```yaml title="cilium/playbook.yml" hl_lines="44-46"
 -8<- "docs/codes/0010/cilium/playbook.yml"
 ```
 
@@ -451,15 +477,23 @@ And now, let's create the Gateway CRD.
 -8<- "docs/codes/0010/gateway/gateway.yml"
 ```
 
-Notice that did not create the `gatewayClassName`. It comes as
-battery-included with Cilium. You can find the `GatewayClass` as soon as
-Cilium installation completes.
+Notice that we did not create the `gatewayClassName`. It comes as
+battery-included with [Cilium](/category/cilium). You can find the
+`GatewayClass` as soon as Cilium installation completes with the following
+command:
 
-Also note that we are passing the TLS certificates we have created earlier
-to this Gateway. That way, the gateway will terminate and offload the SSL/TLS
+```shell title="" linenums="0"
+kubectl get gatewayclass
+```
+
+GatewayClass is to Gateway as IngressClass is to Ingress. :material-check-all:
+
+Also note that we are passing the TLS certificates to this Gateway we have
+created earlier. That way, the gateway will terminate and offload the SSL/TLS
 encryption and your upstream service will receive plaintext traffic. However,
-if you have set up your mTLS the way we did with Wireguard encryption,
-node-to-node communication will not be plaintext!
+if you have set up your mTLS the way we did with Wireguard encryption (or any
+other mTLS solution for that matter), node-to-node communication will not be
+plaintext!
 
 ```yaml title="gateway/http-to-https-redirect.yml" hl_lines="11"
 -8<- "docs/codes/0010/gateway/http-to-https-redirect.yml"
@@ -483,7 +517,7 @@ kubectl apply -f gateway/kustomize.yml
 ## Step 4: HTTPS Application
 
 That's all the things we aimed to do today. At this point, we can create our
-HTTPS only application and expose it securely to the wild internet!
+HTTPS-only application and expose it securely to the wild internet!
 
 ```yaml title="app/deployment.yml"
 -8<- "docs/codes/0010/app/deployment.yml"
@@ -495,6 +529,10 @@ HTTPS only application and expose it securely to the wild internet!
 
 ```yaml title="app/httproute.yml" hl_lines="7-8"
 -8<- "docs/codes/0010/app/httproute.yml"
+```
+
+```ini title="app/configs.env"
+-8<- "docs/codes/0010/app/configs.env"
 ```
 
 ```yaml title="app/kustomization.yml"
@@ -514,33 +552,44 @@ That's everything we had to say for today. We can now easily access our
 application as follows:
 
 ```shell title="" linenums="0"
-curl -v https://echo.developer-friendly.blog
+curl -v https://echo.developer-friendly.blog -sSo /dev/null
 ```
 
 or...
 
 ```shell title="" linenums="0"
-curl -v https://aws.echo.developer-friendly.blog
+curl -v https://aws.echo.developer-friendly.blog -sSo /dev/null
 ```
 
-Both will show that the TLS certificate is present, is valid and matches the
-domain we're trying to access. :tada:
+```plaintext title="Output of the curl command(s)" linenums="0"
+...truncated...
+*  expire date: Jul 30 04:44:12 2024 GMT
+...truncated...
+```
+
+Both will show that the TLS certificate is present. signed by a trusted CA, is
+valid and matches the domain we're trying to access. :tada:
 
 You shall see the same expiry date on your certificate if accessing as follows:
 
 ```shell title="" linenums="0"
-kubectl get certificate -n cert-manager -o yaml
+kubectl get certificate -n cert-manager -o jsonpath='{.items[*].status.notAfter}'
 ```
 
-The `status` field will give you the exact date that your `curl` client command
-showed earlier. :muscle:
+```plaintext title="Output of kubectl command" linenums="0"
+2024-07-30T04:44:12Z
+```
+
+As you can see, they information we get from the publicly available certificate
+as well as the one we get internally from our Kubernetes cluster are the same
+down to the second. :muscle:
 
 ## Conclusion
 
 These days, I am never spinning up a Kubernetes cluster without having
-cert-manager installed in its day 1 operation. It's such a life-saver tool to
-have in your toolbox and you can rest assured that the TLS certificates in your
-cluster are always up-to-date and valid.
+cert-manager installed on it as its day 1 operation task. It's such a
+life-saver tool to have in your toolbox and you can rest assured that the TLS
+certificates in your cluster are always up-to-date and valid.
 
 If you ever had to worry about the expiry date of your certificates before,
 those days are behind you and you can benefit a lot by employing the
@@ -552,8 +601,8 @@ Hope you enjoyed reading this material.
 Until next tima, *ciao* :cowboy: and happy hacking! :crab: :penguin: :whale:
 
 [certbot]: https://certbot.eff.org/
-[ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
-[gateway]: https://gateway-api.sigs.k8s.io/
+[Ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
+[Gateway]: https://gateway-api.sigs.k8s.io/
 [cert-manager]: https://cert-manager.io/
 [Operator pattern]: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
 [CNCF]: https://www.cncf.io/
@@ -566,7 +615,8 @@ Until next tima, *ciao* :cowboy: and happy hacking! :crab: :penguin: :whale:
 [Web Identity Token flow]: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html
 [Kubernetes Reflector]: https://github.com/emberstack/kubernetes-reflector
 [External Secrets Operator]: ./0009-external-secrets-aks-to-aws-ssm.md
-[yet more powerful]: https://gateway-api.sigs.k8s.io/
+[educated and more charming]: https://gateway-api.sigs.k8s.io/
 [Cilium installation before]: docs/posts/0005-install-k3s-on-ubuntu22.md
 [Cilium CLI]: https://github.com/cilium/cilium-cli/releases/tag/v0.16.6
 [the way to do it]: https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/
+[satisfy the DNS01 challenge]: https://cert-manager.io/docs/configuration/acme/dns01/route53/#set-up-an-iam-role
