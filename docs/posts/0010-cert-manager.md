@@ -86,6 +86,41 @@ applications in a Kubernetes cluster.
 
 With that introduction, let's kick off the installation of cert-manager.
 
+???+ success "Huge Thanks to You :hugging:"
+
+    If you're reading this, I would like to thank you for the time you spend
+    on this blog :rose:. Whether this is your first time, or you've been here
+    before and have liked the content and its quality, I truly appreciate the
+    time you spend here.
+
+    As a token of appreciation, and to celebrate with you, I would like to
+    share the achievements of this blog over the course of ~11 weeks since its
+    launch (the initial commit).
+
+    - [x] 10 posts published :books:
+    - [x] TODO words written so far :pencil:
+    - [x] 2.48k+ views since the launch :eyes:
+    - [x] 130+ clicks coming from search engines :mag:
+
+    You can find the corresponding screenshots below:
+
+    <figure markdown="span">
+      ![Clicks](../static/img/0010/performance.webp "Click to zoom in"){ loading=lazy }
+      <figcaption>Search Engine Perfomance</figcaption>
+    </figure>
+
+    <figure markdown="span">
+      ![Clicks](../static/img/0010/clicks-achievements.webp "Click to zoom in"){ loading=lazy }
+      <figcaption>Search Engine Clicks</figcaption>
+    </figure>
+
+    <figure markdown="span">
+      ![Clicks](../static/img/0010/total-views.webp "Click to zoom in"){ loading=lazy }
+      <figcaption>Total Views</figcaption>
+    </figure>
+
+    Greatly appreciate you being here and hope you keep coming back. :champagne_glass:
+
 ## Pre-requisites
 
 Before we start, make sure you have the following set up:
