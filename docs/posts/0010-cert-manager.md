@@ -151,7 +151,7 @@ kubectl apply -f cert-manager/kustomize.yml
     -8<- "docs/codes/0010/junk/cert-manager/manifests.yml"
     ```
 
-## Step 1: Issuer
+## Step 1.0: Issuer 101
 
 In general, you can fetch your TLS certificate in two ways: either by verifying
 your domain using the HTTP01 challenge or the DNS01 challenge. Each have their
@@ -191,7 +191,7 @@ for its networking capabilities across the globe.
 If you have other needs, you won't find it too difficult to find support for
 your DNS provider in the cert-manager documentation.
 
-### AWS Route53 Issuer
+## Step 1.1: AWS Route53 Issuer
 
 The [developer-friendly.blog] domain is hosted in Cloudflare and to demonstrate
 the AWS Route53 issuer, we will make it so that a subdomain will be resolved
@@ -256,7 +256,7 @@ below.
 Now that we have our Route53 zone created, we can proceed with the cert-manager
 configuration.
 
-#### AWS IAM Role
+### AWS IAM Role
 
 We now need an IAM Role with enough permissions to create the DNS records to
 satisfy the DNS01 challenge.
@@ -296,7 +296,7 @@ to talk to each other securely and without storing long-lived credentials.
 In essence, one service will issue the tokens (Kubernetes cluster), and the
 other will trust the tokens of the said service (AWS IAM).
 
-#### Kubernetes Service Account
+### Kubernetes Service Account
 
 Now that we have our IAM role set up, we can pass that as an annotation to the
 Service Account of the cert-manager Deployment. This way the cert-manager will
@@ -305,20 +305,20 @@ assume that role with the [Web Identity Token flow] (there are five in total).
 We will also create a ClusterIssuer CRD to be responsible for fetching the TLS
 certificates from the trusted CA.
 
-```hcl title="route53-serviceaccount/variables.tf"
--8<- "docs/codes/0010/route53-serviceaccount/variables.tf"
+```hcl title="route53-issuer/variables.tf"
+-8<- "docs/codes/0010/route53-issuer/variables.tf"
 ```
 
-```hcl title="route53-serviceaccount/versions.tf"
--8<- "docs/codes/0010/route53-serviceaccount/versions.tf"
+```hcl title="route53-issuer/versions.tf"
+-8<- "docs/codes/0010/route53-issuer/versions.tf"
 ```
 
-```hcl title="route53-serviceaccount/main.tf"
--8<- "docs/codes/0010/route53-serviceaccount/main.tf"
+```hcl title="route53-issuer/main.tf"
+-8<- "docs/codes/0010/route53-issuer/main.tf"
 ```
 
-```hcl title="route53-serviceaccount/outputs.tf"
--8<- "docs/codes/0010/route53-serviceaccount/outputs.tf"
+```hcl title="route53-issuer/outputs.tf"
+-8<- "docs/codes/0010/route53-issuer/outputs.tf"
 ```
 
 ```shell title="" linenums="0"
@@ -332,6 +332,94 @@ Notice that we didn't pass any credentials, nor did we have to create any IAM
 User for this communication to work. It's all the power of OpenID Connect and
 allows us to establish a trust relationship and never have to worry about any
 credentials in the client service. :white_check_mark:
+
+We're now done with the AWS issuer. Let's switch gear for a bit to create the
+Cloudflare issuer before finally creating a TLS certificate for our desired
+domain.
+
+## Step 1.2: Cloudflare Issuer
+
+Since Cloudflare does not have native support for OIDC, we will have to pass
+an API token to the cert-manager controller to be able to manage the DNS
+records on our behalf.
+
+That's where the [External Secrets Operator] comes into play and I invite you
+to take a look at our last week's guide if you haven't done so already. Cause
+we will not repeat ourselves here and will only use the ExternalSecret CRD to
+fetch an API token from AWS SSM Parameter Store down to our Kubernetes cluster
+as a Secret resource.
+
+Notice the highlighted lines.
+
+```yaml title="cloudflare-issuer/externalsecret.yml" hl_lines="9"
+-8<- "docs/codes/0010/cloudflare-issuer/externalsecret.yml"
+```
+
+```yaml title="cloudflare-issuer/clusterissuer.yml" hl_lines="16"
+-8<- "docs/codes/0010/cloudflare-issuer/clusterissuer.yml"
+```
+
+```yaml title="cloudflare-issuer/kustomization.yml"
+-8<- "docs/codes/0010/cloudflare-issuer/kustomization.yml"
+```
+
+```yaml title="cloudflare-issuer/kustomize.yml"
+-8<- "docs/codes/0010/cloudflare-issuer/kustomize.yml"
+```
+
+```shell title="" linenums="0"
+kubectl apply -f cloudflare-issuer/kustomize.yml
+```
+
+That's all the issuers we aimed to create for today. One for AWS Route53 and
+another for Cloudflare.
+
+We are now equipped with enough access in our Kubernetes cluster to just create
+the TLS certificate and never have to worry about how to verify their ownership.
+
+With that promise, let's wrap this up with the easiest part!
+
+## Step 2: TLS Certificate
+
+You should have noticed by now that the root [developer-friendly.blog] will
+be resolved by Cloudflare as our initial nameserver. We also created a subdomain
+and a Hosted Zone in AWS Route53 to resolve the `aws.` subdomain using Route53
+as its nameserver.
+
+We can now fetch a TLS certificate for each of them using our newly created
+ClusterIssuer resource. The rest is the responsbiility of the cert-manager to
+verify the ownership within the cluster using the DNS01 challenge and the access
+we've provided to it.
+
+```yaml title="tls-certificates/aws-subdomain.yml" hl_lines="10"
+-8<- "docs/codes/0010/tls-certificates/aws-subdomain.yml"
+```
+
+```yaml title="tls-certificates/cloudflare-root.yml" hl_lines="10"
+-8<- "docs/codes/0010/tls-certificates/cloudflare-root.yml"
+```
+
+```yaml title="tls-certificates/kustomization.yml"
+-8<- "docs/codes/0010/tls-certificates/kustomization.yml"
+```
+
+```yaml title="tls-certificates/kustomize.yml"
+-8<- "docs/codes/0010/tls-certificates/kustomize.yml"
+```
+
+```shell title="" linenums="0"
+kubectl apply -f tls-certificates/kustomize.yml
+```
+
+It'll take less than a minute to have the certificates issued and stored as
+Kubernetes Secrets in the same namespace as the cert-manager Deployment.
+
+The final result will have a Secret with two keys: `tls.crt` and `tls.key`.
+This will look similar to what you see below.
+
+```yaml title=""
+-8<- "docs/codes/0010/junk/tls-certificates/manifests.yml"
+```
 
 [certbot]: https://certbot.eff.org/
 [ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
@@ -347,3 +435,4 @@ credentials in the client service. :white_check_mark:
 [OpenTofu v1.7]: https://github.com/opentofu/opentofu/releases/tag/v1.7.0
 [Web Identity Token flow]: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html
 [Kubernetes Reflector]: https://github.com/emberstack/kubernetes-reflector
+[External Secrets Operator]: ./0009-external-secrets-aks-to-aws-ssm.md

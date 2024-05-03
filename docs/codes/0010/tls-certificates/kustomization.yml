@@ -1,0 +1,5 @@
+resources:
+  - cloudflare-root.yml
+  - aws-subdomain.yml
+
+namespace: cert-manager

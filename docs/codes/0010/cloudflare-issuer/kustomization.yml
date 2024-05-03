@@ -1,0 +1,5 @@
+resources:
+  - externalsecret.yml
+  - clusterissuer.yml
+
+namespace: cert-manager

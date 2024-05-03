@@ -41,7 +41,7 @@ resource "kubernetes_manifest" "cluster_issuer" {
         "email"                 = "admin@developer-friendly.blog"
         "enableDurationFeature" = true
         "privateKeySecretRef" = {
-          "name" = "letsencrypt"
+          "name" = "aws-route53"
         }
         "server" = "https://acme-v02.api.letsencrypt.org/directory"
         "solvers" = [
