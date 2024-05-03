@@ -95,7 +95,7 @@ With that introduction, let's kick off the installation of cert-manager.
 
     As a token of appreciation, and to celebrate with you, I would like to
     share the achievements of this blog over the course of ~11 weeks since its
-    launch (the initial commit).
+    launch (the [initial commit in Feb 13, 2024]).
 
     - [x] 10 posts published :books:
     - [x] 13.8k+ words written so far (37k+ including codes) :pencil:
@@ -656,3 +656,4 @@ Until next tima, *ciao* :cowboy: and happy hacking! :crab: :penguin: :whale:
 [Cilium CLI]: https://github.com/cilium/cilium-cli/releases/tag/v0.16.6
 [the way to do it]: https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/
 [satisfy the DNS01 challenge]: https://cert-manager.io/docs/configuration/acme/dns01/route53/#set-up-an-iam-role
+[initial commit in Feb 13, 2024]: https://github.com/developer-friendly/blog/commit/eedf71d1f179a8a994a030e77c62f380440ed4d8
