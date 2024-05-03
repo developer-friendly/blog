@@ -249,6 +249,7 @@ separated the stacks to create the Route53 zone beforehand, or we will go ahead
 and target our resources separately from command line as you see below.
 
 ```shell title=""
+export TF_VAR_cloudflare_api_token="PLACEHOLDER"
 export AWS_PROFILE="PLACEHOLDER"
 
 tofu plan -out tfplan -target=aws_route53_zone.this
