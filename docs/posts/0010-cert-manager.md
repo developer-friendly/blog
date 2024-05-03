@@ -421,6 +421,136 @@ This will look similar to what you see below.
 -8<- "docs/codes/0010/junk/tls-certificates/manifests.yml"
 ```
 
+## Step 3: Use the TLS Certificates in Gateway
+
+At this point, we have the required ingredients to host an application within
+cluster and exposing securely through HTTPS into the world.
+
+That's exactly what we aim for at this step. But, first, let's create a Gateway
+CRD that will be the entrypoint to our cluster. The Gateway is to our cluster
+what an Ingress Controller is, [yet more powerful].
+
+The key point to keep in mind is that the Gateway API doesn't come with the
+implementation. Infact, it is unopinionated about the implementation and you
+can use any networking solution that fits your needs.
+
+In our case, and based on the personal preference and tendency of the author
+:innocent:, we'll use Cilium as the networking solution, both as the CNI, as
+well as the implementation for our Gateway API.
+
+We have covered the [Cilium installation before], but, for the sake of
+completeness, here's [the way to do it] using [Cilium CLI].
+
+```yaml title="cilium/playbook" hl_lines="42-44"
+-8<- "docs/codes/0010/cilium/playbook.yml"
+```
+
+And now, let's create the Gateway CRD.
+
+```yaml title="gateway/gateway.yml" hl_lines="6 24 28"
+-8<- "docs/codes/0010/gateway/gateway.yml"
+```
+
+Notice that did not create the `gatewayClassName`. It comes as
+battery-included with Cilium. You can find the `GatewayClass` as soon as
+Cilium installation completes.
+
+Also note that we are passing the TLS certificates we have created earlier
+to this Gateway. That way, the gateway will terminate and offload the SSL/TLS
+encryption and your upstream service will receive plaintext traffic. However,
+if you have set up your mTLS the way we did with Wireguard encryption,
+node-to-node communication will not be plaintext!
+
+```yaml title="gateway/http-to-https-redirect.yml" hl_lines="11"
+-8<- "docs/codes/0010/gateway/http-to-https-redirect.yml"
+```
+
+Though not required, this redirect allows you to avoid accepting any
+plaintext HTTP traffic on your domain.
+
+```yaml title="gateway/kustomization.yml"
+-8<- "docs/codes/0010/gateway/kustomization.yml"
+```
+
+```yaml title="gateway/kustomize.yml"
+-8<- "docs/codes/0010/gateway/kustomize.yml"
+```
+
+```shell title="" linenums="0"
+kubectl apply -f gateway/kustomize.yml
+```
+
+## Step 4: HTTPS Application
+
+That's all the things we aimed to do today. At this point, we can create our
+HTTPS only application and expose it securely to the wild internet!
+
+```yaml title="app/deployment.yml"
+-8<- "docs/codes/0010/app/deployment.yml"
+```
+
+```yaml title="app/service.yml"
+-8<- "docs/codes/0010/app/service.yml"
+```
+
+```yaml title="app/httproute.yml" hl_lines="7-8"
+-8<- "docs/codes/0010/app/httproute.yml"
+```
+
+```yaml title="app/kustomization.yml"
+-8<- "docs/codes/0010/app/kustomization.yml"
+```
+
+```yaml title="app/kustomize.yml"
+-8<- "docs/codes/0010/app/kustomize.yml"
+```
+
+
+```shell title="" linenums="0"
+kubectl apply -f app/kustomize.yml
+```
+
+That's everything we had to say for today. We can now easily access our
+application as follows:
+
+```shell title="" linenums="0"
+curl -v https://echo.developer-friendly.blog
+```
+
+or...
+
+```shell title="" linenums="0"
+curl -v https://aws.echo.developer-friendly.blog
+```
+
+Both will show that the TLS certificate is present, is valid and matches the
+domain we're trying to access. :tada:
+
+You shall see the same expiry date on your certificate if accessing as follows:
+
+```shell title="" linenums="0"
+kubectl get certificate -n cert-manager -o yaml
+```
+
+The `status` field will give you the exact date that your `curl` client command
+showed earlier. :muscle:
+
+## Conclusion
+
+These days, I am never spinning up a Kubernetes cluster without having
+cert-manager installed in its day 1 operation. It's such a life-saver tool to
+have in your toolbox and you can rest assured that the TLS certificates in your
+cluster are always up-to-date and valid.
+
+If you ever had to worry about the expiry date of your certificates before,
+those days are behind you and you can benefit a lot by employing the
+cert-manager operator in your Kubernetes cluster. Use it to its full potential
+and you shall be served greatly.
+
+Hope you enjoyed reading this material.
+
+Until next tima, *ciao* :cowboy: and happy hacking! :crab: :penguin: :whale:
+
 [certbot]: https://certbot.eff.org/
 [ingress]: https://kubernetes.io/docs/concepts/services-networking/ingress/
 [gateway]: https://gateway-api.sigs.k8s.io/
@@ -436,3 +566,7 @@ This will look similar to what you see below.
 [Web Identity Token flow]: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html
 [Kubernetes Reflector]: https://github.com/emberstack/kubernetes-reflector
 [External Secrets Operator]: ./0009-external-secrets-aks-to-aws-ssm.md
+[yet more powerful]: https://gateway-api.sigs.k8s.io/
+[Cilium installation before]: docs/posts/0005-install-k3s-on-ubuntu22.md
+[Cilium CLI]: https://github.com/cilium/cilium-cli/releases/tag/v0.16.6
+[the way to do it]: https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/

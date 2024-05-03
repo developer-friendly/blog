@@ -1,0 +1,22 @@
+resources:
+  - deployment.yml
+  - service.yml
+  - httproute.yml
+
+images:
+  - name: ealen/echo-server
+    newTag: 0.9.2
+
+replacements:
+  - source:
+      kind: Deployment
+      name: echo-server
+      fieldPath: spec.template.metadata.labels
+    targets:
+      - select:
+          kind: Service
+          name: echo-server
+        fieldPaths:
+          - spec.selector
+
+namespace: default

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: echo-server
+  template:
+    metadata:
+      labels:
+        app: echo-server
+    spec:
+      containers:
+      - image: ealen/echo-server
+        name: echo-server
+        ports:
+        - containerPort: 80
+          name: http
+        securityContext:
+          readOnlyRootFilesystem: true
