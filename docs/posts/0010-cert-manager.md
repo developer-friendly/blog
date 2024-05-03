@@ -617,7 +617,7 @@ Until next tima, *ciao* :cowboy: and happy hacking! :crab: :penguin: :whale:
 [Kubernetes Reflector]: https://github.com/emberstack/kubernetes-reflector
 [External Secrets Operator]: ./0009-external-secrets-aks-to-aws-ssm.md
 [educated and more charming]: https://gateway-api.sigs.k8s.io/
-[Cilium installation before]: docs/posts/0005-install-k3s-on-ubuntu22.md
+[Cilium installation before]: ./0005-install-k3s-on-ubuntu22.md
 [Cilium CLI]: https://github.com/cilium/cilium-cli/releases/tag/v0.16.6
 [the way to do it]: https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/
 [satisfy the DNS01 challenge]: https://cert-manager.io/docs/configuration/acme/dns01/route53/#set-up-an-iam-role
