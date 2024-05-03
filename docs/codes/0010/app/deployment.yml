@@ -22,4 +22,14 @@ spec:
             - containerPort: 80
               name: http
           securityContext:
+            capabilities:
+              add:
+                - NET_BIND_SERVICE
+              drop:
+                - ALL
             readOnlyRootFilesystem: true
+      securityContext:
+        runAsGroup: 1000
+        runAsUser: 1000
+        seccompProfile:
+          type: RuntimeDefault

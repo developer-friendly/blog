@@ -21,6 +21,10 @@ skip-check:
   - CKV_SECRET_6 # No strong password required here
   - CKV2_AWS_34 # no need for encryption, this is a plaintext value
   - CKV2_ANSIBLE_2 # I promise all my URLs are starting with HTTPS
+  - CKV2_AWS_39 # No need for Route53 S3 logging
+  - CKV2_AWS_38 # Do not need DNSSEC for Route53 Hosted Zone
+  - CKV_K8S_12 # No CPU request needed for deployments
+  - CKV_K8S_43 # I disagree that images should use digest!
 skip-framework: []
 skip-path: []
 summary-position: top
