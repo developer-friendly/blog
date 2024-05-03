@@ -98,7 +98,7 @@ With that introduction, let's kick off the installation of cert-manager.
     launch (the initial commit).
 
     - [x] 10 posts published :books:
-    - [x] TODO words written so far :pencil:
+    - [x] 13.8k+ words written so far (37k+ including codes) :pencil:
     - [x] 2.48k+ views since the launch :eyes:
     - [x] 130+ clicks coming from search engines :mag:
 
