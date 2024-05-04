@@ -339,12 +339,13 @@ We now need an IAM Role with enough permissions to create the DNS records to
 ```
 
 ```shell title="" linenums="0"
-tofu plan -out tfplan
+tofu plan -out tfplan -var=oidc_issuer_url="KUBERNETES_OIDC_ISSUER_URL"
 tofu apply tfplan
 ```
 
 If you don't know what [OpenID Connect](/category/openid-connect) is and what
-we're doing here, you might want to check out our ealier guides on the topic:
+we're doing here, you might want to check out our ealier guides on the
+following topics:
 
 - [x] Establishing a trust relationship between
       [bare-metal Kubernetes cluster and AWS IAM](./0008-k8s-federated-oidc.md)
@@ -359,8 +360,8 @@ other will trust the tokens of the said service (AWS IAM).
 
 ### Kubernetes Service Account
 
-Now that we have our IAM role set up, we can pass that as an annotation to the
-Service Account of the cert-manager Deployment. This way the cert-manager will
+Now that we have our IAM role set up, we can pass that information to the
+cert-manager Deployment. This way the cert-manager will
 assume that role with the [Web Identity Token flow] (there are five in total).
 
 We will also create a ClusterIssuer CRD to be responsible for fetching the TLS
@@ -374,7 +375,11 @@ certificates from the trusted CA.
 -8<- "docs/codes/0010/route53-issuer/versions.tf"
 ```
 
-```hcl title="route53-issuer/main.tf"
+```yaml title="route53-issuer/values.yml.tftpl"
+-8<- "docs/codes/0010/route53-issuer/values.yml.tftpl"
+```
+
+```hcl title="route53-issuer/main.tf" hl_lines="31 34-37"
 -8<- "docs/codes/0010/route53-issuer/main.tf"
 ```
 
@@ -383,9 +388,22 @@ certificates from the trusted CA.
 ```
 
 ```shell title="" linenums="0"
-tofu plan -out tfplan
+tofu plan -out tfplan -var=kubeconfig_context="KUBECONFIG_CONTEXT"
 tofu apply tfplan
 ```
+
+If you're wondering why we're changing the configuration of the cert-manager
+Deployment with a new Helm upgrade, you will find an exhaustive discussion
+and my comment on [the relevant GitHub issue].
+
+The gist of that conversation is that cert-manager Deployment won't take into
+account the `eks.amazonaws.com/role-arn` annotation on its Service Account, as
+[you'd see the External Secrets Operator would](./0008-k8s-federated-oidc.md#step-7-test-the-setup).
+It won't even consider using the `spec.acme.solvers[*].dns01.route53.role`
+field on its ClusterIssuer for some reason! :gun:
+
+That's why we're manually passing that information down to its [AWS Go SDK]
+using [the official environment variables].
 
 This stack allows the cert-manager controller to talk to AWS Route53.
 
@@ -394,6 +412,57 @@ User for this communication to work. It's all the power of
 [OpenID Connect](/category/openid-connect) and
 allows us to establish a trust relationship and never have to worry about any
 credentials in the client service. :white_check_mark:
+
+### Is There a Better Way?
+
+Now, you might've seen all that Helm hacks and the templating language and get
+confused as to why we're troubling ourselves so much. :sweat:
+
+You're right. This is messy and complicated at the same time. Not only future
+engineers, but also I, who wrote the code can't understand it in a few months.
+
+That's why in this section, I'll provide you an easier way around this.
+:sunglasses:
+
+The idea is to use our
+[previously deployed ESO](./0009-external-secrets-aks-to-aws-ssm.md) and pass
+the AWS IAM User credentials to the cert-manager controller (easy peasy, no
+drama!).
+
+```hcl title="iam-user/variables.tf"
+-8<- "docs/codes/0010/iam-user/variables.tf"
+```
+
+```hcl title="iam-user/versions.tf"
+-8<- "docs/codes/0010/iam-user/versions.tf"
+```
+
+```hcl title="iam-user/main.tf" hl_lines="41-42"
+-8<- "docs/codes/0010/iam-user/main.tf"
+```
+
+```hcl title="iam-user/outputs.tf"
+-8<- "docs/codes/0010/iam-user/outputs.tf"
+```
+
+And now let's create the corresponding ClusterIssuer, passing the credentials
+like a normal human being!
+
+```hcl title="route53-issuer-creds/variables.tf"
+-8<- "docs/codes/0010/route53-issuer-creds/variables.tf"
+```
+
+```hcl title="route53-issuer-creds/versions.tf"
+-8<- "docs/codes/0010/route53-issuer-creds/versions.tf"
+```
+
+```hcl title="route53-issuer-creds/main.tf"
+-8<- "docs/codes/0010/route53-issuer-creds/main.tf"
+```
+
+```hcl title="route53-issuer-creds/outputs.tf"
+-8<- "docs/codes/0010/route53-issuer-creds/outputs.tf"
+```
 
 We're now done with the AWS issuer. Let's switch gear for a bit to create the
 Cloudflare issuer before finally creating a TLS certificate for our desired
@@ -658,3 +727,6 @@ Until next tima, *ciao* :cowboy: and happy hacking! :crab: :penguin: :whale:
 [the way to do it]: https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/
 [satisfy the DNS01 challenge]: https://cert-manager.io/docs/configuration/acme/dns01/route53/#set-up-an-iam-role
 [initial commit in Feb 13, 2024]: https://github.com/developer-friendly/blog/commit/eedf71d1f179a8a994a030e77c62f380440ed4d8
+[the relevant GitHub issue]: https://github.com/cert-manager/cert-manager/issues/2147#issuecomment-2094066782
+[AWS Go SDK]: https://github.com/aws/aws-sdk-go
+[the official environment variables]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html

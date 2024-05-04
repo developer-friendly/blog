@@ -1,4 +1,6 @@
 data "terraform_remote_state" "iam_role" {
+  count = var.role_arn != null ? 0 : 1
+
   backend = "local"
 
   config = {
@@ -14,19 +16,26 @@ data "terraform_remote_state" "hosted_zone" {
   }
 }
 
-resource "kubernetes_annotations" "this" {
-  api_version = "v1"
-  kind        = "ServiceAccount"
-  metadata {
-    name      = data.terraform_remote_state.iam_role.outputs.service_account_name
-    namespace = data.terraform_remote_state.iam_role.outputs.service_account_namespace
-  }
-  annotations = {
-    "eks.amazonaws.com/audience" : data.terraform_remote_state.iam_role.outputs.access_token_audience
-    "eks.amazonaws.com/role-arn" : data.terraform_remote_state.iam_role.outputs.iam_role_arn
-  }
+locals {
+  sa_audience = coalesce(var.access_token_audience, data.terraform_remote_state.iam_role[0].outputs.access_token_audience)
+  sa_role_arn = coalesce(var.role_arn, data.terraform_remote_state.iam_role[0].outputs.iam_role_arn)
+}
 
-  field_manager = var.field_manager
+resource "helm_release" "cert_manager" {
+  name       = var.release_name
+  repository = var.chart_url
+  chart      = var.chart_name
+  version    = var.release_version
+  namespace  = var.release_namespace
+
+  reuse_values = true
+
+  values = [
+    templatefile("${path.module}/values.yml.tftpl", {
+      sa_audience = local.sa_audience,
+      sa_role_arn = local.sa_role_arn
+    })
+  ]
 }
 
 resource "kubernetes_manifest" "cluster_issuer" {
