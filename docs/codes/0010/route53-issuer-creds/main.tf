@@ -11,7 +11,7 @@ resource "kubernetes_manifest" "external_secret" {
     apiVersion: external-secrets.io/v1beta1
     kind: ExternalSecret
     metadata:
-      name: route53-issuer
+      name: route53-issuer-aws-creds
       namespace: cert-manager
     spec:
       data:
@@ -51,10 +51,10 @@ resource "kubernetes_manifest" "cluster_issuer" {
               region: eu-central-1
               accessKeyIDSecretRef:
                 key: awsAccessKeyID
-                name: route53-issuer
+                name: route53-issuer-aws-creds
               secretAccessKeySecretRef:
                 key: awsSecretAccessKey
-                name: route53-issuer
+                name: route53-issuer-aws-creds
   EOF
   )
 }
