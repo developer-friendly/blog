@@ -7,6 +7,7 @@ description: >-
 categories:
   - GitHub
   - CI/CD
+image: assets/images/social/2024/03/09/github-actions-dynamic-matrix.png
 ---
 
 # GitHub Actions Dynamic Matrix

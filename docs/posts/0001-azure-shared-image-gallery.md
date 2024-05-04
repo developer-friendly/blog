@@ -9,6 +9,7 @@ categories:
   - Cloud Computing
   - OpenTofu
   - IaC
+image: assets/images/social/2024/02/15/azure-shared-image-gallery.png
 ---
 
 # Azure Shared Image Gallery

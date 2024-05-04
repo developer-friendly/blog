@@ -11,6 +11,7 @@ categories:
   - Cilium
 links:
   - ./posts/0005-install-k3s-on-ubuntu22.md
+image: assets/images/social/2024/03/03/kubernetes-the-hard-way.png
 ---
 
 # Kubernetes The Hard Way

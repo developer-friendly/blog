@@ -9,6 +9,7 @@ categories:
   - Secrets Management
   - AWS
   - OpenTofu
+image: assets/images/social/2024/02/16/external-secrets-and-immutable-target.png
 ---
 
 # External Secrets and Immutable Target

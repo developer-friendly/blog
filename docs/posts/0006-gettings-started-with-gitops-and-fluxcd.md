@@ -13,6 +13,7 @@ categories:
 links:
   - ./posts/0003-kubernetes-the-hard-way.md
   - ./posts/0005-install-k3s-on-ubuntu22.md
+image: assets/images/social/2024/04/06/gitops-demystified-introduction-to-fluxcd-for-kubernetes.png
 ---
 
 # Getting Started with GitOps and FluxCD

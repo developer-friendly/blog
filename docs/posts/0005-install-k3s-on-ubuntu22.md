@@ -14,6 +14,7 @@ categories:
   - Hetzner
 links:
   - ./posts/0003-kubernetes-the-hard-way.md
+image: assets/images/social/2024/03/22/how-to-install-lightweight-kubernetes-on-ubuntu-2204.png
 ---
 
 # How to Install Lightweight Kubernetes on Ubuntu 22.04

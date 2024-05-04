@@ -18,6 +18,7 @@ categories:
 links:
   - ./posts/0002-external-secret-immutable-target.md
   - ./posts/0004-github-actions-dynamic-matrix.md
+image: assets/images/social/2024/04/14/what-is-openid-connect-authentication-a-practical-guide.png
 ---
 
 # What is OpenID Connect Authentication? A Practical Guide
