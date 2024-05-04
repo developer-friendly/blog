@@ -12,3 +12,4 @@
 *[TLS]: Transport Layer Security
 *[CA]: Certificate Authority
 *[VCS]: Version Control System
+*[ARN]: Amazon Resource Name

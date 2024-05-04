@@ -167,7 +167,8 @@ is in your VCS. This makes your future upgrades and code reviews easier.
 ```shell title="" linenums="0"
 helm repo add jetstack https://charts.jetstack.io
 helm repo update jetstack
-helm show values jetstack/cert-manager > cert-manager/values.yml
+helm show values jetstack/cert-manager \
+  --version v1.14.x > cert-manager/values.yml
 ```
 
 ```yaml title="cert-manager/values.yml"
@@ -185,6 +186,8 @@ Additionally, we will use [Kubernetes Kustomize]:
 ```
 
 Notice the namespace we are instructing Kustomization to place the resources in.
+The FluCD Kustomization CRD will be created in the flux-system namespace, while
+the Helm release itself is placed in the cert-manager namespace.
 
 Ultimately, to create this stack, we will create a FluxCD [Kustomization resource]:
 
@@ -362,7 +365,8 @@ other will trust the tokens of the said service (AWS IAM).
 
 Now that we have our IAM role set up, we can pass that information to the
 cert-manager Deployment. This way the cert-manager will
-assume that role with the [Web Identity Token flow] (there are five in total).
+assume that role with the [Web Identity Token flow] (there are five flows in
+total).
 
 We will also create a ClusterIssuer CRD to be responsible for fetching the TLS
 certificates from the trusted CA.
@@ -425,8 +429,8 @@ less than 10 lines of code in any programming language.
 All that said, I have to say that I consider this to be an
 [implementation bug][the relevant GitHub issue]
 when cert-manager does not provide you with a clean interface to easily
-pass around IAM Role ARN and expect the underlying client to assume it with the
-web identity token flow.
+pass around IAM Role ARN. The cert-manager controller SHOULD be able to assume
+the role it is given with the web identity flow!
 
 Regardless of such shortage, in this section, I'll provide you a simpler way
 around this.
@@ -484,11 +488,11 @@ Since Cloudflare does not have native support for OIDC, we will have to pass
 an API token to the cert-manager controller to be able to manage the DNS
 records on our behalf.
 
-That's where the [External Secrets Operator] comes into play and I invite you
-to take a look at our last week's guide if you haven't done so already. Cause
-we will not repeat ourselves here and will only use the ExternalSecret CRD to
-fetch an API token from the AWS SSM Parameter Store and pass it down to our
-Kubernetes cluster as a Secret resource.
+That's where the [External Secrets Operator] comes into play, again. I invite you
+to take a look at our last week's guide if you haven't done so already.
+
+We will use the ExternalSecret CRD to fetch an API token from the AWS SSM
+Parameter Store and pass it down to our Kubernetes cluster as a Secret resource.
 
 Notice the highlighted lines.
 
@@ -496,7 +500,7 @@ Notice the highlighted lines.
 -8<- "docs/codes/0010/cloudflare-issuer/externalsecret.yml"
 ```
 
-```yaml title="cloudflare-issuer/clusterissuer.yml" hl_lines="4 16"
+```yaml title="cloudflare-issuer/clusterissuer.yml" hl_lines="4 16-17"
 -8<- "docs/codes/0010/cloudflare-issuer/clusterissuer.yml"
 ```
 
@@ -530,7 +534,7 @@ as its nameserver.
 We can now fetch a TLS certificate for each of them using our newly created
 ClusterIssuer resource. The rest is the responsbility of the cert-manager to
 verify the ownership within the cluster through the DNS01 challenge and using
-the access we've provided to it.
+the access we've provided it.
 
 ```yaml title="tls-certificates/aws-subdomain.yml" hl_lines="10"
 -8<- "docs/codes/0010/tls-certificates/aws-subdomain.yml"
@@ -569,12 +573,12 @@ cluster and exposing it securely through HTTPS into the world.
 
 That's exactly what we aim for at this step. But, first, let's create a Gateway
 CRD that will be the entrypoint to our cluster. The Gateway can be thought of
-as the sibling of Ingress resource, yet more handsome, more successful and
+as the sibling of Ingress resource, yet more handsome, more successful, more
 [educated and more charming].
 
 The key point to keep in mind is that the Gateway API doesn't come with the
 implementation. Infact, it is unopinionated about the implementation and you
-can use any networking solution that fits your needs and has support for it.
+can use any networking solution that fits your needs and **has support for it**.
 
 In our case, and based on the personal preference and tendency of the author
 :innocent:, we'll use [Cilium](/category/cilium) as the networking solution,
@@ -583,7 +587,7 @@ both as the CNI, as well as the implementation for our Gateway API.
 We have covered the [Cilium installation before], but, for the sake of
 completeness, here's [the way to do it] using [Cilium CLI].
 
-```yaml title="cilium/playbook.yml" hl_lines="44-46"
+```yaml title="cilium/playbook.yml" hl_lines="27-28 44-46"
 -8<- "docs/codes/0010/cilium/playbook.yml"
 ```
 
