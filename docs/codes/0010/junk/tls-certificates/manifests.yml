@@ -1,24 +1,30 @@
 ---
-apiVersion: v1
-data:
-  tls.crt: ...truncated...
-  tls.key: ...truncated...
-kind: Secret
-metadata:
-  annotations:
-    cert-manager.io/alt-names: '*.developer-friendly.blog'
-    cert-manager.io/certificate-name: developer-friendly-blog
-    cert-manager.io/common-name: '*.developer-friendly.blog'
-    cert-manager.io/ip-sans: ""
-    cert-manager.io/issuer-group: ""
-    cert-manager.io/issuer-kind: ClusterIssuer
-    cert-manager.io/issuer-name: cloudflare-issuer
-    cert-manager.io/uri-sans: ""
-  labels:
-    controller.cert-manager.io/fao: "true"
-  name: developer-friendly-blog-tls
+- apiVersion: cert-manager.io/v1
+  kind: Certificate
+  metadata:
+    name: aws-developer-friendly-blog
   namespace: cert-manager
-type: kubernetes.io/tls
+  spec:
+    dnsNames:
+      - "*.aws.developer-friendly.blog"
+    issuerRef:
+      kind: ClusterIssuer
+      name: route53-issuer
+    privateKey:
+      rotationPolicy: Always
+    revisionHistoryLimit: 5
+    secretName: aws-developer-friendly-blog-tls
+  status:
+    conditions:
+      - lastTransitionTime: "2024-05-04T04:44:12Z"
+        message: Certificate is up to date and has not expired
+        observedGeneration: 1
+        reason: Ready
+        status: "True"
+        type: Ready
+    notAfter: "2024-07-30T04:44:12Z"
+    notBefore: "2024-05-04T04:44:12Z"
+    renewalTime: "2024-06-29T04:44:12Z"
 ---
 apiVersion: v1
 data:
@@ -27,9 +33,9 @@ data:
 kind: Secret
 metadata:
   annotations:
-    cert-manager.io/alt-names: '*.aws.developer-friendly.blog'
+    cert-manager.io/alt-names: "*.aws.developer-friendly.blog"
     cert-manager.io/certificate-name: aws-developer-friendly-blog
-    cert-manager.io/common-name: '*.aws.developer-friendly.blog'
+    cert-manager.io/common-name: "*.aws.developer-friendly.blog"
     cert-manager.io/ip-sans: ""
     cert-manager.io/issuer-group: ""
     cert-manager.io/issuer-kind: ClusterIssuer
