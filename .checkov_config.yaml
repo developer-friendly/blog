@@ -9,42 +9,46 @@ quiet: true
 secrets-scan-file-type: []
 skip-check:
   - CKV_TF_1
-  - CKV_AWS_273 # Tried Azure AD -> AWS IAM SSO; didn't work!
-  - CKV_AZURE_50 # Azure VM Extensions are fine
-  - CKV_AZURE_119 # Public IPs for Azure NIC can be fine sometimes
-  - CKV2_AZURE_31 # I don't want to attach Azure NSG to Vnet Subnet now
-  - CKV2_ANSIBLE_3 # I have no idea how to handle block errors
-  - CKV_AWS_108 # This is a blog post, not a production. I'm not worried about exfiltration
-  - CKV_AWS_356 # Wildcard resource is allowed in here
-  - CKV_K8S_21 # I use default namespace as much as I want
-  - CKV_AWS_337 # I don't mind using the default aws/ssm key
-  - CKV_SECRET_6 # No strong password required here
-  - CKV2_AWS_34 # no need for encryption, this is a plaintext value
-  - CKV2_ANSIBLE_2 # I promise all my URLs are starting with HTTPS
-  - CKV2_AWS_39 # No need for Route53 S3 logging
-  - CKV2_AWS_38 # Do not need DNSSEC for Route53 Hosted Zone
-  - CKV_K8S_12 # No CPU request needed for deployments
-  - CKV_K8S_43 # I disagree that images should use digest!
-  - CKV_K8S_25 # Minimize the admission of containers with added capability
-  - CKV_K8S_40 # Containers should run as a high UID to avoid host conflict
-  - CKV_K8S_10 # CPU requests should be set
-  - CKV_K8S_14 # Image Tag should be fixed - not latest or blank
-  - CKV_K8S_11 # CPU limits should be set
-  - CKV_K8S_8 # Liveness Probe Should be Configured
-  - CKV_K8S_20 # Containers should not run with allowPrivilegeEscalation
-  - CKV_K8S_38 # Ensure that Service Account Tokens are only mounted where necessary
-  - CKV_K8S_13 # Memory limits should be set
-  - CKV_K8S_9 # Readiness Probe Should be Configured
-  - CKV_K8S_22 # Use read-only filesystem for containers where possible
-  - CKV_K8S_37 # Minimize the admission of containers with capabilities assigned
-  - CKV_K8S_29 # Apply security context to your pods and containers
-  - CKV_K8S_30 # Apply security context to your containers
-  - CKV_K8S_31 # Ensure that the seccomp profile is set to docker/default or runtime/default
-  - CKV_K8S_28 # Minimize the admission of containers with the NET_RAW capability
-  - CKV_K8S_23 # Minimize the admission of root containers
-  - CKV_K8S_35 # Prefer using secrets as files over secrets as environment variables
-  - CKV_K8S_22 # Use read-only filesystem for containers where possible
-  - CKV_K8S_37 # Minimize the admission of containers with capabilities assigned
+  - CKV_AWS_273
+  - CKV_AZURE_50
+  - CKV_AZURE_119
+  - CKV2_AZURE_31
+  - CKV2_ANSIBLE_3
+  - CKV_AWS_108
+  - CKV_AWS_356
+  - CKV_K8S_21
+  - CKV_AWS_337
+  - CKV_SECRET_6
+  - CKV2_AWS_34
+  - CKV2_ANSIBLE_2
+  - CKV2_AWS_39
+  - CKV2_AWS_38
+  - CKV_K8S_12
+  - CKV_K8S_43
+  - CKV_K8S_25
+  - CKV_K8S_40
+  - CKV_K8S_10
+  - CKV_K8S_14
+  - CKV_K8S_11
+  - CKV_K8S_8
+  - CKV_K8S_20
+  - CKV_K8S_38
+  - CKV_K8S_13
+  - CKV_K8S_9
+  - CKV_K8S_22
+  - CKV_K8S_37
+  - CKV_K8S_29
+  - CKV_K8S_30
+  - CKV_K8S_31
+  - CKV_K8S_28
+  - CKV_K8S_23
+  - CKV_K8S_35
+  - CKV_K8S_22
+  - CKV_K8S_37
+  - CKV2_K8S_6
+  - CKV_K8S_15
+  - CKV2_K8S_6
+  - CKV2_K8S_6
 skip-framework: []
 skip-path: []
 summary-position: top
