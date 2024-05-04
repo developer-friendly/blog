@@ -413,16 +413,26 @@ User for this communication to work. It's all the power of
 allows us to establish a trust relationship and never have to worry about any
 credentials in the client service. :white_check_mark:
 
-### Is There a Better Way?
+### Is There a Simpler Way?
 
-Now, you might've seen all that Helm hacks and the templating language and get
-confused as to why we're troubling ourselves so much. :sweat:
+Sure there is. If you don't fancy [OpenID Connect](/category/openid-connect),
+there is always the option to pass the credentials around in your environment.
+That leaves you with the burden of having to rotate them every now and then,
+but if you're cool with that, there's nothing stopping you from going down
+that path. You also have the possibility of automating such rotation using
+less than 10 lines of code in any programming language.
 
-You're right. This is messy and complicated at the same time. Not only future
-engineers, but also I, who wrote the code can't understand it in a few months.
+All that said, I have to say that I consider this to be an
+[implementation bug][the relevant GitHub issue]
+when cert-manager does not provide you with a clean interface to easily
+pass around IAM Role ARN and expect the underlying client to assume it with the
+web identity token flow.
 
-That's why in this section, I'll provide you an easier way around this.
-:sunglasses:
+Regardless of such shortage, in this section, I'll provide you a simpler way
+around this.
+
+Bear in mind that I do not recommend this approach, and wouldn't use it in my
+own environment either. :shrug:
 
 The idea is to use our
 [previously deployed ESO](./0009-external-secrets-aks-to-aws-ssm.md) and pass
@@ -456,7 +466,7 @@ like a normal human being!
 -8<- "docs/codes/0010/route53-issuer-creds/versions.tf"
 ```
 
-```hcl title="route53-issuer-creds/main.tf"
+```hcl title="route53-issuer-creds/main.tf" hl_lines="19-20 22-23 53 56"
 -8<- "docs/codes/0010/route53-issuer-creds/main.tf"
 ```
 
