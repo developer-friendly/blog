@@ -7,12 +7,12 @@ spec:
     email: meysam@licenseware.io
     enableDurationFeature: true
     privateKeySecretRef:
-      name: letsencrypt
+      name: cloudflare-issuer
     server: https://acme-v02.api.letsencrypt.org/directory
     solvers:
       - dns01:
           cloudflare:
             apiTokenSecretRef:
               key: cloudflareApiToken
-              name: cloudflare-issuer
+              name: cloudflare-issuer-api-token
             email: admin@developer-friendly.blog

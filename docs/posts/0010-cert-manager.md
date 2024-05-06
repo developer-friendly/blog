@@ -92,7 +92,7 @@ cert-manager is a Kubernetes-native tool that extends the Kubernetes API
 with custom resources for managing certificates. It is built on top of the
 [Operator pattern], and is a graduated project of the [CNCF].
 
-With cert-manager, you can fetch and renew your TLS certificates with ease,
+With cert-manager, you can fetch and renew your TLS certificates behind automation,
 passing them along to the [Ingress] or [Gateway] of your platform to host your
 applications securely over HTTPS without losing the comfort of hosting your
 applications in a Kubernetes cluster.
@@ -170,8 +170,8 @@ Before we start, make sure you have the following set up:
 - [ ] Optionally, External Secrets Operator installed. We will use it in this
       guide to store the credentials for the DNS01 challenge.
       - We have covered the installation of ESO in our last week's guide if
-        you're new to it:
-        [External Secrets Operator](./0009-external-secrets-aks-to-aws-ssm.md)
+        you're interested to learn more:
+        *[External Secrets Operator: Fetching AWS SSM Parameters into Azure AKS]*
 
 ## Step 0: Installation
 
@@ -217,8 +217,8 @@ Additionally, we will use [Kubernetes Kustomize]:
 ```
 
 Notice the namespace we are instructing Kustomization to place the resources in.
-The FluCD Kustomization CRD will be created in the flux-system namespace, while
-the Helm release itself is placed in the cert-manager namespace.
+The FluCD Kustomization CRD will be created in the `flux-system` namespace, while
+the Helm release itself is placed in the `cert-manager` namespace.
 
 Ultimately, to create this stack, we will create a FluxCD [Kustomization resource]:
 
@@ -314,11 +314,13 @@ to talk to the Route53 API for record creation and domain verfication.
 -8<- "docs/codes/0010/hosted-zone/outputs.tf"
 ```
 
-To apply this stack we'll use [OpenTofu](/category/opentofu). We could've either
-separated the stacks to create the Route53 zone beforehand, or we will go ahead
-and target our resources separately from command line as you see below.
+To apply this stack we'll use [OpenTofu](/category/opentofu).
 
-```shell title=""
+We could've either separated the stacks to create the Route53 zone beforehand,
+or we will go ahead and target our resources separately from command line as
+you see below.
+
+```shell title="" linenums="0"
 export TF_VAR_cloudflare_api_token="PLACEHOLDER"
 export AWS_PROFILE="PLACEHOLDER"
 
@@ -356,6 +358,10 @@ configuration.
 We now need an IAM Role with enough permissions to create the DNS records to
 [satisfy the DNS01 challenge].
 
+Make sure you have a good understanding of the
+[OpenID Connect](/category/openid-connect), the technique we're employing in
+the trust relationship of the AWS IAM Role.
+
 ```hcl title="route53-iam-role/variables.tf"
 -8<- "docs/codes/0010/route53-iam-role/variables.tf"
 ```
@@ -364,7 +370,7 @@ We now need an IAM Role with enough permissions to create the DNS records to
 -8<- "docs/codes/0010/route53-iam-role/versions.tf"
 ```
 
-```hcl title="route53-iam-role/main.tf"
+```hcl title="route53-iam-role/main.tf" hl_lines="34 48 57"
 -8<- "docs/codes/0010/route53-iam-role/main.tf"
 ```
 
@@ -519,8 +525,9 @@ Since Cloudflare does not have native support for OIDC, we will have to pass
 an API token to the cert-manager controller to be able to manage the DNS
 records on our behalf.
 
-That's where the [External Secrets Operator] comes into play, again. I invite you
-to take a look at our last week's guide if you haven't done so already.
+That's where the External Secrets Operator comes into play, again. I invite you
+to take a look at our [last week's guide][External Secrets Operator] if you
+haven't done so already.
 
 We will use the ExternalSecret CRD to fetch an API token from the AWS SSM
 Parameter Store and pass it down to our Kubernetes cluster as a Secret resource.
@@ -563,7 +570,7 @@ and a Hosted Zone in AWS Route53 to resolve the `aws.` subdomain using Route53
 as its nameserver.
 
 We can now fetch a TLS certificate for each of them using our newly created
-ClusterIssuer resource. The rest is the responsbility of the cert-manager to
+ClusterIssuer resource. The rest is the responsibility of the cert-manager to
 verify the ownership within the cluster through the DNS01 challenge and using
 the access we've provided it.
 
@@ -588,7 +595,10 @@ kubectl apply -f tls-certificates/kustomize.yml
 ```
 
 It'll take less than a minute to have the certificates issued and stored as
-Kubernetes Secrets in the same namespace as the cert-manager Deployment.
+Kubernetes Secrets in the **same namespace as the cert-manager Deployment**.
+
+If you would like the certificates in a different namespace, you're better off
+creating Issuer instead of ClusterIssuer.
 
 The final result will have a Secret with two keys: `tls.crt` and `tls.key`.
 This will look similar to what you see below.
@@ -616,7 +626,7 @@ In our case, and based on the personal preference and tendency of the author
 both as the CNI, as well as the implementation for our Gateway API.
 
 We have covered the [Cilium installation before], but, for the sake of
-completeness, here's [the way to do it] using [Cilium CLI].
+completeness, here's [the way to do it].
 
 ```yaml title="cilium/playbook.yml" hl_lines="27-28 44-46"
 -8<- "docs/codes/0010/cilium/playbook.yml"
@@ -641,17 +651,18 @@ GatewayClass is to Gateway as IngressClass is to Ingress. :material-check-all:
 
 Also note that we are passing the TLS certificates to this Gateway we have
 created earlier. That way, the gateway will terminate and offload the SSL/TLS
-encryption and your upstream service will receive plaintext traffic. However,
-if you have set up your mTLS the way we did with Wireguard encryption (or any
-other mTLS solution for that matter), node-to-node communication will not be
-plaintext!
+encryption and your upstream service will receive plaintext traffic.
+
+However, if you have set up your mTLS the way we did with Wireguard encryption
+(or any other mTLS solution for that matter), node-to-node and/or pod-to-pod
+communications will also be encrypted.
 
 ```yaml title="gateway/http-to-https-redirect.yml" hl_lines="11"
 -8<- "docs/codes/0010/gateway/http-to-https-redirect.yml"
 ```
 
-Though not required, this redirect allows you to avoid accepting any
-plaintext HTTP traffic on your domain.
+Though not required, the above HTTP to HTTPS redirect allows you to avoid
+accepting any plaintext HTTP traffic on your domain.
 
 ```yaml title="gateway/kustomization.yml"
 -8<- "docs/codes/0010/gateway/kustomization.yml"
@@ -731,7 +742,7 @@ kubectl get certificate -n cert-manager -o jsonpath='{.items[*].status.notAfter}
 2024-07-30T04:44:12Z
 ```
 
-As you can see, they information we get from the publicly available certificate
+As you can see, the information we get from the publicly available certificate
 as well as the one we get internally from our Kubernetes cluster are the same
 down to the second. :muscle:
 
@@ -776,3 +787,4 @@ Until next tima, *ciao* :cowboy: and happy hacking! :crab: :penguin: :whale:
 [AWS Go SDK]: https://github.com/aws/aws-sdk-go
 [the official environment variables]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html
 [Material for Mkdocs]: https://squidfunk.github.io/mkdocs-material
+[External Secrets Operator: Fetching AWS SSM Parameters into Azure AKS]: ./0009-external-secrets-aks-to-aws-ssm.md

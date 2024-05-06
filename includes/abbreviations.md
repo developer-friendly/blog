@@ -13,3 +13,4 @@
 *[CA]: Certificate Authority
 *[VCS]: Version Control System
 *[ARN]: Amazon Resource Name
+*[CRD]: Custom Resource Definition
