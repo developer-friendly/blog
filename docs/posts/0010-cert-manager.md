@@ -212,7 +212,7 @@ Ultimately, to create this stack, we will create a FluxCD Kustomization resource
 You may either advantage from the recursive reconciliation of FluxCD, add it
 to your root Kustomization or apply the resources manually from your command line.
 
-```shell title=""
+```shell title="" linenums="0"
 kubectl apply -f cert-manager/kustomize.yml
 ```
 
