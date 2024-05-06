@@ -86,7 +86,7 @@ plugins:
   - meta:
       enabled: !ENV [CI, false]
   - social:
-      enabled: !ENV [CARDS, false]
+      enabled: !ENV [SOCIAL, false]
       cards: true
       cards_layout: default/variant
       cache: true
