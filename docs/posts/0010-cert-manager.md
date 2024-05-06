@@ -76,7 +76,7 @@ with custom resources for managing certificates. It is built on top of the
 Operator Pattern[^3], and is a graduated project of the CNCF[^4].
 
 With cert-manager, you can fetch and renew your TLS certificates behind automation,
-passing them along to the Ingress[^5] or Gateway[^5] of your platform to host your
+passing them along to the Ingress[^5] or Gateway[^6] of your platform to host your
 applications securely over HTTPS without losing the comfort of hosting your
 applications in a Kubernetes cluster.
 
