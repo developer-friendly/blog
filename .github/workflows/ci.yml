@@ -19,7 +19,6 @@ env:
   NETLIFY_DEPLOY_TO_PROD: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
   PYTHON_VERSION: 3.x
   URL_DOWNLOAD: "true"
-  SOCIAL: "true"
 
 jobs:
   build:

@@ -2,19 +2,29 @@
 date: 2024-05-06
 draft: false
 description: >-
-  Install and configure cert-manager operator in your Kubernetes cluster to
-  issue and renew TLS certificates for your applications automatically.
+  Install cert-manager Helm chart and create ClusterIssuer for AWS Route53 and
+  Cloudflare. Fetch & renew wildcard certificates for Ingress & Gateway API.
 categories:
   - Kubernetes
   - AWS
-  - Cloudflare
+  - OpenTofu
   - cert-manager
   - Cilium
-  - OpenTofu
+  - Cloudflare
   - Terraform
   - Gateway API
   - Route53
   - TLS
+  - Authentication
+  - Authorization
+  - External Secrets
+  - FluxCD
+  - GitOps
+  - IaC
+  - Infrastructure as Code
+  - OAuth2
+  - OIDC
+  - Security
 links:
   - ./posts/0005-install-k3s-on-ubuntu22.md
   - ./posts/0008-k8s-federated-oidc.md
@@ -22,7 +32,7 @@ links:
 image: assets/images/social/2024/05/06/cert-manager-all-in-one-kubernetes-certificate-manager.png
 ---
 
-# cert-manager: All-in-One Kubernetes Certificate Manager
+# cert-manager: All-in-One Kubernetes TLS Certificate Manager
 
 Kubernetes is a great orchestration tool for managing your applications and all
 its dependencies. However, it comes with an extensible architecture and with an
@@ -43,34 +53,6 @@ Finally, we will create the Gateway CRD and expose an application securely
 over HTTPS to the internet.
 
 If that gets you excited, hop on and let's get started!
-
-<!--
-SEO keywords:
- - cert-manager
- - kubernetes
- - certificate
- - TLS
- - HTTPS
- - ingress
- - gateway
- - cilium
- - AWS
- - Route53
- - Cloudflare
-
-cert-manager helm chart
-acme certificate
-let's encrypt
-kubernetes tls secret
-kubernetes ingress tls
-kubernetes install cert-manager [helm]
-kubernetes cert-manager letsencrypt
-kubernetes cert-manager renew certificate
-kubernetes cert-manager wildcard certificate
-cert-manager clusterissuer
-cert-manager letsencrypt kubernetes
-cert-manager certificate
--->
 
 <!-- more -->
 
@@ -149,7 +131,7 @@ With that introduction, let's kick off the installation of cert-manager.
 
     If you are interested in supporting this effort, the GitHub Sponsors
     program, as well as the PayPal donation link are available at the bottom
-    of all the pages in our website.
+    of all the pages in our website. :octicons-heart-fill-16:
 
     Greatly appreciate you being here and hope you keep coming back. :champagne_glass:
 

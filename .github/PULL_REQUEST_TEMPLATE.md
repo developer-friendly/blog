@@ -12,3 +12,4 @@
 - [ ] Are all the internal links placed as inline links?
 - [ ] Are all the external links included as `<sup>` and included in the footnote?
 - [ ] Are all the images coverted to `webp` format? (Yes, even at the expense of quality)
+- [ ] Is it closing any of the roadmap issues?

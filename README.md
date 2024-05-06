@@ -1,5 +1,10 @@
 # Developer Friendly Blog
 
+![GitHub repo size](https://img.shields.io/github/repo-size/developer-friendly/blog)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/developer-friendly/blog)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/developer-friendly/blog)
+
+
 ## Star History
 
 <a href="https://star-history.com/#developer-friendly/blog&Timeline">
