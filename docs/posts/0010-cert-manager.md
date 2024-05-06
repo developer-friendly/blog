@@ -1,6 +1,6 @@
 ---
 date: 2024-05-06
-draft: true
+draft: false
 description: >-
   Install and configure cert-manager operator in your Kubernetes cluster to
   issue and renew TLS certificates for your applications automatically.
