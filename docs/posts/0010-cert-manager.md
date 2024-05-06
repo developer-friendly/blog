@@ -718,7 +718,9 @@ valid and matches the domain we're trying to access. :tada:
 You shall see the same expiry date on your certificate if accessing as follows:
 
 ```shell title="" linenums="0"
-kubectl get certificate -n cert-manager -o jsonpath='{.items[*].status.notAfter}'
+kubectl get certificate \
+  -n cert-manager \
+  -o jsonpath='{.items[*].status.notAfter}'
 ```
 
 ```plaintext title="Output of kubectl command" linenums="0"
