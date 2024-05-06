@@ -16,7 +16,7 @@
     secretName: aws-developer-friendly-blog-tls
   status:
     conditions:
-      - lastTransitionTime: "2024-05-04T04:44:12Z"
+      - lastTransitionTime: "2024-05-04T05:44:12Z"
         message: Certificate is up to date and has not expired
         observedGeneration: 1
         reason: Ready

@@ -57,8 +57,20 @@ SEO keywords:
  - AWS
  - Route53
  - Cloudflare
--->
 
+cert-manager helm chart
+acme certificate
+let's encrypt
+kubernetes tls secret
+kubernetes ingress tls
+kubernetes install cert-manager [helm]
+kubernetes cert-manager letsencrypt
+kubernetes cert-manager renew certificate
+kubernetes cert-manager wildcard certificate
+cert-manager clusterissuer
+cert-manager letsencrypt kubernetes
+cert-manager certificate
+-->
 
 <!-- more -->
 
@@ -99,26 +111,45 @@ With that introduction, let's kick off the installation of cert-manager.
     launch (the [initial commit in Feb 13, 2024]).
 
     - [x] 10 posts published :books:
-    - [x] 13.8k+ words written so far (37k+ including codes) :pencil:
-    - [x] 2.48k+ views since the launch :eyes:
-    - [x] 130+ clicks coming from search engines :mag:
+    - [x] 14k+ words written so far (40k+ including codes) :pencil:
+    - [x] 2.5k+ views since the launch :eyes:
+    - [x] 160+ clicks coming from search engines :mag:
 
     You can find the corresponding screenshots below:
 
-    <figure markdown="span">
-      ![Clicks](../static/img/0010/performance.webp "Click to zoom in"){ loading=lazy }
-      <figcaption>Search Engine Perfomance</figcaption>
-    </figure>
+    <div class="grid cards" markdown>
 
-    <figure markdown="span">
-      ![Clicks](../static/img/0010/clicks-achievements.webp "Click to zoom in"){ loading=lazy }
-      <figcaption>Search Engine Clicks</figcaption>
-    </figure>
+    - <figure markdown="span">
+        ![Performance](../static/img/0010/performance.webp "Click to zoom in"){ loading=lazy }
+        <figcaption>Search Engine Perfomance</figcaption>
+      </figure>
 
-    <figure markdown="span">
-      ![Clicks](../static/img/0010/total-views.webp "Click to zoom in"){ loading=lazy }
-      <figcaption>Total Views</figcaption>
-    </figure>
+    - <figure markdown="span">
+        ![Views](../static/img/0010/total-views.webp "Click to zoom in"){ loading=lazy }
+        <figcaption>Total Views</figcaption>
+      </figure>
+
+    - <figure markdown="span">
+          ![Visitors](../static/img/0010/visitors.webp "Click to zoom in"){ max-width="300" loading=lazy }
+          <figcaption>Visitors (30 days)</figcaption>
+      </figure>
+
+    - <figure markdown="span">
+          ![Countries](../static/img/0010/countries.webp "Click to zoom in"){ max-width="300" loading=lazy }
+          <figcaption>Countries (30 days)</figcaption>
+      </figure>
+
+    </div>
+
+    I don't run ads on this blog (yet!? :thinking:) and my monetization plan,
+    as of the moment, is nothing! I may switch gear at some point; financial
+    independence and doing this full-time makes me happy honestly :relaxed:.
+    But, for now, I'm just enjoying writing in Markdown format and seeing how
+    [Material for Mkdocs] renders rich content from it.
+
+    If you are interested in supporting this effort, the GitHub Sponsors
+    program, as well as the PayPal donation link are available at the bottom
+    of all the pages in our website.
 
     Greatly appreciate you being here and hope you keep coming back. :champagne_glass:
 
@@ -262,7 +293,7 @@ the AWS Route53 issuer, we will make it so that a subdomain will be resolved
 by a Route53 Hosted Zone. That way, we can instruct the cert-manager controller
 to talk to the Route53 API for record creation and domain verfication.
 
-<figure markdown="span" style="border: 1px solid #000">
+<figure markdown="span">
    ![Nameservers](../static/img/0010/ns-providers.webp "Click to zoom in"){ loading=lazy }
    <figcaption>Nameserver Diagrams</figcaption>
 </figure>
@@ -400,11 +431,11 @@ If you're wondering why we're changing the configuration of the cert-manager
 Deployment with a new Helm upgrade, you will find an exhaustive discussion
 and my comment on [the relevant GitHub issue].
 
-The gist of that conversation is that cert-manager Deployment won't take into
+The gist of that conversation is that the cert-manager Deployment won't take into
 account the `eks.amazonaws.com/role-arn` annotation on its Service Account, as
 [you'd see the External Secrets Operator would](./0008-k8s-federated-oidc.md#step-7-test-the-setup).
-It won't even consider using the `spec.acme.solvers[*].dns01.route53.role`
-field on its ClusterIssuer for some reason! :gun:
+It won't even consider using the `ClusterIssuer.spec.acme.solvers[*].dns01.route53.role`
+field for some reason! :gun:
 
 That's why we're manually passing that information down to its [AWS Go SDK]
 using [the official environment variables].
@@ -424,11 +455,11 @@ there is always the option to pass the credentials around in your environment.
 That leaves you with the burden of having to rotate them every now and then,
 but if you're cool with that, there's nothing stopping you from going down
 that path. You also have the possibility of automating such rotation using
-less than 10 lines of code in any programming language.
+less than 10 lines of code in any programming language of course.
 
 All that said, I have to say that I consider this to be an
 [implementation bug][the relevant GitHub issue]
-when cert-manager does not provide you with a clean interface to easily
+where cert-manager does not provide you with a clean interface to easily
 pass around IAM Role ARN. The cert-manager controller SHOULD be able to assume
 the role it is given with the web identity flow!
 
@@ -436,7 +467,7 @@ Regardless of such shortage, in this section, I'll provide you a simpler way
 around this.
 
 Bear in mind that I do not recommend this approach, and wouldn't use it in my
-own environment either. :shrug:
+own environments either. :shrug:
 
 The idea is to use our
 [previously deployed ESO](./0009-external-secrets-aks-to-aws-ssm.md) and pass
@@ -593,7 +624,7 @@ completeness, here's [the way to do it] using [Cilium CLI].
 
 And now, let's create the Gateway CRD.
 
-```yaml title="gateway/gateway.yml" hl_lines="6 24 28"
+```yaml title="gateway/gateway.yml" hl_lines="6 11 17 24 28"
 -8<- "docs/codes/0010/gateway/gateway.yml"
 ```
 
@@ -744,3 +775,4 @@ Until next tima, *ciao* :cowboy: and happy hacking! :crab: :penguin: :whale:
 [the relevant GitHub issue]: https://github.com/cert-manager/cert-manager/issues/2147#issuecomment-2094066782
 [AWS Go SDK]: https://github.com/aws/aws-sdk-go
 [the official environment variables]: https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html
+[Material for Mkdocs]: https://squidfunk.github.io/mkdocs-material
