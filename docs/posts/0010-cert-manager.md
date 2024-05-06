@@ -29,6 +29,7 @@ links:
   - ./posts/0005-install-k3s-on-ubuntu22.md
   - ./posts/0008-k8s-federated-oidc.md
   - ./posts/0006-gettings-started-with-gitops-and-fluxcd.md
+  - Source Code: https://github.com/developer-friendly/cert-manager-guide
 image: assets/images/social/2024/05/06/cert-manager-all-in-one-kubernetes-certificate-manager.png
 ---
 
