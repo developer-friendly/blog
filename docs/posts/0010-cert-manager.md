@@ -760,7 +760,8 @@ and you shall be served greatly.
 
 Hope you enjoyed reading this material.
 
-Until next tima, *ciao* :cowboy: and happy hacking! :crab: :penguin: :whale:
+Until next time :saluting_face:, *ciao* :cowboy: and happy hacking! :crab:
+:penguin: :whale:
 
 [^1]: https://certbot.eff.org/
 [^2]: https://cert-manager.io/
