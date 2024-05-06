@@ -30,7 +30,7 @@ extra:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
     feedback:
-      title: Was this page helpful?
+      title: Did you enjoy the content?
       ratings:
         - icon: material/thumb-up-outline
           name: This page was helpful
@@ -86,7 +86,7 @@ plugins:
   - meta:
       enabled: !ENV [CI, false]
   - social:
-      enabled: !ENV [SOCIAL, false]
+      enabled: true
       cards: true
       cards_layout: default/variant
       cache: true
