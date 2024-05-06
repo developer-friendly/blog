@@ -97,7 +97,7 @@ With that introduction, let's kick off the installation of cert-manager.
     - [x] 2.5k+ views since the launch :eyes:
     - [x] 160+ clicks coming from search engines :mag:
 
-    You can find the corresponding screenshots below:
+    Here are the corresponding screenshots:
 
     <div class="grid cards" markdown>
 
