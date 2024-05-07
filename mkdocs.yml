@@ -9,7 +9,7 @@ extra:
       link: http://paypal.me/meysamazad
       name: Thank the author!
     - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/in/meysamazad
+      link: https://www.linkedin.com/company/developer-friendly
       name: Follow us on LinkedIn!
     - icon: fontawesome/solid/square-rss
       link: /feed_rss_updated.xml

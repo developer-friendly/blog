@@ -30,7 +30,7 @@ links:
   - ./posts/0008-k8s-federated-oidc.md
   - ./posts/0006-gettings-started-with-gitops-and-fluxcd.md
   - Source Code: https://github.com/developer-friendly/cert-manager-guide
-image: assets/images/social/2024/05/06/cert-manager-all-in-one-kubernetes-certificate-manager.png
+image: assets/images/social/2024/05/06/cert-manager-all-in-one-kubernetes-tls-certificate-manager.png
 ---
 
 # cert-manager: All-in-One Kubernetes TLS Certificate Manager
@@ -447,7 +447,7 @@ that path. You also have the possibility of automating such rotation using
 less than 10 lines of code in any programming language of course.
 
 All that said, I have to say that I consider this to be an
-implementation bug[^16].
+implementation bug[^16];
 where cert-manager does not provide you with a clean interface to easily
 pass around IAM Role ARN. The cert-manager controller SHOULD be able to assume
 the role it is given with the web identity flow!
