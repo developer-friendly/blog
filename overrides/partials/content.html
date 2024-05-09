@@ -10,7 +10,7 @@
 
 {{ page.content }}
 
-{% if "subscribe/" not in page.url %}
+{% if not page.url.endswith("subscribe/") %}
   {% include "partials/subscribe.html" ignore missing %}
 {% endif %}
 
