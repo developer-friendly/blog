@@ -10,8 +10,11 @@
 
 {{ page.content }}
 
-{% include "partials/source-file.html" %}
+{% if "subscribe/" not in page.url %}
+  {% include "partials/subscribe.html" ignore missing %}
+{% endif %}
 
+{% include "partials/source-file.html" %}
 
 {% include "partials/feedback.html" %}
 {% include "partials/comments.html" %}

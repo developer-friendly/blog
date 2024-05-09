@@ -61,6 +61,10 @@ extra:
 extra_javascript:
   - static/js/consent.js
 copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
+nav:
+  - index.md
+  - subscribe.md
+  - privacy.md
 plugins:
   - typeset
   - minify:
