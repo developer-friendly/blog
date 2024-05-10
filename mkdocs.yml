@@ -68,16 +68,19 @@ nav:
 plugins:
   - typeset
   - minify:
-      minify_html: true
-      minify_js: true
-      minify_css: true
+      minify_html: !ENV [CI, false]
+      minify_js: !ENV [CI, false]
+      minify_css: !ENV [CI, false]
       htmlmin_opts:
-        remove_comments: true
-      cache_safe: true
+        remove_comments: !ENV [CI, false]
+      cache_safe: !ENV [CI, false]
   - search:
+      enabled: !ENV [CI, false]
       lang: en
-  - tags
-  - glightbox
+  - tags:
+      enabled: !ENV [CI, false]
+  - glightbox:
+      manual: !ENV [GLIGHTBOX_MANUAL, true]
   - offline:
       enabled: !ENV [OFFLINE, false]
   - optimize:
@@ -90,7 +93,7 @@ plugins:
   - meta:
       enabled: !ENV [CI, false]
   - social:
-      enabled: true
+      enabled: !ENV [CI, false]
       cards: true
       cards_layout: default/variant
       cache: true
@@ -102,15 +105,15 @@ plugins:
       draft: !ENV [DRAFT, false]
       blog_dir: .
       authors_profiles: !ENV [AUTHORS_PROFILE, false]
-      post_readtime: true
+      post_readtime: !ENV [CI, false]
       blog_toc: true
       post_date_format: long
-      archive: true
-      archive_pagination: true
-      pagination: true
+      archive: !ENV [CI, false]
+      archive_pagination: !ENV [CI, false]
+      pagination: !ENV [CI, false]
       pagination_format: "$link_first $link_previous ~2~ $link_next $link_last"
   - rss:
-      enabled: true
+      enabled: !ENV [CI, false]
       match_path: posts/.*
       date_from_meta:
         as_creation: date
@@ -137,9 +140,6 @@ plugins:
       token: !ENV [GITHUB_TOKEN, ""]
       enabled: !ENV [CI, false]
   - table-reader
-  - exclude:
-      glob:
-        - "**/.terra*"
 remote_branch: gh-pages
 remote_name: origin
 repo_name: GitHub
