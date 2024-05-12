@@ -26,6 +26,9 @@ extra:
     - icon: fontawesome/solid/paper-plane
       link: mailto:hi@developer-friendly.blog
       name: Send us an email!
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/CnDsGMERKG
+      name: Join our Discord server!
   analytics:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
