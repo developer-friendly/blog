@@ -1,0 +1,36 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  creationTimestamp: "2024-05-11T13:38:46Z"
+  finalizers:
+    - finalizers.fluxcd.io
+  generation: 1
+  labels:
+    env: dev
+    kustomize.toolkit.fluxcd.io/name: echo-server
+    kustomize.toolkit.fluxcd.io/namespace: flux-system
+  name: echo-server
+  namespace: default
+  resourceVersion: "2810772"
+  uid: af1a820c-5bcf-4a2c-8648-5a9d4edf4372
+spec:
+  filterTags:
+    pattern: ^[0-9]+$
+  imageRepositoryRef:
+    name: echo-server
+    namespace: default
+  policy:
+    numerical:
+      order: asc
+status:
+  conditions:
+    - lastTransitionTime: "2024-05-12T03:44:30Z"
+      message:
+        Latest image tag for 'ghcr.io/developer-friendly/echo-server' resolved
+        to 9044139623
+      observedGeneration: 1
+      reason: Succeeded
+      status: "True"
+      type: Ready
+  latestImage: ghcr.io/developer-friendly/echo-server:9044139623
+  observedGeneration: 1

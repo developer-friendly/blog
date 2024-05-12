@@ -1,0 +1,5 @@
+resources:
+  - externalsecret.yml
+  - gitrepo.yml
+
+namespace: flux-system

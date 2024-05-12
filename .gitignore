@@ -10,3 +10,4 @@ secrets
 .netlify
 .envrc
 docs/codes/0008/inventory/
+**/terraform.tfvars

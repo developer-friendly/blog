@@ -1,0 +1,10 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: echo-server
+spec:
+  image: ghcr.io/developer-friendly/echo-server
+  interval: 1m
+  provider: generic
+  secretRef:
+    name: echo-server-docker
