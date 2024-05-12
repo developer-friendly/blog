@@ -34,7 +34,6 @@ spec:
       signingKey:
         secretRef:
           name: echo-server-gpgkey
-  suspend: false
   update:
     path: kustomize/overlays/dev
     strategy: Setters

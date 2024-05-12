@@ -2,18 +2,18 @@
 # Deploy key
 ####################
 resource "tls_private_key" "this" {
-  algorithm = var.tls_private_key_algorithm
+  algorithm = "ED25519"
 }
 
 resource "github_repository_deploy_key" "this" {
-  repository = var.github_repository_name
+  repository = "echo-server"
   title      = "Developer Friendly Bot"
   key        = tls_private_key.this.public_key_openssh
   read_only  = false
 }
 
 resource "aws_ssm_parameter" "deploy_key" {
-  name  = var.deploy_key_ssm_name
+  name  = "/github/echo-server/deploy-key"
   type  = "SecureString"
   value = tls_private_key.this.private_key_pem
 }
@@ -22,7 +22,7 @@ resource "aws_ssm_parameter" "deploy_key" {
 # GHCR Secret
 ####################
 resource "aws_ssm_parameter" "ghcr_token" {
-  name  = var.ghcr_token_aws_ssm_name
+  name  = "/github/echo-server/ghcr-token"
   type  = "SecureString"
   value = var.github_pat
 }
@@ -32,10 +32,10 @@ resource "aws_ssm_parameter" "ghcr_token" {
 # GPG key
 ####################
 resource "gpg_private_key" "this" {
-  name       = var.gpg_key_name
-  email      = var.gpg_key_email
+  name       = "Developer Friendly Bot"
+  email      = "github@developer-friendly.blog"
   passphrase = var.gpg_key_passphrase
-  rsa_bits   = var.gpg_key_rsa_bits
+  rsa_bits   = 2048
 }
 
 resource "github_user_gpg_key" "this" {
@@ -45,7 +45,7 @@ resource "github_user_gpg_key" "this" {
 }
 
 resource "aws_ssm_parameter" "gpg_key" {
-  name  = var.gpg_key_aws_ssm_name
+  name  = "/github/gpg-keys/developer-friendly-bot"
   type  = "SecureString"
   value = gpg_private_key.this.private_key
 }

@@ -49,8 +49,8 @@ We have covered the beginner's guide to FluxCD in
 This blog post will continue from where we left off and covers the advanced
 CRDs not included in the first post.
 
-Specifically, we will mainly cover the [Source Controller] and the
-[Notification Controller].
+Specifically, we will mainly cover the [Image Automation Controller] and the
+[Notification Controller] in this post.
 
 Using the provided CRDs by these operators, we will be able to achive the
 following inside our Kubernetes cluster:
@@ -61,7 +61,7 @@ following inside our Kubernetes cluster:
 - [x] Notify and/or alert external services (e.g. Slack, Discord, etc.) based
       on the severity of the events happening within the cluster
 
-If you're as pumped as I am, let's not waste any more seconds and dive right in!
+If you're as pumped as I am, let's not waste any more second and dive right in!
 
 ## Pre-requisites
 
@@ -77,9 +77,10 @@ Make sure you have the following setup ready before going forward:
 - [x] Either [Gateway API] or an [Ingress Controller] installed in your cluster.
       We will need this internet-accessible endpoint to receive the webhooks
       from the GitHub repository to our cluster.
-- [x] [GitHub CLI v2 installed]
+- [ ] Optionally, [GitHub CLI v2 installed] for TF code authentication. The
+      alternative is to use GitHub PAT, which I'm not a big fan of!
 - [ ] Optionally a GitHub account, although any other Git provider will do when
-      it comes to the Source Controller.
+      it comes to the [Source Controller].
 
 ## Source, Image Automation & Notification Controllers 101 :nerd:
 
@@ -89,8 +90,8 @@ The Source Controller in FluxCD is responsible for fetching the artifacts and
 the resources from the external sources. It is called **Source** controller
 because it provides the resources needed for the rest of the FluxCD ecosystem.
 
-These *Sources* can be of various types, such as GitRepository, HelmRepository
-Bucket, etc. It will need the required auth and permission to access those
+These *Sources* can be of various types, such as GitRepository, HelmRepository,
+Bucket, etc. It will need the required auth and permission(s) to access those
 repositories, but, once given proper access, it will mirror the contents of
 said sources to your cluster so that you can have seamless integration from
 your external repositories right into the Kubernetes cluster.
@@ -98,7 +99,7 @@ your external repositories right into the Kubernetes cluster.
 The Image Autmation Controller is dedicated to managing the Docker images. It
 fetches the latest tags, groups them based on defined patterns and criteria,
 and updates the target resources (e.g. Kustomization) to use the latest image
-tags.
+tags; this is how you achieve the continuous deployment of your Docker images.
 
 The Notification Controller, on the other hand, is responsible for both
 receiving and sending notifications. It can receive the events from the
@@ -111,8 +112,10 @@ see how we can use these controllers in our cluster.
 
 ## Application Scaffold
 
-This is the not the most critical part of this post, but we will base our
-examples on the following directory structure.
+Since you will see a lot of code snippets in this post, here's the directory
+structure you better be prepared for:
+
+{--**TODO**: this is not complete!--}
 
 ```plaintext title="" linenums="0"
 .
@@ -148,7 +151,7 @@ We have already covered the [installation of ESO] in a previous post and using
 that knowledge, we'll only need to place the secrets in the AWS, and instruct
 the operator to fetch and feed them to our application.
 
-```hcl title="fluxcd-secrets/variables.tf" hl_lines="47 52"
+```hcl title="fluxcd-secrets/variables.tf" hl_lines="37 43"
 -8<- "docs/codes/0011/fluxcd-secrets/variables.tf"
 ```
 
@@ -156,7 +159,7 @@ the operator to fetch and feed them to our application.
 -8<- "docs/codes/0011/fluxcd-secrets/versions.tf"
 ```
 
-```hcl title="fluxcd-secrets/main.tf"
+```hcl title="fluxcd-secrets/main.tf" hl_lines="12"
 -8<- "docs/codes/0011/fluxcd-secrets/main.tf"
 ```
 
@@ -167,16 +170,16 @@ the operator to fetch and feed them to our application.
 Notice that we're defining two providers with [differing aliases]. For that,
 there are a couple of worthy notes to mention:
 
-1. We are using GitHub CLI for the API authentication OF our TF code to the
+1. We are using GitHub CLI for the API authentication of our TF code to the
    GitHub. The main and default provider we use is `developer-friendly`
-   organization and ther other is `developer-friendly-bot` normal user. You
+   organization and the other is `developer-friendly-bot` normal user. You
    can easily switch profiles using `gh auth switch -u USERNAME` command.
-2. The [GitHub Deploy Keys] creation API call is something even an organization
-   username can do. But for the creation of the [User GPG Keys], we need to
+2. The [GitHub Deploy Key] creation API call is something even an organization
+   account can do. But for the creation of the [User GPG Key], we need to
    send the requests from a non-organization account, i.e., a normal user.
 3. For the GitHub CLI authentication to work, beside the CLI installation, you
-   need to grant your CLI in the terminal access to your GitHub account. You
-   can see the command and the screenshot below.
+   need to grant your CLI access to your GitHub account. You can see the
+   command and its resulting screenshot below:
 
 ```shell title="" linenums="0"
 gh auth login --web --scopes admin:gpg_key
@@ -190,6 +193,10 @@ And the web browser page:
 </figure>
 
 Applying the stack above is straightforward:
+
+```hcl title="fluxcd-secrets/terraform.tfvars"
+-8<- "docs/codes/0011/junk/fluxcd-secrets.terraform.tfvars"
+```
 
 ```shell title="" linenums="0"
 tofu init
@@ -209,9 +216,15 @@ this way:
 -8<- "docs/codes/0011/echo-server/externalsecret.yml"
 ```
 
+The format of the Secret that FluxCD expects for GitRepository is documented
+on their website and you can use other forms of [authentication as needed].
+
+The Known Hosts value is coming from the [GitHub SSH key fingerprint]. The bad
+news is, you will have to manually change them if they change theirs! :sweat_smile:
+
 And using that generated Kubernetes Secret, we are creating the GitRepository
-using SSH instead of HTTPS; the reason is that the Deploy Key has write access.
-We'll talk about why in a bit.
+using SSH instead of HTTPS; the reason is that the GitHub Deploy Key generated
+earlier in our TF code has write access. We'll talk about why in a bit.
 
 ```yaml title="echo-server/gitrepo.yml"
 -8<- "docs/codes/0011/echo-server/gitrepo.yml"
@@ -238,10 +251,32 @@ Now that we have our GitRepository set up, we can deploy the application.
 There is not much to say about the `base` Kustomization. It is a normal
 application like any other.
 
-Therefore, let's go ahead and see what we need to create in our `dev` environment.
+For your reference, here's the `base` Kustomization:
 
-Notice the reference key name in our ExternalSecret resource which is targeting
-the same value as we created earlier in our `fluxcd-secrets` TF stack.
+=== "kustomize/base/configs.env"
+    ```ini title=""
+    -8<- "docs/codes/0011/kustomize/base/configs.env"
+    ```
+
+===+ "kustomize/base/deployment.yml"
+    ```yaml title=""
+    -8<- "docs/codes/0011/kustomize/base/deployment.yml"
+    ```
+
+=== "kustomize/base/service.yml"
+    ```yaml title=""
+    -8<- "docs/codes/0011/kustomize/base/service.yml"
+    ```
+
+=== "kustomize/base/kustomization.yml"
+    ```yaml title=""
+    -8<- "docs/codes/0011/kustomize/base/kustomization.yml"
+    ```
+
+Now, let's go ahead and see what we need to create in our `dev` environment.
+
+Notice the referencing AWS SSM key in our ExternalSecret resource which is
+targeting the same value as we created earlier in our `fluxcd-secrets` TF stack.
 
 ```yaml title="kustomize/overlays/dev/externalsecret-docker.yml" hl_lines="8"
 -8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-docker.yml"
@@ -251,20 +286,22 @@ the same value as we created earlier in our `fluxcd-secrets` TF stack.
 -8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-gpgkey.yml"
 ```
 
+The following HTTPRoute is using the [Gateway we have created] in our last week's
+guide. Make sure to check it out if you haven't already.
+
 ```yaml title="kustomize/overlays/dev/httproute.yml"
 -8<- "docs/codes/0011/kustomize/overlays/dev/httproute.yml"
 ```
 
-The `PLACEHOLDER` in the following ImagePolicy will be replaced by the
-Kustomization. Notice the pattern we are requesting, which **MUST be the same
+The `PLACEHOLDER` in the following ImagePolicy below will be replaced by the
+Kustomization in a bit.
+
+Notice the pattern we are requesting, which **MUST be the same
 as you build in your CI pipeline**.
 
 ```yaml title="kustomize/overlays/dev/imagepolicy.yml" hl_lines="10"
 -8<- "docs/codes/0011/kustomize/overlays/dev/imagepolicy.yml"
 ```
-
-The secret in the following ImageRepository will be fetched from AWS SSM by the
-ESO and the corresponding Kubernetes Secret will be created in the cluster.
 
 Creating an ImageRepository for a private Docker image is what I consider to
 be a superset of the public ImageRepository. As such, I will only cover the
@@ -276,8 +313,7 @@ wish GitHub would provide official OpenID Connect support(1) someday to get rid
 of all these tokens lying around in our environments! :face_with_head_bandage:
 </div>
 
-  1. There is an un-official OIDC support for GitHub as we speak:
-     <https://github.com/octo-sts>
+  1. There is an un-official OIDC support [for GitHub as we speak].
 
      A topic for a future post. :wink:
 
@@ -285,10 +321,13 @@ of all these tokens lying around in our environments! :face_with_head_bandage:
 -8<- "docs/codes/0011/kustomize/overlays/dev/imagerepository.yml"
 ```
 
-As before, the Kubernetes Secret holding the GPG key will be created by the ESO.
+The referenced Kubernetes Secret in the ImageRepository above, and the one
+referencing the GPG Key Secret are both fed into the cluster by the ESO that
+[we have deployed in our cluster][installation of ESO].
+
 The following ImageUpdateAutomation resource will require the write access to
-the repository we mentioned earlier. That's why the GitHub Deploy Key created
-initial has the write access.
+the repository; that's where the write access of the GitHub Deploy Key we
+mentioned earlier comes into play.
 
 ```yaml title="kustomize/overlays/dev/imageupdateautomation.yml" hl_lines="36"
 -8<- "docs/codes/0011/kustomize/overlays/dev/imageupdateautomation.yml"
@@ -308,7 +347,7 @@ Did you notice the line with the following *commented* value:
 
 Don't be mistaken! [This is not a comment]. This is a metadata that FluxCD
 understands and uses to update the Kustomization `newTag` field with the latest
-tag of a Docker image repository.
+tag of the Docker image repository.
 
 For your reference, here's the allowed references:
 
@@ -322,16 +361,16 @@ To understand this better, let's take look at the created ImageRepository first:
 -8<- "docs/codes/0011/junk/imagerepository.yml"
 ```
 
-Out of all these scanned images, these are the ones that we care about in
-our `dev` environment.
+Out of all these scanned images, the following are the ones that we care about
+in our `dev` environment.
 
 ```yaml title="" hl_lines="29-30 35"
 -8<- "docs/codes/0011/junk/imagepolicy.yml"
 ```
 
-If you remember from our ImagePolicy, we have created the pattern so that the
-Docker images are all having tags that are numerical only and the latest tag
-is the one with the highest number.
+If you remember from our ImagePolicy earlier, we have created the pattern so
+that the Docker images are all having tags that are numerical only and the
+highest number is the latest.
 
 Here's the snippet from the ImagePolicy again:
 
@@ -344,7 +383,7 @@ Here's the snippet from the ImagePolicy again:
 To elaborate further, this is the piece of GitHub CI definition that creates
 the image with the exact tag that we are expecting:
 
-```yaml title=".github/workflows/ci.yml" linenums="0" hl_lines="12"
+```yaml title=".github/workflows/ci.yml" linenums="73" hl_lines="12"
 -8<- "docs/codes/0011/junk/ci-workflow.yml:73:87"
 ```
 
@@ -352,12 +391,16 @@ This CI definition will create images as you have seen in the status of the
 ImagePolicy, in the following format:
 
 ```plaintext title="" linenums="0"
-ghcr.io/developer-friendly/echo-server:9044139623
+ghcr.io/developer-friendly/echo-server:9050352340
 ```
 
 You can employ other techniques as well. For example, you can use
-[Semantic Versioning] as a pattern, and optionally exctact only a part of the
-tag to be used in the Kustomization.
+[Semantic Versioning] as a pattern, and optionally extract only a part of the
+tag to be used in the Kustomization(1).
+{ .annotate }
+
+   1. Perhaps a topic for another day.
+
 
 ??? example "Full CI Definition"
 
@@ -365,8 +408,60 @@ tag to be used in the Kustomization.
       -8<- "docs/codes/0011/junk/ci-workflow.yml"
       ```
 
+Be sure to deploy the app.
 
+```yaml title="kustomize/overlays/dev/kustomize.yml"
+-8<- "docs/codes/0011/kustomize/overlays/dev/kustomize.yml"
+```
 
+```shell title="" linenums="0"
+kubectl apply -f kustomize/overlays/dev/kustomize.yml
+```
+
+## Step 4: Notifications & Alert
+
+We are now ready to be notified of normal operations of our clusters, as well
+as when things go south! :cold_face:
+
+```yaml title="notifications/secret.yml"
+-8<- "docs/codes/0011/notifications/secret.yml"
+```
+
+```yaml title="notifications/provider.yml"
+-8<- "docs/codes/0011/notifications/provider.yml"
+```
+
+```yaml title="notifications/alert-info.yml"
+-8<- "docs/codes/0011/notifications/alert-info.yml"
+```
+
+```yaml title="notifications/alert-error.yml"
+-8<- "docs/codes/0011/notifications/alert-error.yml"
+```
+
+```yaml title="notifications/kustomization.yml"
+-8<- "docs/codes/0011/notifications/kustomization.yml"
+```
+
+And to create this stack:
+
+```yaml title="notifications/kustomize.yml"
+-8<- "docs/codes/0011/notifications/kustomize.yml"
+```
+
+Finally:
+
+```shell title="" linenums="0"
+kubectl apply -k notifications/kustomize.yml
+```
+
+We haven't talked about how to configure the AlertManager to send it's alerts
+to the corresponding channel, but, for the sake of completeness, and to avoid
+leaving you hanging, here's a snippet of the configuration:
+
+```yaml title="alertmanager/config.yml"
+-8<- "docs/codes/0011/junk/alertmanager-config.yml"
+```
 
 [Source Controller]: https://fluxcd.io/flux/components/source/
 [Notification Controller]: https://fluxcd.io/flux/components/notification/
@@ -377,7 +472,13 @@ tag to be used in the Kustomization.
 [installation of ESO]: ./0009-external-secrets-aks-to-aws-ssm.md
 [GitHub CLI v2 installed]: https://github.com/cli/cli/releases/tag/v2.49.1
 [differing aliases]: https://developer.hashicorp.com/terraform/language/providers/configuration#alias-multiple-provider-configurations
-[GitHub Deploy Keys]: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys
-[User GPG Keys]: https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account
+[GitHub Deploy Key]: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys
+[User GPG Key]: https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account
 [Semantic Versioning]: https://semver.org/
 [This is not a comment]: https://fluxcd.io/flux/guides/image-update/#configure-image-update-for-custom-resources
+[Image Automation Controller]: https://fluxcd.io/flux/components/image/
+[Source Controller]: https://fluxcd.io/flux/components/source/
+[GitHub SSH key fingerprint]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
+[Gateway we have created]: ./0010-cert-manager.md#step-3-use-the-tls-certificates-in-gateway
+[authentication as needed]: https://fluxcd.io/flux/components/source/gitrepositories/#secret-reference
+[for GitHub as we speak]: https://github.com/octo-sts

@@ -1,9 +1,12 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
+  annotations:
+    reconcile.fluxcd.io/forceAt: "13818"
+    reconcile.fluxcd.io/requestedAt: "2024-05-12T10:37:16.872961325+07:00"
   creationTimestamp: "2024-05-11T13:38:46Z"
   finalizers:
-    - finalizers.fluxcd.io
+  - finalizers.fluxcd.io
   generation: 1
   labels:
     env: dev
@@ -11,11 +14,11 @@ metadata:
     kustomize.toolkit.fluxcd.io/namespace: flux-system
   name: echo-server
   namespace: default
-  resourceVersion: "2836993"
+  resourceVersion: "2877651"
   uid: ea1301e1-ae66-4261-a88d-aae5d46eda5a
 spec:
   exclusionList:
-    - ^.*\.sig$
+  - ^.*\.sig$
   image: ghcr.io/developer-friendly/echo-server
   interval: 1m
   provider: generic
@@ -24,27 +27,27 @@ spec:
 status:
   canonicalImageName: ghcr.io/developer-friendly/echo-server
   conditions:
-    - lastTransitionTime: "2024-05-12T03:44:30Z"
-      message: "successful scan: found 12 tags"
-      observedGeneration: 1
-      reason: Succeeded
-      status: "True"
-      type: Ready
+  - lastTransitionTime: "2024-05-12T09:46:48Z"
+    message: 'successful scan: found 14 tags'
+    observedGeneration: 1
+    reason: Succeeded
+    status: "True"
+    type: Ready
   lastHandledReconcileAt: "2024-05-12T10:37:16.872961325+07:00"
   lastScanResult:
     latestTags:
-      - latest
-      - f915598
-      - d85c754
-      - cf17395
-      - "9044139623"
-      - "9042583530"
-      - "9042393345"
-      - "9042110608"
-      - "9041904476"
-      - 7c1c1a8
-    scanTime: "2024-05-12T07:07:47Z"
-    tagCount: 12
+    - latest
+    - f915598
+    - d85c754
+    - cf17395
+    - "9050352340"
+    - "9044139623"
+    - "9042583530"
+    - "9042393345"
+    - "9042110608"
+    - "9041904476"
+    scanTime: "2024-05-12T12:26:49Z"
+    tagCount: 14
   observedExclusionList:
-    - ^.*\.sig$
+  - ^.*\.sig$
   observedGeneration: 1

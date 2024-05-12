@@ -1,0 +1,7 @@
+resources:
+  - secret.yml
+  - provider.yml
+  - alert-info.yml
+  - alert-error.yml
+
+namespace: flux-system

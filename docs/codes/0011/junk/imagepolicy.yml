@@ -11,7 +11,7 @@ metadata:
     kustomize.toolkit.fluxcd.io/namespace: flux-system
   name: echo-server
   namespace: default
-  resourceVersion: "2810772"
+  resourceVersion: "2857234"
   uid: af1a820c-5bcf-4a2c-8648-5a9d4edf4372
 spec:
   filterTags:
@@ -24,13 +24,14 @@ spec:
       order: asc
 status:
   conditions:
-    - lastTransitionTime: "2024-05-12T03:44:30Z"
+    - lastTransitionTime: "2024-05-12T09:46:48Z"
       message:
-        Latest image tag for 'ghcr.io/developer-friendly/echo-server' resolved
-        to 9044139623
+        Latest image tag for 'ghcr.io/developer-friendly/echo-server' updated
+        from 9044139623 to 9050352340
       observedGeneration: 1
       reason: Succeeded
       status: "True"
       type: Ready
-  latestImage: ghcr.io/developer-friendly/echo-server:9044139623
+  latestImage: ghcr.io/developer-friendly/echo-server:9050352340
   observedGeneration: 1
+  observedPreviousImage: ghcr.io/developer-friendly/echo-server:9044139623
