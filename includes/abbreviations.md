@@ -16,3 +16,6 @@
 *[CRD]: Custom Resource Definition
 *[AKA]: Also Known As
 *[PAT]: Personal Access Token
+*[CI]: Continuous Integration
+*[CD]: Continuous Deployment
+*[GHCR]: GitHub Container Registry

@@ -33,7 +33,7 @@ spec:
         name: Developer Friendly Bot | Dev
       signingKey:
         secretRef:
-          name: echo-server-gpgkey
+          name: echo-server-gpgkey (1)
   update:
     path: kustomize/overlays/dev
     strategy: Setters

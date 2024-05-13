@@ -9,7 +9,7 @@ spec:
       slackConfigs:
         - apiURL:
             key: slackWebhook
-            name: alertmanager
+            name: alertmanager-webhooks
             optional: false
           channel: "#alerts"
           sendResolved: true
@@ -27,7 +27,7 @@ spec:
       discordConfigs:
         - apiURL:
             key: discordWebhook
-            name: alertmanager
+            name: alertmanager-webhooks
             optional: false
           sendResolved: false
           message: |-

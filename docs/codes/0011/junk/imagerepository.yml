@@ -1,9 +1,6 @@
 apiVersion: image.toolkit.fluxcd.io/v1beta2
 kind: ImageRepository
 metadata:
-  annotations:
-    reconcile.fluxcd.io/forceAt: "13818"
-    reconcile.fluxcd.io/requestedAt: "2024-05-12T10:37:16.872961325+07:00"
   creationTimestamp: "2024-05-11T13:38:46Z"
   finalizers:
   - finalizers.fluxcd.io

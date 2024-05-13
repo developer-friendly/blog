@@ -6,7 +6,7 @@ metadata:
   - finalizers.fluxcd.io
   generation: 1
   labels:
-    kustomize.toolkit.fluxcd.io/name: webhook-sync
+    kustomize.toolkit.fluxcd.io/name: webhook-receiver
     kustomize.toolkit.fluxcd.io/namespace: flux-system
   name: github-receiver
   namespace: flux-system

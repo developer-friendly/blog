@@ -89,7 +89,7 @@ Make sure you have the following setup ready before going forward:
 
 Before getting hands-on, a bit of explanation is in order.
 
-The Source Controller in FluxCD is responsible for fetching the artifacts and
+The [Source Controller] in FluxCD is responsible for fetching the artifacts and
 the resources from the external sources. It is called **Source** controller
 because it provides the resources needed for the rest of the FluxCD controllers.
 
@@ -99,15 +99,15 @@ repositories, but, once given proper access, it will mirror the contents of
 said sources to your cluster so that you can have seamless integration from
 your external repositories right into the Kubernetes cluster.
 
-The Image Autmation Controller is dedicated to managing the Docker images. It
-fetches the latest tags, groups them based on defined patterns and criteria,
+The [Image Automation Controller] is responsible for managing the Docker images.
+It fetches the latest tags, groups them based on defined patterns and criteria,
 and updates the target resources (e.g. Kustomization) to use the latest image
 tags; this is how you achieve the continuous deployment of your Docker images.
 
-The Notification Controller, on the other hand, is responsible for both
+The [Notification Controller], on the other hand, is responsible for both
 receiving and sending notifications. It can receive the events from the
 [external sources, e.g. GitHub], and acts upon them as defined in its CRDs.
-It can also send notification from your cluster to the external services.
+It can also send notifications from your cluster to the external services.
 This can include sending notifications or alerts to Slack, Discord, etc.
 
 This is just an introduction and sounds a bit vague. So let's get hands-on and
@@ -118,36 +118,45 @@ see how we can use these controllers in our cluster.
 Since you will see a lot of code snippets in this post, here's the directory
 structure you better be prepared for:
 
-{--**TODO**: this is not complete!--}
-
 ```plaintext title="" linenums="0"
 .
-├── fluxcd-secrets
-│   ├── main.tf
-│   ├── outputs.tf
-│   ├── variables.tf
-│   └── versions.tf
-└── kustomize
-    ├── base
-    │   ├── configs.env
-    │   ├── deployment.yml
-    │   ├── kustomization.yml
-    │   └── service.yml
-    └── overlays
-        └── dev
-            ├── externalsecret-docker.yml
-            ├── externalsecret-gpgkey.yml
-            ├── httproute.yml
-            ├── imagepolicy.yml
-            ├── imagerepository.yml
-            ├── imageupdateautomation.yml
-            └── kustomization.yml
+├── echo-server/
+├── fluxcd-secrets/
+├── github-webhook/
+├── kube-prometheus-stack/
+├── kustomize/
+│   ├── base/
+│   └── overlays/
+│       └── dev/
+├── notifications/
+├── webhook-receiver/
+└── webhook-token/
 ```
 
-The app can be anything you like. We're deploying a simple Rust application
-with one endpoint.
+The application we'll deploy today is a Rust :crab: application named
+`echo-server`. The rest of the configurations are complementary to the CD of
+this application.
 
 ## Step 1: Required Secrets
+
+The first step is to create a couple of required secrets we'll be needing for
+our application, as well as for all the other controllers responsible for
+reconciling the deployment and its image autmation.
+
+Specifically, we'll need three secrets at this stage:
+
+1. GitHub Deploy Key: This will be used by the Source Controller to fetch the
+   source code artifacts from GitHub and stores them in the cluster. The rest
+   of the controllers will need to reference this GitHub repository during
+   initialization in their YAML manifest. It will also use this Deploy Key
+   to commit the changes back to the repository (more on that in a bit).
+2. User GPG Key: This is the key that the Image Update Automation will use
+   to sign the commits when changing target image tag of our application
+   once a new Docker iamge is built.
+3. GitHub Container Registry token: The GHCR token is used by the Image
+   Automation controller to fetch the latest tags of the Docker images from
+   the GitHub Container Registry. This will be a required step for private
+   repositories, however, you can skip it for public repos.
 
 We will employ External Secrets Operator to fetch our secrets from AWS SSM.
 We have already covered the [installation of ESO] in a previous post and using
@@ -170,16 +179,18 @@ the operator to fetch and feed them to our application.
 -8<- "docs/codes/0011/fluxcd-secrets/outputs.tf"
 ```
 
-Notice that we're defining two providers with [differing aliases]. For that,
-there are a couple of worthy notes to mention:
+Notice that we're defining two providers with [differing aliases] for our
+GitHub provider. For that, there are a couple of worthy notes to mention:
 
 1. We are using GitHub CLI for the API authentication of our TF code to the
    GitHub. The main and default provider we use is `developer-friendly`
-   organization and the other is `developer-friendly-bot` normal user. You
-   can easily switch profiles using `gh auth switch -u USERNAME` command.
+   organization and the other is `developer-friendly-bot` normal user.
 2. The [GitHub Deploy Key] creation API call is something even an organization
    account can do. But for the creation of the [User GPG Key], we need to
-   send the requests from a non-organization account, i.e., a normal user.
+   send the requests from a non-organization account, i.e., a normal user; that
+   is the reason for using two providers instead of one. You could argue that
+   we could create all resources using the normal account, however, we are
+   employing the principle of least privilege here.
 3. For the GitHub CLI authentication to work, beside the CLI installation, you
    need to grant your CLI access to your GitHub account. You can see the
    command and its resulting screenshot below:
@@ -220,14 +231,18 @@ this way:
 ```
 
 The format of the Secret that FluxCD expects for GitRepository is documented
-on their website and you can use other forms of [authentication as needed].
+on their documentation and you can use other forms of [authentication as needed].
+We are using GitHub Deploy Key here as they are more flexible when it comes to
+revoking access, as well as granting write access to the [repository][GitHub Deploy Key].
 
 The Known Hosts value is coming from the [GitHub SSH key fingerprint]. The bad
-news is, you will have to manually change them if they change theirs! :sweat_smile:
+news is that you will have to manually change them if they change theirs!
+:sweat_smile:
 
-And using that generated Kubernetes Secret, we are creating the GitRepository
-using SSH instead of HTTPS; the reason is that the GitHub Deploy Key generated
-earlier in our TF code has write access. We'll talk about why in a bit.
+And using the resuling generated Kubernetes Secret from the ExternalSecret
+above, we are creating the GitRepository using SSH instead of HTTPS; the reason
+is that the GitHub Deploy Key generated earlier in our TF code has write
+access. We'll talk about why in a bit.
 
 ```yaml title="echo-server/gitrepo.yml"
 -8<- "docs/codes/0011/echo-server/gitrepo.yml"
@@ -247,6 +262,11 @@ And now let's create this stack:
 kubectl apply -k echo-server/kustomize.yml
 ```
 
+!!! note "Buckle Up!"
+
+    There is going to be a lot of code snippets. Get ready to be bombarded with
+    all that we had stored in the cannon. :bomb: :grimacing:
+
 ## Step 3: Application Deployment
 
 Now that we have our GitRepository set up, we can deploy the application.
@@ -257,24 +277,24 @@ application like any other.
 For your reference, here's the `base` Kustomization:
 
 === "kustomize/base/configs.env"
-`ini title=""
+    ```ini title=""
     -8<- "docs/codes/0011/kustomize/base/configs.env"
-    `
+    ```
 
 ===+ "kustomize/base/deployment.yml"
-`yaml title=""
-    -8<- "docs/codes/0011/kustomize/base/deployment.yml"
-    `
+     ```yaml title=""
+     -8<- "docs/codes/0011/kustomize/base/deployment.yml"
+     ```
 
 === "kustomize/base/service.yml"
-`yaml title=""
+    ```yaml title=""
     -8<- "docs/codes/0011/kustomize/base/service.yml"
-    `
+    ```
 
 === "kustomize/base/kustomization.yml"
-`yaml title=""
+    ```yaml title=""
     -8<- "docs/codes/0011/kustomize/base/kustomization.yml"
-    `
+    ```
 
 Now, let's go ahead and see what we need to create in our `dev` environment.
 
@@ -317,28 +337,49 @@ of all these tokens lying around in our environments! :face_with_head_bandage:
 </div>
 
 1. There is an un-official OIDC support [for GitHub as we speak].
-
    A topic for a future post. :wink:
 
+<div class="annotate" markdown>
 ```yaml title="kustomize/overlays/dev/imagerepository.yml" hl_lines="6 10"
 -8<- "docs/codes/0011/kustomize/overlays/dev/imagerepository.yml"
 ```
+</div>
+
+1. This one:
+   ```yaml title="kustomize/overlays/dev/externalsecret-docker.yml" hl_lines="8"
+   -8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-docker.yml"
+   ```
+
 
 The referenced Kubernetes Secret in the ImageRepository above, and the one
 referencing the GPG Key Secret are both fed into the cluster by the ESO that
-[we have deployed in our cluster][installation of ESO].
+[we have deployed in our cluster previously][installation of ESO].
 
 The following ImageUpdateAutomation resource will require the write access to
 the repository; that's where the write access of the GitHub Deploy Key we
 mentioned earlier comes into play.
 
+<div class="annotate" markdown>
 ```yaml title="kustomize/overlays/dev/imageupdateautomation.yml" hl_lines="36"
 -8<- "docs/codes/0011/kustomize/overlays/dev/imageupdateautomation.yml"
 ```
+</div>
 
+1. The Kubernetes Secret generated from this ExternalSecret:
+   ```yaml title="kustomize/overlays/dev/externalsecret-gpgkey.yml" hl_lines="8"
+   -8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-gpgkey.yml"
+   ```
+
+<div class="annotate" markdown>
 ```yaml title="kustomize/overlays/dev/kustomization.yml" hl_lines="13"
 -8<- "docs/codes/0011/kustomize/overlays/dev/kustomization.yml"
 ```
+</div>
+
+1. The ImagePolicy created here:
+   ```yaml title="kustomize/overlays/dev/imagepolicy.yml" hl_lines="10"
+   -8<- "docs/codes/0011/kustomize/overlays/dev/imagepolicy.yml"
+   ```
 
 ### Image Policy Tagging
 
@@ -348,7 +389,9 @@ Did you notice the line with the following _commented_ value:
 { "$imagepolicy": "default:echo-server:tag" }
 ```
 
-Don't be mistaken! [This is not a comment]. This is a metadata that FluxCD
+Don't be mistaken!
+
+[This is not a comment]. This is a metadata that FluxCD
 understands and uses to update the Kustomization `newTag` field with the latest
 tag of the Docker image repository.
 
@@ -440,7 +483,7 @@ before any webhook is sent.
 ### Generate the Secret
 
 We need a trust relationship between the GitHub webhook system and our cluster.
-This comes in the form of including a token that only the two parties know.
+This comes in the form of including a token that only the two parties know of.
 
 ```hcl title="webhook-token/variables.tf"
 -8<- "docs/codes/0011/webhook-token/variables.tf"
@@ -469,15 +512,22 @@ tofu apply tfplan
 Now that we have the secret in our secrets management system, let's create the
 Receiver to be ready for all the GitHub webhook triggers.
 
-```yaml title="webhook-receiver/externalsecret.yml"
+<div class="annotate" markdown>
+```yaml title="webhook-receiver/externalsecret.yml" hl_lines="4"
 -8<- "docs/codes/0011/webhook-receiver/externalsecret.yml"
 ```
+</div>
+
+1. This secret was created here in our TF code:
+   ```hcl title="webhook-token/main.tf" hl_lines="7-8"
+   -8<- "docs/codes/0011/webhook-token/main.tf"
+   ```
 
 ```yaml title="webhook-receiver/httproute.yml"
 -8<- "docs/codes/0011/webhook-receiver/httproute.yml"
 ```
 
-```yaml title="webhook-receiver/receiver.yml"
+```yaml title="webhook-receiver/receiver.yml" hl_lines="16"
 -8<- "docs/codes/0011/webhook-receiver/receiver.yml"
 ```
 
@@ -495,7 +545,7 @@ An now, let's apply this stack.
 kubectl apply -k webhook-receiver/kustomize.yml
 ```
 
-At this point, if I inspect the created Receiver, I will get something similar
+At this point, if we inspect the created Receiver, we will get something similar
 to this:
 
 ```yaml title=""
@@ -530,12 +580,18 @@ tofu apply tfplan
 ```
 
 With the webhook set up, for every push to our `main` branch, the GitHub will
-trigger a webhook to the Kubernetes cluster, targetting the FluCD Notification
+trigger a webhook to the Kubernetes cluster, targetting the FluxCD Notification
 Controller, which in turn will accept and notify the `.spec.resources` of the
 Receiver we have configured earlier.
 
+This results in GitRepository resource in the Receiver specificiation to be
+notified beforethe `.spec.interval`; the outcome is that we'll get faster
+deployments of our changes since the cluster and the controllers will not wait
+until the next reconciliation interval, but will get notified as soon as the
+changes are landed in the repository.
+
 It's a perfect setup for instant deployment of your changes as soon as they
-are ready.
+are ready. :partying_face:
 
 ## Step 5: Notifications & Alert
 
@@ -545,6 +601,26 @@ alerts of our cluster.
 
 This way we get to be notified of normal operations of our clusters, as well
 as when things go south! :cold_face:
+
+In the following stack, we are creating two different targets for our
+notification delivery system. One is sending all the info events to our Discord
+and the other will send all the errors to the configured Slack channel.
+
+It gives you a good diea on how the real world scenarios can be handled
+when different groups of people are interested in different types and severities
+of events generated in a Kubernetes cluster. :information_source:
+
+You may as well mute the noisier info channel, and let the error channel page
+your ops team as soon as something lands on it. :fire: :firefighter:
+
+**NOTE**: There are two types of events in Kubernetes: `Normal` and `Warning`.
+FluxCD considers normal events as info and warnings as errors. From the
+[official Kubernetes documentation]:
+> type is the type of this event (Normal, Warning), new types could be added in
+> the future. It is machine-readable. This field cannot be empty for new Events.
+
+You can also check the source code for the Notification Controller in the
+[FluxCD repository](https://github.com/fluxcd/notification-controller/blob/580497beeb8bee4cee99163bb63fba679cd2d735/api/v1beta1/alert_types.go#L39).
 
 ```yaml title="notifications/secret.yml" hl_lines="4"
 -8<- "docs/codes/0011/notifications/secret.yml"
@@ -581,7 +657,7 @@ kubectl apply -k notifications/kustomize.yml
 ### Kube Prometheus Stack
 
 We haven't talked about how to configure the AlertManager to send it's alerts
-to the corresponding channel, but, for the sake of completeness, and to avoid
+to the corresponding channels, but, for the sake of completeness, and to avoid
 leaving you hanging, here's full installation of the stack:
 
 ```yaml title="kube-prometheus-stack/repository.yml"
@@ -620,6 +696,30 @@ And apply it:
 kubectl apply -k kube-prometheus-stack/kustomize.yml
 ```
 
+## Conclusion
+
+That concludes all that we have to cover in this blog post.
+
+I have to be honest with you. When I started this post, I wasn't sure if I'm
+gonna have enough material to be considered as one blog post. Yet here I am,
+writing ~20min :clock4: worth of reading material. :sweat_smile:
+
+I really hope that you have enjoyed and learned something new from this post.
+
+The whole idea was to give you a glimpse of what you can achieve with FluxCD
+and where it can take you as you grow your Kubernetes cluster.
+
+With the techniques and examples mentioned in this blog post, you can go ahead
+and deploy your application like a champ. :trophy:
+
+At this point, we have covered all the advanced topics of FluxCD.
+
+Should you have any questions or need further clarification, feel free to
+reach out from the links at the bottom of the page.
+
+Until next time :saluting_face:, *ciao* :cowboy: and happy hacking! :penguin:
+:crab:
+
 [Source Controller]: https://fluxcd.io/flux/components/source/
 [Notification Controller]: https://fluxcd.io/flux/components/notification/
 [Kustomization]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
@@ -642,3 +742,4 @@ kubectl apply -k kube-prometheus-stack/kustomize.yml
 [relevant GitHub repository]: https://github.com/prometheus-operator/prometheus-operator/discussions/3733#discussioncomment-8237810
 [Extenal Secrets Operator]: ./0009-external-secrets-aks-to-aws-ssm.md
 [cert-manager]: ./0010-cert-manager.md
+[official Kubernetes documentation]: https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/

@@ -10,7 +10,7 @@ commonLabels:
   env: dev
 images:
   - name: ghcr.io/developer-friendly/echo-server
-    newTag: "9044139623" # {"$imagepolicy": "default:echo-server:tag"}
+    newTag: "9050352340" # {"$imagepolicy"(1): "default:echo-server:tag"}
 namespace: default
 patches:
   - patch: |
