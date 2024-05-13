@@ -1,0 +1,14 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: webhook-receiver
+  namespace: flux-system
+spec:
+  force: true
+  interval: 5m
+  path: ./webhook-receiver
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  wait: false

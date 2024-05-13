@@ -1,0 +1,28 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: github-receiver
+spec:
+  hostnames:
+    - 3fd76690-8601-4894-a6e4-057f62e58551.developer-friendly.blog
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: developer-friendly-blog
+      namespace: cert-manager
+      sectionName: https
+  rules:
+    - backendRefs:
+        - kind: Service
+          name: notification-controller
+          port: 80
+      filters:
+        - responseHeaderModifier:
+            set:
+              - name: Strict-Transport-Security
+                value: max-age=31536000 ; includeSubDomains; preload
+          type: ResponseHeaderModifier
+      matches:
+        - path:
+            type: PathPrefix
+            value: /

@@ -1,0 +1,66 @@
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: alertmanager
+spec:
+  receivers:
+    - name: default-receiver
+    - name: slack
+      slackConfigs:
+        - apiURL:
+            key: slackWebhook
+            name: alertmanager
+            optional: false
+          channel: "#alerts"
+          sendResolved: true
+          text: |-
+            {{ range .Alerts }}
+            *Alert:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+            *Description:* {{ .Annotations.description }}
+            *Details:*
+            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+            {{ end }}
+            {{ end }}
+          title: "{{ .CommonAnnotations.summary }}"
+          titleLink: "{{ .CommonAnnotations.runbook_url }}"
+    - name: discord
+      discordConfigs:
+        - apiURL:
+            key: discordWebhook
+            name: alertmanager
+            optional: false
+          sendResolved: false
+          message: |-
+            {{ range .Alerts }}
+            *Info:* {{ .Annotations.summary }} - `{{ .Labels.severity }}`
+            *Description:* {{ .Annotations.description }}
+            *Details:*
+            {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+            {{ end }}
+            {{ end }}
+          title: "{{ .CommonAnnotations.summary }}"
+  route:
+    continue: false
+    groupBy:
+      - severity
+      - revision
+    groupInterval: 10m
+    groupWait: 5m
+    receiver: default-receiver
+    repeatInterval: 12h
+    routes:
+      - matchers:
+          - name: severity
+            value: info
+        receiver: discord
+        groupWait: 1s
+        groupInterval: 1m
+      - matchers:
+          - name: severity
+            value: error
+        receiver: slack
+        groupWait: 1m
+    matchers:
+      - name: severity
+        matchType: "=~"
+        value: "critical|warning|error|info"

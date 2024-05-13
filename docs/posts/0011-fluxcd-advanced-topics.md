@@ -24,7 +24,7 @@ categories:
 
 # GitOps Continuous Deployment: FluxCD Advanced CRDs
 
-FluxCD is a powerful GitOps ecosystem of operators that can be enabled
+FluxCD is a powerful ecosystem of GitOps operators that can be enabled
 on-demand as per the requirement of your environment. It enables you to opt-in
 for the features you need and to disable the ones you don't.
 
@@ -52,7 +52,7 @@ CRDs not included in the first post.
 Specifically, we will mainly cover the [Image Automation Controller] and the
 [Notification Controller] in this post.
 
-Using the provided CRDs by these operators, we will be able to achive the
+Using the provided CRDs by these operators, we will be able to achieve the
 following inside our Kubernetes cluster:
 
 - [x] Fetch the latest tags of our specified Docker images
@@ -69,14 +69,17 @@ Make sure you have the following setup ready before going forward:
 
 - [x] A Kubernetes cluster accessible from the internet (v1.30 as of writing)
       Feel free to follow our earlier guides if you need assistance:
-    - [Kubernetes the Hard Way](./0003-kubernetes-the-hard-way.md)
-    - [K3s Installation](./0005-install-k3s-on-ubuntu22.md)
-    - [Managed Azure AKS](./0009-external-secrets-aks-to-aws-ssm.md)
+  - [Kubernetes the Hard Way](./0003-kubernetes-the-hard-way.md)
+  - [K3s Installation](./0005-install-k3s-on-ubuntu22.md)
+  - [Managed Azure AKS](./0009-external-secrets-aks-to-aws-ssm.md)
 - [x] FluxCD operator installed. Follow our earlier blog post to get started:
-      [Getting Started with FluxCD](./0006-gettings-started-with-gitops-and-fluxcd.md)
-- [x] Either [Gateway API] or an [Ingress Controller] installed in your cluster.
+      [Getting Started with GitOps and FluxCD](./0006-gettings-started-with-gitops-and-fluxcd.md)
+- [x] Either [Gateway API] or an [Ingress Controller] installed on your cluster.
       We will need this internet-accessible endpoint to receive the webhooks
       from the GitHub repository to our cluster.
+- [x] Both the [Extenal Secrets Operator] as well as [cert-manager]
+      installed on your cluster. Although, feel free to use any alternative
+      that suits your environment best.
 - [ ] Optionally, [GitHub CLI v2 installed] for TF code authentication. The
       alternative is to use GitHub PAT, which I'm not a big fan of!
 - [ ] Optionally a GitHub account, although any other Git provider will do when
@@ -88,9 +91,9 @@ Before getting hands-on, a bit of explanation is in order.
 
 The Source Controller in FluxCD is responsible for fetching the artifacts and
 the resources from the external sources. It is called **Source** controller
-because it provides the resources needed for the rest of the FluxCD ecosystem.
+because it provides the resources needed for the rest of the FluxCD controllers.
 
-These *Sources* can be of various types, such as GitRepository, HelmRepository,
+These _Sources_ can be of various types, such as GitRepository, HelmRepository,
 Bucket, etc. It will need the required auth and permission(s) to access those
 repositories, but, once given proper access, it will mirror the contents of
 said sources to your cluster so that you can have seamless integration from
@@ -254,24 +257,24 @@ application like any other.
 For your reference, here's the `base` Kustomization:
 
 === "kustomize/base/configs.env"
-    ```ini title=""
+`ini title=""
     -8<- "docs/codes/0011/kustomize/base/configs.env"
-    ```
+    `
 
 ===+ "kustomize/base/deployment.yml"
-    ```yaml title=""
+`yaml title=""
     -8<- "docs/codes/0011/kustomize/base/deployment.yml"
-    ```
+    `
 
 === "kustomize/base/service.yml"
-    ```yaml title=""
+`yaml title=""
     -8<- "docs/codes/0011/kustomize/base/service.yml"
-    ```
+    `
 
 === "kustomize/base/kustomization.yml"
-    ```yaml title=""
+`yaml title=""
     -8<- "docs/codes/0011/kustomize/base/kustomization.yml"
-    ```
+    `
 
 Now, let's go ahead and see what we need to create in our `dev` environment.
 
@@ -313,9 +316,9 @@ wish GitHub would provide official OpenID Connect support(1) someday to get rid
 of all these tokens lying around in our environments! :face_with_head_bandage:
 </div>
 
-  1. There is an un-official OIDC support [for GitHub as we speak].
+1. There is an un-official OIDC support [for GitHub as we speak].
 
-     A topic for a future post. :wink:
+   A topic for a future post. :wink:
 
 ```yaml title="kustomize/overlays/dev/imagerepository.yml" hl_lines="6 10"
 -8<- "docs/codes/0011/kustomize/overlays/dev/imagerepository.yml"
@@ -339,10 +342,10 @@ mentioned earlier comes into play.
 
 ### Image Policy Tagging
 
-Did you notice the line with the following *commented* value:
+Did you notice the line with the following _commented_ value:
 
 ```json title="" linenums="0"
-{"$imagepolicy": "default:echo-server:tag"}
+{ "$imagepolicy": "default:echo-server:tag" }
 ```
 
 Don't be mistaken! [This is not a comment]. This is a metadata that FluxCD
@@ -399,8 +402,7 @@ You can employ other techniques as well. For example, you can use
 tag to be used in the Kustomization(1).
 { .annotate }
 
-   1. Perhaps a topic for another day.
-
+1.  Perhaps a topic for another day.
 
 ??? example "Full CI Definition"
 
@@ -418,24 +420,145 @@ Be sure to deploy the app.
 kubectl apply -f kustomize/overlays/dev/kustomize.yml
 ```
 
-## Step 4: Notifications & Alert
+## Step 4: Receiver and Webhook
 
-We are now ready to be notified of normal operations of our clusters, as well
+FluxCD allows you to configure a Receiver so that external services can trigger
+the controllers of FluxCD to reconcile before the configured interval.
+
+This can be greatly beneficial when you want to deploy the changes as soon as
+they are pushed to the repository. For example, a push to the `main` branch,
+which, in turn will trigger a webhook from the Git repository to your Kubernetes
+cluster.
+
+The important note to mention here is that the endpoint has to be publicly
+accessible through the internet. Of course you are going to protect it behind
+an authentication system using secrets, which we'll see in a bit.
+
+First things first, let's create the Receiver so that the cluster is ready
+before any webhook is sent.
+
+### Generate the Secret
+
+We need a trust relationship between the GitHub webhook system and our cluster.
+This comes in the form of including a token that only the two parties know.
+
+```hcl title="webhook-token/variables.tf"
+-8<- "docs/codes/0011/webhook-token/variables.tf"
+```
+
+```hcl title="webhook-token/versions.tf"
+-8<- "docs/codes/0011/webhook-token/versions.tf"
+```
+
+```hcl title="webhook-token/main.tf"
+-8<- "docs/codes/0011/webhook-token/main.tf"
+```
+
+```hcl title="webhook-token/outputs.tf"
+-8<- "docs/codes/0011/webhook-token/outputs.tf"
+```
+
+```shell title="" linenums="0"
+tofu init
+tofu plan -out tfplan
+tofu apply tfplan
+```
+
+### Create the Receiver
+
+Now that we have the secret in our secrets management system, let's create the
+Receiver to be ready for all the GitHub webhook triggers.
+
+```yaml title="webhook-receiver/externalsecret.yml"
+-8<- "docs/codes/0011/webhook-receiver/externalsecret.yml"
+```
+
+```yaml title="webhook-receiver/httproute.yml"
+-8<- "docs/codes/0011/webhook-receiver/httproute.yml"
+```
+
+```yaml title="webhook-receiver/receiver.yml"
+-8<- "docs/codes/0011/webhook-receiver/receiver.yml"
+```
+
+```yaml title="webhook-receiver/kustomization.yml"
+-8<- "docs/codes/0011/webhook-receiver/kustomization.yml"
+```
+
+An now, let's apply this stack.
+
+```yaml title="webhook-receiver/kustomize.yml"
+-8<- "docs/codes/0011/webhook-receiver/kustomize.yml"
+```
+
+```shell title="" linenums="0"
+kubectl apply -k webhook-receiver/kustomize.yml
+```
+
+At this point, if I inspect the created Receiver, I will get something similar
+to this:
+
+```yaml title=""
+-8<- "docs/codes/0011/junk/receiver.yml"
+```
+
+### GitHub Webhook
+
+All is ready for GitHub to notify our cluster on every push to the `main`
+branch. Let's create the webhook using TF stack.
+
+```hcl title="github-webhook/variables.tf"
+-8<- "docs/codes/0011/github-webhook/variables.tf"
+```
+
+```hcl title="github-webhook/versions.tf"
+-8<- "docs/codes/0011/github-webhook/versions.tf"
+```
+
+```hcl title="github-webhook/main.tf"
+-8<- "docs/codes/0011/github-webhook/main.tf"
+```
+
+```hcl title="github-webhook/outputs.tf"
+-8<- "docs/codes/0011/github-webhook/outputs.tf"
+```
+
+```shell title="" linenums="0"
+tofu init
+tofu plan -out tfplan
+tofu apply tfplan
+```
+
+With the webhook set up, for every push to our `main` branch, the GitHub will
+trigger a webhook to the Kubernetes cluster, targetting the FluCD Notification
+Controller, which in turn will accept and notify the `.spec.resources` of the
+Receiver we have configured earlier.
+
+It's a perfect setup for instant deployment of your changes as soon as they
+are ready.
+
+## Step 5: Notifications & Alert
+
+With the application deployed, and the receiver of our GitOps ready to be
+notified on every new change, we should be able to get notified of info and
+alerts of our cluster.
+
+This way we get to be notified of normal operations of our clusters, as well
 as when things go south! :cold_face:
 
-```yaml title="notifications/secret.yml"
+```yaml title="notifications/secret.yml" hl_lines="4"
 -8<- "docs/codes/0011/notifications/secret.yml"
 ```
 
-```yaml title="notifications/provider.yml"
+```yaml title="notifications/provider.yml" hl_lines="7"
 -8<- "docs/codes/0011/notifications/provider.yml"
 ```
 
-```yaml title="notifications/alert-info.yml"
+```yaml title="notifications/alert-info.yml" hl_lines="8"
 -8<- "docs/codes/0011/notifications/alert-info.yml"
 ```
 
-```yaml title="notifications/alert-error.yml"
+```yaml title="notifications/alert-error.yml" hl_lines="8"
 -8<- "docs/codes/0011/notifications/alert-error.yml"
 ```
 
@@ -455,12 +578,46 @@ Finally:
 kubectl apply -k notifications/kustomize.yml
 ```
 
+### Kube Prometheus Stack
+
 We haven't talked about how to configure the AlertManager to send it's alerts
 to the corresponding channel, but, for the sake of completeness, and to avoid
-leaving you hanging, here's a snippet of the configuration:
+leaving you hanging, here's full installation of the stack:
 
-```yaml title="alertmanager/config.yml"
--8<- "docs/codes/0011/junk/alertmanager-config.yml"
+```yaml title="kube-prometheus-stack/repository.yml"
+-8<- "docs/codes/0011/kube-prometheus-stack/repository.yml"
+```
+
+```yaml title="kube-prometheus-stack/externalsecret.yml" hl_lines="9 12"
+-8<- "docs/codes/0011/kube-prometheus-stack/externalsecret.yml"
+```
+
+```yaml title="kube-prometheus-stack/release.yml" hl_lines="33-36"
+-8<- "docs/codes/0011/kube-prometheus-stack/release.yml"
+```
+
+Pay close attention to the config matcher strategy highlighted above. This is
+a known issue; one you can find an extensive discussion on in the
+[relevant GitHub repository].
+
+```yaml title="kube-prometheus-stack/alertmanagerconfig.yml" hl_lines="11-12 29-30"
+-8<- "docs/codes/0011/kube-prometheus-stack/alertmanagerconfig.yml"
+```
+
+```yaml title="kube-prometheus-stack/kustomization.yml"
+-8<- "docs/codes/0011/kube-prometheus-stack/kustomization.yml"
+```
+
+Let's create this stack:
+
+```yaml title="kube-prometheus-stack/kustomize.yml"
+-8<- "docs/codes/0011/kube-prometheus-stack/kustomize.yml"
+```
+
+And apply it:
+
+```shell title="" linenums="0"
+kubectl apply -k kube-prometheus-stack/kustomize.yml
 ```
 
 [Source Controller]: https://fluxcd.io/flux/components/source/
@@ -482,3 +639,6 @@ leaving you hanging, here's a snippet of the configuration:
 [Gateway we have created]: ./0010-cert-manager.md#step-3-use-the-tls-certificates-in-gateway
 [authentication as needed]: https://fluxcd.io/flux/components/source/gitrepositories/#secret-reference
 [for GitHub as we speak]: https://github.com/octo-sts
+[relevant GitHub repository]: https://github.com/prometheus-operator/prometheus-operator/discussions/3733#discussioncomment-8237810
+[Extenal Secrets Operator]: ./0009-external-secrets-aks-to-aws-ssm.md
+[cert-manager]: ./0010-cert-manager.md
