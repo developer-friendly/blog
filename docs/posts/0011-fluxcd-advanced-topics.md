@@ -2,15 +2,20 @@
 date: 2024-05-13
 draft: true
 description: >-
-  TODO
+  How to manage your Docker image repositories, get cluster notifications and
+  employ image automation controller for rollouts with Kubernetes and GitHub.
 categories:
   - Kubernetes
+  - FluxCD
+  - External Secrets
+  - OpenTofu
+  - AWS
   - cert-manager
+  - CI/CD
+  - Cloud Computing
   - Cilium
   - Gateway API
-  - External Secrets
-  - FluxCD
-  - OpenTofu
+  - Secrets Management
   - Terraform
   - GitOps
   - IaC
@@ -20,6 +25,12 @@ categories:
   - OIDC
   - Security
   - GitHub
+links:
+  - ./posts/0006-gettings-started-with-gitops-and-fluxcd.md
+  - ./posts/0009-external-secrets-aks-to-aws-ssm.md
+  - ./posts/0005-install-k3s-on-ubuntu22.md
+  - Source Code: https://github.com/developer-friendly/fluxcd-advanced-crds
+image: assets/images/social/2024/05/13/gitops-continuous-deployment-fluxcd-advanced-crds.png
 ---
 
 # GitOps Continuous Deployment: FluxCD Advanced CRDs
