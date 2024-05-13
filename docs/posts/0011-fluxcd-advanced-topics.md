@@ -1,6 +1,6 @@
 ---
 date: 2024-05-13
-draft: true
+draft: false
 description: >-
   How to manage your Docker image repositories, get cluster notifications and
   employ image automation controller for rollouts with Kubernetes and GitHub.
@@ -60,14 +60,14 @@ We have covered the beginner's guide to FluxCD in
 This blog post will continue from where we left off and covers the advanced
 CRDs not included in the first post.
 
-Specifically, we will mainly cover the [Image Automation Controller] and the
-[Notification Controller] in this post.
+Specifically, we will mainly cover the Image Automation Controller[^1] and the
+Notification Controller[^2] in this post.
 
 Using the provided CRDs by these operators, we will be able to achieve the
 following inside our Kubernetes cluster:
 
 - [x] Fetch the latest tags of our specified Docker images
-- [x] Update the [Kustomization] to use the latest Docker image tag based on
+- [x] Update the Kustomization[^3] to use the latest Docker image tag based on
       the desired tag pattern
 - [x] Notify and/or alert external services (e.g. Slack, Discord, etc.) based
       on the severity of the events happening within the cluster
@@ -80,27 +80,28 @@ Make sure you have the following setup ready before going forward:
 
 - [x] A Kubernetes cluster accessible from the internet (v1.30 as of writing)
       Feel free to follow our earlier guides if you need assistance:
-  - [Kubernetes the Hard Way](./0003-kubernetes-the-hard-way.md)
-  - [K3s Installation](./0005-install-k3s-on-ubuntu22.md)
-  - [Managed Azure AKS](./0009-external-secrets-aks-to-aws-ssm.md)
+    - [Kubernetes the Hard Way](./0003-kubernetes-the-hard-way.md)
+    - [K3s Installation](./0005-install-k3s-on-ubuntu22.md)
+    - [Managed Azure AKS][eso-installation]
 - [x] FluxCD operator installed. Follow our earlier blog post to get started:
       [Getting Started with GitOps and FluxCD](./0006-gettings-started-with-gitops-and-fluxcd.md)
-- [x] Either [Gateway API] or an [Ingress Controller] installed on your cluster.
+- [x] Either Gateway API[^4] or an Ingress Controller[^5] installed on your cluster.
       We will need this internet-accessible endpoint to receive the webhooks
       from the GitHub repository to our cluster.
-- [x] Both the [Extenal Secrets Operator] as well as [cert-manager]
-      installed on your cluster. Although, feel free to use any alternative
-      that suits your environment best.
-- [ ] Optionally, [GitHub CLI v2 installed] for TF code authentication. The
+- [x] Both the [Extenal Secrets Operator][eso-installation] as well as
+      [cert-manager](./0010-cert-manager.md) installed on your cluster.
+      Although, feel free to use any alternative that suits your environment
+      best.
+- [ ] Optionally, GitHub CLI v2[^6] installed for TF code authentication. The
       alternative is to use GitHub PAT, which I'm not a big fan of!
 - [ ] Optionally a GitHub account, although any other Git provider will do when
-      it comes to the [Source Controller].
+      it comes to the Source Controller[^7].
 
 ## Source, Image Automation & Notification Controllers 101 :nerd:
 
 Before getting hands-on, a bit of explanation is in order.
 
-The [Source Controller] in FluxCD is responsible for fetching the artifacts and
+The Source Controller[^8] in FluxCD is responsible for fetching the artifacts and
 the resources from the external sources. It is called **Source** controller
 because it provides the resources needed for the rest of the FluxCD controllers.
 
@@ -110,14 +111,14 @@ repositories, but, once given proper access, it will mirror the contents of
 said sources to your cluster so that you can have seamless integration from
 your external repositories right into the Kubernetes cluster.
 
-The [Image Automation Controller] is responsible for managing the Docker images.
+The Image Automation Controller[^9] is responsible for managing the Docker images.
 It fetches the latest tags, groups them based on defined patterns and criteria,
 and updates the target resources (e.g. Kustomization) to use the latest image
 tags; this is how you achieve the continuous deployment of your Docker images.
 
-The [Notification Controller], on the other hand, is responsible for both
+The Notification Controller[^10], on the other hand, is responsible for both
 receiving and sending notifications. It can receive the events from the
-[external sources, e.g. GitHub], and acts upon them as defined in its CRDs.
+external sources[^11], e.g. GitHub, and acts upon them as defined in its CRDs.
 It can also send notifications from your cluster to the external services.
 This can include sending notifications or alerts to Slack, Discord, etc.
 
@@ -156,12 +157,12 @@ reconciling the deployment and its image autmation.
 
 Specifically, we'll need three secrets at this stage:
 
-1. GitHub Deploy Key: This will be used by the Source Controller to fetch the
+1. GitHub Deploy Key[^12]: This will be used by the Source Controller to fetch the
    source code artifacts from GitHub and stores them in the cluster. The rest
    of the controllers will need to reference this GitHub repository during
    initialization in their YAML manifest. It will also use this Deploy Key
    to commit the changes back to the repository (more on that in a bit).
-2. User GPG Key: This is the key that the Image Update Automation will use
+2. User GPG Key[^13]: This is the key that the Image Update Automation will use
    to sign the commits when changing target image tag of our application
    once a new Docker iamge is built.
 3. GitHub Container Registry token: The GHCR token is used by the Image
@@ -170,9 +171,9 @@ Specifically, we'll need three secrets at this stage:
    repositories, however, you can skip it for public repos.
 
 We will employ External Secrets Operator to fetch our secrets from AWS SSM.
-We have already covered the [installation of ESO] in a previous post and using
-that knowledge, we'll only need to place the secrets in the AWS, and instruct
-the operator to fetch and feed them to our application.
+We have already covered the [installation of ESO][eso-installation] in a
+previous post and using that knowledge, we'll only need to place the secrets in
+the AWS, and instruct the operator to fetch and feed them to our application.
 
 ```hcl title="fluxcd-secrets/variables.tf" hl_lines="37 43"
 -8<- "docs/codes/0011/fluxcd-secrets/variables.tf"
@@ -190,14 +191,14 @@ the operator to fetch and feed them to our application.
 -8<- "docs/codes/0011/fluxcd-secrets/outputs.tf"
 ```
 
-Notice that we're defining two providers with [differing aliases] for our
+Notice that we're defining two providers with differing aliases[^14] for our
 GitHub provider. For that, there are a couple of worthy notes to mention:
 
 1. We are using GitHub CLI for the API authentication of our TF code to the
    GitHub. The main and default provider we use is `developer-friendly`
    organization and the other is `developer-friendly-bot` normal user.
-2. The [GitHub Deploy Key] creation API call is something even an organization
-   account can do. But for the creation of the [User GPG Key], we need to
+2. The GitHub Deploy Key[^12] creation API call is something even an organization
+   account can do. But for the creation of the User GPG Key[^13], we need to
    send the requests from a non-organization account, i.e., a normal user; that
    is the reason for using two providers instead of one. You could argue that
    we could create all resources using the normal account, however, we are
@@ -242,12 +243,12 @@ this way:
 ```
 
 The format of the Secret that FluxCD expects for GitRepository is documented
-on their documentation and you can use other forms of [authentication as needed].
+on their documentation and you can use other forms of authentication as needed[^15].
 We are using GitHub Deploy Key here as they are more flexible when it comes to
-revoking access, as well as granting write access to the [repository][GitHub Deploy Key].
+revoking access, as well as granting write access to the repository[^12].
 
-The Known Hosts value is coming from the [GitHub SSH key fingerprint]. The bad
-news is that you will have to manually change them if they change theirs!
+The Known Hosts value is coming from the GitHub SSH key fingerprint[^16]. The
+bad news is that you will have to manually change them if they change theirs!
 :sweat_smile:
 
 And using the resuling generated Kubernetes Secret from the ExternalSecret
@@ -292,7 +293,7 @@ For your reference, here's the `base` Kustomization:
     -8<- "docs/codes/0011/kustomize/base/configs.env"
     ```
 
-===+ "kustomize/base/deployment.yml"
+=== "kustomize/base/deployment.yml"
      ```yaml title=""
      -8<- "docs/codes/0011/kustomize/base/deployment.yml"
      ```
@@ -302,7 +303,7 @@ For your reference, here's the `base` Kustomization:
     -8<- "docs/codes/0011/kustomize/base/service.yml"
     ```
 
-=== "kustomize/base/kustomization.yml"
+===+ "kustomize/base/kustomization.yml"
     ```yaml title=""
     -8<- "docs/codes/0011/kustomize/base/kustomization.yml"
     ```
@@ -312,15 +313,16 @@ Now, let's go ahead and see what we need to create in our `dev` environment.
 Notice the referencing AWS SSM key in our ExternalSecret resource which is
 targeting the same value as we created earlier in our `fluxcd-secrets` TF stack.
 
-```yaml title="kustomize/overlays/dev/externalsecret-docker.yml" hl_lines="8"
+```yaml title="kustomize/overlays/dev/externalsecret-docker.yml" hl_lines="8 20-29"
 -8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-docker.yml"
 ```
 
-```yaml title="kustomize/overlays/dev/externalsecret-gpgkey.yml" hl_lines="8"
+```yaml title="kustomize/overlays/dev/externalsecret-gpgkey.yml" hl_lines="8 20"
 -8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-gpgkey.yml"
 ```
 
-The following HTTPRoute is using the [Gateway we have created] in our last week's
+The following HTTPRoute is using
+[the Gateway we have created][cert-manager-installation] in our last week's
 guide. Make sure to check it out if you haven't already.
 
 ```yaml title="kustomize/overlays/dev/httproute.yml"
@@ -347,7 +349,7 @@ wish GitHub would provide official OpenID Connect support(1) someday to get rid
 of all these tokens lying around in our environments! :face_with_head_bandage:
 </div>
 
-1. There is an un-official OIDC support [for GitHub as we speak].
+1. There is an un-official OIDC support for GitHub as we speak[^17].
    A topic for a future post. :wink:
 
 <div class="annotate" markdown>
@@ -364,7 +366,7 @@ of all these tokens lying around in our environments! :face_with_head_bandage:
 
 The referenced Kubernetes Secret in the ImageRepository above, and the one
 referencing the GPG Key Secret are both fed into the cluster by the ESO that
-[we have deployed in our cluster previously][installation of ESO].
+[we have deployed in our cluster previously][eso-installation].
 
 The following ImageUpdateAutomation resource will require the write access to
 the repository; that's where the write access of the GitHub Deploy Key we
@@ -402,9 +404,9 @@ Did you notice the line with the following _commented_ value:
 
 Don't be mistaken!
 
-[This is not a comment]. This is a metadata that FluxCD
-understands and uses to update the Kustomization `newTag` field with the latest
-tag of the Docker image repository.
+This is not a comment[^18]. This is a metadata that FluxCD understands and uses
+to update the Kustomization `newTag` field with the latest tag of the Docker
+image repository.
 
 For your reference, here's the allowed references:
 
@@ -452,7 +454,7 @@ ghcr.io/developer-friendly/echo-server:9050352340
 ```
 
 You can employ other techniques as well. For example, you can use
-[Semantic Versioning] as a pattern, and optionally extract only a part of the
+Semantic Versioning[^19] as a pattern, and optionally extract only a part of the
 tag to be used in the Kustomization(1).
 { .annotate }
 
@@ -473,6 +475,16 @@ Be sure to deploy the app.
 ```shell title="" linenums="0"
 kubectl apply -f kustomize/overlays/dev/kustomize.yml
 ```
+
+Note that in order for the Deploy Key write access to work, the bot user need
+to have write access to the repository. In our case, we are also using the same
+account to create the GitHub Deploy Key, which forces us to grant it the admin
+access as you see below.
+
+<figure markdown="span">
+  ![Repo Admin Access](../static/img/0011/dev-bot-admin-repo.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>GitHub Repository Admin Access</figcaption>
+</figure>
 
 ## Step 4: Receiver and Webhook
 
@@ -626,12 +638,12 @@ your ops team as soon as something lands on it. :fire: :firefighter:
 
 **NOTE**: There are two types of events in Kubernetes: `Normal` and `Warning`.
 FluxCD considers normal events as info and warnings as errors. From the
-[official Kubernetes documentation]:
+official Kubernetes documentation[^20]:
 > type is the type of this event (Normal, Warning), new types could be added in
 > the future. It is machine-readable. This field cannot be empty for new Events.
 
 You can also check the source code for the Notification Controller in the
-[FluxCD repository](https://github.com/fluxcd/notification-controller/blob/580497beeb8bee4cee99163bb63fba679cd2d735/api/v1beta1/alert_types.go#L39).
+FluxCD repository[^21].
 
 ```yaml title="notifications/secret.yml" hl_lines="4"
 -8<- "docs/codes/0011/notifications/secret.yml"
@@ -685,7 +697,7 @@ leaving you hanging, here's full installation of the stack:
 
 Pay close attention to the config matcher strategy highlighted above. This is
 a known issue; one you can find an extensive discussion on in the
-[relevant GitHub repository].
+relevant GitHub repository[^22].
 
 ```yaml title="kube-prometheus-stack/alertmanagerconfig.yml" hl_lines="11-12 29-30"
 -8<- "docs/codes/0011/kube-prometheus-stack/alertmanagerconfig.yml"
@@ -706,6 +718,37 @@ And apply it:
 ```shell title="" linenums="0"
 kubectl apply -k kube-prometheus-stack/kustomize.yml
 ```
+
+## Bonus: Screenshots
+
+The following are the relevant screenshots of the resources we have created
+and deployed in our Kubernetes cluster.
+
+<figure markdown="span">
+  ![Alertmanager UI](../static/img/0011/alertmanager-triggered-info-and-alert.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Alertmanager UI</figcaption>
+</figure>
+
+The commits that the bot will make to the repository will be signed with the
+GPG Key we have created earlier. This is how it looks like in the GitHub UI:
+
+<figure markdown="span">
+  ![Dev Bot Commit](../static/img/0011/dev-bot-commit-to-repo.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>GitHub Commit History</figcaption>
+</figure>
+
+You can see the alerts triggered as specified in their YAML manifest:
+
+<figure markdown="span">
+  ![Discord Notifs](../static/img/0011/discord-triggered-info.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Discord Triggered Info</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![Slack Alerts](../static/img/0011/slack-triggered-alert.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Slack Triggered Alerts</figcaption>
+</figure>
+
 
 ## Conclusion
 
@@ -728,29 +771,31 @@ At this point, we have covered all the advanced topics of FluxCD.
 Should you have any questions or need further clarification, feel free to
 reach out from the links at the bottom of the page.
 
-Until next time :saluting_face:, *ciao* :cowboy: and happy hacking! :penguin:
+Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
 :crab:
 
-[Source Controller]: https://fluxcd.io/flux/components/source/
-[Notification Controller]: https://fluxcd.io/flux/components/notification/
-[Kustomization]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
-[Gateway API]: https://gateway-api.sigs.k8s.io/
-[Ingress Controller]: https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
-[external sources, e.g. GitHub]: https://fluxcd.io/flux/components/notification/receivers/#type
-[installation of ESO]: ./0009-external-secrets-aks-to-aws-ssm.md
-[GitHub CLI v2 installed]: https://github.com/cli/cli/releases/tag/v2.49.1
-[differing aliases]: https://developer.hashicorp.com/terraform/language/providers/configuration#alias-multiple-provider-configurations
-[GitHub Deploy Key]: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys
-[User GPG Key]: https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account
-[Semantic Versioning]: https://semver.org/
-[This is not a comment]: https://fluxcd.io/flux/guides/image-update/#configure-image-update-for-custom-resources
-[Image Automation Controller]: https://fluxcd.io/flux/components/image/
-[Source Controller]: https://fluxcd.io/flux/components/source/
-[GitHub SSH key fingerprint]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
-[Gateway we have created]: ./0010-cert-manager.md#step-3-use-the-tls-certificates-in-gateway
-[authentication as needed]: https://fluxcd.io/flux/components/source/gitrepositories/#secret-reference
-[for GitHub as we speak]: https://github.com/octo-sts
-[relevant GitHub repository]: https://github.com/prometheus-operator/prometheus-operator/discussions/3733#discussioncomment-8237810
-[Extenal Secrets Operator]: ./0009-external-secrets-aks-to-aws-ssm.md
-[cert-manager]: ./0010-cert-manager.md
-[official Kubernetes documentation]: https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/
+[^1]: https://fluxcd.io/flux/components/image/
+[^2]: https://fluxcd.io/flux/components/notification/
+[^3]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
+[^4]: https://gateway-api.sigs.k8s.io/
+[^5]: https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
+[^6]: https://github.com/cli/cli/releases/tag/v2.49.1
+[^7]: https://fluxcd.io/flux/components/source/
+[^8]: https://github.com/fluxcd/source-controller/tree/v1.3.0
+[^9]: https://github.com/fluxcd/image-automation-controller/tree/v0.38.0
+[^10]: https://github.com/fluxcd/notification-controller/tree/v1.3.0
+[^11]: https://fluxcd.io/flux/components/notification/receivers/#type
+[^12]: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys
+[^13]: https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account
+[^14]: https://developer.hashicorp.com/terraform/language/providers/configuration#alias-multiple-provider-configurations
+[^15]: https://fluxcd.io/flux/components/source/gitrepositories/#secret-reference
+[^16]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
+[^17]: https://github.com/octo-sts
+[^18]: https://fluxcd.io/flux/guides/image-update/#configure-image-update-for-custom-resources
+[^19]: https://semver.org/
+[^20]: https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/
+[^21]: https://github.com/fluxcd/notification-controller/blob/580497beeb8bee4cee99163bb63fba679cd2d735/api/v1beta1/alert_types.go#L39
+[^22]: https://github.com/prometheus-operator/prometheus-operator/discussions/3733#discussioncomment-8237810
+
+[cert-manager-installation]: ./0010-cert-manager.md#step-3-use-the-tls-certificates-in-gateway
+[eso-installation]: ./0009-external-secrets-aks-to-aws-ssm.md
