@@ -474,6 +474,16 @@ Be sure to deploy the app.
 kubectl apply -f kustomize/overlays/dev/kustomize.yml
 ```
 
+Note that in order for the Deploy Key write access to work, the bot user need
+to have write access to the repository. In our case, we are also using the same
+account to create the GitHub Deploy Key, which forces us to grant it the admin
+access as you see below.
+
+<figure markdown="span">
+  ![Repo Admin Access](../static/img/0011/dev-bot-admin-repo.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>GitHub Repository Admin Access</figcaption>
+</figure>
+
 ## Step 4: Receiver and Webhook
 
 FluxCD allows you to configure a Receiver so that external services can trigger
@@ -706,6 +716,37 @@ And apply it:
 ```shell title="" linenums="0"
 kubectl apply -k kube-prometheus-stack/kustomize.yml
 ```
+
+## Bonus: Screenshots
+
+The following are the relevant screenshots of the resources we have created
+and deployed in our Kubernetes cluster.
+
+<figure markdown="span">
+  ![Alertmanager UI](../static/img/0011/alertmanager-triggered-info-and-alert.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Alertmanager UI</figcaption>
+</figure>
+
+The commits that the bot will make to the repository will be signed with the
+GPG Key we have created earlier. This is how it looks like in the GitHub UI:
+
+<figure markdown="span">
+  ![Dev Bot Commit](../static/img/0011/dev-bot-commit-to-repo.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>GitHub Commit History</figcaption>
+</figure>
+
+You can see the alerts triggered as specified in their YAML manifest:
+
+<figure markdown="span">
+  ![Discord Notifs](../static/img/0011/discord-triggered-info.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Discord Triggered Info</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![Slack Alerts](../static/img/0011/slack-triggered-alert.webp "Click to zoom in"){ loading=lazy }
+  <figcaption>Slack Triggered Alerts</figcaption>
+</figure>
+
 
 ## Conclusion
 
