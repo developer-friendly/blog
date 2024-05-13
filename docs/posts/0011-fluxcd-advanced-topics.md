@@ -1,6 +1,6 @@
 ---
 date: 2024-05-13
-draft: true
+draft: false
 description: >-
   How to manage your Docker image repositories, get cluster notifications and
   employ image automation controller for rollouts with Kubernetes and GitHub.
@@ -293,7 +293,7 @@ For your reference, here's the `base` Kustomization:
     -8<- "docs/codes/0011/kustomize/base/configs.env"
     ```
 
-===+ "kustomize/base/deployment.yml"
+=== "kustomize/base/deployment.yml"
      ```yaml title=""
      -8<- "docs/codes/0011/kustomize/base/deployment.yml"
      ```
@@ -303,7 +303,7 @@ For your reference, here's the `base` Kustomization:
     -8<- "docs/codes/0011/kustomize/base/service.yml"
     ```
 
-=== "kustomize/base/kustomization.yml"
+===+ "kustomize/base/kustomization.yml"
     ```yaml title=""
     -8<- "docs/codes/0011/kustomize/base/kustomization.yml"
     ```
