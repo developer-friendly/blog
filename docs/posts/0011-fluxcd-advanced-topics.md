@@ -92,7 +92,7 @@ Make sure you have the following setup ready before going forward:
       [cert-manager](./0010-cert-manager.md) installed on your cluster.
       Although, feel free to use any alternative that suits your environment
       best.
-- [ ] Optionally, GitHub CLI v2 installed[^6] for TF code authentication. The
+- [ ] Optionally, GitHub CLI v2[^6] installed for TF code authentication. The
       alternative is to use GitHub PAT, which I'm not a big fan of!
 - [ ] Optionally a GitHub account, although any other Git provider will do when
       it comes to the Source Controller[^7].
@@ -118,7 +118,7 @@ tags; this is how you achieve the continuous deployment of your Docker images.
 
 The Notification Controller[^10], on the other hand, is responsible for both
 receiving and sending notifications. It can receive the events from the
-external sources, e.g. GitHub[^11], and acts upon them as defined in its CRDs.
+external sources[^11], e.g. GitHub, and acts upon them as defined in its CRDs.
 It can also send notifications from your cluster to the external services.
 This can include sending notifications or alerts to Slack, Discord, etc.
 
@@ -157,12 +157,12 @@ reconciling the deployment and its image autmation.
 
 Specifically, we'll need three secrets at this stage:
 
-1. GitHub Deploy Key: This will be used by the Source Controller to fetch the
+1. GitHub Deploy Key[^12]: This will be used by the Source Controller to fetch the
    source code artifacts from GitHub and stores them in the cluster. The rest
    of the controllers will need to reference this GitHub repository during
    initialization in their YAML manifest. It will also use this Deploy Key
    to commit the changes back to the repository (more on that in a bit).
-2. User GPG Key: This is the key that the Image Update Automation will use
+2. User GPG Key[^13]: This is the key that the Image Update Automation will use
    to sign the commits when changing target image tag of our application
    once a new Docker iamge is built.
 3. GitHub Container Registry token: The GHCR token is used by the Image
@@ -191,14 +191,14 @@ the AWS, and instruct the operator to fetch and feed them to our application.
 -8<- "docs/codes/0011/fluxcd-secrets/outputs.tf"
 ```
 
-Notice that we're defining two providers with differing aliases[^12] for our
+Notice that we're defining two providers with differing aliases[^14] for our
 GitHub provider. For that, there are a couple of worthy notes to mention:
 
 1. We are using GitHub CLI for the API authentication of our TF code to the
    GitHub. The main and default provider we use is `developer-friendly`
    organization and the other is `developer-friendly-bot` normal user.
-2. The GitHub Deploy Key[^13] creation API call is something even an organization
-   account can do. But for the creation of the User GPG Key[^14], we need to
+2. The GitHub Deploy Key[^12] creation API call is something even an organization
+   account can do. But for the creation of the User GPG Key[^13], we need to
    send the requests from a non-organization account, i.e., a normal user; that
    is the reason for using two providers instead of one. You could argue that
    we could create all resources using the normal account, however, we are
@@ -245,7 +245,7 @@ this way:
 The format of the Secret that FluxCD expects for GitRepository is documented
 on their documentation and you can use other forms of authentication as needed[^15].
 We are using GitHub Deploy Key here as they are more flexible when it comes to
-revoking access, as well as granting write access to the repository[^13].
+revoking access, as well as granting write access to the repository[^12].
 
 The Known Hosts value is coming from the GitHub SSH key fingerprint[^16]. The
 bad news is that you will have to manually change them if they change theirs!
@@ -313,11 +313,11 @@ Now, let's go ahead and see what we need to create in our `dev` environment.
 Notice the referencing AWS SSM key in our ExternalSecret resource which is
 targeting the same value as we created earlier in our `fluxcd-secrets` TF stack.
 
-```yaml title="kustomize/overlays/dev/externalsecret-docker.yml" hl_lines="8"
+```yaml title="kustomize/overlays/dev/externalsecret-docker.yml" hl_lines="8 20-29"
 -8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-docker.yml"
 ```
 
-```yaml title="kustomize/overlays/dev/externalsecret-gpgkey.yml" hl_lines="8"
+```yaml title="kustomize/overlays/dev/externalsecret-gpgkey.yml" hl_lines="8 20"
 -8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-gpgkey.yml"
 ```
 
@@ -785,9 +785,9 @@ Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
 [^9]: https://github.com/fluxcd/image-automation-controller/tree/v0.38.0
 [^10]: https://github.com/fluxcd/notification-controller/tree/v1.3.0
 [^11]: https://fluxcd.io/flux/components/notification/receivers/#type
-[^12]: https://developer.hashicorp.com/terraform/language/providers/configuration#alias-multiple-provider-configurations
-[^13]: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys
-[^14]: https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account
+[^12]: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys
+[^13]: https://docs.github.com/en/authentication/managing-commit-signature-verification/adding-a-gpg-key-to-your-github-account
+[^14]: https://developer.hashicorp.com/terraform/language/providers/configuration#alias-multiple-provider-configurations
 [^15]: https://fluxcd.io/flux/components/source/gitrepositories/#secret-reference
 [^16]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/githubs-ssh-key-fingerprints
 [^17]: https://github.com/octo-sts
