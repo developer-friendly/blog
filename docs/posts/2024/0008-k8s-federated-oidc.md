@@ -19,9 +19,9 @@ categories:
   - Hetzner
   - IaC
 links:
-  - ./posts/0007-oidc-authentication.md
-  - ./posts/0005-install-k3s-on-ubuntu22.md
-  - ./posts/0003-kubernetes-the-hard-way.md
+  - ./posts/2024/0007-oidc-authentication.md
+  - ./posts/2024/0005-install-k3s-on-ubuntu22.md
+  - ./posts/2024/0003-kubernetes-the-hard-way.md
   - Source Code: https://github.com/developer-friendly/oidc-k8s-aws
 image: assets/images/social/2024/04/22/grant-kubernetes-pods-access-to-aws-services-using-openid-connect.png
 ---
@@ -195,23 +195,23 @@ This will be the address we will add to the AWS IAM as an Identity Provider.
 Any DNS provider will do, but for our example, we're using Cloudflare.
 
 ```hcl title="provision-k8s/variables.tf"
--8<- "docs/codes/0008/junk/v0/variables.tf"
+-8<- "docs/codes/2024/0008/junk/v0/variables.tf"
 ```
 
 ```hcl title="provision-k8s/versions.tf"
--8<- "docs/codes/0008/junk/v0/versions.tf"
+-8<- "docs/codes/2024/0008/junk/v0/versions.tf"
 ```
 
 ```hcl title="provision-k8s/network.tf"
--8<- "docs/codes/0008/provision-k8s/network.tf"
+-8<- "docs/codes/2024/0008/provision-k8s/network.tf"
 ```
 
 ```hcl title="provision-k8s/dns.tf"
--8<- "docs/codes/0008/provision-k8s/dns.tf"
+-8<- "docs/codes/2024/0008/provision-k8s/dns.tf"
 ```
 
 ```hcl title="provision-k8s/outputs.tf"
--8<- "docs/codes/0008/junk/v0/outputs.tf"
+-8<- "docs/codes/2024/0008/junk/v0/outputs.tf"
 ```
 
 We would need the required access token which you can get from their respective
@@ -221,14 +221,14 @@ token[^10] and a Hetzner API token[^11].
 ??? example "Get Hetzner Cloud API Token"
 
       <figure markdown="span">
-        ![Get Hetzner Cloud API Token](../static/img/0008/hcloud-token.webp "Click to zoom in"){ loading=lazy }
+        ![Get Hetzner Cloud API Token](/static/img/2024/0008/hcloud-token.webp "Click to zoom in"){ loading=lazy }
         <figcaption>Get Hetzner Cloud API Token</figcaption>
       </figure>
 
 ??? example "Get Cloudflare API Token"
 
       <figure markdown="span">
-        ![Get Cloudflare API Token](../static/img/0008/cf-token.webp "Click to zoom in"){ loading=lazy }
+        ![Get Cloudflare API Token](/static/img/2024/0008/cf-token.webp "Click to zoom in"){ loading=lazy }
         <figcaption>Get Cloudflare API Token</figcaption>
       </figure>
 
@@ -250,23 +250,23 @@ But for the sake of completeness, we'll resurface the code one more time, with
 some minor tweaks here and there.
 
 ```hcl title="provision-k8s/variables.tf" hl_lines="28-36"
--8<- "docs/codes/0008/provision-k8s/variables.tf"
+-8<- "docs/codes/2024/0008/provision-k8s/variables.tf"
 ```
 
 ```hcl title="provision-k8s/versions.tf" hl_lines="15-22"
--8<- "docs/codes/0008/junk/v1/versions.tf"
+-8<- "docs/codes/2024/0008/junk/v1/versions.tf"
 ```
 
 ```hcl title="provision-k8s/server.tf" hl_lines="47-48"
--8<- "docs/codes/0008/provision-k8s/server.tf"
+-8<- "docs/codes/2024/0008/provision-k8s/server.tf"
 ```
 
 ```hcl title="provision-k8s/firewall.tf"
--8<- "docs/codes/0008/provision-k8s/firewall.tf"
+-8<- "docs/codes/2024/0008/provision-k8s/firewall.tf"
 ```
 
 ```hcl title="provision-k8s/outputs.tf" hl_lines="9-34"
--8<- "docs/codes/0008/provision-k8s/outputs.tf"
+-8<- "docs/codes/2024/0008/provision-k8s/outputs.tf"
 ```
 
 Notice the lines where we specify the OIDC issuer URL & JWK URL for the
@@ -274,7 +274,7 @@ Kubernetes API server to be a publicly accessible address and
 pass it as an argument to the `k3s` server.
 
 ```shell title="provision-k8s/server.tf" linenums="47"
--8<- "docs/codes/0008/provision-k8s/server.tf:47:48"
+-8<- "docs/codes/2024/0008/provision-k8s/server.tf:47:48"
 ```
 
 If not specified, the rest of this
@@ -304,7 +304,7 @@ inventory where Ansible expects them.
 
 ??? example "ansible.cfg"
     ```ini title="" hl_lines="8"
-    -8<- "docs/codes/0008/ansible.cfg"
+    -8<- "docs/codes/2024/0008/ansible.cfg"
     ```
 
 ```shell title="" linenums="0"
@@ -315,7 +315,7 @@ tofu output -raw ansible_vars > ../inventory/group_vars/all.yml
 
 ??? example "`ansible-inventory --list`"
     ```json title=""
-    -8<- "docs/codes/0008/junk/outputs/ansible-inventory-list.json"
+    -8<- "docs/codes/2024/0008/junk/outputs/ansible-inventory-list.json"
     ```
 
 At this stage we're ready to move on to the next step.
@@ -335,19 +335,19 @@ touch playbook.yml
 The first step is to install the Cilium CNI.
 
 ```yaml title="k8s/defaults/main.yml"
--8<- "docs/codes/0008/junk/v1/k8s-defaults-main.yml"
+-8<- "docs/codes/2024/0008/junk/v1/k8s-defaults-main.yml"
 ```
 
 ```yaml title="k8s/tasks/cilium.yml"
--8<- "docs/codes/0008/k8s/tasks/cilium.yml"
+-8<- "docs/codes/2024/0008/k8s/tasks/cilium.yml"
 ```
 
 ```yaml title="k8s/tasks/main.yml"
--8<- "docs/codes/0008/junk/v1/k8s-tasks-main.yml"
+-8<- "docs/codes/2024/0008/junk/v1/k8s-tasks-main.yml"
 ```
 
 ```yaml title="playbook.yml"
--8<- "docs/codes/0008/junk/v1/playbook.yml"
+-8<- "docs/codes/2024/0008/junk/v1/playbook.yml"
 ```
 
 To run the playbook:
@@ -365,27 +365,27 @@ We will carry our tasks with Ansible throughout the entire Day 1 to Day n
 operations.
 
 ```yaml title="k8s/defaults/main.yml" hl_lines="3"
--8<- "docs/codes/0008/junk/v2/k8s-defaults-main.yml"
+-8<- "docs/codes/2024/0008/junk/v2/k8s-defaults-main.yml"
 ```
 
 ```jinja title="k8s/templates/wellknown-server.service.j2"
--8<- "docs/codes/0008/k8s/templates/wellknown-server.service.j2"
+-8<- "docs/codes/2024/0008/k8s/templates/wellknown-server.service.j2"
 ```
 
 ```yaml title="k8s/handlers/main.yml"
--8<- "docs/codes/0008/junk/v1/k8s-handlers-main.yml"
+-8<- "docs/codes/2024/0008/junk/v1/k8s-handlers-main.yml"
 ```
 
 ```yaml title="k8s/tasks/certbot.yml"
--8<- "docs/codes/0008/k8s/tasks/certbot.yml"
+-8<- "docs/codes/2024/0008/k8s/tasks/certbot.yml"
 ```
 
 ```yaml title="k8s/tasks/main.yml" hl_lines="6-9"
--8<- "docs/codes/0008/junk/v2/k8s-tasks-main.yml"
+-8<- "docs/codes/2024/0008/junk/v2/k8s-tasks-main.yml"
 ```
 
 ```yaml title="playbook.yml" hl_lines="6-7"
--8<- "docs/codes/0008/junk/v2/playbook.yml"
+-8<- "docs/codes/2024/0008/junk/v2/playbook.yml"
 ```
 
 ???+ success "Certificate Renewal"
@@ -397,18 +397,18 @@ operations.
     `systemd` files in your system.
 
     ```ini title="/lib/systemd/system/certbot.service"
-    -8<- "docs/codes/0008/junk/outputs/certbot.service"
+    -8<- "docs/codes/2024/0008/junk/outputs/certbot.service"
     ```
 
     ```ini title="/lib/systemd/system/certbot.timer"
-    -8<- "docs/codes/0008/junk/outputs/certbot.timer"
+    -8<- "docs/codes/2024/0008/junk/outputs/certbot.timer"
     ```
 
     Although on the same host, you will find a crontab entry for the `certbot`
     as you see below:
 
     ```plaintext title="/etc/cron.d/certbot"
-    -8<- "docs/codes/0008/junk/outputs/certbot-crontab"
+    -8<- "docs/codes/2024/0008/junk/outputs/certbot-crontab"
     ```
 
     All of these files are created by the `certbot` binary during the initial
@@ -431,31 +431,31 @@ and expose them to the internet on HTTPS using the newly acquired TLS
 certificate with the help of static web server[^12].
 
 ```yaml title="k8s/defaults/main.yml" hl_lines="4-5"
--8<- "docs/codes/0008/k8s/defaults/main.yml"
+-8<- "docs/codes/2024/0008/k8s/defaults/main.yml"
 ```
 
 ```yaml title="k8s/handlers/main.yml" hl_lines="7-16"
--8<- "docs/codes/0008/k8s/handlers/main.yml"
+-8<- "docs/codes/2024/0008/k8s/handlers/main.yml"
 ```
 
 ```jinja title="k8s/templates/static-web-server.service.j2"
--8<- "docs/codes/0008/k8s/templates/static-web-server.service.j2"
+-8<- "docs/codes/2024/0008/k8s/templates/static-web-server.service.j2"
 ```
 
 ```yaml title="k8s/tasks/static-server.yml" hl_lines="45-46 53-54 61-62"
--8<- "docs/codes/0008/k8s/tasks/static-server.yml"
+-8<- "docs/codes/2024/0008/k8s/tasks/static-server.yml"
 ```
 
 ```yaml title="k8s/tasks/main.yml" hl_lines="10-13"
--8<- "docs/codes/0008/k8s/tasks/main.yml"
+-8<- "docs/codes/2024/0008/k8s/tasks/main.yml"
 ```
 
 ```yaml title="vars/aarch64.yml"
--8<- "docs/codes/0008/vars/aarch64.yml"
+-8<- "docs/codes/2024/0008/vars/aarch64.yml"
 ```
 
 ```yaml title="playbook.yml" hl_lines="4 8-9"
--8<- "docs/codes/0008/junk/v3/playbook.yml"
+-8<- "docs/codes/2024/0008/junk/v3/playbook.yml"
 ```
 
 Running this will be as follows:
@@ -479,7 +479,7 @@ be able to separate the executable task and the scheduling of the task.
 The definitions for those files are as following:
 
 ```jinja title="k8s/templates/static-web-server-prepare.sh.j2"
--8<- "docs/codes/0008/k8s/templates/static-web-server-prepare.sh.j2"
+-8<- "docs/codes/2024/0008/k8s/templates/static-web-server-prepare.sh.j2"
 ```
 
 Notice how we are manually fetching the OIDC configurations from the Kubernetes
@@ -494,11 +494,11 @@ any of the given files:
 Now, let's take a look at our preparation service and timer definition.
 
 ```jinja title="k8s/templates/static-web-server-prepare.service.j2" hl_lines="10"
--8<- "docs/codes/0008/k8s/templates/static-web-server-prepare.service.j2"
+-8<- "docs/codes/2024/0008/k8s/templates/static-web-server-prepare.service.j2"
 ```
 
 ```jinja title="k8s/templates/static-web-server-prepare.timer.j2"
--8<- "docs/codes/0008/k8s/templates/static-web-server-prepare.timer.j2"
+-8<- "docs/codes/2024/0008/k8s/templates/static-web-server-prepare.timer.j2"
 ```
 
 Notice that the service file specifies the working directory for the script.
@@ -525,15 +525,15 @@ in its definition and uses its token to talk to AWS.
 Note that we're starting a new TF module below.
 
 ```hcl title="configure-oidc/versions.tf"
--8<- "docs/codes/0008/configure-oidc/versions.tf"
+-8<- "docs/codes/2024/0008/configure-oidc/versions.tf"
 ```
 
 ```hcl title="configure-oidc/main.tf"
--8<- "docs/codes/0008/configure-oidc/main.tf"
+-8<- "docs/codes/2024/0008/configure-oidc/main.tf"
 ```
 
 ```hcl title="configure-oidc/oidc_provider.tf"
--8<- "docs/codes/0008/configure-oidc/oidc_provider.tf"
+-8<- "docs/codes/2024/0008/configure-oidc/oidc_provider.tf"
 ```
 
 Let's apply this stack:
@@ -554,17 +554,17 @@ create a sample IAM Role with a trust relationship to the OIDC provider we just
 created.
 
 ```hcl title="configure-oidc/iam_role.tf" hl_lines="18 21 27 30"
--8<- "docs/codes/0008/configure-oidc/iam_role.tf"
+-8<- "docs/codes/2024/0008/configure-oidc/iam_role.tf"
 ```
 
 ```hcl title="configure-oidc/outputs.tf"
--8<- "docs/codes/0008/configure-oidc/outputs.tf"
+-8<- "docs/codes/2024/0008/configure-oidc/outputs.tf"
 ```
 
 The AWS IAM Role trust relationship will look something like this:
 
 ```json title="AWS IAM Role Trust Relationship"
--8<- "docs/codes/0008/junk/outputs/aws-iam-role-trust-relationship.json"
+-8<- "docs/codes/2024/0008/junk/outputs/aws-iam-role-trust-relationship.json"
 ```
 
 This, of course, shouldn't come as a surprise. We have already seen this in the
@@ -587,7 +587,7 @@ ansible-galaxy init app
 We will need the Kubernetes core Ansible collection, so let's install that.
 
 ```yaml title="requirements.yml"
--8<- "docs/codes/0008/requirements.yml"
+-8<- "docs/codes/2024/0008/requirements.yml"
 ```
 
 ```shell title="" linenums="0"
@@ -595,19 +595,19 @@ ansible-galaxy collection install -r requirements.yml
 ```
 
 ```yaml title="app/defaults/main.yml"
--8<- "docs/codes/0008/app/defaults/main.yml"
+-8<- "docs/codes/2024/0008/app/defaults/main.yml"
 ```
 
 ```yaml title="app/templates/manifest.yml" hl_lines="43-44 49 53-60"
--8<- "docs/codes/0008/app/templates/manifest.yml"
+-8<- "docs/codes/2024/0008/app/templates/manifest.yml"
 ```
 
 ```yaml title="app/tasks/main.yml"
--8<- "docs/codes/0008/app/tasks/main.yml"
+-8<- "docs/codes/2024/0008/app/tasks/main.yml"
 ```
 
 ```yaml title="playbook.yml" hl_lines="14-44"
--8<- "docs/codes/0008/playbook.yml"
+-8<- "docs/codes/2024/0008/playbook.yml"
 ```
 
 A few important notes are worth mentioning here:
@@ -633,7 +633,7 @@ are able to use the AWS CLI without the requirement of manual `aws configure`.
 
 1. These two steps:
    ```yaml title="playbook.yml" linenums="29"
-   -8<- "docs/codes/0008/playbook.yml:29:39"
+   -8<- "docs/codes/2024/0008/playbook.yml:29:39"
    ```
 
 
@@ -652,7 +652,7 @@ been successful.
     AWS CLI will not return an empty list; it will return nothing!
 
     ```json title=""
-    -8<- "docs/codes/0008/junk/outputs/kubectl-logs-job-demo-app.json"
+    -8<- "docs/codes/2024/0008/junk/outputs/kubectl-logs-job-demo-app.json"
     ```
 
 Lastly, to test if the Service Account and the IAM Role trust policy plays any

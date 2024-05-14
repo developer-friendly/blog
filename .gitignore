@@ -9,5 +9,5 @@ secrets
 # Local Netlify folder
 .netlify
 .envrc
-docs/codes/0008/inventory/
+docs/codes/2024/0008/inventory/
 **/terraform.tfvars

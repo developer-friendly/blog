@@ -77,7 +77,7 @@ encrypted secrets management backend. Here's an example of how to create
 a Cluster Secret Store with the backend of AWS Parameter Store.
 
 ```yaml title="css.yml" hl_lines="12 16"
--8<- "docs/codes/0002-external-secrets/css.yml"
+-8<- "docs/codes/2024/0002-external-secrets/css.yml"
 ```
 
 ### AWS IAM User
@@ -90,11 +90,11 @@ the name `aws-ssm-user` (the highlighting lines in the above snippet).
 To do that, we'll get help from our good friend OpenTofu.
 
 ```hcl title="variables.tf"
--8<- "docs/codes/0002-external-secrets/variables.tf"
+-8<- "docs/codes/2024/0002-external-secrets/variables.tf"
 ```
 
 ```hcl title="iam.tf"
--8<- "docs/codes/0002-external-secrets/iam.tf"
+-8<- "docs/codes/2024/0002-external-secrets/iam.tf"
 ```
 
 !!! info
@@ -115,7 +115,7 @@ create the Cluster Secret Store from inside the OpenTofu files.
 ### Create the Cluster Secret Store
 
 ```hcl title="kubernetes.tf"
--8<- "docs/codes/0002-external-secrets/kubernetes.tf"
+-8<- "docs/codes/2024/0002-external-secrets/kubernetes.tf"
 ```
 
 You will notice, promptly, that we no longer have to write any hard-coded values
@@ -139,7 +139,7 @@ create an encrypted secret in AWS SSM.
 Let's imagine we want to store some fake password in our secret store.
 
 ```hcl title="ssm.tf"
--8<- "docs/codes/0002-external-secrets/ssm.tf"
+-8<- "docs/codes/2024/0002-external-secrets/ssm.tf"
 ```
 
 ### Reference the Secret From Inside the Cluster
@@ -149,7 +149,7 @@ the External Secret resource to reference the secret we created in the previous
 step.
 
 ```yaml title="external-secret.yml" hl_lines="16"
--8<- "docs/codes/0002-external-secrets/external-secret.yml"
+-8<- "docs/codes/2024/0002-external-secrets/external-secret.yml"
 ```
 
 To create this resource, simply use `kubectl`:
@@ -214,7 +214,7 @@ Now, we have seen that the External Secret is behaving as expected. But, let's
 change the `immutable` field in its spec and observe the behavior.
 
 ```yaml title="external-secret-v2.yml" hl_lines="16"
--8<- "docs/codes/0002-external-secrets/external-secret-v2.yml"
+-8<- "docs/codes/2024/0002-external-secrets/external-secret-v2.yml"
 ```
 
 Updating the External Secret will not prove our point here! But, if we remove
@@ -310,14 +310,14 @@ To help with reproducibility, I will include the versions of the providers in
 this post.
 
 ```hcl title="versions.tf"
--8<- "docs/codes/0002-external-secrets/versions.tf"
+-8<- "docs/codes/2024/0002-external-secrets/versions.tf"
 ```
 
 ## Source Code
 
 The code for this post is available from the following link.
 
-[Source code](https://github.com/developer-friendly/blog/blob/main/docs/codes/0002-external-secrets)
+[Source code](https://github.com/developer-friendly/blog/blob/main/docs/codes/2024/0002-external-secrets)
 
 [^1]: https://github.com/kubernetes-sigs/kind
 [^2]: https://external-secrets.io/latest/introduction/getting-started/
