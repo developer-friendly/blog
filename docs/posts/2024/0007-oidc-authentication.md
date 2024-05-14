@@ -16,8 +16,8 @@ categories:
   - Authorization
   - Security
 links:
-  - ./posts/0002-external-secret-immutable-target.md
-  - ./posts/0004-github-actions-dynamic-matrix.md
+  - ./posts/2024/0002-external-secret-immutable-target.md
+  - ./posts/2024/0004-github-actions-dynamic-matrix.md
 image: assets/images/social/2024/04/14/what-is-openid-connect-authentication-a-practical-guide.png
 ---
 
@@ -115,7 +115,7 @@ The following image is an over simplified diagram of the scenario we are trying
 to achieve:
 
 <figure markdown="span">
-  ![GitHub Actions OIDC](../static/img/0007/oidc-scenario-diagram.svg "Click to zoom in"){ loading=lazy }
+  ![GitHub Actions OIDC](/static/img/2024/0007/oidc-scenario-diagram.svg "Click to zoom in"){ loading=lazy }
   <figcaption>GitHub Actions runner talking to AWS Parameter Store</figcaption>
 </figure>
 
@@ -202,7 +202,7 @@ curl -s \
 ??? example "github-actions-oidc-endpoint.json"
 
     ```json title="" hl_lines="43"
-    -8<- "docs/codes/0007/github-actions-oidc-endpoint.json"
+    -8<- "docs/codes/2024/0007/github-actions-oidc-endpoint.json"
     ```
 
 ```shell title="" linenums="0"
@@ -214,7 +214,7 @@ curl -s \
 ??? example "github-actions-oidc-jwks.json"
 
     ```json title=""
-    -8<- "docs/codes/0007/github-actions-oidc-jwks.json"
+    -8<- "docs/codes/2024/0007/github-actions-oidc-jwks.json"
     ```
 
 This process can numb your brain if you're new to OIDC. But the idea is
@@ -289,11 +289,11 @@ account[^9].
 ```
 
 ```hcl title="versions.tf"
--8<- "docs/codes/0007/previous-versions/versions.tf"
+-8<- "docs/codes/2024/0007/previous-versions/versions.tf"
 ```
 
 ```hcl title="main.tf"
--8<- "docs/codes/0007/main.tf"
+-8<- "docs/codes/2024/0007/main.tf"
 ```
 
 Applying this TF code is quite simple:
@@ -340,11 +340,11 @@ To create the IAM role, we use the following TF code:
 ```
 
 ```hcl title="variables.tf"
--8<- "docs/codes/0007/previous-versions/variables.tf"
+-8<- "docs/codes/2024/0007/previous-versions/variables.tf"
 ```
 
 ```hcl title="iam.tf" hl_lines="14 18-19 24-25"
--8<- "docs/codes/0007/iam.tf"
+-8<- "docs/codes/2024/0007/iam.tf"
 ```
 
 Applying this code is as before. But let's explain the highlights of this TF
@@ -401,23 +401,23 @@ CI workflow definition later on.
 ```
 
 ```hcl title="versions.tf" hl_lines="13-16 20-22"
--8<- "docs/codes/0007/versions.tf"
+-8<- "docs/codes/2024/0007/versions.tf"
 ```
 
 ```hcl title="variables.tf" hl_lines="11-14"
--8<- "docs/codes/0007/variables.tf"
+-8<- "docs/codes/2024/0007/variables.tf"
 ```
 
 ```hcl title="providers.tf" hl_lines="13-16 20-22"
--8<- "docs/codes/0007/providers.tf"
+-8<- "docs/codes/2024/0007/providers.tf"
 ```
 
 ```hcl title="ssm.tf"
--8<- "docs/codes/0007/ssm.tf"
+-8<- "docs/codes/2024/0007/ssm.tf"
 ```
 
 ```hcl title="github.tf"
--8<- "docs/codes/0007/github.tf"
+-8<- "docs/codes/2024/0007/github.tf"
 ```
 
 Applying the above TF files will require you to have the GitHub CLI installed
@@ -461,7 +461,7 @@ That is the true power of adopting OIDC as an authentication mechanism.
 The successful CI job run will look like this:
 
 <figure markdown="span">
-  ![Successful CI run](../static/img/0007/successful-ci-run.webp "Click to zoom in"){ loading=lazy }
+  ![Successful CI run](/static/img/2024/0007/successful-ci-run.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Successful GitHub Actions CI run</figcaption>
 </figure>
 
@@ -507,7 +507,7 @@ response.
 ??? example "Click to expand"
 
       ```json title="" hl_lines="20-25 37-38"
-      -8<- "docs/codes/0007/cloudtrail-ci-log.json"
+      -8<- "docs/codes/2024/0007/cloudtrail-ci-log.json"
       ```
 
 Notice the principal ID and the assumed role ARN in the log is the same as what

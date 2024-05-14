@@ -26,9 +26,9 @@ categories:
   - Security
   - GitHub
 links:
-  - ./posts/0006-gettings-started-with-gitops-and-fluxcd.md
-  - ./posts/0009-external-secrets-aks-to-aws-ssm.md
-  - ./posts/0005-install-k3s-on-ubuntu22.md
+  - ./posts/2024/0006-gettings-started-with-gitops-and-fluxcd.md
+  - ./posts/2024/0009-external-secrets-aks-to-aws-ssm.md
+  - ./posts/2024/0005-install-k3s-on-ubuntu22.md
   - Source Code: https://github.com/developer-friendly/fluxcd-advanced-crds
 image: assets/images/social/2024/05/13/gitops-continuous-deployment-fluxcd-advanced-crds.png
 ---
@@ -176,19 +176,19 @@ previous post and using that knowledge, we'll only need to place the secrets in
 the AWS, and instruct the operator to fetch and feed them to our application.
 
 ```hcl title="fluxcd-secrets/variables.tf" hl_lines="37 43"
--8<- "docs/codes/0011/fluxcd-secrets/variables.tf"
+-8<- "docs/codes/2024/0011/fluxcd-secrets/variables.tf"
 ```
 
 ```hcl title="fluxcd-secrets/versions.tf" hl_lines="23 27-28"
--8<- "docs/codes/0011/fluxcd-secrets/versions.tf"
+-8<- "docs/codes/2024/0011/fluxcd-secrets/versions.tf"
 ```
 
 ```hcl title="fluxcd-secrets/main.tf" hl_lines="12"
--8<- "docs/codes/0011/fluxcd-secrets/main.tf"
+-8<- "docs/codes/2024/0011/fluxcd-secrets/main.tf"
 ```
 
 ```hcl title="fluxcd-secrets/outputs.tf"
--8<- "docs/codes/0011/fluxcd-secrets/outputs.tf"
+-8<- "docs/codes/2024/0011/fluxcd-secrets/outputs.tf"
 ```
 
 Notice that we're defining two providers with differing aliases[^14] for our
@@ -214,14 +214,14 @@ gh auth login --web --scopes admin:gpg_key
 And the web browser page:
 
 <figure markdown="span">
-  ![GH CLI Auth](../static/img/0011/gh-cli-authentication.webp "Click to zoom in"){ loading=lazy }
+  ![GH CLI Auth](/static/img/2024/0011/gh-cli-authentication.webp "Click to zoom in"){ loading=lazy }
   <figcaption>GitHub CLI Authentication</figcaption>
 </figure>
 
 Applying the stack above is straightforward:
 
 ```hcl title="fluxcd-secrets/terraform.tfvars"
--8<- "docs/codes/0011/junk/fluxcd-secrets.terraform.tfvars"
+-8<- "docs/codes/2024/0011/junk/fluxcd-secrets.terraform.tfvars"
 ```
 
 ```shell title="" linenums="0"
@@ -239,7 +239,7 @@ Remember we created GitHub Deploy Key earlier? We are passing it to the cluster
 this way:
 
 ```yaml title="echo-server/externalsecret.yml" hl_lines="8"
--8<- "docs/codes/0011/echo-server/externalsecret.yml"
+-8<- "docs/codes/2024/0011/echo-server/externalsecret.yml"
 ```
 
 The format of the Secret that FluxCD expects for GitRepository is documented
@@ -257,17 +257,17 @@ is that the GitHub Deploy Key generated earlier in our TF code has write
 access. We'll talk about why in a bit.
 
 ```yaml title="echo-server/gitrepo.yml"
--8<- "docs/codes/0011/echo-server/gitrepo.yml"
+-8<- "docs/codes/2024/0011/echo-server/gitrepo.yml"
 ```
 
 ```yaml title="echo-server/kustomization.yml"
--8<- "docs/codes/0011/echo-server/kustomization.yml"
+-8<- "docs/codes/2024/0011/echo-server/kustomization.yml"
 ```
 
 And now let's create this stack:
 
 ```yaml title="echo-server/kustomize.yml"
--8<- "docs/codes/0011/echo-server/kustomize.yml"
+-8<- "docs/codes/2024/0011/echo-server/kustomize.yml"
 ```
 
 ```shell title="" linenums="0"
@@ -290,22 +290,22 @@ For your reference, here's the `base` Kustomization:
 
 === "kustomize/base/configs.env"
     ```ini title=""
-    -8<- "docs/codes/0011/kustomize/base/configs.env"
+    -8<- "docs/codes/2024/0011/kustomize/base/configs.env"
     ```
 
 === "kustomize/base/deployment.yml"
      ```yaml title=""
-     -8<- "docs/codes/0011/kustomize/base/deployment.yml"
+     -8<- "docs/codes/2024/0011/kustomize/base/deployment.yml"
      ```
 
 === "kustomize/base/service.yml"
     ```yaml title=""
-    -8<- "docs/codes/0011/kustomize/base/service.yml"
+    -8<- "docs/codes/2024/0011/kustomize/base/service.yml"
     ```
 
 ===+ "kustomize/base/kustomization.yml"
     ```yaml title=""
-    -8<- "docs/codes/0011/kustomize/base/kustomization.yml"
+    -8<- "docs/codes/2024/0011/kustomize/base/kustomization.yml"
     ```
 
 Now, let's go ahead and see what we need to create in our `dev` environment.
@@ -314,11 +314,11 @@ Notice the referencing AWS SSM key in our ExternalSecret resource which is
 targeting the same value as we created earlier in our `fluxcd-secrets` TF stack.
 
 ```yaml title="kustomize/overlays/dev/externalsecret-docker.yml" hl_lines="8 20-29"
--8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-docker.yml"
+-8<- "docs/codes/2024/0011/kustomize/overlays/dev/externalsecret-docker.yml"
 ```
 
 ```yaml title="kustomize/overlays/dev/externalsecret-gpgkey.yml" hl_lines="8 20"
--8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-gpgkey.yml"
+-8<- "docs/codes/2024/0011/kustomize/overlays/dev/externalsecret-gpgkey.yml"
 ```
 
 The following HTTPRoute is using
@@ -326,7 +326,7 @@ The following HTTPRoute is using
 guide. Make sure to check it out if you haven't already.
 
 ```yaml title="kustomize/overlays/dev/httproute.yml"
--8<- "docs/codes/0011/kustomize/overlays/dev/httproute.yml"
+-8<- "docs/codes/2024/0011/kustomize/overlays/dev/httproute.yml"
 ```
 
 The `PLACEHOLDER` in the following ImagePolicy below will be replaced by the
@@ -336,7 +336,7 @@ Notice the pattern we are requesting, which **MUST be the same
 as you build in your CI pipeline**.
 
 ```yaml title="kustomize/overlays/dev/imagepolicy.yml" hl_lines="10"
--8<- "docs/codes/0011/kustomize/overlays/dev/imagepolicy.yml"
+-8<- "docs/codes/2024/0011/kustomize/overlays/dev/imagepolicy.yml"
 ```
 
 Creating an ImageRepository for a private Docker image is what I consider to
@@ -354,13 +354,13 @@ of all these tokens lying around in our environments! :face_with_head_bandage:
 
 <div class="annotate" markdown>
 ```yaml title="kustomize/overlays/dev/imagerepository.yml" hl_lines="6 10"
--8<- "docs/codes/0011/kustomize/overlays/dev/imagerepository.yml"
+-8<- "docs/codes/2024/0011/kustomize/overlays/dev/imagerepository.yml"
 ```
 </div>
 
 1. This one:
    ```yaml title="kustomize/overlays/dev/externalsecret-docker.yml" hl_lines="8"
-   -8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-docker.yml"
+   -8<- "docs/codes/2024/0011/kustomize/overlays/dev/externalsecret-docker.yml"
    ```
 
 
@@ -374,24 +374,24 @@ mentioned earlier comes into play.
 
 <div class="annotate" markdown>
 ```yaml title="kustomize/overlays/dev/imageupdateautomation.yml" hl_lines="36"
--8<- "docs/codes/0011/kustomize/overlays/dev/imageupdateautomation.yml"
+-8<- "docs/codes/2024/0011/kustomize/overlays/dev/imageupdateautomation.yml"
 ```
 </div>
 
 1. The Kubernetes Secret generated from this ExternalSecret:
    ```yaml title="kustomize/overlays/dev/externalsecret-gpgkey.yml" hl_lines="8"
-   -8<- "docs/codes/0011/kustomize/overlays/dev/externalsecret-gpgkey.yml"
+   -8<- "docs/codes/2024/0011/kustomize/overlays/dev/externalsecret-gpgkey.yml"
    ```
 
 <div class="annotate" markdown>
 ```yaml title="kustomize/overlays/dev/kustomization.yml" hl_lines="13"
--8<- "docs/codes/0011/kustomize/overlays/dev/kustomization.yml"
+-8<- "docs/codes/2024/0011/kustomize/overlays/dev/kustomization.yml"
 ```
 </div>
 
 1. The ImagePolicy created here:
    ```yaml title="kustomize/overlays/dev/imagepolicy.yml" hl_lines="10"
-   -8<- "docs/codes/0011/kustomize/overlays/dev/imagepolicy.yml"
+   -8<- "docs/codes/2024/0011/kustomize/overlays/dev/imagepolicy.yml"
    ```
 
 ### Image Policy Tagging
@@ -417,14 +417,14 @@ For your reference, here's the allowed references:
 To understand this better, let's take look at the created ImageRepository first:
 
 ```yaml title="" hl_lines="28 35"
--8<- "docs/codes/0011/junk/imagerepository.yml"
+-8<- "docs/codes/2024/0011/junk/imagerepository.yml"
 ```
 
 Out of all these scanned images, the following are the ones that we care about
 in our `dev` environment.
 
 ```yaml title="" hl_lines="29-30 35"
--8<- "docs/codes/0011/junk/imagepolicy.yml"
+-8<- "docs/codes/2024/0011/junk/imagepolicy.yml"
 ```
 
 If you remember from our ImagePolicy earlier, we have created the pattern so
@@ -434,7 +434,7 @@ highest number is the latest.
 Here's the snippet from the ImagePolicy again:
 
 ```yaml title="kustomize/overlays/dev/imagepolicy.yml" linenums="9" hl_lines="5"
--8<- "docs/codes/0011/kustomize/overlays/dev/imagepolicy.yml:9:13"
+-8<- "docs/codes/2024/0011/kustomize/overlays/dev/imagepolicy.yml:9:13"
 ```
 
 ### GitHub CI Workflow
@@ -443,7 +443,7 @@ To elaborate further, this is the piece of GitHub CI definition that creates
 the image with the exact tag that we are expecting:
 
 ```yaml title=".github/workflows/ci.yml" linenums="73" hl_lines="12"
--8<- "docs/codes/0011/junk/ci-workflow.yml:73:87"
+-8<- "docs/codes/2024/0011/junk/ci-workflow.yml:73:87"
 ```
 
 This CI definition will create images as you have seen in the status of the
@@ -463,13 +463,13 @@ tag to be used in the Kustomization(1).
 ??? example "Full CI Definition"
 
       ```yaml title=".github/workflows/ci.yml"
-      -8<- "docs/codes/0011/junk/ci-workflow.yml"
+      -8<- "docs/codes/2024/0011/junk/ci-workflow.yml"
       ```
 
 Be sure to deploy the app.
 
 ```yaml title="kustomize/overlays/dev/kustomize.yml"
--8<- "docs/codes/0011/kustomize/overlays/dev/kustomize.yml"
+-8<- "docs/codes/2024/0011/kustomize/overlays/dev/kustomize.yml"
 ```
 
 ```shell title="" linenums="0"
@@ -482,7 +482,7 @@ account to create the GitHub Deploy Key, which forces us to grant it the admin
 access as you see below.
 
 <figure markdown="span">
-  ![Repo Admin Access](../static/img/0011/dev-bot-admin-repo.webp "Click to zoom in"){ loading=lazy }
+  ![Repo Admin Access](/static/img/2024/0011/dev-bot-admin-repo.webp "Click to zoom in"){ loading=lazy }
   <figcaption>GitHub Repository Admin Access</figcaption>
 </figure>
 
@@ -509,19 +509,19 @@ We need a trust relationship between the GitHub webhook system and our cluster.
 This comes in the form of including a token that only the two parties know of.
 
 ```hcl title="webhook-token/variables.tf"
--8<- "docs/codes/0011/webhook-token/variables.tf"
+-8<- "docs/codes/2024/0011/webhook-token/variables.tf"
 ```
 
 ```hcl title="webhook-token/versions.tf"
--8<- "docs/codes/0011/webhook-token/versions.tf"
+-8<- "docs/codes/2024/0011/webhook-token/versions.tf"
 ```
 
 ```hcl title="webhook-token/main.tf"
--8<- "docs/codes/0011/webhook-token/main.tf"
+-8<- "docs/codes/2024/0011/webhook-token/main.tf"
 ```
 
 ```hcl title="webhook-token/outputs.tf"
--8<- "docs/codes/0011/webhook-token/outputs.tf"
+-8<- "docs/codes/2024/0011/webhook-token/outputs.tf"
 ```
 
 ```shell title="" linenums="0"
@@ -537,31 +537,31 @@ Receiver to be ready for all the GitHub webhook triggers.
 
 <div class="annotate" markdown>
 ```yaml title="webhook-receiver/externalsecret.yml" hl_lines="4"
--8<- "docs/codes/0011/webhook-receiver/externalsecret.yml"
+-8<- "docs/codes/2024/0011/webhook-receiver/externalsecret.yml"
 ```
 </div>
 
 1. This secret was created here in our TF code:
    ```hcl title="webhook-token/main.tf" hl_lines="7-8"
-   -8<- "docs/codes/0011/webhook-token/main.tf"
+   -8<- "docs/codes/2024/0011/webhook-token/main.tf"
    ```
 
 ```yaml title="webhook-receiver/httproute.yml"
--8<- "docs/codes/0011/webhook-receiver/httproute.yml"
+-8<- "docs/codes/2024/0011/webhook-receiver/httproute.yml"
 ```
 
 ```yaml title="webhook-receiver/receiver.yml" hl_lines="16"
--8<- "docs/codes/0011/webhook-receiver/receiver.yml"
+-8<- "docs/codes/2024/0011/webhook-receiver/receiver.yml"
 ```
 
 ```yaml title="webhook-receiver/kustomization.yml"
--8<- "docs/codes/0011/webhook-receiver/kustomization.yml"
+-8<- "docs/codes/2024/0011/webhook-receiver/kustomization.yml"
 ```
 
 An now, let's apply this stack.
 
 ```yaml title="webhook-receiver/kustomize.yml"
--8<- "docs/codes/0011/webhook-receiver/kustomize.yml"
+-8<- "docs/codes/2024/0011/webhook-receiver/kustomize.yml"
 ```
 
 ```shell title="" linenums="0"
@@ -572,7 +572,7 @@ At this point, if we inspect the created Receiver, we will get something similar
 to this:
 
 ```yaml title=""
--8<- "docs/codes/0011/junk/receiver.yml"
+-8<- "docs/codes/2024/0011/junk/receiver.yml"
 ```
 
 ### GitHub Webhook
@@ -581,19 +581,19 @@ All is ready for GitHub to notify our cluster on every push to the `main`
 branch. Let's create the webhook using TF stack.
 
 ```hcl title="github-webhook/variables.tf"
--8<- "docs/codes/0011/github-webhook/variables.tf"
+-8<- "docs/codes/2024/0011/github-webhook/variables.tf"
 ```
 
 ```hcl title="github-webhook/versions.tf"
--8<- "docs/codes/0011/github-webhook/versions.tf"
+-8<- "docs/codes/2024/0011/github-webhook/versions.tf"
 ```
 
 ```hcl title="github-webhook/main.tf"
--8<- "docs/codes/0011/github-webhook/main.tf"
+-8<- "docs/codes/2024/0011/github-webhook/main.tf"
 ```
 
 ```hcl title="github-webhook/outputs.tf"
--8<- "docs/codes/0011/github-webhook/outputs.tf"
+-8<- "docs/codes/2024/0011/github-webhook/outputs.tf"
 ```
 
 ```shell title="" linenums="0"
@@ -646,29 +646,29 @@ You can also check the source code for the Notification Controller in the
 FluxCD repository[^21].
 
 ```yaml title="notifications/secret.yml" hl_lines="4"
--8<- "docs/codes/0011/notifications/secret.yml"
+-8<- "docs/codes/2024/0011/notifications/secret.yml"
 ```
 
 ```yaml title="notifications/provider.yml" hl_lines="7"
--8<- "docs/codes/0011/notifications/provider.yml"
+-8<- "docs/codes/2024/0011/notifications/provider.yml"
 ```
 
 ```yaml title="notifications/alert-info.yml" hl_lines="8"
--8<- "docs/codes/0011/notifications/alert-info.yml"
+-8<- "docs/codes/2024/0011/notifications/alert-info.yml"
 ```
 
 ```yaml title="notifications/alert-error.yml" hl_lines="8"
--8<- "docs/codes/0011/notifications/alert-error.yml"
+-8<- "docs/codes/2024/0011/notifications/alert-error.yml"
 ```
 
 ```yaml title="notifications/kustomization.yml"
--8<- "docs/codes/0011/notifications/kustomization.yml"
+-8<- "docs/codes/2024/0011/notifications/kustomization.yml"
 ```
 
 And to create this stack:
 
 ```yaml title="notifications/kustomize.yml"
--8<- "docs/codes/0011/notifications/kustomize.yml"
+-8<- "docs/codes/2024/0011/notifications/kustomize.yml"
 ```
 
 Finally:
@@ -684,15 +684,15 @@ to the corresponding channels, but, for the sake of completeness, and to avoid
 leaving you hanging, here's full installation of the stack:
 
 ```yaml title="kube-prometheus-stack/repository.yml"
--8<- "docs/codes/0011/kube-prometheus-stack/repository.yml"
+-8<- "docs/codes/2024/0011/kube-prometheus-stack/repository.yml"
 ```
 
 ```yaml title="kube-prometheus-stack/externalsecret.yml" hl_lines="9 12"
--8<- "docs/codes/0011/kube-prometheus-stack/externalsecret.yml"
+-8<- "docs/codes/2024/0011/kube-prometheus-stack/externalsecret.yml"
 ```
 
 ```yaml title="kube-prometheus-stack/release.yml" hl_lines="33-36"
--8<- "docs/codes/0011/kube-prometheus-stack/release.yml"
+-8<- "docs/codes/2024/0011/kube-prometheus-stack/release.yml"
 ```
 
 Pay close attention to the config matcher strategy highlighted above. This is
@@ -700,17 +700,17 @@ a known issue; one you can find an extensive discussion on in the
 relevant GitHub repository[^22].
 
 ```yaml title="kube-prometheus-stack/alertmanagerconfig.yml" hl_lines="11-12 29-30"
--8<- "docs/codes/0011/kube-prometheus-stack/alertmanagerconfig.yml"
+-8<- "docs/codes/2024/0011/kube-prometheus-stack/alertmanagerconfig.yml"
 ```
 
 ```yaml title="kube-prometheus-stack/kustomization.yml"
--8<- "docs/codes/0011/kube-prometheus-stack/kustomization.yml"
+-8<- "docs/codes/2024/0011/kube-prometheus-stack/kustomization.yml"
 ```
 
 Let's create this stack:
 
 ```yaml title="kube-prometheus-stack/kustomize.yml"
--8<- "docs/codes/0011/kube-prometheus-stack/kustomize.yml"
+-8<- "docs/codes/2024/0011/kube-prometheus-stack/kustomize.yml"
 ```
 
 And apply it:
@@ -725,7 +725,7 @@ The following are the relevant screenshots of the resources we have created
 and deployed in our Kubernetes cluster.
 
 <figure markdown="span">
-  ![Alertmanager UI](../static/img/0011/alertmanager-triggered-info-and-alert.webp "Click to zoom in"){ loading=lazy }
+  ![Alertmanager UI](/static/img/2024/0011/alertmanager-triggered-info-and-alert.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Alertmanager UI</figcaption>
 </figure>
 
@@ -733,19 +733,19 @@ The commits that the bot will make to the repository will be signed with the
 GPG Key we have created earlier. This is how it looks like in the GitHub UI:
 
 <figure markdown="span">
-  ![Dev Bot Commit](../static/img/0011/dev-bot-commit-to-repo.webp "Click to zoom in"){ loading=lazy }
+  ![Dev Bot Commit](/static/img/2024/0011/dev-bot-commit-to-repo.webp "Click to zoom in"){ loading=lazy }
   <figcaption>GitHub Commit History</figcaption>
 </figure>
 
 You can see the alerts triggered as specified in their YAML manifest:
 
 <figure markdown="span">
-  ![Discord Notifs](../static/img/0011/discord-triggered-info.webp "Click to zoom in"){ loading=lazy }
+  ![Discord Notifs](/static/img/2024/0011/discord-triggered-info.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Discord Triggered Info</figcaption>
 </figure>
 
 <figure markdown="span">
-  ![Slack Alerts](../static/img/0011/slack-triggered-alert.webp "Click to zoom in"){ loading=lazy }
+  ![Slack Alerts](/static/img/2024/0011/slack-triggered-alert.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Slack Triggered Alerts</figcaption>
 </figure>
 
