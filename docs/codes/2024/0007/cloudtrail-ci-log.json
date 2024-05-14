@@ -32,7 +32,7 @@
   },
   "userAgent": "aws-cli/2.15.36 Python/3.11.8 Linux/6.5.0-1017-azure exe/x86_64.ubuntu.22 prompt/off command/ssm.get-parameters",
   "userIdentity": {
-    "accessKeyId": "ASIA6AMOBUU5LTCAGBVC",
+    "accessKeyId": "XXXXXXXXXXXXXXXXXXXX",
     "accountId": "XXXXXXXXXXXX",
     "arn": "arn:aws:sts::XXXXXXXXXXXX:assumed-role/github-actions-oidc-role/GitHubActions",
     "principalId": "AROA6AMOBUU5GFII4ZDZU:GitHubActions",
