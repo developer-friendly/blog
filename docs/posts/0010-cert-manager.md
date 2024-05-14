@@ -342,7 +342,7 @@ We now need an IAM Role with enough permissions to create the DNS records to
 satisfy the DNS01 challenge[^14].
 
 Make sure you have a good understanding of the
-[OpenID Connect](/category/openid-connect), the technique we're employing in
+[OpenID Connect](/category/openid-connect/), the technique we're employing in
 the trust relationship of the AWS IAM Role.
 
 ```hcl title="route53-iam-role/variables.tf"
@@ -366,7 +366,7 @@ tofu plan -out tfplan -var=oidc_issuer_url="KUBERNETES_OIDC_ISSUER_URL"
 tofu apply tfplan
 ```
 
-If you don't know what [OpenID Connect](/category/openid-connect) is and what
+If you don't know what [OpenID Connect](/category/openid-connect/) is and what
 we're doing here, you might want to check out our ealier guides on the
 following topics:
 
@@ -433,13 +433,13 @@ This stack allows the cert-manager controller to talk to AWS Route53.
 
 Notice that we didn't pass any credentials, nor did we have to create any IAM
 User for this communication to work. It's all the power of
-[OpenID Connect](/category/openid-connect) and
+[OpenID Connect](/category/openid-connect/) and
 allows us to establish a trust relationship and never have to worry about any
 credentials in the client service. :white_check_mark:
 
 ### Is There a Simpler Way?
 
-Sure there is. If you don't fancy [OpenID Connect](/category/openid-connect),
+Sure there is. If you don't fancy [OpenID Connect](/category/openid-connect/),
 there is always the option to pass the credentials around in your environment.
 That leaves you with the burden of having to rotate them every now and then,
 but if you're cool with that, there's nothing stopping you from going down
@@ -605,7 +605,7 @@ implementation. Infact, it is unopinionated about the implementation and you
 can use any networking solution that fits your needs and **has support for it**.
 
 In our case, and based on the personal preference and tendency of the author
-:innocent:, we'll use [Cilium](/category/cilium) as the networking solution,
+:innocent:, we'll use [Cilium](/category/cilium/) as the networking solution,
 both as the CNI, as well as the implementation for our Gateway API.
 
 We have covered the [Cilium installation before][k3s-ubuntu], but, for the sake
@@ -622,7 +622,7 @@ And now, let's create the Gateway CRD.
 ```
 
 Notice that we did not create the `gatewayClassName`. It comes as
-battery-included with [Cilium](/category/cilium). You can find the
+battery-included with [Cilium](/category/cilium/). You can find the
 `GatewayClass` as soon as Cilium installation completes with the following
 command:
 
