@@ -1,0 +1,23 @@
+kratos:
+  automigration:
+    enabled: true
+    type: initContainer
+    customArgs:
+      - migrate
+      - sql
+      - -e
+      - --yes
+      - --config
+      - /var/lib/kratos/config.yml
+deployment:
+  environmentSecretsName: kratos-secrets
+  automigration:
+    customArgs:
+      - migrate
+      - sql
+      - -e
+      - --yes
+      - --config
+      - /var/lib/kratos/config.yml
+statefulSet:
+  environmentSecretsName: kratos-secrets

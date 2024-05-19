@@ -45,6 +45,7 @@ repos:
       - id: pretty-format-json
         args:
           - --autofix
+        exclude: .*docs/codes/2024/0012/junk/registration-flow-response.json
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
     rev: v9.14.0
     hooks:

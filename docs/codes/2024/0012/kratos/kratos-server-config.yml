@@ -1,0 +1,80 @@
+identity:
+  schemas:
+    - id: users
+      url: https://gist.githubusercontent.com/developer-friendly-bot/c3ce3c0c1ee6e4e706d3773ad7067132/raw/217a01ef02d78d29dd844461917bc22a616892f4/kratos.identity-schema.json
+  default_schema_id: users
+dsn: PLACEHOLDER
+selfservice:
+  default_browser_return_url: https://ory.developer-friendly.blog
+  flows:
+    logout:
+      after:
+        default_browser_return_url: https://ory.developer-friendly.blog
+    registration:
+      ui_url: https://ory.developer-friendly.blog/register
+      enabled: true
+    login:
+      ui_url: https://ory.developer-friendly.blog/login
+    verification:
+      ui_url: https://ory.developer-friendly.blog/verify
+      use: link
+      enabled: true
+    recovery:
+      ui_url: https://ory.developer-friendly.blog/recovery
+      use: link
+      enabled: true
+    error:
+      ui_url: https://ory.developer-friendly.blog/
+    settings:
+      ui_url: https://ory.developer-friendly.blog/settings
+  methods:
+    link:
+      config:
+        base_url: https://auth.developer-friendly.blog
+      enabled: true
+    code:
+      enabled: false
+    password:
+      enabled: true
+  allowed_return_urls:
+    - https://ory.developer-friendly.blog
+courier:
+  smtp:
+    from_address: no-reply@developer-friendly.blog
+    from_name: Developer Friendly
+    connection_uri: PLACEHOLDER
+serve:
+  public:
+    cors:
+      allowed_origins:
+        - https://ory.developer-friendly.blog
+      enabled: true
+    base_url: https://auth.developer-friendly.blog
+    port: 4433
+    request_log:
+      disable_for_health: true
+  admin:
+    base_url: http://localhost:4434/
+    port: 4434
+    request_log:
+      disable_for_health: true
+log:
+  format: json
+  level: info
+secrets:
+  cookie:
+    - ABCDEFGHIJKLMNOP
+  cipher:
+    - ABCDEFGHIJKLMNOPQRSTUVWXYZ012345
+  default:
+    - ABCDEFGHIJKLMNOP
+cookies:
+  path: /
+  same_site: None
+  domain: .developer-friendly.blog
+session:
+  lifespan: 1h
+  cookie:
+    path: /
+    same_site: None
+    domain: .developer-friendly.blog
