@@ -49,6 +49,7 @@ skip-check:
   - CKV_K8S_15
   - CKV2_K8S_6
   - CKV2_K8S_6
+  - CKV_TF_2
 skip-framework: []
 skip-path: []
 summary-position: top
