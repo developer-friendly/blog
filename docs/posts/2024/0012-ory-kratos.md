@@ -15,6 +15,12 @@ categories:
   - Security
   - User Management
   - Identity Provider
+  - GitHub
+  - GitHub Actions
+  - GitHub Pages
+  - CI/CD
+links:
+  - Source Code: https://github.com/developer-friendly/ory
 ---
 
 # Ory Kratos: Fast Headless Identity and User Management
@@ -313,7 +319,7 @@ The app's starting page is the following `index.html` file. It's simple, yet
 gets the job done. :sunglasses:
 
 ```html title="frontend/index.html"
--8<- "docs/codes/2024/0012/frontend/index.html"
+-8<- "docs/codes/2024/0012/junk/index-without-spa-hack.html"
 ```
 
 ### CSS
@@ -381,7 +387,7 @@ in our upcoming JavaScript code.
 Remember the diagram we saw earlier between the frontend and the Ory Kratos?
 We will start by initiating a registration flow.
 
-```javascript title="frontend/src/utils.js" hl_lines="2"
+```javascript title="frontend/src/utils.js" hl_lines="4"
 -8<- "docs/codes/2024/0012/junk/init-flow.js"
 ```
 
@@ -393,6 +399,12 @@ go pass the initial step! :warning:
 ```javascript title="frontend/src/flow.js"
 -8<- "docs/codes/2024/0012/junk/get-flow-json.js"
 ```
+
+:material-check-all: Note the `accept` header we pass to the fetch API on line
+8. This will make sure that the Kratos server responds with the JSON and not
+redirected to the same URL as we are in right now. The alternative will result
+in double redirection to the current web address, which will nullify the
+`origin` header and you'll face a CORS error.
 
 At this point, we have the JSON response from the Kratos server. We have to
 use that information to dynamically create an HTML form to render for the user.
@@ -417,8 +429,8 @@ to build the HTML form.
 This step is a lot subjective and you can get very creative. Yet we simply
 create a bunch of inputs and labels inside an HTML form.
 
-```javascript title="frontend/src/utils.js" hl_lines="14-85"
--8<- "docs/codes/2024/0012/junk/create-form-from-flow.js"
+```javascript title="frontend/src/utils.js" hl_lines="16-85"
+-8<- "docs/codes/2024/0012/frontend/src/utils.js"
 ```
 
 Not much is to say regarding the logic happening here. However, notice that
@@ -426,9 +438,107 @@ we are intentionally deferring the creation of the password input until the
 very end. That is just a bit unfortunate because I would expect Kratos to do
 this out of the box!
 
-```javascript title="frontend/src/flow.js" hl_lines="1 14 16"
--8<- "docs/codes/2024/0012/junk/return-created-form.js"
+```javascript title="frontend/src/flow.js" hl_lines="1 4 14 16"
+-8<- "docs/codes/2024/0012/frontend/src/flow.js"
 ```
+
+We have most of what we need as far as JavaScript goes, yet there is still the
+entrypoint as well as the Vanilla JS router to take care of.
+
+```javascript title="frontend/src/router.js"
+-8<- "docs/codes/2024/0012/frontend/src/router.js"
+```
+
+```javascript title="frontend/app.js"
+-8<- "docs/codes/2024/0012/frontend/app.js"
+```
+
+## Bundling the Frontend
+
+We mentioned that we are using ViteJS for bundling our code. We don't do a lot
+of crazy stuff in this code. Yet one crucial we needed (not present in
+VanillaJS) was the ability to override the variables from the environment
+variable. That is where ViteJS provides a great hand. :handshake:
+
+```javascript title="frontend/src/config.js"
+-8<- "docs/codes/2024/0012/frontend/src/config.js"
+```
+
+This way, whenever we want to customize the target Kratos server URL, all we
+have to do is to pass it as an environment variable as such:
+
+```shell title="" linenums="0"
+export VITE_KRATOS_HOST="https://kratos.example.com"
+```
+
+## Building the frontend
+
+For this project, we have picked the Bun as our build tool. It's simple & fast
+:zap: and does the job well. :muscle:
+
+```json title="frontend/package.json"
+-8<- "docs/codes/2024/0012/frontend/package.json"
+```
+
+```shell title="" linenums="0"
+bun install
+bun run build
+```
+
+## CI Definition
+
+When our project is ready to be published, we will use GitHub Actions to build
+and deploy the frontend to the GitHub Pages.
+
+```yaml title=".github/workflows/ci.yml"
+-8<- "docs/codes/2024/0012/junk/ci.yml"
+```
+
+With this workflow, upon every push to the `main` branch we will have our
+application ready to be served on the GitHub Pages. In our case, this
+repository is public and there is no charge for the CI, as well as for the
+GitHub Pages.
+
+## GitHub Pages SPA Hack
+
+GitHub Pages does not natively support Single Page Applications. This is a
+blocker for our application since it is a SPA. To get around that, we will
+get help from the community to come up with [something a bit creative].
+
+The idea is to create a custom 404.html which will have enough JavaScript code
+to redirect the page to our SPA's index.html, having it's URI as query parameter.
+On the other hand, the `index.html` will also include a JavaScript code to
+parse the query parameter and redirect the page to the correct URI.
+
+```html title="frontend/404.html"
+-8<- "docs/codes/2024/0012/frontend/404.html"
+```
+
+```html title="frontend/index.html" hl_lines="10-21"
+-8<- "docs/codes/2024/0012/frontend/index.html"
+```
+
+And we need to include the new 404.html as asset in ViteJS config:
+
+```javascript title="frontend/vite.config.js"
+-8<- "docs/codes/2024/0012/frontend/vite.config.js"
+```
+
+## Bonus: GitHub Pages Custom Domain
+
+The application we have deployed in the GitHub Pages so far is accessible the
+URL assigned by GitHub to each repository's Pages instance.
+
+<https://USERNAME.github.io/REPOSITORY>
+
+In our case, that turns out to be the following format:
+
+<https://developer-friendly.github.io/ory>
+
+There is nothing wrong with this URL. However, in a serious production
+application, you would want to have your own domain name. This is where the
+custom domain name comes in; And unlike other service providers, GitHub does
+charge you extra for this feature.
 
 [installed as a Helm installation]: https://artifacthub.io/packages/helm/ory/kratos/0.42.0
 [Gateway API]: https://gateway-api.sigs.k8s.io/
@@ -441,3 +551,4 @@ this out of the box!
 [beginner's guide]: ./0006-gettings-started-with-gitops-and-fluxcd.md
 [External Secrets Operator]: ./0009-external-secrets-aks-to-aws-ssm.md
 [cert-manager]: ./0010-cert-manager.md
+[something a bit creative]: https://github.com/rafgraph/spa-github-pages

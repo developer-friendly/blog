@@ -20,3 +20,4 @@
 *[CD]: Continuous Deployment
 *[GHCR]: GitHub Container Registry
 *[SPA]: Single Page Application
+*[CORS]: Cross-Origin Resource Sharing

@@ -1,7 +1,7 @@
 import { initFlow, createFlowForm } from "./utils.js";
 
 
-async function createForm(flowName) {
+async function createForm(flowId, flowName) {
   var flowInfo, flowJson;
 
   var headers = {

@@ -1,3 +1,5 @@
+import { kratosHost } from "./config.js";
+
 var fetchOptions = {
   credentials: "include",
 };
