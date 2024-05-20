@@ -26,9 +26,9 @@ categories:
   - Terraform
   - User Management
 links:
-  - ./posts/posts/0005-install-k3s-on-ubuntu22.md
-  - ./posts/posts/0007-oidc-authentication.md
-  - ./posts/posts/0004-github-actions-dynamic-matrix.md
+  - ./posts/2024/0005-install-k3s-on-ubuntu22.md
+  - ./posts/2024/0007-oidc-authentication.md
+  - ./posts/2024/0004-github-actions-dynamic-matrix.md
   - Source Code: https://github.com/developer-friendly/ory
 image: assets/images/social/2024/05/20/ory-kratos-headless-authentication-identity-and-user-management.png
 ---
