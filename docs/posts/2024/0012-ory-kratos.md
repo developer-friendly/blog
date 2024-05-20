@@ -137,9 +137,8 @@ to your own stack:
       a Single Page Application without any JS framework; cause that's how
       Maximiliano Firtman[^8] taught the rest of us possible, among many
       disbeliefs!
-- [x] The CI takes care of the deployment to the
-      [GitHub Pages](/category/github-pages/)[^9]. Both are free  for public
-      repositories.
+- [x] The CI takes care of the deployment to the GitHub Pages[^9]. Both are
+      free for public repositories.
 
 With that somewhat unconventional stack, let's see how we can create our own
 custom UI for the Ory Kratos[^10].
