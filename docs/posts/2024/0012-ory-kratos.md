@@ -3,7 +3,7 @@ date: 2024-05-20
 draft: false
 description: >-
   Integrate custom UI with Kratos, the opensource identity and user management
-  solution. Build and deploy a Single Page Application to GitHub Pages.
+  solution. Build and deploy a Single Page Application (SPA) to GitHub Pages.
 categories:
   - Kratos
   - JavaScript
@@ -24,6 +24,7 @@ categories:
   - Identity Management
   - Infrastructure as Code
   - Kubernetes
+  - Kustomization
   - OpenTofu
   - Ory
   - Security
