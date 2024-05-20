@@ -63,7 +63,7 @@ spec:
           configMap:
             name: kratos-config
             items:
-              - key: kratos-config.yml
+              - key: kratos-server-config.yml
                 path: config.yml
       extraVolumeMounts:
         - name: kratos-config
@@ -75,7 +75,7 @@ spec:
           configMap:
             name: kratos-config
             items:
-              - key: kratos-config.yml
+              - key: kratos-server-config.yml
                 path: config.yml
       extraVolumeMounts:
         - name: kratos-config

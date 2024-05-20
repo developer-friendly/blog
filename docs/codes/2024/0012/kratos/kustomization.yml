@@ -4,7 +4,7 @@ configurations:
 configMapGenerator:
   - files:
       - values.yaml=./helm-values.yml
-      - kratos-server-config.yml=./kratos-server-config.yml
+      - ./kratos-server-config.yml
     name: kratos-config
 
 resources:

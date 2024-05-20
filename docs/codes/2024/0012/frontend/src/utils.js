@@ -13,6 +13,12 @@ export async function initFlow(flow, extraHeaders = {}) {
   });
 }
 
+export async function getFlowInfo(flowId) {
+  return await fetch(`${kratosHost}/self-service/browser/flows?id=${flowId}`, {
+    ...fetchOptions,
+  });
+}
+
 export function createFlowForm(flowJson, submitLabel = "Submit") {
   var form = document.createElement("form");
 
@@ -43,7 +49,6 @@ export function createFlowForm(flowJson, submitLabel = "Submit") {
       input.value = attr.value || "";
 
       if (isSubmit) {
-        input.classList.add("button");
         var span = document.createElement("span");
         span.innerText = submitLabel;
         input.appendChild(span);

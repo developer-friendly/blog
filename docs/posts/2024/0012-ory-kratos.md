@@ -32,13 +32,13 @@ links:
 
 Authentication flows are quite common in the modern day software development.
 What we want from one authentication has a lot of overlapping funcionality with
-what our other applications needed. Even across different industries, you can
+what our other applications need. Even across different industries, you can
 still see the same patterns apply when it comes to Identity and User Management.
 
-Ory Kratos solves all that under one umbrella, providing a clean extensible
-headless API that you can ship your own UI with. It empowers you to customize
-the frontend, while preserving the ever-common backend handled by the robust
-SQL database.
+Ory Kratos solves all that user management under one umbrella of identity server,
+providing a clean headless API that you can ship your own UI with. It empowers
+you to customize the frontend, while preserving the ever-common backend that
+is backed by the robust SQL database.
 
 In this blog post, we will cover the introduction and basics of Ory Kratos,
 as well as the steps and guide to write your integration client.
@@ -79,7 +79,7 @@ organization hierarchy.
 
 The guide to follow for the rest of this post is intuitive and easy to follow.
 If you've read any of the authentication RFCs, or worked with authentication
-systems before in anyway, you have a good understanding of what's about to come;
+systems before in anyway, you have a good understanding of what's about to come:
 _what is and what isn't authentication_ that is.
 
 I will mention the highlighting factors when it comes to theories, but this
@@ -120,10 +120,12 @@ to your own stack:
 - [x] The Kratos server has been [installed as a Helm installation] on a
       Kubernetes cluster. The Kratos public endpoints are exposed to the
       internet using the [Gateway API] and with the help of
-      [Cilium](/category/cilium).
+      [Cilium](/category/cilium/). We have guides in our archive for Kubernetes
+      and Cilium installation if you need further help;
+      [Kubernetes](/category/kubernetes/) is the place to look for.
 - [x] The source code for the frontend is written in pure Vanilla JavaScript,
       bundled with [ViteJS] and built with [Bun]. I am by no means a frontender
-      as you shall see shortly for yourself, however, the code you shall see is
+      as you shall see shortly for yourself, however, the code you will see is
       a Single Page Application without any JS framework; cause that's how
       [Maximiliano Firtman] taught the rest of us possible, among many
       disbeliefs!
@@ -131,9 +133,13 @@ to your own stack:
       for public repositories.
 
 With that somewhat unconventional stack, let's see how we can create our own
-custom UI for the Ory Kratos.
+[custom UI for the Ory Kratos].
 
 ## Kratos Configuration
+
+The first step when it comes to Ory Kratos, is to have your config file ready.
+That is the starting point you should worry about before starting anything
+else.
 
 There are many different attributes you can configure in Ory Kratos. Some of
 which are required fields, all of which defines the way you want Kratos to work
@@ -146,7 +152,7 @@ to get you going. You won't have a hard time following the rest for yourself
 
 To get started, and to have a complete reference of all the available keys,
 you can copy the entire configuration from the
-[official documentation][decent documentation] and modify and customize it as
+[official documentation and] modify and customize it as
 you see fit. Below is the screenshot of how to do that.
 
 <figure markdown="span">
@@ -170,8 +176,8 @@ But, let's explain some of the highlights from this file.
 
 The first section defines what type of schema you want to use. This "schema"
 is the definition of your users signing up and their attributes saved in the
-database. This will be an HTML form with all the fields you like to have filled
-by your users.
+database. This will be an HTML form with all the fields you like filled by your
+users.
 
 You can have more than one schema definition, which is a perfect use case for
 having different types of users, e.g., _admin_, _employee_, _customer_, etc.
@@ -197,7 +203,10 @@ HTML form you see in the next screenshot.
 
 ### UI URLs
 
-The path to your frontend endponits are custom to your application; pick what's
+This part of the configuration file defines the way you want Kratos to redirect
+requests to your frontend.
+
+The path to your frontend endpoints are custom to your application; pick what's
 best for you. However, bear in mind that the Kratos server and your frontend
 application MUST be hosted under the same root domain.
 
@@ -208,7 +217,7 @@ your domain from their own domain! :scream:
 ### Cookie and Session
 
 This section of the configuration file specifies the domain you want to set
-cookie for. It is essentially THE key to keeping consistency and correctness
+cookies for. It is essentially THE key to keeping consistency and correctness
 between the Ory Kratos server and your frontend. Else, they won't work!
 
 The key point to keep in mind, again, is to host both the frontend and the
@@ -222,7 +231,8 @@ We will provide more details on the cookie and the domain later in this post.
 
 ## Kratos Deployment
 
-Skip this section if you have Kratos deployed elsewhere. :airplane:
+Skip this section if you have Kratos deployed elsewhere or are using the
+[Ory Network] with a paid plan. :airplane:
 
 You don't have to self-host your Ory Kratos server if you don't want to. The
 Ory team provides a hosted version of Ory Kratos, as well as other Ory products
@@ -233,7 +243,7 @@ free version. Not having the same top-level root domain is a big no-no for
 Kratos and its UI and as such, we'll deploy the opensource version in our
 Kubernetes deployment.
 
-If you need assistance setting up a [Kubernetes](/category/kubernetes) cluster,
+If you need assistance setting up a [Kubernetes](/category/kubernetes/) cluster,
 follow one of our earlier guides. The main requirement, however, is that the
 cluster needs to be internet-facing.
 
@@ -248,7 +258,7 @@ have guides on those as well, so feel free to check them out.
 ```
 
 Kratos server is able to read the config file from the specified file, or from
-the environment variable. Which is why we are capitalizing all the environments
+[the environment variables]. Which is why we are capitalizing all the environments
 in the following ExternalSecret resource.
 
 ```yaml title="kratos/externalsecret.yml" hl_lines="4"
@@ -259,7 +269,7 @@ The following patches applied to the HelmRelease are just because of the lack
 of flexibility in the Ory Kratos' Helm chart. We have to manually pass some
 of the otherwise missing values.
 
-```yaml title="kratos/release.yml" hl_lines="25"
+```yaml title="kratos/release.yml" hl_lines="25 66 78"
 -8<- "docs/codes/2024/0012/kratos/release.yml"
 ```
 
@@ -275,7 +285,7 @@ of the otherwise missing values.
 -8<- "docs/codes/2024/0012/kratos/kustomizeconfig.yml"
 ```
 
-```yaml title="kratos/kustomization.yml"
+```yaml title="kratos/kustomization.yml" hl_lines="7"
 -8<- "docs/codes/2024/0012/kratos/kustomization.yml"
 ```
 
@@ -292,21 +302,22 @@ kubectl apply -f kratos/kustomize.yml
 This is all the Kubernetes knowledge we will need for this blog post. Promise!
 :fingers_crossed:
 
-That is to say, if you're not a Kubernetes guy, don't worry. From this step,
-all you need is a internet-accessible Ory Kratos server hosted under the same
-top-level domain as your upcoming frontend.
+That is to say, if you're not a Kubernetes guy, don't worry. All you need from
+this step, is an internet-accessible Ory Kratos server hosted under the same
+top-level domain as your UI frontend.
 
-Moving forward, we will only work on [JavaScript](/category/javascript),
-[HTML](/category/html), and [CSS](/category/css).
+Moving forward, we will only work on [JavaScript](/category/javascript/),
+[HTML](/category/html/), and [CSS](/category/css/). :nerd:
 
 ## Frontend Code
 
-If you've been waiting for the JS part, this is it! :tada:
+If you've been waiting for the UI part, this is it! :tada:
 
-At this point, we will shift our focus to the frontend code. The custom UI
-for our Kratos server. This will be the page that our users will see once they
-open the application. Everything else, is the communication between this
-frontend and the Ory Kratos.
+At this point, we will shift our focus to the frontend code; The custom UI
+for our Kratos server.
+
+This will be the page that our users will see once they open the application.
+Everything else, is the communication between this frontend and the Ory Kratos.
 
 To start things off, we will need a couple unavoidable static files for
 template and styling.
@@ -320,8 +331,8 @@ requests.
 
 ### HTML
 
-The app's starting page is the following `index.html` file. It's simple, yet
-gets the job done. :sunglasses:
+The app's starting page is the following `index.html` file. It's simple, and
+that is its superpower. :superhero:
 
 ```html title="frontend/index.html"
 -8<- "docs/codes/2024/0012/junk/index-without-spa-hack.html"
@@ -330,11 +341,13 @@ gets the job done. :sunglasses:
 ### CSS
 
 Beside the header, footer and the flex container for the form and table, there
-is nothing special about the styling either.
+is nothing special about the styling either. :point_down:
 
-```css title="frontend/assets/styles.css"
--8<- "docs/codes/2024/0012/frontend/assets/styles.css"
-```
+??? example "Click to expand"
+
+    ```css title="frontend/assets/styles.css"
+    -8<- "docs/codes/2024/0012/frontend/assets/styles.css"
+    ```
 
 ## Flow 101
 
@@ -386,18 +399,18 @@ If you know `curl`, this will be the registration flow in a nutshell:
 -8<- "docs/codes/2024/0012/junk/registration-flow-by-curl.sh"
 ```
 
-If that sounds too complicated too comprehend, don't worry. We'll break it down
+If that sounds too complicated to comprehend, don't worry. We'll break it down
 in our upcoming JavaScript code.
 
 Remember the diagram we saw earlier between the frontend and the Ory Kratos?
-We will start by initiating a registration flow.
+We will start by initiating a flow.
 
 ```javascript title="frontend/src/utils.js" hl_lines="4"
 -8<- "docs/codes/2024/0012/junk/init-flow.js"
 ```
 
-Pay close attention that we are explicitly asking the fetch API to include the
-credentials in our call to the Ory Kratos server. Ignoring that will result
+Pay close attention that we are explicitly asking the fetch API to **include the
+credentials** in our call to the Ory Kratos server. Ignoring that will result
 in the required cookies not being sent to the server and your flow will never
 go pass the initial step! :warning:
 
@@ -406,20 +419,20 @@ go pass the initial step! :warning:
 ```
 
 :material-check-all: Note the `accept` header we pass to the fetch API on line
-8. This will make sure that the Kratos server responds with the JSON and not
-redirected to the same URL as we are in right now. The alternative will result
+8. This will make sure that the Kratos server responds with the JSON and won't
+redirect us to the same URL as we are in right now. The alternative will result
 in double redirection to the current web address, which will nullify the
-`origin` header and you'll face a CORS error.
+`origin` header and [you'll face a CORS error].
 
 At this point, we have the JSON response from the Kratos server. We have to
 use that information to dynamically create an HTML form to render for the user.
 
 In order to be able to parse the JSON and render an HTML form from it, you have
-to know that type of response the Kratos server will send you.
+to know what type of response the Kratos server will send you.
 
 The JSON response from the registration flow looks something like the following.
-If you pay close attention, you will notice that the JSON response resembles
-a lot like the identity schema we passed to the Kratos server earlier.
+:point_down: If you pay close attention, you will notice that the JSON response
+resembles a lot like the identity schema we passed to the Kratos server earlier.
 
 ??? example "Click to expand"
 
@@ -434,16 +447,17 @@ to build the HTML form.
 This step is a lot subjective and you can get very creative. Yet we simply
 create a bunch of inputs and labels inside an HTML form.
 
-```javascript title="frontend/src/utils.js" hl_lines="16-85"
+```javascript title="frontend/src/utils.js" hl_lines="16-92"
 -8<- "docs/codes/2024/0012/frontend/src/utils.js"
 ```
 
 Not much is to say regarding the logic happening here. However, notice that
 we are intentionally deferring the creation of the password input until the
-very end. That is just a bit unfortunate because I would expect Kratos to do
+very end. That is just a bit unfortunate since Kratos' JSON response does not
+send the orders of inputs as we'd like it; I would expect Kratos to do
 this out of the box!
 
-```javascript title="frontend/src/flow.js" hl_lines="1 4 14 16"
+```javascript title="frontend/src/flow.js" hl_lines="1 4 11-15 19 21"
 -8<- "docs/codes/2024/0012/frontend/src/flow.js"
 ```
 
@@ -460,9 +474,9 @@ entrypoint as well as the Vanilla JS router to take care of.
 
 ## Bundling the Frontend
 
-We mentioned that we are using ViteJS for bundling our code. We don't do a lot
-of crazy stuff in this code. Yet one crucial we needed (not present in
-VanillaJS) was the ability to override the variables from the environment
+We mentioned that we are using [ViteJS] for bundling our code. We don't do a lot
+of crazy stuff in this code. Yet one crucial feature we need (not present in
+VanillaJS) is the ability to override the variables from the environment
 variable. That is where ViteJS provides a great hand. :handshake:
 
 ```javascript title="frontend/src/config.js"
@@ -470,7 +484,8 @@ variable. That is where ViteJS provides a great hand. :handshake:
 ```
 
 This way, whenever we want to customize the target Kratos server URL, all we
-have to do is to pass it as an environment variable as such:
+have to do is to pass it as an environment variable as below before building
+the code:
 
 ```shell title="" linenums="0"
 export VITE_KRATOS_HOST="https://kratos.example.com"
@@ -478,7 +493,7 @@ export VITE_KRATOS_HOST="https://kratos.example.com"
 
 ## Building the frontend
 
-For this project, we have picked the Bun as our build tool. It's simple & fast
+For this project, we have picked [Bun] as our build tool. It's simple & fast
 :zap: and does the job well. :muscle:
 
 ```json title="frontend/package.json"
@@ -506,12 +521,13 @@ GitHub Pages.
 
 ## GitHub Pages SPA Hack
 
-GitHub Pages does not natively support Single Page Applications. This is a
-blocker for our application since it is a SPA. To get around that, we will
-get help from the community to come up with [something a bit creative].
+As of writing this blog post, GitHub Pages does not natively support Single
+[Page Applications][gh-spa-unsupported]. This is a blocker for our application
+since it is a SPA. To get around that, we will get help from the community to
+come up with [something a bit creative].
 
-The idea is to create a custom 404.html which will have enough JavaScript code
-to redirect the page to our SPA's index.html, having it's URI as query parameter.
+The idea is to create a custom `404.html` which will have enough JavaScript code
+to redirect the page to our SPA's `index.html`, having it's URI as query parameter.
 On the other hand, the `index.html` will also include a JavaScript code to
 parse the query parameter and redirect the page to the correct URI.
 
@@ -523,10 +539,22 @@ parse the query parameter and redirect the page to the correct URI.
 -8<- "docs/codes/2024/0012/frontend/index.html"
 ```
 
-And we need to include the new 404.html as asset in ViteJS config:
+And now we need to include the new `404.html` as an asset in ViteJS config:
 
 ```javascript title="frontend/vite.config.js"
 -8<- "docs/codes/2024/0012/frontend/vite.config.js"
+```
+
+## Logout Flow
+
+Among the flows we mentioned earlier, all can be handled by our "general"
+flow implementation. However, the [logout flow is a bit different]. It requires
+its own implementation as there will no longer be a form. You may want to
+include a confirmation page for your app but that's out of scope as far as
+Kratos server is involved.
+
+```javascript title="frontend/src/logout.js"
+-8<- "docs/codes/2024/0012/frontend/src/logout.js"
 ```
 
 ## Bonus: GitHub Pages Custom Domain
@@ -549,7 +577,7 @@ The DNS record we want to create should be the following:
 
 {{ read_csv('docs/codes/2024/0012/junk/dns.csv') }}
 
-And since the [developer-friendly.blog] domain is hosted on Cloudflare, here
+And since the [developer-friendly.blog] domain is hosted on Cloudflare, here's
 how the [IaC](/category/iac/) will look like for such a change.
 
 ```hcl title="dns/variables.tf"
@@ -583,7 +611,7 @@ frontend should be the same for the cookies to work.
 
 Among many benefits that Kratos brings to the table, many years of development
 and feedback from the community, following security best practices based on the
-well-known recommendations and standards, not reinventing the wheel, and
+[well-known recommendations and standards], not reinventing the wheel, and
 separation of concern are just a few to name.
 
 I honestly rarely think of writing my own authentication and identity
@@ -618,3 +646,11 @@ Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
 [External Secrets Operator]: ./0009-external-secrets-aks-to-aws-ssm.md
 [cert-manager]: ./0010-cert-manager.md
 [something a bit creative]: https://github.com/rafgraph/spa-github-pages
+[custom UI for the Ory Kratos]: https://www.ory.sh/docs/kratos/bring-your-own-ui/custom-ui-overview
+[official documentation and]: https://www.ory.sh/docs/kratos/reference/configuration
+[the environment variables]: https://www.ory.sh/docs/kratos/configuring
+[you'll face a CORS error]: https://stackoverflow.com/questions/30193851/ajax-call-following-302-redirect-sets-origin-to-null
+[gh-spa-unsupported]: https://github.com/orgs/community/discussions/64096
+[logout flow is a bit different]: https://www.ory.sh/docs/kratos/self-service/flows/user-logout
+[developer-friendly.blog]: https://developer-friendly.blog
+[well-known recommendations and standards]: https://www.ory.sh/docs/ecosystem/projects#ory-kratos

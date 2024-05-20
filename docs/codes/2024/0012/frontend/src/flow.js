@@ -1,4 +1,4 @@
-import { initFlow, createFlowForm } from "./utils.js";
+import { initFlow, getFlowInfo, createFlowForm } from "./utils.js";
 
 
 async function createForm(flowId, flowName) {
@@ -8,7 +8,12 @@ async function createForm(flowId, flowName) {
     accept: "application/json",
   };
 
-  flowInfo = await initFlow(flowName, headers);
+  if (flowId) {
+    flowInfo = await getFlowInfo(flowId);
+  } else {
+    flowInfo = await initFlow(flowName, headers);
+  }
+
   flowJson = await flowInfo.json();
 
   var form = createFlowForm(flowJson);

@@ -12,7 +12,7 @@
         },
         "email": {
           "examples": [
-            "john@developer-friendly.blog"
+            "hi@developer-friendly.blog"
           ],
           "format": "email",
           "minLength": 3,

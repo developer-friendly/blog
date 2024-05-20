@@ -5,19 +5,19 @@ kratos:
     customArgs:
       - migrate
       - sql
-      - -e
+      - --read-from-env
       - --yes
       - --config
-      - /var/lib/kratos/config.yml
+      - /var/lib/kratos/config/config.yml
 deployment:
   environmentSecretsName: kratos-secrets
   automigration:
     customArgs:
       - migrate
       - sql
-      - -e
+      - --read-from-env
       - --yes
       - --config
-      - /var/lib/kratos/config.yml
+      - /var/lib/kratos/config/config.yml
 statefulSet:
   environmentSecretsName: kratos-secrets
