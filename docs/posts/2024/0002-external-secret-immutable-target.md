@@ -9,6 +9,8 @@ categories:
   - Secrets Management
   - AWS
   - OpenTofu
+links:
+  - ./posts/2024/0009-external-secrets-aks-to-aws-ssm.md
 image: assets/images/social/2024/02/16/external-secrets-and-immutable-target.png
 ---
 
@@ -46,7 +48,7 @@ create/update secrets) in the backend.
 First things first, let's spin up a Kubernetes cluster. I am using kind[^1] to
 create a local and lightweight Kubernetes cluster.
 
-```shell
+```shell title="" linenums="0"
 kind create cluster --image=kindest/node:v1.29.2
 ```
 
@@ -65,7 +67,7 @@ After this command, I will see a single-node cluster on my machine.
 I prefer the Helm installation method since it is deterministic and behaves
 as expected when pinning to a specific version.
 
-```shell
+```shell title="" linenums="0"
 helm repo add external-secrets https://charts.external-secrets.io
 helm install external-secrets external-secrets/external-secrets --version=0.9.x
 ```
@@ -154,7 +156,7 @@ step.
 
 To create this resource, simply use `kubectl`:
 
-```shell
+```shell title="" linenums="0"
 kubectl apply -f external-secret.yml
 ```
 
@@ -165,7 +167,7 @@ Notice the highlighted lines as it is the topic of this post.
 To realize if the secret is initialized correctly, we can investigate the
 Kubernetes Secret resource:
 
-```shell
+```shell title="" linenums="0"
 $ kubectl get secret my-app -o jsonpath='{.data.MONGO_ROOT_PASSWORD}' | base64 --decode && echo
 ThisIsNotASecurePassword
 ```
@@ -190,7 +192,7 @@ role in this expectation as we shall see shortly.
 
 Let's modify the password using the OpenTofu again.
 
-```shell
+```shell title="" linenums="0"
 tofu apply -var mongo_root_password=SomethingDifferent
 ```
 
@@ -199,7 +201,7 @@ the External Secret Operator to pick up the change and update the secret.
 
 After that, another look at the secret will reveal that the password.
 
-```shell
+```shell title="" linenums="0"
 $ kubectl get secret my-app \
   -o jsonpath='{.data.MONGO_ROOT_PASSWORD}' | \
   base64 --decode && echo
@@ -221,14 +223,14 @@ Updating the External Secret will not prove our point here! But, if we remove
 and recreat the External Secret, we won't embarass ourselves by opening such
 topic.
 
-```shell
+```shell title="" linenums="0"
 kubectl delete -f external-secret.yml
 kubectl apply -f external-secret-v2.yml
 ```
 
 Now, as we can see from the target Secret, the `immutable` flag is set to `true`.
 
-```shell
+```shell title="" linenums="0"
 $ kubectl get secret my-app -o jsonpath='{.immutable}' && echo
 true
 ```
@@ -238,7 +240,7 @@ and it should still be `SomethingDifferent`.
 
 This is the point and we can even make sure by looking into the secret again.
 
-```shell
+```shell title="" linenums="0"
 $ kubectl get secret my-app \
   -o jsonpath='{.data.MONGO_ROOT_PASSWORD}' | \
   base64 --decode && echo
@@ -248,14 +250,14 @@ SomethingDifferent
 
 But, what if we want to update the secret again?
 
-```shell
+```shell title="" linenums="0"
 tofu apply -var mongo_root_password=AnotherPassword
 ```
 
 Even after waiting for as long as more than the `refreshInterval`, the secret
 will not change.
 
-```shell
+```shell title="" linenums="0"
 $ kubectl get secret my-app \
   -o jsonpath='{.data.MONGO_ROOT_PASSWORD}' | \
   base64 --decode && echo
@@ -264,7 +266,7 @@ SomethingDifferent
 
 But, wait. Didn't we just change the password? Shall we check the AWS SSM?
 
-```shell
+```shell title="" linenums="0"
 $ aws ssm get-parameters \
   --names /prod/mongodb-atlas/passwords/root \
   --with-decryption \
