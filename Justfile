@@ -1,9 +1,6 @@
 reqs:
   pip install -U pip -r requirements.txt
 
-venv:
-  . ./venv/bin/activate
-
 serve:
   mkdocs serve --no-strict
 

@@ -4,4 +4,5 @@ exclude = [
   "https://api.star-history.com/svg",
   "https://dash.cloudflare.com/profile/api-tokens",
   "https://console.ory.sh/",
+  "https://username.github.io/REPOSITORY",
 ]

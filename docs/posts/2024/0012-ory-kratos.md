@@ -19,6 +19,11 @@ categories:
   - GitHub Actions
   - GitHub Pages
   - CI/CD
+  - Cloudflare
+  - Opentofu
+  - IaC
+  - Infrastructure as Code
+  - Terraform
 links:
   - Source Code: https://github.com/developer-friendly/ory
 ---
@@ -537,8 +542,69 @@ In our case, that turns out to be the following format:
 
 There is nothing wrong with this URL. However, in a serious production
 application, you would want to have your own domain name. This is where the
-custom domain name comes in; And unlike other service providers, GitHub does
-charge you extra for this feature.
+custom domain name comes in; And unlike other service providers, GitHub **does
+not** charge you extra for this feature.
+
+The DNS record we want to create should be the following:
+
+{{ read_csv('docs/codes/2024/0012/junk/dns.csv') }}
+
+And since the [developer-friendly.blog] domain is hosted on Cloudflare, here
+how the [IaC](/category/iac/) will look like for such a change.
+
+```hcl title="dns/variables.tf"
+-8<- "docs/codes/2024/0012/dns/variables.tf"
+```
+
+```hcl title="dns/versions.tf"
+-8<- "docs/codes/2024/0012/dns/versions.tf"
+```
+
+```hcl title="dns/main.tf"
+-8<- "docs/codes/2024/0012/dns/main.tf"
+```
+
+Now, let's apply this stack using [OpenTofu](/category/opentofu/):
+
+```shell title="" linenums="0"
+export TF_VAR_cloudflare_api_token="PLACEHOLDER"
+tofu init
+tofu plan -out tfplan
+tofu apply tfplan
+```
+
+## Conclusion
+
+That wraps up all we had to say for this blog post. The main objective was to
+create a custom frontend for the Ory Kratos server.
+
+As you saw in the post, the root domain for both the Kratos server and the
+frontend should be the same for the cookies to work.
+
+Among many benefits that Kratos brings to the table, many years of development
+and feedback from the community, following security best practices based on the
+well-known recommendations and standards, not reinventing the wheel, and
+separation of concern are just a few to name.
+
+I honestly rarely think of writing my own authentication and identity
+management system these days anymore. Cause Kratos does a perfect job at what
+it was meant to. I invite you to also tip your toes and give it a fair shot if
+you haven't already.
+
+I know many folks might prefer other alternatives like Keycloak, Auth0, or
+Firebase. And that's perfectly fine. The choice is yours to make. However, don't
+let that stop you from exploring what Ory Kratos has to offer.
+
+In a future post, I will explore more of the Ory products and the intersection
+of them all when it comes to delivering a robust auth solution on top of your
+application logic.
+
+I wish you have gained something from this post, and I hope you forgive me for
+the possible awful frontend code an SRE guy has provided before your eyes.
+:sweat_smile:
+
+Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
+ :crab:
 
 [installed as a Helm installation]: https://artifacthub.io/packages/helm/ory/kratos/0.42.0
 [Gateway API]: https://gateway-api.sigs.k8s.io/
