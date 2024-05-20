@@ -1,34 +1,39 @@
 ---
 date: 2024-05-20
-draft: true
+draft: false
 description: >-
-  TODO
+  Integrate custom UI with Kratos, the opensource identity and user management
+  solution. Build and deploy a Single Page Application to GitHub Pages.
 categories:
-  - JavaScript
-  - HTML
-  - CSS
-  - Kubernetes
-  - Ory
   - Kratos
+  - JavaScript
+  - CI/CD
+  - GitHub Pages
   - Authentication
-  - IAM
-  - Security
-  - User Management
-  - Identity Provider
+  - Cloudflare
+  - CSS
   - GitHub
   - GitHub Actions
-  - GitHub Pages
-  - CI/CD
-  - Cloudflare
-  - Opentofu
+  - HTML
   - IaC
+  - IAM
+  - Identity Management
   - Infrastructure as Code
+  - Kubernetes
+  - OpenTofu
+  - Ory
+  - Security
   - Terraform
+  - User Management
 links:
+  - ./posts/0005-install-k3s-on-ubuntu22.md
+  - ./posts/0007-oidc-authentication.md
+  - ./posts/0004-github-actions-dynamic-matrix.md
   - Source Code: https://github.com/developer-friendly/ory
+image: assets/images/social/2024/05/20/ory-kratos-headless-authentication-identity-and-user-management.png
 ---
 
-# Ory Kratos: Fast Headless Identity and User Management
+# Ory Kratos: Headless Authentication, Identity and User Management
 
 Authentication flows are quite common in the modern day software development.
 What we want from one authentication has a lot of overlapping funcionality with
