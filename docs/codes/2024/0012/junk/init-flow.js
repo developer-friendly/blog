@@ -16,3 +16,9 @@ export async function initFlow(flow, extraHeaders = {}) {
     }
   );
 }
+
+export async function getFlowInfo(flowId) {
+  return await fetch(`${kratosHost}/self-service/browser/flows?id=${flowId}`, {
+    ...fetchOptions,
+  });
+}
