@@ -115,7 +115,7 @@ be solely handled by Ory Kratos.
 
 In a future post, we will learn how to protect the backend service in a private
 network and only send authenticated requests to the backend application using
-a combination [of Ory Kratos] [and Ory Oathkeeper].
+a combination of Ory Kratos[^1] and Ory Oathkeeper[^2].
 
 ## Installation
 
@@ -126,23 +126,23 @@ However, since for the purpose of demo we had to deploy both somewhere and
 somehow, the technology stack picked here is as follows. Feel free to adapt
 to your own stack:
 
-- [x] The Kratos server has been [installed as a Helm installation] on a
+- [x] The Kratos server has been installed as a Helm installation[^3] on a
       Kubernetes cluster. The Kratos public endpoints are exposed to the
-      internet using the [Gateway API] and with the help of
-      [Cilium](/category/cilium/). We have guides in our archive for Kubernetes
-      and Cilium installation if you need further help;
-      [Kubernetes](/category/kubernetes/) is the place to look for.
-- [x] The [source code for the frontend] is written in pure Vanilla JavaScript,
-      bundled with [ViteJS] and built with [Bun]. I am by no means a frontender
+      internet using the Gateway API[^4] and with the help of
+      Cilium. We have guides in our archive for [Kubernetes](/category/kubernetes/)
+      and [Cilium](/category/cilium/) installation if you need further help.
+- [x] The source code for the frontend[^5] is written in pure Vanilla JavaScript,
+      bundled with ViteJS[^6] and built with Bun[^7]. I am by no means a frontender
       as you shall see shortly for yourself, however, the code is
       a Single Page Application without any JS framework; cause that's how
-      [Maximiliano Firtman] taught the rest of us possible, among many
+      Maximiliano Firtman[^8] taught the rest of us possible, among many
       disbeliefs!
-- [x] The CI takes care of the deployment to the [GitHub Pages][gh-pages]. Both are free
-      for public repositories.
+- [x] The CI takes care of the deployment to the
+      [GitHub Pages](/category/github-pages/)[^9]. Both are free  for public
+      repositories.
 
 With that somewhat unconventional stack, let's see how we can create our own
-[custom UI for the Ory Kratos].
+custom UI for the Ory Kratos[^10].
 
 ## Kratos Configuration
 
@@ -157,18 +157,17 @@ for you.
 In this blog post, we can't cover all the attributes and the combination of
 different values you can assign to them. However, we will cover the essentials
 to get you going. You won't have a hard time following the rest for yourself
-(they have a [decent documentation]).
+(they have a decent documentation[^11]).
 
 To get started, and to have a complete reference of all the available keys,
-you can copy the entire configuration from the
-[official documentation and] modify and customize it as
-you see fit. Below is the screenshot of how to do that.
+you can copy the entire configuration from the official documentation[^12] and
+modify and customize it as you see fit. Below is the screenshot of how to do
+that.
 
 <figure markdown="span">
   ![Kratos Configuration Reference](/static/img/2024/0012/kratos-config-reference.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Kratos Configuration Reference</figcaption>
 </figure>
-
 
 The basic configuration that can kick things off looks something like this:
 
@@ -189,7 +188,7 @@ database. This will be an HTML form with all the fields you like filled by your
 users.
 
 You can have more than one schema definition, which is a perfect use case for
-having different types of users, e.g., _admin_, _employee_, [_customer_, etc.]
+having different types of users, e.g., _admin_, _employee_, _customer_, etc.[^13]
 
 For our simple use case, there's only one.
 
@@ -241,11 +240,11 @@ We will provide more details on the cookie and the domain later in this post.
 ## Kratos Deployment
 
 Skip this section if you have Kratos deployed elsewhere or are using the
-[Ory Network] with a paid plan. :airplane:
+Ory Network[^14] with a paid plan. :airplane:
 
 You don't have to self-host your Ory Kratos server if you don't want to. The
 Ory team provides a hosted version of Ory Kratos, as well as other Ory products
-on their [Ory Network].
+on their Ory Network.
 
 However, as of writing this blog post, they don't allow custom domains on their
 free version. Not having the same top-level root domain is a big no-no for
@@ -257,17 +256,17 @@ follow one of our earlier guides. The main requirement, however, is that the
 cluster needs to be internet-facing.
 
 We are using FluxCD CRDs here. If you're new to FluxCD, check out our earlier
-[beginner's guide] to get up to speed.
+[beginner's guide][fluxcd-guide] to get up to speed.
 
-We are also using [External Secrets Operator] and [cert-manager] in this setup. We
-have guides on those as well, so feel free to check them out.
+We are also using [External Secrets Operator][eso-guide] and [cert-manager] in
+this setup. We have guides on those as well, so feel free to check them out.
 
 ```yaml title="kratos/repository.yml"
 -8<- "docs/codes/2024/0012/kratos/repository.yml"
 ```
 
 Kratos server is able to read the config file from the specified file, or from
-[the environment variables]. Which is why we are capitalizing all the environments
+the environment variables[^15]. Which is why we are capitalizing all the environments
 in the following ExternalSecret resource; remember all those values in our
 `kratos/kratos-server-config.yml` where we passed `PLACEHOLDER` as value!?
 
@@ -432,7 +431,7 @@ go pass the initial step! :warning:
 8. This will make sure that the Kratos server responds with the JSON and won't
 redirect us to the same URL as we are in right now. Ignore doing so and it will
 result in double redirection to the current web address, which will nullify the
-`origin` header and [you'll face a CORS error].
+`origin` header and you'll face a CORS error[^16].
 
 At this point, we have the JSON response from the Kratos server. We have to
 use that information to dynamically create an HTML form to render for the user.
@@ -484,7 +483,7 @@ entrypoint as well as the Vanilla JS router to take care of.
 
 ## Bundling the Frontend
 
-We mentioned that we are using [ViteJS] for bundling our code. We don't do a lot
+We mentioned that we are using ViteJS[^6] for bundling our code. We don't do a lot
 of crazy stuff in this code. Yet one crucial feature we need (not present in
 VanillaJS) is the ability to override the variables from the environment
 variables. That is where ViteJS provides a great hand. :handshake:
@@ -503,7 +502,7 @@ export VITE_KRATOS_HOST="https://kratos.example.com"
 
 ## Building the frontend
 
-For this project, we have picked [Bun] as our build tool. It's simple & fast
+For this project, we have picked Bun[^7] as our build tool. It's simple & fast
 :zap: and does the job well. :muscle:
 
 ```json title="frontend/package.json"
@@ -519,7 +518,7 @@ bun run build
 
 When our project is ready to be published, we will use
 [GitHub Actions](/category/github-actions/) to build and deploy the frontend to
-the [GitHub Pages](/category/github-pages/) [gh-pages].
+the [GitHub Pages](/category/github-pages/).
 
 ```yaml title=".github/workflows/ci.yml"
 -8<- "docs/codes/2024/0012/junk/ci.yml"
@@ -532,10 +531,10 @@ GitHub Pages.
 
 ## GitHub Pages SPA Hack
 
-As of writing this blog post, GitHub Pages does not natively support Single
-[Page Applications][gh-spa-unsupported]. This is a blocker for our application
+As of writing this blog post, GitHub Pages does **not** natively support Single
+Page Applications[^17]. This is a blocker for our application
 since it is a SPA. To get around that, we will get help from the community to
-come up with [something a bit creative].
+come up with something a bit creative[^18].
 
 The idea is to create a custom `404.html` which will have enough JavaScript code
 to redirect the page to our SPA's `index.html`, having it's URI as query parameter.
@@ -563,9 +562,9 @@ And now we need to include the new `404.html` as an asset in ViteJS config:
 ## Logout Flow
 
 Among the flows we mentioned earlier, all can be handled by our "general"
-flow implementation. However, the [logout flow is a bit different]. It requires
-its own implementation as there will no longer be a form. You may want to
-include a confirmation page for your app but that's out of scope as far as
+flow implementation. However, the logout flow is a bit different[^19]. It
+requires its own implementation as there will no longer be a form. You may want
+to include a confirmation page for your app but that's out of scope as far as
 Kratos server is concerned.
 
 ```javascript title="frontend/src/logout.js"
@@ -626,7 +625,7 @@ frontend **should** be the same for the cookies to work.
 
 Among many benefits that Kratos brings to the table, many years of development
 and feedback from the community, following security best practices based on the
-[well-known recommendations and standards], not reinventing the wheel, and
+well-known recommendations and standards[^20], not reinventing the wheel, and
 separation of concern are just a few to name.
 
 I honestly rarely think of writing my own authentication and identity
@@ -646,7 +645,7 @@ I wish you have gained something from this post, and I hope you forgive me for
 the possible awful frontend code an SRE guy has provided before your eyes.
 :sweat_smile:
 
-I have learned a lot from [Kyle Simpson's] _You Don't Know JS_
+I have learned a lot from Kyle Simpson's[^21] _You Don't Know JS_
 series and most of the code you've seen here are following the patterns he
 teaches. That is to say that I have no regret not using arrow functions,
 avoiding the overloaded use of `const` keyword, and not using triple equals
@@ -655,28 +654,29 @@ avoiding the overloaded use of `const` keyword, and not using triple equals
 Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
  :crab:
 
-[installed as a Helm installation]: https://artifacthub.io/packages/helm/ory/kratos/0.42.0
-[Gateway API]: https://gateway-api.sigs.k8s.io/
-[ViteJS]: https://v4.vitejs.dev/
-[Bun]: https://bun.sh/docs
-[Maximiliano Firtman]: https://firtman.github.io/vanilla/
-[gh-pages]: https://pages.github.com/
-[decent documentation]: https://www.ory.sh/docs/
-[Ory Network]: https://console.ory.sh/
-[beginner's guide]: ./0006-gettings-started-with-gitops-and-fluxcd.md
-[External Secrets Operator]: ./0009-external-secrets-aks-to-aws-ssm.md
+[^1]: https://www.ory.sh/docs/kratos/ory-kratos-intro
+[^2]: https://www.ory.sh/docs/oathkeeper/
+[^3]: https://artifacthub.io/packages/helm/ory/kratos/0.42.0
+[^4]: https://gateway-api.sigs.k8s.io/
+[^5]: https://github.com/developer-friendly/ory
+[^6]: https://v4.vitejs.dev/
+[^7]: https://bun.sh/docs
+[^8]: https://firtman.github.io/vanilla/
+[^9]: https://pages.github.com/
+[^10]: https://www.ory.sh/docs/kratos/bring-your-own-ui/custom-ui-overview
+[^11]: https://www.ory.sh/docs/
+[^12]: https://www.ory.sh/docs/kratos/reference/configuration
+[^13]: https://www.ory.sh/docs/kratos/manage-identities/identity-schema
+[^14]: https://console.ory.sh/
+[^15]: https://www.ory.sh/docs/kratos/configuring
+[^16]: https://stackoverflow.com/questions/30193851/ajax-call-following-302-redirect-sets-origin-to-null
+[^17]: https://github.com/orgs/community/discussions/64096
+[^18]: https://github.com/rafgraph/spa-github-pages
+[^19]: https://www.ory.sh/docs/kratos/self-service/flows/user-logout
+[^20]: https://www.ory.sh/docs/ecosystem/projects#ory-kratos
+[^21]: https://frontendmasters.com/teachers/kyle-simpson/
+
+[fluxcd-guide]: ./0006-gettings-started-with-gitops-and-fluxcd.md
+[eso-guide]: ./0009-external-secrets-aks-to-aws-ssm.md
 [cert-manager]: ./0010-cert-manager.md
-[something a bit creative]: https://github.com/rafgraph/spa-github-pages
-[custom UI for the Ory Kratos]: https://www.ory.sh/docs/kratos/bring-your-own-ui/custom-ui-overview
-[official documentation and]: https://www.ory.sh/docs/kratos/reference/configuration
-[the environment variables]: https://www.ory.sh/docs/kratos/configuring
-[you'll face a CORS error]: https://stackoverflow.com/questions/30193851/ajax-call-following-302-redirect-sets-origin-to-null
-[gh-spa-unsupported]: https://github.com/orgs/community/discussions/64096
-[logout flow is a bit different]: https://www.ory.sh/docs/kratos/self-service/flows/user-logout
 [developer-friendly.blog]: https://developer-friendly.blog
-[well-known recommendations and standards]: https://www.ory.sh/docs/ecosystem/projects#ory-kratos
-[of Ory Kratos]: https://www.ory.sh/docs/kratos/ory-kratos-intro
-[and Ory Oathkeeper]: https://www.ory.sh/docs/oathkeeper/
-[source code for the frontend]: https://github.com/developer-friendly/ory
-[_customer_, etc.]: https://www.ory.sh/docs/kratos/manage-identities/identity-schema
-[Kyle Simpson's]: https://frontendmasters.com/teachers/kyle-simpson/
