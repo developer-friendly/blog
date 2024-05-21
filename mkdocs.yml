@@ -262,6 +262,10 @@ markdown_extensions:
       combine_header_slug: true
   - pymdownx.tasklist:
       custom_checkbox: true
+nav:
+  - index.md
+  - terms.md
+  - privacy.md
 watch:
   - overrides
   - includes

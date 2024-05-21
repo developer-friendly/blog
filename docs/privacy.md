@@ -78,4 +78,4 @@ any reason. We will alert you about any changes by updating the
 ## Contact Us
 
 If you have any questions about this Privacy Policy, please contact us at
-privacy@developer-friendly.blog.
+<privacy@developer-friendly.blog>.
