@@ -83,12 +83,35 @@
       .social-icons a {
         margin-right: 15px;
       }
+      .footer-links span {
+        display: inline;
+      }
       @media (max-width: 600px) {
         .content h1 {
           font-size: 20px;
         }
         .content p {
           font-size: 14px;
+        }
+        .container {
+          padding: 10px;
+        }
+        .header,
+        .footer {
+          padding: 5px 0;
+        }
+        .content {
+          padding: 10px;
+        }
+        .footer-links {
+          display: block;
+        }
+        .footer-links a {
+          display: block;
+          margin: 5px auto;
+        }
+        .footer-links span {
+          display: none;
         }
       }
     </style>
@@ -121,9 +144,9 @@
         <!-- terms & privacy -->
         <div class="footer-links">
           <a href="https://developer-friendly.blog/privacy/">Privacy Policy</a>
-          |
+          <span>|</span>
           <a href="https://developer-friendly.blog/terms/">Terms of Service</a>
-          |
+          <span>|</span>
           <a href="{{ UnsubscribeURL }}">Unsubscribe</a>
         </div>
         <!-- socials -->
