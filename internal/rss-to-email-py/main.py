@@ -57,9 +57,12 @@ def prepare_html_for_newsletter():
     image = f"<img src='{entry.image}' />" if entry.image else ""
     published_date = entry.published_parsed.strftime("%b %d, %Y")
 
+    continue_reading = f"""<p><a href="{entry.link}">Continue reading...</a></p>"""
+
     html = f"""
     <h1><a href="{entry.link}">{image}{entry.title}</a></h1>
     <p>{entry.summary}</p>
+    {continue_reading}
     <p>Published on: {published_date}</p>
     """
 

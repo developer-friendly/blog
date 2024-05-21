@@ -9,21 +9,21 @@ extra:
       link: http://paypal.me/meysamazad
       name: Thank the author!
     - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/company/developer-friendly
+      link: https://www.linkedin.com/in/meysamazad
       name: Follow us on LinkedIn!
     - icon: fontawesome/solid/square-rss
-      link: /feed_rss_updated.xml
+      link: /feed_rss_created.xml
       name: Subscribe to our RSS feed!
-    # - icon: fontawesome/brands/youtube
-    #   link: https://youtube.com/@developer-friendly
-    #   name: Subscribe to our YouTube channel!
+    - icon: fontawesome/brands/youtube
+      link: https://youtube.com/@developer-friendly
+      name: Subscribe to our YouTube channel!
     - icon: simple/stackoverflow
       link: https://stackoverflow.com/users/8282345/meysam
       name: Follow us on Stack Overflow!
     - icon: fontawesome/brands/hacker-news
       link: https://news.ycombinator.com/submitted?id=meysamazad
       name: Follow us on Hacker News!
-    - icon: fontawesome/solid/paper-plane
+    - icon: fontawesome/solid/envelope
       link: mailto:hi@developer-friendly.blog
       name: Send us an email!
     - icon: fontawesome/brands/slack
