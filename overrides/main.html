@@ -4,6 +4,7 @@
 {{ super() }}
   <!-- LogRocket -->
   <script src="https://cdn.logr-ingest.com/LogRocket.min.js" crossorigin="anonymous" async></script>
+  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 {% endblock %}
 
 {% block announce %}{% include "partials/announce.html" ignore missing %}{% endblock %}
@@ -11,3 +12,5 @@
 {% block scripts %}
   {{ super() }}
 {% endblock %}
+
+{% include "partials/subscribe-newsletter.html" ignore missing %}
