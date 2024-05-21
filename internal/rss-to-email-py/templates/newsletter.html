@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://developer-friendly.blog/assets/favicon.ico"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Developer Friendly Blog</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #e5e7ed;
+      }
+      .email-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #1e2129;
+        border: 1px solid #eaeaea;
+      }
+      .header,
+      .footer {
+        padding: 20px;
+        background-color: #009485;
+        color: #ffffff;
+        text-align: center;
+      }
+      .header a,
+      .footer a {
+        color: #ffffff;
+        text-decoration: none;
+      }
+      .header a:hover {
+        color: #ffffff;
+        text-decoration: none;
+      }
+      a {
+        color: #009485;
+        text-decoration: none;
+        transition: color 0.3s;
+      }
+      a:hover {
+        color: #ff1947;
+      }
+      .content {
+        padding: 20px;
+      }
+      .content h1 {
+        font-size: 24px;
+        color: #333333;
+      }
+      .content p {
+        font-size: 16px;
+        line-height: 1.5;
+        color: #fff;
+      }
+      .content img {
+        max-width: 100%;
+        height: auto;
+      }
+      .content p a {
+        font-weight: 700;
+      }
+      .footer-links {
+        margin: 20px 0;
+      }
+      .footer-links a {
+        margin: 0 10px;
+      }
+      /* right margin for i element */
+      .social-icons a {
+        margin-right: 15px;
+      }
+      @media (max-width: 600px) {
+        .content h1 {
+          font-size: 20px;
+        }
+        .content p {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <!-- header -->
+      <div class="header">
+        <a href="https://developer-friendly.blog" target="_blank">
+          <img
+            src="https://developer-friendly.blog/assets/logo.webp"
+            alt="Developer Friendly"
+            style="width: 50px; height: 50px"
+          />
+          <h1>Developer Friendly Blog</h1>
+        </a>
+      </div>
+      <!-- content -->
+      <div class="content">{{ template "content" . }}</div>
+      {{ TrackView }}
+      <!-- footer -->
+      <div class="footer">
+        <!-- copyright -->
+        <p>
+          &copy;
+          <a href="https://developer-friendly.blog" target="_blank"
+            >Developer Friendly Blog</a
+          >. All rights reserved.
+        </p>
+        <!-- terms & privacy -->
+        <div class="footer-links">
+          <a href="https://developer-friendly.blog/privacy/">Privacy Policy</a>
+          |
+          <a href="https://developer-friendly.blog/terms/">Terms of Service</a>
+          |
+          <a href="{{ UnsubscribeURL }}">Unsubscribe</a>
+        </div>
+        <!-- socials -->
+        <div class="social-icons">
+          <a
+            href="https://github.com/sponsors/meysam81/"
+            target="_blank"
+            rel="noopener"
+            title="Sponsor the author!"
+            ><i class="fa-regular fa-heart"></i
+          ></a>
+          <a
+            href="http://paypal.me/meysamazad"
+            target="_blank"
+            rel="noopener"
+            title="Thank the author!"
+            ><i class="fa-brands fa-paypal"></i
+          ></a>
+          <a
+            href="https://www.linkedin.com/in/meysamazad"
+            target="_blank"
+            rel="noopener"
+            title="Follow us on LinkedIn!"
+            ><i class="fa-brands fa-linkedin"></i
+          ></a>
+          <a
+            href="https://developer-friendly.blog/feed_rss_created.xml"
+            target="_blank"
+            rel="noopener"
+            title="Subscribe to our RSS feed!"
+            ><i class="fa-solid fa-square-rss"></i
+          ></a>
+          <a
+            href="https://stackoverflow.com/users/8282345/meysam"
+            target="_blank"
+            rel="noopener"
+            title="Follow us on Stack Overflow!"
+            ><i class="fa-brands fa-stack-overflow"></i
+          ></a>
+          <a
+            href="https://youtube.com/@developer-friendly"
+            target="_blank"
+            rel="noopener"
+            title="Subscribe to our YouTube channel!"
+            ><i class="fa-brands fa-youtube"></i
+          ></a>
+          <a
+            href="https://news.ycombinator.com/submitted?id=meysamazad"
+            target="_blank"
+            rel="noopener"
+            title="Follow us on Hacker News!"
+            ><i class="fa-brands fa-hacker-news"></i
+          ></a>
+          <a
+            href="mailto:hi@developer-friendly.blog"
+            target="_blank"
+            rel="noopener"
+            title="Send us an email!"
+            ><i class="fa-solid fa-envelope"></i
+          ></a>
+          <a
+            href="https://communityinviter.com/apps/developerfriendly/join-our-slack"
+            target="_blank"
+            rel="noopener"
+            title="Join our Slack community!"
+            ><i class="fa-brands fa-slack"></i
+          ></a>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
