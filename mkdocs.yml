@@ -59,6 +59,9 @@ extra:
       logrocket:
         name: Logrocket
         checked: true
+      personalization:
+        name: Ads Personalization
+        checked: true
   status:
     new: Recently added
 extra_javascript:
