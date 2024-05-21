@@ -105,6 +105,7 @@
         console.log("Google AdSense consent v2 check ...")
         var consent = __md_get("__consent");
         if (consent && consent.personalization) {
+          console.log("Google AdSense consent v2 granted")
           consentGrantAll();
         }
       })
