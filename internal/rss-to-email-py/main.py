@@ -75,7 +75,7 @@ def modify_listmonk_compaign():
         headers={"authorization": f"Basic {authorization}"},
         json=dict(
             content_type="html",
-            lists=[3],
+            lists=[4],
             body=prepare_html_for_newsletter(),
         ),
     )
