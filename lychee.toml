@@ -5,4 +5,5 @@ exclude = [
   "https://dash.cloudflare.com/profile/api-tokens",
   "https://console.ory.sh/",
   "https://username.github.io/REPOSITORY",
+  ".*/internal/rss-to-email-py/templates/newsletter.html$",
 ]
