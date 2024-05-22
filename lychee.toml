@@ -6,5 +6,4 @@ exclude = [
   "https://console.ory.sh/",
   "https://username.github.io/REPOSITORY",
   ".*internal/rss-to-email-py/templates/%7B%7B%20UnsubscribeURL%20%7D%7D$",
-  "https://www.paypal.me/meysamazad",
 ]
