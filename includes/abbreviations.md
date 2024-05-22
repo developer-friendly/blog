@@ -22,3 +22,4 @@
 *[SPA]: Single Page Application
 *[CORS]: Cross-Origin Resource Sharing
 *[IaC]: Infrastructure as Code
+*[VM]: Virtual Machine
