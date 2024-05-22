@@ -22,7 +22,7 @@ env:
 
 jobs:
   build:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.repository == 'developer-friendly/blog'
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
@@ -35,15 +35,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Calculate cache id
-        run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
-      - name: Cache mkdocs-material
-        uses: actions/cache@v4
-        with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: .cache
-          restore-keys: |
-            mkdocs-material-
       - env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         name: Install dependencies
@@ -92,12 +83,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Configure Git Credentials
-        run: |
-          git config user.name ${{ github.actor }}
-          git config user.email ${{ github.actor }}@users.noreply.github.com
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -129,7 +114,8 @@ jobs:
       - id: deployment
         name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-      - id: netlify
+      - if: ${{ github.repository == 'developer-friendly/blog' }}
+        id: netlify
         name: Deploy to Netlify
         uses: jsmrcaga/action-netlify-deploy@v2.2.0
         with:
@@ -141,6 +127,7 @@ jobs:
           install_command: echo Skipping installing the dependencies
 
   lychee:
+    if: ${{ github.repository == 'developer-friendly/blog' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -152,6 +139,7 @@ jobs:
           fail: ${{ github.ref == 'refs/heads/main' }}
 
   trivy:
+    if: ${{ github.repository == 'developer-friendly/blog' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -171,6 +159,7 @@ jobs:
           trivy-config: trivy.yaml
 
   checkov:
+    if: ${{ github.repository == 'developer-friendly/blog' }}
     permissions:
       contents: read
       security-events: write
