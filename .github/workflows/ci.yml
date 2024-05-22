@@ -150,12 +150,6 @@ jobs:
         uses: lycheeverse/lychee-action@v1
         with:
           fail: ${{ github.ref == 'refs/heads/main' }}
-      - if: env.lychee_exit_code != 0
-        name: Create Issue From File
-        uses: peter-evans/create-issue-from-file@v5
-        with:
-          content-filepath: ./lychee/out.md
-          labels: report, automated issue
 
   trivy:
     runs-on: ubuntu-latest
