@@ -9,8 +9,8 @@ document$.subscribe(function popUpModal() {
     var formData = new FormData(event.target);
     var email = formData.get("email");
 
-    if (email) {
-      LogRocket.identify(email);
+    if (email && window.LogRocket) {
+      window.LogRocket.identify(email);
     }
 
     localStorage.setItem("subscribed", true);
