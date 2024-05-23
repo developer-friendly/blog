@@ -1,16 +1,35 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from typing import Optional
 from time import mktime
+
+import argparse
 
 import pydantic
 import feedparser
 import httpx
 import os
 
+parser = argparse.ArgumentParser()
+
+parser.add_argument(
+    "subcommand",
+    type=str,
+    choices=[
+        "modify-campaign",
+        "update-and-test-campaign",
+        "list-subscribers",
+        "list-lists",
+    ],
+)
+
 url = "https://developer-friendly.blog/feed_rss_created.xml"
-feed = feedparser.parse(url)
 authorization = os.environ["LISTMONK_AUTHORIZATION"]
+headers = {
+    "authorization": f"Basic {authorization}",
+    "accept": "application/json",
+}
 
 
 class Author(pydantic.BaseModel):
@@ -28,6 +47,8 @@ class FeedEntry(pydantic.BaseModel):
 
 
 def get_latest_post():
+    feed = feedparser.parse(url)
+
     return feed.entries[0]
 
 
@@ -75,7 +96,7 @@ def modify_listmonk_compaign():
         headers={"authorization": f"Basic {authorization}"},
         json=dict(
             content_type="html",
-            lists=[3],
+            lists=[4],
             body=prepare_html_for_newsletter(),
         ),
     )
@@ -89,7 +110,7 @@ def test_listmonk_campaign():
             subscribers=["meysam@developer-friendly.blog"],
             name="may-21-2024",
             subject="Developer Friendly Blog Newsletter",
-            lists=[3],
+            lists=[4],
             messenger="email",
             body=prepare_html_for_newsletter(),
         ),
@@ -112,7 +133,30 @@ def update_campaign_template():
     )
 
 
+def list_subscribers():
+    return httpx.get(
+        "https://newsletter.developer-friendly.blog/api/subscribers",
+        headers={"authorization": f"Basic {authorization}"},
+    )
+
+
+def list_lists():
+    return httpx.get(
+        "https://newsletter.developer-friendly.blog/api/lists",
+        headers=headers,
+    )
+
+
 if __name__ == "__main__":
-    # print(modify_listmonk_compaign().text)
-    print(update_campaign_template().status_code)
-    print(test_listmonk_campaign().text)
+    args = parser.parse_args()
+    if args.subcommand == "modify-campaign":
+        print(modify_listmonk_compaign().text)
+    elif args.subcommand == "update-and-test-campaign":
+        print(update_campaign_template().status_code)
+        print(test_listmonk_campaign().text)
+    elif args.subcommand == "list-subscribers":
+        print(list_subscribers().text)
+    elif args.subcommand == "list-lists":
+        print(list_lists().text)
+    else:
+        parser.print_help()
