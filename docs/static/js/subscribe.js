@@ -1,6 +1,20 @@
 document$.subscribe(function popUpModal() {
-  const modal = document.getElementById("modal");
-  const closeButton = document.querySelector(".close-button");
+  var modal = document.getElementById("modal");
+  var closeButton = document.querySelector(".close-button");
+  var subscribeForm = document.getElementById("subscribe-form");
+
+  subscribeForm.addEventListener("submit", function subscribe(event) {
+    event.preventDefault();
+
+    var formData = new FormData(event.target);
+    var email = formData.get("email");
+
+    if (email) {
+      LogRocket.identify(email);
+    }
+
+    localStorage.setItem("subscribed", true);
+  });
 
   function showModal() {
     modal.style.display = "flex";
@@ -12,6 +26,6 @@ document$.subscribe(function popUpModal() {
   });
 
   if (localStorage.getItem("subscribed") != "true") {
-    setTimeout(showModal, 1);
+    setTimeout(showModal, 5000);
   }
 });
