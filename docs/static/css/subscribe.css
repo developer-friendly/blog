@@ -1,3 +1,7 @@
+#modal {
+  overflow: hidden;
+}
+
 #modal h1 {
   margin-top: 50px;
 }
