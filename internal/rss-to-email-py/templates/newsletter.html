@@ -23,6 +23,18 @@
         padding: 0;
         background-color: #e5e7ed;
       }
+      .view-browser,
+      .file-issue {
+        text-align: center;
+        margin: 10px auto;
+        color: #888888;
+        font-size: 12px;
+        text-decoration: none;
+      }
+      .view-browser a,
+      .file-issue a {
+        border-bottom: 1px dotted #888888;
+      }
       .email-container {
         width: 100%;
         max-width: 600px;
@@ -79,7 +91,6 @@
       .footer-links a {
         margin: 0 10px;
       }
-      /* right margin for i element */
       .social-icons a {
         margin-right: 15px;
       }
@@ -117,6 +128,14 @@
     </style>
   </head>
   <body>
+    <div class="file-issue">
+      Email newsletter is still in beta. If you see any issue, please do not
+      hesitate to
+      <a
+        href="https://github.com/developer-friendly/blog/issues/new?title=Email+Newsletter+Issue&body=Describe+the+issue+you+are+facing+with+the+email+newsletter+template+here."
+        >file an issue on GitHub.</a
+      >
+    </div>
     <div class="email-container">
       <!-- content -->
       <div class="content">{{ template "content" . }}</div>
