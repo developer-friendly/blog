@@ -14,6 +14,8 @@ document$.subscribe(function popUpModal() {
     }
 
     localStorage.setItem("subscribed", true);
+
+    event.target.submit();
   });
 
   function showModal() {
