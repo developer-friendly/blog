@@ -7,13 +7,23 @@ categories:
   - Azure
   - OpenID Connect
   - OpenTofu
-  - Terraform
-  - IaC
   - Ansible
-image: assets/images/social/2024/05/27/how-to-grant-azure-vm-access-to-aws-services-using-openid-connect.png
+  - Authentication
+  - Authorization
+  - Cloud Computing
+  - IaC
+  - IaC
+  - IAM
+  - Identity Management
+  - Infrastructure as Code
+  - OAuth2
+  - OIDC
+  - Security
+  - Terraform
+image: assets/images/social/2024/05/27/how-to-access-aws-from-azure-vm-using-openid-connect.png
 ---
 
-# How to Grant Azure VM Access to AWS Services Using OpenID Connect
+# How to Access AWS From Azure VM Using OpenID Connect
 
 In the day to day operations of a software application, it is common to be in a
 position to manage and handle multiple cloud providers at the same time.
