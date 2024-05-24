@@ -21,6 +21,11 @@ categories:
   - OIDC
   - Security
   - Terraform
+links:
+  - ./posts/2024/0007-oidc-authentication.md
+  - ./posts/2024/0008-k8s-federated-oidc.md
+  - ./posts/2024/0009-external-secrets-aks-to-aws-ssm.md
+  - Source Code: https://github.com/developer-friendly/aws-oidc-azure-vm
 image: assets/images/social/2024/05/27/how-to-access-aws-from-azure-vm-using-openid-connect.png
 ---
 
