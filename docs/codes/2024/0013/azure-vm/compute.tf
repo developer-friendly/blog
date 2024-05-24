@@ -4,15 +4,15 @@ resource "tls_private_key" "this" {
 
 resource "azurerm_ssh_public_key" "this" {
   name                = "oidc-ssh-key"
-  resource_group_name = data.azurerm_resource_group.this.name
-  location            = data.azurerm_resource_group.this.location
+  resource_group_name = local.resource_group_name
+  location            = local.location
   public_key          = tls_private_key.this.public_key_openssh
 }
 
 resource "azurerm_linux_virtual_machine" "this" {
   name                = "oidc-vm"
-  resource_group_name = data.azurerm_resource_group.this.name
-  location            = data.azurerm_resource_group.this.location
+  resource_group_name = local.resource_group_name
+  location            = local.location
   size                = "Standard_B2pts_v2"
   admin_username      = "adminuser"
   network_interface_ids = [
@@ -39,12 +39,15 @@ resource "azurerm_linux_virtual_machine" "this" {
   }
 
   user_data = base64encode(<<-EOF
-    #!/bin/bash
-    curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-    az login -i --allow-no-subscriptions
-    apt update
-    apt upgrade -y
-    apt install -y jq
+    #cloud-config
+    package_update: true
+    package_upgrade: true
+    packages:
+      - jq
+      - awscli
+      - python3.12
+    runcmd:
+      - curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
   EOF
   )
 
