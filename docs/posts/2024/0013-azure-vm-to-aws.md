@@ -11,6 +11,7 @@ categories:
   - Terraform
   - IaC
   - Ansible
+image: assets/images/social/2024/05/27/how-to-grant-azure-vm-access-to-aws-services-using-openid-connect.png
 ---
 
 # How to Grant Azure VM Access to AWS Services Using OpenID Connect
