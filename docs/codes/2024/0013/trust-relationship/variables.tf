@@ -1,4 +1,4 @@
-variable "role_name" {
+variable "tenant_id" {
   type    = string
-  default = "azure-vm"
+  default = null
 }
