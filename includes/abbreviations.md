@@ -23,3 +23,5 @@
 *[CORS]: Cross-Origin Resource Sharing
 *[IaC]: Infrastructure as Code
 *[VM]: Virtual Machine
+*[NSG]: Network Security Group
+*[STS]: Security Token Service
