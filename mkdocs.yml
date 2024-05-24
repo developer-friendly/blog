@@ -99,6 +99,7 @@ plugins:
       debug_on_build: !ENV [DEBUG_BUILD, false]
   - blog:
       draft: !ENV [DRAFT, false]
+      draft_if_future_date: true
       blog_dir: .
       authors_profiles: !ENV [AUTHORS_PROFILE, false]
       post_readtime: true
