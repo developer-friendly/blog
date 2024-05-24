@@ -40,7 +40,8 @@ document$.subscribe(function popUpModal() {
     localStorage.setItem(subscribeModalKey, true);
   });
 
-  if (localStorage.getItem(subscribeModalKey) != "true") {
-    setTimeout(showModal, 5000);
-  }
+  // TODO: uncomment when newsletter is ready
+  // if (localStorage.getItem(subscribeModalKey) != "true") {
+  //   setTimeout(showModal, 5000);
+  // }
 });
