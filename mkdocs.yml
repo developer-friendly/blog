@@ -63,6 +63,9 @@ extra:
     new: Recently added
 extra_javascript:
   - static/js/consent.js
+  - static/js/subscribe.js
+extra_css:
+  - static/css/subscribe.css
 copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
 plugins:
   - typeset
