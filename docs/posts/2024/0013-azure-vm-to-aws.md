@@ -43,7 +43,7 @@ technique to your setup, then this blog post is for you.
 
 ## Introduction
 
-The idea of [OpenID Connect](/category/openid-connect/) fascinates me the most.
+The idea of OpenID Connect fascinates me the most.
 Especially knowing how useful it is in the modern day of software development
 and with the best practices of security as batteries included. Yet, it's really
 surprising that is it not as widely adopted or known for as it should be.
@@ -56,35 +56,36 @@ OIDC in their applications and services and adopting and integrating their
 workflows with it.
 
 The truth is, those in the knowing are already benefiting from it at scale,
-in ways not intuitively visible to naked eyes, unless you look close enough.
-:face_with_monocle:
+in ways not intuitively visible to naked the eyes, unless you look close
+enough. :face_with_monocle:
 
 If you have never used OIDC ever before, or if you're still doubtful of its
 potential, then this blog post is for you. We have a full archive of posts
 discussing various implementations and integration guides when it comes to
-[OpenID Connect](/category/openid-connect/).
+[OpenID Connect](/category/openid-connect/) should you choose to study this
+topic further.
 
 ## Why Should You Care?
 
-The main objective is simple and very pratical. We want to grant an Azure VM
+The main objective is simple and very prafctical. We want to grant an Azure VM
 access to AWS services, e.g., to list the AWS S3 buckets and/or its objects.
 
 Given this task to a non-informed operational engineer, you'd likely see them
 passing around AWS credentials into the VM; that can't be the worst problem
 happening since if all the other measures are in place, the VM is only
-accessible to trusted parties, e.g., through restricting the network access
-using security groups, i.e., firewalls.
+accessible to the set trusted parties, e.g., through restricting the network
+access using security groups, i.e., firewalls.
 
 The matters gets worse real quick when you realize that those secrets need to
 be passed to the VM somehow, and one of the ugliest ways you can do that is to
 hard-code them in a private repository.
 
 That also cannot be the worst thing happening since if your Git service provider
-is never compromised (which is very unlikely in today's world), the very least
-you have to worry about is **the rotation of your secrets**!
+is never compromised (which is very unlikely in the absolute sense of the word),
+the very least you have to worry about is **the rotation of your secrets**!
 
 This is a crucial aspect since there should be a clear and concise plan for
-the secret rotation of your platform, ideally through automation and without
+the secrets rotation of your platform, ideally through automation and without
 the need for manual intervention.
 
 I hope I was successful painting what it's like to operate in such environments.
@@ -144,21 +145,21 @@ point of view.
 
 ## Establishing the Trust Relationship
 
-As per the diagram above, we'll establish that important trust relationship
+As per the diagram above, we'll establish that crucial trust relationship
 we've talked about. This is the core of our setup, one that we cannot live
 without and the rest of this guide will be useless if not done correctly.
 
 In setting up the trust relationship, you will need to query your Azure AD
-tenant for its OIDC configuration endpoint. That is the endpoint where all
+tenant for [its OIDC configuration endpoint]. That is the endpoint where all
 the key components of an OIDC compliance are stored, e.g., the `jwks_uri` is
 for the public keys that the Azure AD uses to sign the JWT tokens.
 
 In turn, AWS will use those keys to verify the integrity and validity of the
 provided JWT tokens; think in terms of Azure signing off tokens with its
-private keys, and having its public keys open to the world, anyone can verify
-if a given token is signed by Azure or not.
+private keys, and having its public keys open to the world, using which anyone
+can verify if a given token is signed by Azure or not.
 
-You can see the TF code below.
+Let's now get hands-on and create a trust relationship from Azure AD to AWS.
 
 ```hcl title="trust-relationship/versions.tf"
 -8<- "docs/codes/2024/0013/trust-relationship/versions.tf"
@@ -176,6 +177,20 @@ You can see the TF code below.
 -8<- "docs/codes/2024/0013/trust-relationship/outputs.tf"
 ```
 
+!!! tip "OAuth2 Provider Trust Relationship"
+
+    Bear in mind that the trust relationship from one service provider to the
+    next is a one-way street. That is, if AWS trusts the identities of
+    Azure AD, that by no means implies that Azure AD trusts the identities of
+    AWS in return.
+
+    Unless, the returning trust relationship is also established in and of its
+    own.
+
+    OIDC trust relationship does **not** imply a two-way trust relationship.
+
+Now, let's explain the above TF code for further clarity.
+
 ### OpenID Connect Audience
 
 Notice that the `client_id_list` must include a value and based on my findings
@@ -185,6 +200,11 @@ Azure. I'd be more than happy to be proven wrong by a diligent reader. :hugging:
 But, until then, it's safe to assume that the audience of the JWT token is
 what you see in the TF code above. :shrug:
 
+However, when we get to the AWS side, we would normally want to be rest assured
+that not all the identities of the given Identity Provider will be able to
+assume our role, and that's where we place the conditional on the `sub` claim
+of the JWT token as you will see shortly.
+
 ### OIDC URL
 
 Additionally, pay close attention to the URL of our OpenID Connect provider.
@@ -192,7 +212,7 @@ This is something tailored specific to Azure AD and its format is just as you
 see in the code above, with `sts.windows.net` in the hostname and the tenant ID
 in the http path.
 
-Eventually, as per the OIDC compliance, one is able to fetch the OIDC
+Eventually, as per [the OIDC compliance], one is able to fetch the OIDC
 configuration from such URL by issuing the following HTTP request:
 
 ```shell title="" linenums="0"
@@ -235,6 +255,8 @@ step, we can now instruct the AWS IAM to grant access to ^^any identity coming
 from such a provider^^ and ^^has a specific subject claim^^ in its JWT token.
 
 If this all sounds a bit too vague, let's see some code to make it more clear.
+The TF code below will create an Azure [user assigned identity] as well as an
+AWS IAM Role to trust such identity.
 
 ```hcl title="vm-identity/versions.tf"
 -8<- "docs/codes/2024/0013/vm-identity/versions.tf"
@@ -272,7 +294,7 @@ easier on the organization as well as the billing side of things.
 
 ### 2. IAM Role and Trust Relationship
 
-The second component is the IAM Role itself. It is the role that we will
+The second component is the IAM Role itself. It is the role that will be
 assumed by the VM in the next step. There is only one identity in the whole
 world who can assume this and that is because of the conditional we placed
 on the `sub` claim of the JWT token coming to the AWS STS service, as you see
@@ -283,7 +305,7 @@ below:
 ```
 
 This _principal ID_ is also interchangably called the _object id_; as if working
-in Azure environment wasn't confusing enough already. :confounded:
+in Azure environment wasn't confusing enough already! :confounded:
 
 In the end, once this stack is also deployed just as the one before, we will
 have an IAM Role similar to what you see below:
@@ -348,8 +370,8 @@ components and provide proper details.
 ### Networking
 
 The networking part is similar and hefty to what AWS is in terms of resources
-and their relationship. Keeping them in a separate file allows for better
-logical grouping and readability.
+and their relationship. Keeping the networking resources in a separate file
+allows for better logical grouping and readability.
 
 The Network Security Group (NSG) below is only opening the ports to the admin
 public IP address; which is the IP address of the control plan machine applying
@@ -469,7 +491,7 @@ to be used later on by AWS CLI.
 
     By default, Azure AD access tokens are valid for [1 day and 5 minutes]. If
     you have a task that requires a valid token on every access, you can renew
-    it before then.
+    it before then using a cronjob or alike. :alarm_clock:
 
 ### AWS Role ARN
 
@@ -488,7 +510,7 @@ Ansible. This is it.
 
 All is ready for AWS to grab the token, use it to authenticate to AWS IAM, and
 make an AWS call to list the S3 buckets. We just need to instruct it on where
-to pick up the token from.
+to pick [up the token from].
 
 ```yaml title="playbook.yml" linenums="34"
 -8<- "docs/codes/2024/0013/playbook.yml:34:42"
@@ -507,8 +529,9 @@ ansible-playbook playbook.yml -e aws_profile=$AWS_PROFILE
 
 ## Bonus: JWT Claims
 
-If you decode the access token given to the VM by Azure AD, you will see the
-following claims in the JWT token.
+If you decode the access token given to the VM by Azure AD
+(`~/.azure/vm-identity-token`), you will see the following claims in the JWT
+token.
 
 ```json title=""
 -8<- "docs/codes/2024/0013/junk/decoded-jwt-access-token.json"
@@ -548,3 +571,7 @@ Until then, happy OIDC-ing! :wave:
 [token from Azure AD]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token
 [Azure Portal]: https://azure.microsoft.com/en-us/get-started/azure-portal
 [1 day and 5 minutes]: https://stackoverflow.com/a/54038587/8282345
+[its OIDC configuration endpoint]: https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc
+[the OIDC compliance]: https://openid.net/developers/how-connect-works/
+[user assigned identity]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities
+[up the token from]: https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-role.html#cli-configure-role-oidc
