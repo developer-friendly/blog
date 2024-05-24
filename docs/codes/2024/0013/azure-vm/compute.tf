@@ -35,7 +35,6 @@ resource "azurerm_linux_virtual_machine" "this" {
     offer     = "debian-13-daily"
     sku       = "13-arm64"
     version   = "latest"
-
   }
 
   user_data = base64encode(<<-EOF

@@ -50,7 +50,9 @@ resource "azurerm_network_security_group" "this" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefixes    = [trimspace(data.http.admin_public_ip.response_body)]
+    source_address_prefixes    = [
+      trimspace(data.http.admin_public_ip.response_body),
+    ]
     destination_address_prefix = "*"
   }
 }

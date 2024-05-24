@@ -10,7 +10,7 @@ data "tls_certificate" "this" {
 }
 
 resource "aws_iam_openid_connect_provider" "this" {
-  url            = local.tenant_url
+  url = local.tenant_url
   # aka: `aud` claim
   client_id_list = ["https://management.core.windows.net/"]
   thumbprint_list = [

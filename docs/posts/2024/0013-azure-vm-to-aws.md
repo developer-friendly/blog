@@ -10,6 +10,7 @@ categories:
   - OpenTofu
   - Terraform
   - IaC
+  - Ansible
 ---
 
 # How to Grant Azure VM Access to AWS Services Using OpenID Connect
@@ -142,8 +143,31 @@ You can see the TF code below.
 -8<- "docs/codes/2024/0013/trust-relationship/outputs.tf"
 ```
 
-Applying this stack and we will have our IAM Role ready to be assumed by any
-identity inside our Azure AD tenant.
+### OpenID Connect Audience
+
+Notice that the `client_id_list` must include a value and based on my findings
+so far, I couldn't find a way to customize this _audience_ field anywhere in
+Azure. I'd be more than happy to be proven wrong by a diligent reader. :hugging:
+
+### OIDC URL
+
+Additionally, pay close attention to the URL of our OpenID Connect provider.
+This is something tailored specific to Azure AD and its format is just as you
+see in the code above, with `sts.windows.net` in the hostname and the tenant ID
+in the http path.
+
+Eventually, as per the OIDC compliance, one is able to fetch the OIDC
+configuration from such URL by issuing the following HTTP request:
+
+```shell title="" linenums="0"
+TENANT_ID="00000000-0000-0000-0000-000000000000"
+curl https://sts.windows.net/$TENANT_ID/.well-known/openid-configuration
+```
+
+### Applying the Stack
+
+Applying this stack and we will have our trust relationship setup and ready
+for the next steps where we will leverage this trust to create an IAM role.
 
 ```shell title="" linenums="0"
 export AWS_PROFILE="PLACEHOLDER"
@@ -155,30 +179,270 @@ tofu plan -out tfplan
 tofu apply tfplan
 ```
 
+## AWS IAM Role
+
+At this point, we should head over to AWS to create a new IAM Role with the
+proper conditionals and trust relationship to Azure AD.
+
+The idea is that using the newly created OpenID Connect provider in the last
+step, we can now instruct the AWS IAM to grant access to any identity coming
+from such a provider and has a specific subject claim in its JWT token.
+
+If this all sounds a bit too vague, let's see some code to make it more clear.
+
+```hcl title="vm-identity/versions.tf"
+-8<- "docs/codes/2024/0013/vm-identity/versions.tf"
+```
+
+```hcl title="vm-identity/variables.tf"
+-8<- "docs/codes/2024/0013/vm-identity/variables.tf"
+```
+
+```hcl title="vm-identity/main.tf"
+-8<- "docs/codes/2024/0013/vm-identity/main.tf"
+```
+
+```hcl title="vm-identity/outputs.tf"
+-8<- "docs/codes/2024/0013/vm-identity/outputs.tf"
+```
+
+This stack contains two main components, which we'll explain below.
+
+### 1. User Assigned Identity
+
+The first one includes creating an Azure User Assigned Identity. This will
+be the identity of our Virtual Machine in the next step. It is basically
+like a username assigned to the VM of our choice and it is guaranteed to be
+unique and persistent; that's the reason we can rely on its ID when placing
+the conditional on our IAM Role.
+
+If you're not an Azure user, one thing to keep in mind is that in Azure
+every single resource has to be placed in a resource group. That makes grouping
+easier on the organization as well as the billing side of things.
+
+### 2. IAM Role and Trust Relationship
+
+The second component is the IAM Role itself. It is the role that we will
+assumed by the VM in the next step. There is only one identity in the whole
+world who can assume this and that is because of the conditional we placed
+on the `sub` claim of the JWT token coming to the AWS STS service, as you see
+below:
+
+```hcl title="vm-identity/main.tf" linenums="35"
+-8<- "docs/codes/2024/0013/vm-identity/main.tf:35:39"
+```
+
+This _principal ID_ is also interchangably called the _object id_; as if working
+in Azure environment wasn't confusing enough already. :confounded:
+
+In the end, once this stack is also deployed just as the last one, we will
+have an IAM Role similar to what you see below:
+
+```json title=""
+-8<- "docs/codes/2024/0013/junk/iam-role.json"
+```
+
 ## Azure Virtual Machine
 
-Now it's time to create a VM in Azure with system assigned identity enabled.
-Just like the trust relationship, this is a critical component of our setup.
+At this point all is ready from administration and managerial point of view.
+We only need to create the VM, let it know which IAM Role it should assume,
+and make a test API call to AWS to list the S3 buckets.
 
-With a system assigned identity, every Azure VM will be able to fetch an access
-token from Azure; it's as if the VM had gotten username and password
-credentials during the provisioning time, using which it would be able to fetch
-a short-lived access token from Azure AD.
+If that works, all this has been successful. From here, we have two main
+objective to achieve:
 
-Let's see it in action.
+1. Create the Azure VM using TF code for the provisioning stage.
+2. Wait a bit for the VM to be ready and then run an
+   [Ansible](/category/ansible/) playbook to take care of the rest.
+
+In Azure, any Azure with an identity attached can fetch an access token. You
+can grant such identity permissions in and outside Azure cloud. For us, this
+is going to be AWS.
+
+The identity of the VM is the most critical part of this next step. One which
+the whole operation would be meaningless otherwise. The identity of a VM in
+Azure is as if the VM had gotten username and password credentials during the
+provisioning stage, using which it would be able to fetch a short-lived access
+token from Azure AD.
+
+Let's stop talking and actually create the VM. Although, bear in mind that this
+stack is quite heavy and need careful attention to the details.
 
 ```hcl title="azure-vm/versions.tf"
 -8<- "docs/codes/2024/0013/azure-vm/versions.tf"
 ```
 
-```hcl title="azure-vm/variables.tf"
--8<- "docs/codes/2024/0013/azure-vm/variables.tf"
-```
+Notice that we're, again, using the outputs from our earlier TF stack by
+querying the TF state file in this code.
 
 ```hcl title="azure-vm/main.tf"
 -8<- "docs/codes/2024/0013/azure-vm/main.tf"
 ```
 
+```hcl title="azure-vm/network.tf"
+-8<- "docs/codes/2024/0013/azure-vm/network.tf"
+```
+
+```hcl title="azure-vm/compute.tf"
+-8<- "docs/codes/2024/0013/azure-vm/compute.tf"
+```
+
 ```hcl title="azure-vm/outputs.tf"
 -8<- "docs/codes/2024/0013/azure-vm/outputs.tf"
 ```
+
+This stack deserves a good amount of explanation. Let's break down the
+components and provide proper details.
+
+### Networking
+
+The networking part is similar and hefty to what AWS is in terms of resources
+and their relationship. Keeping them in a separate files allows for better
+logical grouping and readability.
+
+The Network Security Group (NSG) below is only opening the ports to the admin
+public IP address; which is the IP address of the control plan machine applying
+this TF stack.
+
+```hcl title="azure-vm/network.tf"
+-8<- "docs/codes/2024/0013/azure-vm/network.tf:1:3"
+```
+
+```hcl title="" linenums="45"
+-8<- "docs/codes/2024/0013/azure-vm/network.tf:45:57"
+```
+
+### SSH Keys
+
+Sadly enough, when specifying `admin_ssh_key`, Azure VMs do
+[not accept SSH keys] of types other than `RSA`.
+Otherwise, the author's preference is `ED25519`. :sunglasses:
+
+### Target Image
+
+As for `source_image_reference`, be very careful when trying to reference an
+image in Azure. They do not make
+it easy for you to guess an image name or find your preferred image easily.
+You'd have to really struggle, and it took me some time to actually come up
+with the [following Debian image].
+
+```hcl title="azure-vm/compute.tf" linenums="33"
+-8<- "docs/codes/2024/0013/azure-vm/compute.tf:33:38"
+```
+
+### User Data
+
+For the VM user data, we're leveraging the [cloud-init]. Do check them out if
+not already, but know that I personally find them very limited in terms of
+functionality. In more complex cases, I rather run [Ansible](/category/ansible/)
+playbooks and save the golden image for further use.
+
+In a nutshell, in the following config we're installing Azure CLI, AWS CLI,
+`jq`, and lastly Python3.12 for our next Ansible playbook.
+
+```hcl title="azure-vm/compute.tf" linenums="40"
+-8<- "docs/codes/2024/0013/azure-vm/compute.tf:40:51"
+```
+
+### Applying the Stack
+
+Once you have the TF code ready, you can apply the stack as follows:
+
+```shell title="" linenums="0"
+tofu init
+tofu plan -out tfplan
+tofu apply tfplan
+
+# needed for the next step
+tofu output -raw ssh_private_key > /tmp/oidc-vm.pem
+chmod 600 /tmp/oidc-vm.pem
+tofu output -raw ansible_inventory_yml > ../inventory.yml
+```
+
+## Ansible Playbook
+
+It's now time to test this whole setup with a call to AWS. If that call is
+succesful, everything we've been working so far has been fruitful. :fireworks:
+
+The idea is to:
+
+1. Login to Azure AD from within the VM using the user assigned identity
+   attached during the provisioning stage.
+2. Fetch an access token from Azure AD using that logged in identity.
+3. Instruct the AWS CLI to use that access token for calls to AWS services.
+
+The Ansible playbook looks like blow.
+
+```yaml title="playbook.yml"
+-8<- "docs/codes/2024/0013/playbook.yml"
+```
+
+Let's explain this playbook a little bit.
+
+### Azure AD Login
+
+We first need to login to Azure AD. That is only possible because we have
+an identity attached to the VM.
+
+You can see the screenshot below for the user assigned identity in Azure Portal.
+
+<!-- TODO -->
+
+```yaml title="playbook.yml" linenums="10"
+-8<- "docs/codes/2024/0013/playbook.yml:10:11"
+```
+
+### Fetch Access Token
+
+At this stage, we can use the newly logged in identity to grab an access token
+to be used later on by AWS CLI.
+
+```yaml title="playbook.yml" linenums="15"
+-8<- "docs/codes/2024/0013/playbook.yml:15:15"
+```
+
+```yaml title="" linenums="18"
+-8<- "docs/codes/2024/0013/playbook.yml:18:18"
+```
+
+```yaml title="" linenums="21"
+-8<- "docs/codes/2024/0013/playbook.yml:21:22"
+```
+
+### AWS Role ARN
+
+Remember when in our TF code we saved the role ARN to later be used by Ansible.
+This is it.
+
+```hcl title="vm-identity/main.tf" linenums="52"
+-8<- "docs/codes/2024/0013/vm-identity/main.tf:52:56"
+```
+
+```yaml title="playbook.yml" linenums="26"
+-8<- "docs/codes/2024/0013/playbook.yml:26:26"
+```
+
+### AWS Configuration
+
+All is ready for AWS to grab the token, use it to authenticate to AWS IAM, and
+make an AWS call to list the S3 buckets. We just need to instruct it on where
+to pick up the token from.
+
+```yaml title="playbook.yml" linenums="34"
+-8<- "docs/codes/2024/0013/playbook.yml:34:42"
+```
+
+No surprise here really, we are using the same `~/.azure/vm-identity-token` path
+we have populated earlier by fetching an access token from Azure AD.
+
+### Running the Playbook
+
+Of course the playbook runs and successfully lists the S3 buckets as we expected.
+
+```shell title="" linenums="0"
+ansible-playbook playbook.yml -e aws_profile=$AWS_PROFILE
+```
+
+[not accept SSH keys]: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys#supported-ssh-key-formats
+[following Debian image]: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage
+[cloud-init]: https://cloudinit.readthedocs.io/

@@ -48,6 +48,7 @@ resource "aws_iam_role" "this" {
   ]
 }
 
+# Enable later ansible-playbook to fetch this value from remote API call
 resource "aws_ssm_parameter" "role_arn" {
   name  = "/azure/oidc/role-arn"
   type  = "String"
