@@ -2,7 +2,7 @@
 date: 2024-05-27
 description: >-
   How to fetch access token in Azure VM using assigned identity. How to create
-  AWS IAM Role trust relationship with Azure AD to list S3 buckets.
+  AWS IAM Role trust relationship with Azure Active Directory to list S3 buckets.
 categories:
   - AWS
   - Azure
