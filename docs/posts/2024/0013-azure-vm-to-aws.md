@@ -150,7 +150,7 @@ we've talked about. This is the core of our setup, one that we cannot live
 without and the rest of this guide will be useless if not done correctly.
 
 In setting up the trust relationship, you will need to query your Azure AD
-tenant for [its OIDC configuration endpoint]. That is the endpoint where all
+tenant for its OIDC configuration endpoint[^1]. That is the endpoint where all
 the key components of an OIDC compliance are stored, e.g., the `jwks_uri` is
 for the public keys that the Azure AD uses to sign the JWT tokens.
 
@@ -212,7 +212,7 @@ This is something tailored specific to Azure AD and its format is just as you
 see in the code above, with `sts.windows.net` in the hostname and the tenant ID
 in the http path.
 
-Eventually, as per [the OIDC compliance], one is able to fetch the OIDC
+Eventually, as per the OIDC compliance[^2], one is able to fetch the OIDC
 configuration from such URL by issuing the following HTTP request:
 
 ```shell title="" linenums="0"
@@ -255,7 +255,7 @@ step, we can now instruct the AWS IAM to grant access to ^^any identity coming
 from such a provider^^ and ^^has a specific subject claim^^ in its JWT token.
 
 If this all sounds a bit too vague, let's see some code to make it more clear.
-The TF code below will create an Azure [user assigned identity] as well as an
+The TF code below will create an Azure user assigned identity[^3] as well as an
 AWS IAM Role to trust such identity.
 
 ```hcl title="vm-identity/versions.tf"
@@ -289,8 +289,8 @@ when placing the conditional on our IAM Role.
 ```
 
 If you're not an Azure user, one thing to keep in mind is that in Azure
-every single resource has to be [placed in a resource group]. That makes grouping
-easier on the organization as well as the billing side of things.
+every single resource has to be placed in a resource group[^4]. That makes
+grouping easier on the organization as well as the billing side of things.
 
 ### 2. IAM Role and Trust Relationship
 
@@ -328,7 +328,7 @@ Therefore, we have two main objectives:
 2. Wait a bit for the VM to be ready and then run an
    [Ansible](/category/ansible/) playbook to take care of the rest.
 
-In Azure, any VM with an identity attached [can fetch an access token]. You
+In Azure, any VM with an identity attached can fetch an access token[^5]. You
 can grant such identity permissions in and outside Azure cloud. For us, this
 is going to be AWS.
 
@@ -336,7 +336,7 @@ The identity of the VM is the most critical part of this next step. One which
 the whole operation would be meaningless otherwise. The identity of a VM in
 Azure is as if the VM had gotten username and password credentials during the
 provisioning stage, using which it would be able to fetch a short-lived access
-[token from Azure AD].
+token from Azure AD[^6].
 
 Let's stop talking and actually create the VM. Although, bear in mind that this
 stack is quite heavy and need careful attention to the details.
@@ -388,8 +388,8 @@ this TF stack.
 ### SSH Keys
 
 Sadly enough, when specifying `admin_ssh_key`, Azure VMs do
-[not accept SSH keys] of types other than `RSA`.
-Otherwise, the author's preference is `ED25519`. :shield:
+not accept SSH keys of types other than `RSA`[^7]. Otherwise, the author's
+preference is `ED25519`. :shield:
 
 ### Target Image
 
@@ -397,7 +397,7 @@ As for `source_image_reference`, be very careful when trying to reference an
 image in Azure. They do not make
 it easy for you to guess an image name or find your preferred image easily.
 You'd have to really struggle, and it took me some time to actually come up
-with the [following Debian image] that has ARM64 support.
+with the following Debian image that has ARM64 support[^8].
 
 ```hcl title="azure-vm/compute.tf" linenums="33"
 -8<- "docs/codes/2024/0013/azure-vm/compute.tf:33:38"
@@ -405,7 +405,7 @@ with the [following Debian image] that has ARM64 support.
 
 ### User Data
 
-For the VM user data, we're leveraging the [cloud-init]. Do check them out if
+For the VM user data, we're leveraging the cloud-init[^9]. Do check them out if
 not already, but know that I personally find them very limited in terms of
 functionality. In more complex cases, I'd rather run
 [Ansible](/category/ansible/) playbooks and save the golden image for further
@@ -433,7 +433,7 @@ chmod 600 /tmp/oidc-vm.pem
 tofu output -raw ansible_inventory_yml > ../inventory.yml
 ```
 
-In the end, this is what it will look like in [Azure Portal].
+In the end, this is what it will look like in Azure Portal[^10].
 
 <figure markdown="span">
   ![Azure Resource Group](/static/img/2024/0013/azure-resource-group.webp "Click to zoom in"){ align=left loading=lazy }
@@ -489,9 +489,9 @@ to be used later on by AWS CLI.
 
 !!! tip "Access Token Expiry"
 
-    By default, Azure AD access tokens are valid for [1 day and 5 minutes]. If
-    you have a task that requires a valid token on every access, you can renew
-    it before then using a cronjob or alike. :alarm_clock:
+    By default, Azure AD access tokens are valid for 1 day and 5 minutes[^11].
+    If you have a task that requires a valid token on every access, you can
+    renew it before then using a cronjob or alike. :alarm_clock:
 
 ### AWS Role ARN
 
@@ -510,7 +510,7 @@ Ansible. This is it.
 
 All is ready for AWS to grab the token, use it to authenticate to AWS IAM, and
 make an AWS call to list the S3 buckets. We just need to instruct it on where
-to pick [up the token from].
+to pick up the token from[^12].
 
 ```yaml title="playbook.yml" linenums="34"
 -8<- "docs/codes/2024/0013/playbook.yml:34:42"
@@ -563,15 +563,15 @@ as fascinated as you are and I will be writing more about it in the future.
 
 Until then, happy OIDC-ing! :wave:
 
-[not accept SSH keys]: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys#supported-ssh-key-formats
-[following Debian image]: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage
-[cloud-init]: https://cloudinit.readthedocs.io/
-[placed in a resource group]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal
-[can fetch an access token]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/qs-configure-portal-windows-vm
-[token from Azure AD]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token
-[Azure Portal]: https://azure.microsoft.com/en-us/get-started/azure-portal
-[1 day and 5 minutes]: https://stackoverflow.com/a/54038587/8282345
-[its OIDC configuration endpoint]: https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc
-[the OIDC compliance]: https://openid.net/developers/how-connect-works/
-[user assigned identity]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities
-[up the token from]: https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-role.html#cli-configure-role-oidc
+[^1]: https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc
+[^2]: https://openid.net/developers/how-connect-works/
+[^3]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities
+[^4]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal
+[^5]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/qs-configure-portal-windows-vm
+[^6]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token
+[^7]: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys#supported-ssh-key-formats
+[^8]: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage
+[^9]: https://cloudinit.readthedocs.io/
+[^10]: https://azure.microsoft.com/en-us/get-started/azure-portal
+[^11]: https://stackoverflow.com/a/54038587/8282345
+[^12]: https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-role.html#cli-configure-role-oidc
