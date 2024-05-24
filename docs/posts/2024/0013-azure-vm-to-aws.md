@@ -571,8 +571,8 @@ Until then, happy OIDC-ing! :wave:
 [^1]: https://learn.microsoft.com/en-us/entra/identity-platform/v2-protocols-oidc
 [^2]: https://openid.net/developers/how-connect-works/
 [^3]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities
-[^4]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal
-[^5]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/qs-configure-portal-windows-vm
+[^4]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-cli
+[^5]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/qs-configure-cli-windows-vm
 [^6]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token
 [^7]: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/mac-create-ssh-keys#supported-ssh-key-formats
 [^8]: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage
