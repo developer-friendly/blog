@@ -72,7 +72,7 @@ topic further.
 
 ## Why Should You Care?
 
-The main objective is simple and very prafctical. We want to grant an Azure VM
+The main objective is simple and very practical. We want to grant an Azure VM
 access to AWS services, e.g., to list the AWS S3 buckets and/or its objects.
 
 Given this task to a non-informed operational engineer, you'd likely see them
