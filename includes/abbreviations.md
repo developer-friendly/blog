@@ -25,3 +25,4 @@
 *[VM]: Virtual Machine
 *[NSG]: Network Security Group
 *[STS]: Security Token Service
+*[JWT]: JSON Web Token
