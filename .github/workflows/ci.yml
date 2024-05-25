@@ -137,13 +137,9 @@ jobs:
 
   newsletter:
     if: |
-      (
-        github.repository == 'developer-friendly/blog' &&
-        github.event_name == 'schedule' &&
-        github.event.schedule == '0 7 * * 1'
-      ) || (
-        github.event_name == 'push' && github.ref == 'refs/heads/main'
-      )
+      github.repository == 'developer-friendly/blog' &&
+      github.event_name == 'schedule' &&
+      github.event.schedule == '0 7 * * 1'
     runs-on: ubuntu-latest
     env:
       LISTMONK_AUTHORIZATION: ${{ secrets.LISTMONK_AUTHORIZATION }}
