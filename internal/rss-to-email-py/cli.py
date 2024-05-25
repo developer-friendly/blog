@@ -14,7 +14,8 @@ parser.add_argument(
     "-c",
     "--campaign-name",
     type=str,
-    default=datetime.now().strftime("%b %d, %Y"),
+    default=None,
+    help="Defaults to next Monday's date.",
 )
 parser.add_argument("-t", "--template", type=int, default=8)
 parser.add_argument(
@@ -25,16 +26,21 @@ parser.add_argument(
     "--send-at",
     type=str,
     default=None,
-    help="Defaults to next Monday at 8 UTC. Format: YYYY-MM-DDTHH:MM:SSZ00:00",
+    help="Format: YYYY-MM-DDTHH:MM:SSZ00:00",
 )
 parser.add_argument(
     "-d", "--test-subscriber", type=str, default="meysam@developer-friendly.blog"
 )
+parser.add_argument(
+    "--send-at-next-monday",
+    action="store_true",
+    default=False,
+)
 
 
-def default_send_at():
+def next_monday():
     today = datetime.now()
     next_monday = today + timedelta(days=(7 - today.weekday()))
     send_at = next_monday.replace(hour=8, minute=0, second=0)
 
-    return send_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+    return send_at

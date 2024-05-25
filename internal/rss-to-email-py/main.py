@@ -3,7 +3,7 @@
 import os
 from logger import logger
 from custom_types import Campaign, Cli
-from cli import parser, default_send_at
+from cli import parser, next_monday
 from newsletter import (
     update_campaign,
     test_campaign,
@@ -22,8 +22,16 @@ if __name__ == "__main__":
     campaign_name = args.campaign_name
     template_id = args.template
     campaign_id = args.campaign_id
-    send_at = args.send_at or default_send_at()
+    send_at = args.send_at
     test_subscriber = args.test_subscriber
+
+    next_monday_dt = next_monday()
+
+    if not send_at and args.send_at_next_monday:
+        send_at = next_monday_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    if not campaign_name:
+        campaign_name = next_monday_dt.strftime("%b %d, %Y")
 
     campaign = Campaign(
         name=campaign_name,
