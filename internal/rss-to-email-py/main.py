@@ -93,7 +93,7 @@ def prepare_html_for_newsletter():
 def modify_listmonk_compaign():
     return httpx.put(
         "https://newsletter.developer-friendly.blog/api/campaigns/5",
-        headers={"authorization": f"Basic {authorization}"},
+        headers=headers,
         json=dict(
             content_type="html",
             lists=[4],
@@ -105,7 +105,7 @@ def modify_listmonk_compaign():
 def test_listmonk_campaign():
     return httpx.post(
         "https://newsletter.developer-friendly.blog/api/campaigns/5/test",
-        headers={"authorization": f"Basic {authorization}"},
+        headers=headers,
         json=dict(
             subscribers=["meysam@developer-friendly.blog"],
             name="may-21-2024",
@@ -124,7 +124,7 @@ def update_campaign_template():
 
     return httpx.put(
         "https://newsletter.developer-friendly.blog/api/templates/8",
-        headers={"authorization": f"Basic {authorization}"},
+        headers=headers,
         json=dict(
             name="developer-friendly-newsletter",
             type="campaign",
@@ -136,7 +136,7 @@ def update_campaign_template():
 def list_subscribers():
     return httpx.get(
         "https://newsletter.developer-friendly.blog/api/subscribers",
-        headers={"authorization": f"Basic {authorization}"},
+        headers=headers,
     )
 
 
