@@ -12,10 +12,11 @@ class Settings(pydantic_settings.BaseSettings):
     @pydantic.field_validator("LOG_LEVEL")
     @classmethod
     def validate_log_level(cls, value: str) -> str:
-        if value not in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
+        value_upper = value.upper()
+        if value_upper not in ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]:
             warnings.warn(f"Invalid log level: {value}. Defaulting to DEBUG.")
             return "INFO"
-        return value.upper()
+        return value_upper
 
 
 settings = Settings()

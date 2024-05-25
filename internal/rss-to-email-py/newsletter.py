@@ -7,6 +7,7 @@ import feedparser
 import httpx
 import os
 
+from logger import logger
 from custom_types import Author, FeedEntry, Campaign
 
 
@@ -66,7 +67,7 @@ def update_campaign(campaign_id: int, campaign: Campaign):
     response = httpx.put(
         f"https://newsletter.developer-friendly.blog/api/campaigns/{campaign_id}",
         headers=headers,
-        json=campaign.dict(),
+        json=campaign.model_dump(by_alias=True),
     )
     if response.status_code != 200:
         raise ValueError(response.text)
@@ -77,26 +78,27 @@ def create_campaign(campaign: Campaign):
     response = httpx.post(
         "https://newsletter.developer-friendly.blog/api/campaigns",
         headers=headers,
-        json=campaign.dict(),
+        json=campaign.model_dump(by_alias=True),
     )
     if response.status_code != 200:
         raise ValueError(response.text)
     return response.json()
 
 
-def test_listmonk_campaign(list_id, campaign_name):
-    return httpx.post(
-        "https://newsletter.developer-friendly.blog/api/campaigns/5/test",
+def test_campaign(campaign_id: int, campaign: Campaign, test_subscriber: list[str]):
+    json = campaign.model_dump(by_alias=True, exclude_none=True)
+    json["subscribers"] = test_subscriber
+
+    logger.debug(f"Testing campaign: {json}")
+
+    response = httpx.post(
+        f"https://newsletter.developer-friendly.blog/api/campaigns/{campaign_id}/test",
         headers=headers,
-        json=dict(
-            subscribers=["meysam@developer-friendly.blog"],
-            name=campaign_name,
-            subject="Site Reliability Engineering Newsletter",
-            lists=[list_id],
-            messenger="email",
-            body=prepare_html_for_newsletter(),
-        ),
+        json=json,
     )
+    if response.status_code != 200:
+        raise ValueError(response.text)
+    return response.json()
 
 
 def update_campaign_template(template_id):

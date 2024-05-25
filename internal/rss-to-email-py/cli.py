@@ -1,24 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime, timedelta
+from custom_types import Cli
 
 import argparse
 
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument(
-    "subcommand",
-    type=str,
-    choices=[
-        "modify-campaign",
-        "update-and-test-campaign",
-        "list-subscribers",
-        "list-lists",
-        "create-campaign",
-        "update-campaign",
-    ],
-)
+parser.add_argument("subcommand", type=str, choices=[cli.value for cli in Cli])
 parser.add_argument("-l", "--list", type=int, default=4)
 parser.add_argument(
     "-c",
@@ -36,6 +26,9 @@ parser.add_argument(
     type=str,
     default=None,
     help="Defaults to next Monday at 8 UTC. Format: YYYY-MM-DDTHH:MM:SSZ00:00",
+)
+parser.add_argument(
+    "-d", "--test-subscriber", type=str, default="meysam@developer-friendly.blog"
 )
 
 
