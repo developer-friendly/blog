@@ -8,7 +8,6 @@ import httpx
 import os
 
 from custom_types import Author, FeedEntry, Campaign
-from logger import logger
 
 
 url = "https://developer-friendly.blog/feed_rss_created.xml"
@@ -63,20 +62,18 @@ def prepare_html_for_newsletter():
     return html.strip()
 
 
-def modify_listmonk_compaign(list_id):
-    return httpx.put(
-        "https://newsletter.developer-friendly.blog/api/campaigns/5",
+def update_campaign(campaign_id: int, campaign: Campaign):
+    response = httpx.put(
+        f"https://newsletter.developer-friendly.blog/api/campaigns/{campaign_id}",
         headers=headers,
-        json=dict(
-            content_type="html",
-            lists=[list_id],
-            body=prepare_html_for_newsletter(),
-        ),
+        json=campaign.dict(),
     )
+    if response.status_code != 200:
+        raise ValueError(response.text)
+    return response.json()
 
 
-def create_campaign(campaign: Campaign) -> int:
-    # curl -u "username:password" 'http://localhost:9000/api/campaigns' -X POST -H 'Content-Type: application/json;charset=utf-8' --data-raw '{"name":"Test campaign","subject":"Hello, world","lists":[1],"from_email":"listmonk <noreply@listmonk.yoursite.com>","content_type":"richtext","messenger":"email","type":"regular","tags":["test"],"template_id":1}'
+def create_campaign(campaign: Campaign):
     response = httpx.post(
         "https://newsletter.developer-friendly.blog/api/campaigns",
         headers=headers,
@@ -84,8 +81,7 @@ def create_campaign(campaign: Campaign) -> int:
     )
     if response.status_code != 200:
         raise ValueError(response.text)
-    logger.debug("Campaign created: %s", response.json())
-    return response.json()["id"]
+    return response.json()
 
 
 def test_listmonk_campaign(list_id, campaign_name):
