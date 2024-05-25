@@ -137,3 +137,27 @@ def list_lists():
     if response.status_code != 200:
         raise ValueError(response.text)
     return response.json()
+
+
+def change_campaign_status(campaign_id, status):
+    response = httpx.put(
+        f"https://newsletter.developer-friendly.blog/api/campaigns/{campaign_id}/status",
+        headers=headers,
+        json=dict(status=status),
+    )
+
+    if response.status_code != 200:
+        raise ValueError(response.text)
+
+    return response.json()
+
+
+def list_campaigns():
+    response = httpx.get(
+        "https://newsletter.developer-friendly.blog/api/campaigns",
+        headers=headers,
+    )
+
+    if response.status_code != 200:
+        raise ValueError(response.text)
+    return response.json()

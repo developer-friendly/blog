@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
+import json
 from logger import logger
 from custom_types import Campaign, Cli
-from cli import parser, next_monday
+from cli import parser
+from helpers import next_monday
 from newsletter import (
     update_campaign,
     test_campaign,
@@ -12,6 +14,8 @@ from newsletter import (
     update_template,
     list_subscribers,
     list_lists,
+    list_campaigns,
+    change_campaign_status,
 )
 
 
@@ -22,13 +26,18 @@ if __name__ == "__main__":
     campaign_name = args.campaign_name
     template_id = args.template
     campaign_id = args.campaign_id
-    send_at = args.send_at
-    test_subscriber = args.test_subscriber
+    test_subscriber = None
+    send_at = None
 
     next_monday_dt = next_monday()
 
-    if not send_at and args.send_at_next_monday:
-        send_at = next_monday_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+    if hasattr(args, "send_at"):
+        send_at = args.send_at
+        if not send_at and args.send_at_next_monday:
+            send_at = next_monday_dt.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    if hasattr(args, "test_subscriber"):
+        test_subscriber = args.test_subscriber
 
     if not campaign_name:
         campaign_name = next_monday_dt.strftime("%b %d, %Y")
@@ -79,5 +88,12 @@ if __name__ == "__main__":
         rv = list_lists()
         logger.debug(rv)
         print(rv)
+    elif args.subcommand == Cli.CHANGE_CAMPAIGN_STATUS:
+        rv = change_campaign_status(campaign_id, args.status)
+        logger.info(rv)
+    elif args.subcommand == Cli.LIST_CAMPAIGNS:
+        rv = list_campaigns()
+        logger.debug(rv)
+        print(json.dumps(rv))
     else:
         parser.print_help()

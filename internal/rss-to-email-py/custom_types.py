@@ -45,6 +45,8 @@ class Cli(Enum):
     UPDATE_TEMPLATE = "update-template"
     LIST_SUBSCRIBERS = "list-subscribers"
     LIST_LISTS = "list-lists"
+    LIST_CAMPAIGNS = "list-campaigns"
+    CHANGE_CAMPAIGN_STATUS = "change-campaign-status"
 
     def __eq__(self, value) -> bool:
         if isinstance(value, str):
@@ -52,3 +54,13 @@ class Cli(Enum):
         if isinstance(value, Cli):
             return self.value == value.value
         raise ValueError(f"Cannot compare {type(self)} with {type(value)}")
+
+
+class CampaignStatus(str, Enum):
+    SCHEDULED = "scheduled"
+    RUNNING = "running"
+    PAUSED = "paused"
+    CANCELLED = "cancelled"
+
+    def __str__(self) -> str:
+        return self.value
