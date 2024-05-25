@@ -23,7 +23,7 @@ env:
   URL_DOWNLOAD: "true"
 
 jobs:
-  build:
+  preview:
     if: github.event_name == 'pull_request' && github.repository == 'developer-friendly/blog'
     permissions:
       pull-requests: write
