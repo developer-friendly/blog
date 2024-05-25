@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from typing import Optional
 import warnings
 
 import pydantic
@@ -8,6 +9,7 @@ import pydantic_settings
 
 class Settings(pydantic_settings.BaseSettings):
     LOG_LEVEL: str = "INFO"
+    NEWSLETTER_CAMPAIGN_LIST: Optional[int] = None
 
     @pydantic.field_validator("LOG_LEVEL")
     @classmethod

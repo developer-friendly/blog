@@ -2,11 +2,12 @@
 # -*- coding: utf-8 -*-
 import os
 import json
-from logger import logger
-from custom_types import Campaign, Cli
-from cli import parser
-from helpers import next_monday
-from newsletter import (
+from app.logger import logger
+from app.custom_types import Campaign, Cli
+from app.cli import parser
+from app.helpers import next_monday
+from app.config import settings
+from app.newsletter import (
     update_campaign,
     test_campaign,
     prepare_html_for_newsletter,
@@ -42,6 +43,9 @@ if __name__ == "__main__":
     if not campaign_name:
         campaign_name = next_monday_dt.strftime("%b %d, %Y")
 
+    if settings.NEWSLETTER_CAMPAIGN_LIST:
+        list_id = settings.NEWSLETTER_CAMPAIGN_LIST
+
     campaign = Campaign(
         name=campaign_name,
         subject=args.subject,
@@ -68,7 +72,8 @@ if __name__ == "__main__":
         body = prepare_html_for_newsletter()
         campaign.body = body
         rv = create_campaign(campaign)
-        logger.info(rv)
+        logger.debug(rv)
+        print(json.dumps(rv))
     elif args.subcommand == Cli.TEST_CAMPAIGN:
         body = prepare_html_for_newsletter()
         campaign.body = body
@@ -79,7 +84,8 @@ if __name__ == "__main__":
         with open(f"{file_rootdir}/templates/newsletter.html", "r") as file:
             new_template = file.read()
         rv = update_template(template_id, new_template)
-        logger.info(rv)
+        logger.debug(rv)
+        print(json.dumps(rv))
     elif args.subcommand == Cli.LIST_SUBSCRIBERS:
         rv = list_subscribers()
         logger.debug(rv)

@@ -4,7 +4,7 @@ import logging
 
 import colorlog
 
-from config import settings
+from .config import settings
 
 
 logger = logging.getLogger("rss-to-email-py")

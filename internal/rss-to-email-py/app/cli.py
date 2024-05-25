@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from custom_types import Cli, CampaignStatus
+from .custom_types import Cli, CampaignStatus
 
 import argparse
 

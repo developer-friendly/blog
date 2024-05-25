@@ -1,0 +1,4 @@
+colorlog<7
+httpx<1
+pydantic<3
+pydantic-settings<3

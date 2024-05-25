@@ -7,11 +7,12 @@ import feedparser
 import httpx
 import os
 
-from logger import logger
-from custom_types import Author, FeedEntry, Campaign
+from .logger import logger
+from .custom_types import Author, FeedEntry, Campaign
 
 
 url = "https://developer-friendly.blog/feed_rss_created.xml"
+base_url = "https://newsletter.developer-friendly.blog"
 authorization = os.environ["LISTMONK_AUTHORIZATION"]
 headers = {
     "authorization": f"Basic {authorization}",
@@ -65,7 +66,7 @@ def prepare_html_for_newsletter():
 
 def update_campaign(campaign_id: int, campaign: Campaign):
     response = httpx.put(
-        f"https://newsletter.developer-friendly.blog/api/campaigns/{campaign_id}",
+        f"{base_url}/api/campaigns/{campaign_id}",
         headers=headers,
         json=campaign.model_dump(by_alias=True),
     )
@@ -76,7 +77,7 @@ def update_campaign(campaign_id: int, campaign: Campaign):
 
 def create_campaign(campaign: Campaign):
     response = httpx.post(
-        "https://newsletter.developer-friendly.blog/api/campaigns",
+        f"{base_url}/api/campaigns",
         headers=headers,
         json=campaign.model_dump(by_alias=True),
     )
@@ -92,7 +93,7 @@ def test_campaign(campaign_id: int, campaign: Campaign, test_subscriber: list[st
     logger.debug(f"Testing campaign: {json}")
 
     response = httpx.post(
-        f"https://newsletter.developer-friendly.blog/api/campaigns/{campaign_id}/test",
+        f"{base_url}/api/campaigns/{campaign_id}/test",
         headers=headers,
         json=json,
     )
@@ -103,7 +104,7 @@ def test_campaign(campaign_id: int, campaign: Campaign, test_subscriber: list[st
 
 def update_template(template_id, new_template):
     response = httpx.put(
-        f"https://newsletter.developer-friendly.blog/api/templates/{template_id}",
+        f"{base_url}/api/templates/{template_id}",
         headers=headers,
         json=dict(
             name="developer-friendly-newsletter",
@@ -119,7 +120,7 @@ def update_template(template_id, new_template):
 
 def list_subscribers():
     response = httpx.get(
-        "https://newsletter.developer-friendly.blog/api/subscribers",
+        f"{base_url}/api/subscribers",
         headers=headers,
     )
 
@@ -130,7 +131,7 @@ def list_subscribers():
 
 def list_lists():
     response = httpx.get(
-        "https://newsletter.developer-friendly.blog/api/lists",
+        f"{base_url}/api/lists",
         headers=headers,
     )
 
@@ -141,7 +142,7 @@ def list_lists():
 
 def change_campaign_status(campaign_id, status):
     response = httpx.put(
-        f"https://newsletter.developer-friendly.blog/api/campaigns/{campaign_id}/status",
+        f"{base_url}/api/campaigns/{campaign_id}/status",
         headers=headers,
         json=dict(status=status),
     )
@@ -154,7 +155,7 @@ def change_campaign_status(campaign_id, status):
 
 def list_campaigns():
     response = httpx.get(
-        "https://newsletter.developer-friendly.blog/api/campaigns",
+        f"{base_url}/api/campaigns",
         headers=headers,
     )
 
