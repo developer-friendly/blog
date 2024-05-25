@@ -101,31 +101,39 @@ def test_campaign(campaign_id: int, campaign: Campaign, test_subscriber: list[st
     return response.json()
 
 
-def update_campaign_template(template_id):
-    file_rootdir = os.path.dirname(os.path.realpath(__file__))
-    with open(f"{file_rootdir}/templates/newsletter.html", "r") as file:
-        body = file.read()
-
-    return httpx.put(
+def update_template(template_id, new_template):
+    response = httpx.put(
         f"https://newsletter.developer-friendly.blog/api/templates/{template_id}",
         headers=headers,
         json=dict(
             name="developer-friendly-newsletter",
             type="campaign",
-            body=body,
+            body=new_template,
         ),
     )
 
+    if response.status_code != 200:
+        raise ValueError(response.text)
+    return response.json()
+
 
 def list_subscribers():
-    return httpx.get(
+    response = httpx.get(
         "https://newsletter.developer-friendly.blog/api/subscribers",
         headers=headers,
     )
 
+    if response.status_code != 200:
+        raise ValueError(response.text)
+    return response.json()
+
 
 def list_lists():
-    return httpx.get(
+    response = httpx.get(
         "https://newsletter.developer-friendly.blog/api/lists",
         headers=headers,
     )
+
+    if response.status_code != 200:
+        raise ValueError(response.text)
+    return response.json()

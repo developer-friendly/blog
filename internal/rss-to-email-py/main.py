@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import os
 from logger import logger
 from custom_types import Campaign, Cli
 from cli import parser, default_send_at
@@ -8,6 +9,9 @@ from newsletter import (
     test_campaign,
     prepare_html_for_newsletter,
     create_campaign,
+    update_template,
+    list_subscribers,
+    list_lists,
 )
 
 
@@ -53,5 +57,19 @@ if __name__ == "__main__":
         campaign.body = body
         rv = test_campaign(campaign_id, campaign, [test_subscriber])
         logger.info(rv)
+    elif args.subcommand == Cli.UPDATE_TEMPLATE:
+        file_rootdir = os.path.dirname(os.path.realpath(__file__))
+        with open(f"{file_rootdir}/templates/newsletter.html", "r") as file:
+            new_template = file.read()
+        rv = update_template(template_id, new_template)
+        logger.info(rv)
+    elif args.subcommand == Cli.LIST_SUBSCRIBERS:
+        rv = list_subscribers()
+        logger.debug(rv)
+        print(rv)
+    elif args.subcommand == Cli.LIST_LISTS:
+        rv = list_lists()
+        logger.debug(rv)
+        print(rv)
     else:
         parser.print_help()

@@ -42,6 +42,9 @@ class Cli(Enum):
     CREATE_CAMPAIGN = "create-campaign"
     UPDATE_CAMPAIGN = "update-campaign"
     TEST_CAMPAIGN = "test-campaign"
+    UPDATE_TEMPLATE = "update-template"
+    LIST_SUBSCRIBERS = "list-subscribers"
+    LIST_LISTS = "list-lists"
 
     def __eq__(self, value) -> bool:
         if isinstance(value, str):
