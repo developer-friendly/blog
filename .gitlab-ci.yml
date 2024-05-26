@@ -6,7 +6,8 @@ stages:
 
 before_script:
   - pip install -U pip -r requirements.txt
-  - apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant-bin
+  - apt update
+  - apt install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
 
 build:
   stage: build
