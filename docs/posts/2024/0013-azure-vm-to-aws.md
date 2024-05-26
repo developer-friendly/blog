@@ -203,7 +203,7 @@ so far, I couldn't find a way to customize this _audience_ field anywhere in
 Azure. I'd be more than happy to be proven wrong by a diligent reader. :hugging:
 
 But, until then, it's safe to assume that the audience of the JWT token is
-what you see in the TF code above. :shrug:
+what you see in this TF code. :shrug:
 
 However, when we get to the AWS side, we would normally want to be rest assured
 that not all the identities of the given Identity Provider will be able to
@@ -216,6 +216,10 @@ Additionally, pay close attention to the URL of our OpenID Connect provider.
 This is something tailored specific to Azure AD and its format is just as you
 see in the code above, with `sts.windows.net` in the hostname and the tenant ID
 in the http path.
+
+```hcl title="trust-relationship/main.tf" linenums="3"
+-8<- "docs/codes/2024/0013/trust-relationship/main.tf:3:3"
+```
 
 Eventually, as per the OIDC compliance[^2], one is able to fetch the OIDC
 configuration from such URL by issuing the following HTTP request:
@@ -536,7 +540,7 @@ ansible-playbook playbook.yml -e aws_profile=$AWS_PROFILE
 
 If you decode the access token given to the VM by Azure AD
 (`~/.azure/vm-identity-token`), you will see the following claims in the JWT
-token.
+token[^13].
 
 ```json title=""
 -8<- "docs/codes/2024/0013/junk/decoded-jwt-access-token.json"
@@ -580,3 +584,4 @@ Until then, happy OIDC-ing! :wave:
 [^10]: https://azure.microsoft.com/en-us/get-started/azure-portal
 [^11]: https://stackoverflow.com/a/54038587/8282345
 [^12]: https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-role.html#cli-configure-role-oidc
+[^13]: https://jwt.io
