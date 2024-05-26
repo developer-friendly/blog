@@ -138,13 +138,9 @@ jobs:
 
   newsletter-test-run:
     if: |
-      (
       github.repository == 'developer-friendly/blog' &&
       github.event_name == 'schedule' &&
       github.event.schedule == '0 6 * * 1'
-      ) || (
-        github.event_name == 'push' && github.ref == 'refs/heads/main'
-      )
     runs-on: ubuntu-latest
     env:
       LISTMONK_AUTHORIZATION: ${{ secrets.LISTMONK_AUTHORIZATION }}
