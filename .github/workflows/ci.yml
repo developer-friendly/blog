@@ -12,8 +12,9 @@ on:
     branches:
       - main
   schedule:
-    - cron: "0 5 * * *"
-    - cron: "0 7 * * 1"
+    - cron: "0 5 * * *" # 12 WIB: publishing the new article
+    - cron: "0 6 * * 1" # 13 WIB: newsletter test run
+    - cron: "0 7 * * 1" # 14 WIB: newsletter for subscribers
 permissions:
   contents: write
 
@@ -134,6 +135,31 @@ jobs:
           build_command: echo Skipping building the web files
           build_directory: site
           install_command: echo Skipping installing the dependencies
+
+  newsletter-test-run:
+    if: |
+      github.repository == 'developer-friendly/blog' &&
+      github.event_name == 'schedule' &&
+      github.event.schedule == '0 6 * * 1'
+    runs-on: ubuntu-latest
+    env:
+      LISTMONK_AUTHORIZATION: ${{ secrets.LISTMONK_AUTHORIZATION }}
+      NEWSLETTER_CAMPAIGN_LIST: ${{ vars.NEWSLETTER_CAMPAIGN_LIST_TEST_RUN }}
+    defaults:
+      run:
+        working-directory: ./internal/rss-to-email-py
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: pip install -U pip -r ./requirements.txt
+      - id: campaign
+        name: Create a new campaign
+        run: |
+          campaign_id=$(./main.py create-campaign | jq -r .data.id)
+          echo "id=$campaign_id" >> $GITHUB_OUTPUT
+      - name: Start the campaign
+        run: ./main.py -c ${{ steps.campaign.outputs.id }} change-campaign-status -s running
 
   newsletter:
     if: |
