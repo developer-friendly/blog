@@ -1,0 +1,26 @@
+image: python:3.12
+
+stages:
+  - build
+  - deploy
+
+before_script:
+  - pip install -U pip -r requirements.txt
+
+build:
+  stage: build
+  script:
+    - mkdocs build
+  artifacts:
+    paths:
+      - site
+
+pages:
+  stage: deploy
+  script:
+    - mv site public
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
