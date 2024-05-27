@@ -12,7 +12,7 @@ function shuffle(array) {
   return array;
 }
 
-async function showRandomAnnouncement(groupId, timeInterval) {
+function showRandomAnnouncement(groupId, timeInterval) {
   var announcement = document.getElementById(groupId);
   if (announcement) {
     var children = [].slice.call(announcement.children);
@@ -30,4 +30,6 @@ async function showRandomAnnouncement(groupId, timeInterval) {
   }
 }
 
-showRandomAnnouncement("announce-left", 5000);
+document$.subscribe(function ensureRuns() {
+  showRandomAnnouncement("announce-left", 5000);
+})
