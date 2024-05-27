@@ -20,35 +20,13 @@
       analytics_storage: "denied",
     });
 
-    function consentGrantedAdStorage() {
+    function consentGrantAll() {
       gtag("consent", "update", {
         ad_storage: "granted",
-      });
-    }
-
-    function consentGrantedAdUserData() {
-      gtag("consent", "update", {
         ad_user_data: "granted",
-      });
-    }
-
-    function consentGrantedAdPersonalization() {
-      gtag("consent", "update", {
         ad_personalization: "granted",
-      });
-    }
-
-    function consentGrantedAnalyticsStorage() {
-      gtag("consent", "update", {
         analytics_storage: "granted",
       });
-    }
-
-    function consentGrantAll() {
-      consentGrantedAdStorage();
-      consentGrantedAdUserData();
-      consentGrantedAdPersonalization();
-      consentGrantedAnalyticsStorage();
     }
 
     /* Register event handlers after documented loaded */
@@ -102,13 +80,13 @@
 
       /* Setup Google AdSense consent v2 */
       document$.subscribe(function googleConsentV2() {
-        console.log("Google AdSense consent v2 check ...")
+        console.log("Google AdSense consent v2 check ...");
         var consent = __md_get("__consent");
         if (consent && consent.personalization) {
-          console.log("Google AdSense consent v2 granted")
+          console.log("Google AdSense consent v2 granted");
           consentGrantAll();
         }
-      })
+      });
     })
 
     /* Create script tag */
