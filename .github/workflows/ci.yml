@@ -12,9 +12,9 @@ on:
     branches:
       - main
   schedule:
-    - cron: "0 5 * * *" # 12 WIB: publishing the new article
-    - cron: "0 6 * * 1" # 13 WIB: newsletter test run
-    - cron: "0 8 * * 1" # 15 WIB: newsletter for subscribers
+    - cron: "0 5 * * *" # Everyday, 12 WIB: building the site
+    - cron: "0 6 * * 1" # Mondays,  13 WIB: newsletter test run
+    - cron: "0 8 * * 1" # Mondays,  15 WIB: newsletter for subscribers
 permissions:
   contents: write
 
