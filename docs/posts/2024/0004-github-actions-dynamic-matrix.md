@@ -7,6 +7,11 @@ description: >-
 categories:
   - GitHub
   - CI/CD
+social:
+  cards_layout_options:
+    description: >-
+      Learn how to increase the bandwidth of your CI/CD pipeline by defining a
+      dynamic matrix in GitHub Actions for maximum efficiency and cost optimization.
 image: assets/images/social/2024/03/09/github-actions-dynamic-matrix.png
 ---
 

@@ -1,0 +1,46 @@
+<div id="modal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="close-button">&times;</span>
+    <form
+      id="subscribe-form"
+      method="post"
+      action="https://newsletter.developer-friendly.blog/subscription/form"
+    >
+      <h2>Subscribe to Our Newsletter</h2>
+      <div class="form-group">
+        <label for="first-name">First Name (Optional)</label>
+        <input
+          class="md-input"
+          type="text"
+          id="first-name"
+          name="first-name"
+          placeholder="First Name"
+        />
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          class="md-input"
+          type="email"
+          id="email"
+          name="email"
+          required
+          placeholder="Email"
+        />
+      </div>
+      <input type="hidden" name="nonce" />
+      <input
+        type="hidden"
+        name="l"
+        value="ea947371-ce6e-46e5-ade0-736c1a72d55e"
+      />
+      <div
+        class="h-captcha"
+        data-sitekey="86462775-09bb-45e0-90c1-1e9f7fee4578"
+      ></div>
+      <button class="md-button md-button--primary" type="submit">
+        Subscribe
+      </button>
+    </form>
+  </div>
+</div>

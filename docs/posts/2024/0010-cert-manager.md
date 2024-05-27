@@ -30,6 +30,11 @@ links:
   - ./posts/2024/0008-k8s-federated-oidc.md
   - ./posts/2024/0006-gettings-started-with-gitops-and-fluxcd.md
   - Source Code: https://github.com/developer-friendly/cert-manager-guide
+social:
+  cards_layout_options:
+    description: >-
+      Learn how to automate your TLS certificate retrieval from AWS &
+      Cloudflare in Kubernetes using the cert-manager operator.
 image: assets/images/social/2024/05/06/cert-manager-all-in-one-kubernetes-tls-certificate-manager.png
 ---
 

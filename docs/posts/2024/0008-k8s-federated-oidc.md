@@ -23,6 +23,11 @@ links:
   - ./posts/2024/0005-install-k3s-on-ubuntu22.md
   - ./posts/2024/0003-kubernetes-the-hard-way.md
   - Source Code: https://github.com/developer-friendly/oidc-k8s-aws
+social:
+  cards_layout_options:
+    description: >-
+      Learn how to use OpenID Connect to establish a trust relationship between
+      AWS & a Kubernetes cluster to grant pods access to AWS services.
 image: assets/images/social/2024/04/22/grant-kubernetes-pods-access-to-aws-services-using-openid-connect.png
 ---
 

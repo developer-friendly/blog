@@ -18,6 +18,11 @@ categories:
 links:
   - ./posts/2024/0002-external-secret-immutable-target.md
   - ./posts/2024/0004-github-actions-dynamic-matrix.md
+social:
+  cards_layout_options:
+    description: >-
+      Learn how to authenticate GitHub Actions runners to access AWS services
+      securely without storing long-lived credentials.
 image: assets/images/social/2024/04/14/what-is-openid-connect-authentication-a-practical-guide.png
 ---
 

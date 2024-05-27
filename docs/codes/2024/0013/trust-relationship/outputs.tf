@@ -1,7 +1,7 @@
-output "aws_oidc_arn" {
+output "oidc_arn" {
   value = aws_iam_openid_connect_provider.this.arn
 }
 
-output "aws_role_arn" {
-  value = aws_iam_role.this.arn
+output "oidc_url" {
+  value = aws_iam_openid_connect_provider.this.url
 }

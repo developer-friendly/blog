@@ -11,3 +11,5 @@ secrets
 .envrc
 docs/codes/2024/0008/inventory/
 **/terraform.tfvars
+docs/codes/2024/0013/inventory.yml
+__pycache__

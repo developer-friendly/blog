@@ -30,6 +30,11 @@ links:
   - ./posts/2024/0009-external-secrets-aks-to-aws-ssm.md
   - ./posts/2024/0005-install-k3s-on-ubuntu22.md
   - Source Code: https://github.com/developer-friendly/fluxcd-advanced-crds
+social:
+  cards_layout_options:
+    description: >-
+      How to use all the power FluxCD has to offer to improve the efficiency
+      and automation of your Kubernetes cluster's continuous deployment.
 image: assets/images/social/2024/05/13/gitops-continuous-deployment-fluxcd-advanced-crds.png
 ---
 

@@ -11,6 +11,10 @@ on:
   push:
     branches:
       - main
+  schedule:
+    - cron: "0 5 * * *" # Everyday, 12 WIB: building the site
+    - cron: "0 6 * * 1" # Mondays,  13 WIB: newsletter test run
+    - cron: "0 8 * * 1" # Mondays,  15 WIB: newsletter for subscribers
 permissions:
   contents: write
 
@@ -21,7 +25,7 @@ env:
   URL_DOWNLOAD: "true"
 
 jobs:
-  build:
+  preview:
     if: github.event_name == 'pull_request' && github.repository == 'developer-friendly/blog'
     permissions:
       pull-requests: write
@@ -75,7 +79,17 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: |
+      github.repository == 'developer-friendly/blog' &&
+      (
+        (
+          github.event_name == 'push' &&
+          github.ref == 'refs/heads/main'
+        ) || (
+          github.event_name == 'schedule' &&
+          github.event.schedule == '0 5 * * *'
+        )
+      )
     permissions:
       contents: read
       id-token: write
@@ -126,6 +140,56 @@ jobs:
           build_command: echo Skipping building the web files
           build_directory: site
           install_command: echo Skipping installing the dependencies
+
+  newsletter-test-run:
+    if: |
+      github.repository == 'developer-friendly/blog' &&
+      github.event_name == 'schedule' &&
+      github.event.schedule == '0 6 * * 1'
+    runs-on: ubuntu-latest
+    env:
+      LISTMONK_AUTHORIZATION: ${{ secrets.LISTMONK_AUTHORIZATION }}
+      NEWSLETTER_CAMPAIGN_LIST: ${{ vars.NEWSLETTER_CAMPAIGN_LIST_TEST_RUN }}
+    defaults:
+      run:
+        working-directory: ./internal/rss-to-email-py
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: pip install -U pip -r ./requirements.txt
+      - id: campaign
+        name: Create a new campaign
+        run: |
+          campaign_id=$(./main.py create-campaign | jq -r .data.id)
+          echo "id=$campaign_id" >> $GITHUB_OUTPUT
+      - name: Start the campaign
+        run: ./main.py -c ${{ steps.campaign.outputs.id }} change-campaign-status -s running
+
+  newsletter:
+    if: |
+      github.repository == 'developer-friendly/blog' &&
+      github.event_name == 'schedule' &&
+      github.event.schedule == '0 8 * * 1'
+    runs-on: ubuntu-latest
+    env:
+      LISTMONK_AUTHORIZATION: ${{ secrets.LISTMONK_AUTHORIZATION }}
+      NEWSLETTER_CAMPAIGN_LIST: ${{ vars.NEWSLETTER_CAMPAIGN_LIST }}
+    defaults:
+      run:
+        working-directory: ./internal/rss-to-email-py
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install dependencies
+        run: pip install -U pip -r ./requirements.txt
+      - id: campaign
+        name: Create a new campaign
+        run: |
+          campaign_id=$(./main.py create-campaign | jq -r .data.id)
+          echo "id=$campaign_id" >> $GITHUB_OUTPUT
+      - name: Start the campaign
+        run: ./main.py -c ${{ steps.campaign.outputs.id }} change-campaign-status -s running
 
   lychee:
     if: ${{ github.repository == 'developer-friendly/blog' }}

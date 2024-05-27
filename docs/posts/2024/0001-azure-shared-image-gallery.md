@@ -9,6 +9,11 @@ categories:
   - Cloud Computing
   - OpenTofu
   - IaC
+social:
+  cards_layout_options:
+    description: >-
+      Learn how you can create Azure golden images and share them across
+      different regions using Azure Shared Image Gallery.
 image: assets/images/social/2024/02/15/azure-shared-image-gallery.png
 ---
 

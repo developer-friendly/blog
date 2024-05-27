@@ -2,7 +2,7 @@ site_name: Developer Friendly Blog
 edit_uri: blob/main/docs/
 extra:
   social:
-    - icon: simple/githubsponsors
+    - icon: octicons/heart-fill-16
       link: https://github.com/sponsors/meysam81/
       name: Sponsor the author!
     - icon: fontawesome/brands/paypal
@@ -66,6 +66,11 @@ extra:
     new: Recently added
 extra_javascript:
   - static/js/consent.js
+  - static/js/subscribe.js
+  - static/js/announce.js
+extra_css:
+  - static/css/subscribe.css
+  - static/css/announce.css
 copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
 plugins:
   - typeset
@@ -102,6 +107,7 @@ plugins:
       debug_on_build: !ENV [DEBUG_BUILD, false]
   - blog:
       draft: !ENV [DRAFT, false]
+      draft_if_future_date: true
       blog_dir: .
       authors_profiles: !ENV [AUTHORS_PROFILE, false]
       post_readtime: true

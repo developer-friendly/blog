@@ -1,0 +1,31 @@
+{
+  "Role": {
+    "Arn": "arn:aws:iam::XXXXXXXXXXXX:role/azure-vm",
+    "AssumeRolePolicyDocument": {
+      "Statement": [
+        {
+          "Action": "sts:AssumeRoleWithWebIdentity",
+          "Condition": {
+            "StringEquals": {
+              "sts.windows.net/00000000-0000-0000-0000-000000000000/:sub": "828b741f-e7af-4737-9490-770b12926479"
+            }
+          },
+          "Effect": "Allow",
+          "Principal": {
+            "Federated": "arn:aws:iam::XXXXXXXXXXXX:oidc-provider/sts.windows.net/00000000-0000-0000-0000-000000000000/"
+          }
+        }
+      ],
+      "Version": "2012-10-17"
+    },
+    "CreateDate": "2024-05-24T02:37:24+00:00",
+    "MaxSessionDuration": 3600,
+    "Path": "/",
+    "RoleId": "AROA6AMOBUU5EVQ54KDCE",
+    "RoleLastUsed": {
+      "LastUsedDate": "2024-05-24T04:10:44+00:00",
+      "Region": "eu-central-1"
+    },
+    "RoleName": "azure-vm"
+  }
+}

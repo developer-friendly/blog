@@ -1,0 +1,31 @@
+image: busybox
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  image: python:3.12
+  variables:
+    GIT_DEPTH: 0
+    MKDOCS_GIT_COMMITTERS_APIKEY: $GH_TOKEN
+  before_script:
+    - pip install -U pip -r requirements.txt
+    - apt update
+    - apt install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
+  script:
+    - mkdocs build
+  artifacts:
+    paths:
+      - site
+
+pages:
+  stage: deploy
+  only:
+    - main
+  script:
+    - mv site public
+  artifacts:
+    paths:
+      - public
