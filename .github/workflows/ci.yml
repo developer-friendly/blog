@@ -170,7 +170,7 @@ jobs:
     if: |
       github.repository == 'developer-friendly/blog' &&
       github.event_name == 'schedule' &&
-      github.event.schedule == '0 7 * * 1'
+      github.event.schedule == '0 8 * * 1'
     runs-on: ubuntu-latest
     env:
       LISTMONK_AUTHORIZATION: ${{ secrets.LISTMONK_AUTHORIZATION }}
