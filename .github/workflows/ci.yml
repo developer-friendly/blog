@@ -80,10 +80,15 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     if: |
+      github.repository == 'developer-friendly/blog' &&
       (
-        github.event_name == 'push' && github.ref == 'refs/heads/main'
-      ) || (
-        github.event_name == 'schedule' && github.event.schedule == '0 5 * * *'
+        (
+          github.event_name == 'push' &&
+          github.ref == 'refs/heads/main'
+        ) || (
+          github.event_name == 'schedule' &&
+          github.event.schedule == '0 5 * * *'
+        )
       )
     permissions:
       contents: read
