@@ -11,6 +11,11 @@ categories:
   - OpenTofu
 links:
   - ./posts/2024/0009-external-secrets-aks-to-aws-ssm.md
+social:
+  cards_layout_options:
+    description: >-
+      The immutable flag on ExternalSecret resource can catch you off guard
+      if you are not careful. Learn how to get on top of it in this blog post.
 image: assets/images/social/2024/02/16/external-secrets-and-immutable-target.png
 ---
 

@@ -14,6 +14,11 @@ categories:
   - Hetzner
 links:
   - ./posts/2024/0003-kubernetes-the-hard-way.md
+social:
+  cards_layout_options:
+    description: >-
+      Learn how to deploy a lightweight Kubernetes cluster using k3s on Ubuntu
+      22.04 with OpenTofu & Ansible on Hetzner Cloud and Cilium as the CNI.
 image: assets/images/social/2024/03/22/how-to-install-lightweight-kubernetes-on-ubuntu-2204.png
 ---
 

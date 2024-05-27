@@ -26,6 +26,11 @@ links:
   - ./posts/2024/0008-k8s-federated-oidc.md
   - ./posts/2024/0009-external-secrets-aks-to-aws-ssm.md
   - Source Code: https://github.com/developer-friendly/aws-oidc-azure-vm
+social:
+  cards_layout_options:
+    description: >-
+      Learn how to grant an Azure Virtual Machine access to AWS services
+      without passing hard-coded credetials, with the power of OpenID Connect.
 image: assets/images/social/2024/05/27/how-to-access-aws-from-azure-vm-using-openid-connect.png
 ---
 

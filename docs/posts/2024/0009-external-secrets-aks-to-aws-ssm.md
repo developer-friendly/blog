@@ -26,6 +26,12 @@ links:
   - ./posts/2024/0008-k8s-federated-oidc.md
   - ./posts/2024/0002-external-secret-immutable-target.md
   - Source Code: https://github.com/developer-friendly/external-secrets-guide
+social:
+  cards_layout_options:
+    title: "External Secrets Operator: Fetching AWS SSM Parameters into AKS"
+    description: >-
+      Learn how to fetch secrets from external sources and create Kubernetes
+      Secret resources using the External Secrets Operator.
 image: assets/images/social/2024/04/29/external-secrets-operator-fetching-aws-ssm-parameters-into-azure-aks.png
 ---
 

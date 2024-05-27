@@ -35,6 +35,11 @@ links:
   - ./posts/2024/0007-oidc-authentication.md
   - ./posts/2024/0004-github-actions-dynamic-matrix.md
   - Source Code: https://github.com/developer-friendly/ory
+social:
+  cards_layout_options:
+    description: >-
+      Learn what Ory Kratos has to offer when it comes to authentication and
+      identity management to offload the typical workflows off your application.
 image: assets/images/social/2024/05/20/ory-kratos-headless-authentication-identity-and-user-management.png
 ---
 

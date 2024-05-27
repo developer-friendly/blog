@@ -11,6 +11,11 @@ categories:
   - Cilium
 links:
   - ./posts/2024/0005-install-k3s-on-ubuntu22.md
+social:
+  cards_layout_options:
+    description: >-
+      Understand the inner workins of Kubernetes by setting up the components
+      from scratch using Vagrant, VirtualBox, and Ansible on your local machine.
 image: assets/images/social/2024/03/03/kubernetes-the-hard-way.png
 ---
 

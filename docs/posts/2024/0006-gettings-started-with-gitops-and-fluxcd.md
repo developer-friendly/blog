@@ -13,6 +13,11 @@ categories:
 links:
   - ./posts/2024/0003-kubernetes-the-hard-way.md
   - ./posts/2024/0005-install-k3s-on-ubuntu22.md
+social:
+  cards_layout_options:
+    description: >-
+      Explore the fundamentals of GitOps & FluxCD with a practical real-world
+      example & automate Kubernetes deployments and delivery pipeline.
 image: assets/images/social/2024/04/06/gitops-demystified-introduction-to-fluxcd-for-kubernetes.png
 ---
 
