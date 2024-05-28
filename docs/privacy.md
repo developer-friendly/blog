@@ -46,6 +46,15 @@ not access the Website.
   https://logrocket.com/privacy/. You can opt out of LogRocket tracking by
   customizing the cookies on your browser using the link at the bottom of all
   our pages.
+- Google AdSense: We use Google AdSense to display ads on our Website. Google
+  AdSense uses cookies to serve ads based on a user's prior visits to our
+  Website or other websites. Google's use of advertising cookies enables it and
+  its partners to serve ads to our users based on their visit to our Website
+  and/or other sites on the Internet. Users may opt out of personalized
+  advertising by visiting [Ads Settings](https://www.google.com/settings/ads).
+  You can also opt out of a third-party vendor's use of cookies for
+  personalized advertising by visiting
+  [www.aboutads.info](https://www.aboutads.info/).
 
 ## Use of Information
 
