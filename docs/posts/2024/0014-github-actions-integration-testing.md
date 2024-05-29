@@ -1,6 +1,5 @@
 ---
 date: 2024-06-03
-draft: true
 description: >-
   TODO
 categories:
