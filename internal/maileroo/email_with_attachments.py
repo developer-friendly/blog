@@ -39,7 +39,7 @@ def main(args):
     receiver_email = args.to
 
     msg = MIMEMultipart()
-    msg["From"] = "Meysam Azad <meysam@developer-friendly.blog>"
+    msg["From"] = args.email_from or settings.MAIL_FROM
     msg["To"] = receiver_email
     msg["Subject"] = args.subject
 

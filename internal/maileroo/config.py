@@ -13,5 +13,7 @@ class Settings(BaseSettings):
 
     MAILEROO_API_KEY: str = ""
 
+    MAIL_FROM: str = "Meysam Azad <meysam@developer-friendly.blog>"
+
 
 settings = Settings()

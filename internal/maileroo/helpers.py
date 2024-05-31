@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
 def get_html(args, generic_html_filepath):
+    if args.raw:
+        with open(args.email_content_filepath, "r") as f:
+            email_content = f.read()
+        return email_content
+
     with open(generic_html_filepath, "r") as f:
         template = f.read()
 

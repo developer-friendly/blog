@@ -14,7 +14,7 @@ generic_html_filepath = settings.GENERIC_HTML_FILE_PATH
 
 payload = {
     "from": "Meysam Azad <meysam@developer-friendly.blog>",
-    "tracking": "yes",
+    "tracking": "no",
     # placeholders
     "to": "To Name <to@example.com>",
     "subject": "Test Email",
@@ -31,6 +31,9 @@ def main(args):
 
     payload["to"] = args.to
     payload["subject"] = args.subject
+    payload["from"] = args.from_email or settings.MAIL_FROM
+    if args.tracking:
+        payload["tracking"] = "yes"
     if args.bcc_sender:
         payload["bcc"] = payload["from"]
 
