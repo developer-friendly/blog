@@ -1,13 +1,31 @@
 ---
 date: 2024-06-03
+social:
+  cards_layout_options:
+    font_variant: Expanded Bold
 description: >-
-  TODO
+  Step by Step guide on how to run integration tests using GitHub Actions
+  to automate the application lifecycle and follow DevOps best practices.
 categories:
-  - GitHub
   - GitHub Actions
+  - Continuous Integration
+  - CI/CD
+  - FastAPI
+  - Docker
+  - Automation
+  - Best Practices
+  - Continuous Deployment
+  - DevOps
+  - GitHub
   - GitHub Pages
-  - Testing
+  - Integration Testing
   - PostgreSQL
+  - Python
+  - Quality Assurance
+  - Software Development
+  - Software Testing
+  - Testing
+  - Tutorial
 links:
   - ./posts/2024/0004-github-actions-dynamic-matrix.md
   - ./posts/2024/0007-oidc-authentication.md
@@ -76,7 +94,7 @@ post may provide you a robust yet underutilized approach.
 
 ## CRUD Application
 
-  There are numerous apps that fall into this category[^1], especially opensource
+There are numerous apps that fall into this category[^1], especially opensource
 products where we are able to grab the source code and tweak it to our needs.
 
 The one picked for this blog post comes from the famous Sebastián Ramírez[^2],
@@ -207,7 +225,7 @@ file. Example from the same target repository below[^4]. :point_down:
 -8<- "docs/codes/2024/0014/docker-compose.yml:1:13"
 ```
 
-These so called __services__ in GitHub Actions are spun up before the actual
+These so called **services** in GitHub Actions are spun up before the actual
 job starts. That gives a good leverage for all the dependencies we need up and
 running before the CI starts its first _step_.
 
@@ -215,8 +233,8 @@ The services defined here will run as soon as possible during the execution
 of our job, as you see below.
 
 <figure markdown="span">
-  ![CI Run Initializes Containers](/static/img/2024/0014/full-stack-ci-init-containers.webp "Click to zoom in"){ align=left loading=lazy }
-  <figcaption>CI Run Initializes Containers</figcaption>
+  ![CI Runner Initializes Containers](/static/img/2024/0014/full-stack-ci-init-containers.webp "Click to zoom in"){ align=left loading=lazy }
+  <figcaption>CI Runner Initializes Containers</figcaption>
 </figure>
 
 And if you dig deeper, you will find the exact environment variables passed
