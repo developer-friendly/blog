@@ -5,7 +5,8 @@ description: >-
 categories:
   - GitHub
   - GitHub Actions
-image: assets/images/social/2024/06/03/integration-testing-with-github-actions/
+  - GitHub Pages
+image: assets/images/social/2024/06/03/integration-testing-with-github-actions.png
 ---
 
 # Integration Testing with GitHub Actions
@@ -18,7 +19,7 @@ There are many great and brilliant engineers working daily to provide a
 fantastic experience for the rest of us.
 
 In this blog post, you will learn how to perform your integration testing
-using GitHub Actions with all its dependencies and serivces spun up beforehand.
+using GitHub Actions with all its dependencies and services spun up beforehand.
 
 Stick around till the end to find out how.
 
@@ -30,17 +31,16 @@ If you're a fan of writing tests for your software, there's a good chance that
 you like to run the fast and small tests on your machine, and delegate the task
 of long-running test execution to another host, likely the CI machine.
 
-This allows for improved productivity as you can continue to continue your
-development & enhance your software while the tests are running in the
-background.
+This allows for improved productivity as you continue with your development &
+enhancements for your software while the tests are running in the background.
 
 It also allows for a high confidence and a robust delivery, knowing that all
 the changes are gated behind a set of tests that will run automatically for
 every push.
 
 Thanks to GitHub and the huge productivity boost it has provided for the
-developer community, we have less to worry about the test infrastructure these
-days than what used to be the case a few years ago.
+developer community, we have less to worry about these days when it comes to
+the test infrastructure compared to what used to be the case a few years ago.
 
 Let's see how we can leverage this great technology in our advantage so that
 our typical flow is not interrupted and every push to the repository triggers
@@ -49,13 +49,13 @@ and enforces the passing of our previously written tests.
 ## Objective
 
 As per our tradition in this blog post, we should set a clear goal of what we
-aim to achieve in this blog post. If things work for the best, we should
+aim to achieve in here. If things work for the best, we should
 accomplish the following tasks:
 
 - [x] Find an application that has a couple of dependencies (e.g. database,
-      caching, etc.) during its runtime operation. Make it so that the app is
-      quite useless without them. This is a required objective as we aim to
-      provide a solution to this very common problem.
+      caching, etc.) during its runtime operation. The requirement is that the
+      app has to be useless without these dependencies. This is a required
+      objective as we aim to provide a solution to this very common problem.
 - [x] Have a bunch of integrations tests actually talking to those dependencies
       and verifying that the application is working as expected.
 - [x] Write a GitHub Actions workflow that spins up the dependencies before
@@ -68,7 +68,7 @@ post may provide you a robust yet underutilized approach.
 
 ## CRUD Application
 
-There are numerous apps that fall into this category, especially opensource
+  There are numerous apps that [fall into this category], especially opensource
 products where we are able to grab the source code and tweak it to our needs.
 
 The one picked for this blog post comes from the famous [Sebastián Ramírez],
@@ -145,8 +145,8 @@ poetry run pytest
 2 tests are failing at this point, but that is not our concern really! :shrug:
 
 <figure markdown="span">
-  ![Fullstack FastAPI Template Pytest](/static/img/2024/0014/full-stack-fastapi-template-pytest.webp "Click to zoom in"){ align=left loading=lazy }
-  <figcaption>Fullstack FastAPI Template Pytest</figcaption>
+  ![Pytest Local Result](/static/img/2024/0014/full-stack-fastapi-template-pytest.webp "Click to zoom in"){ align=left loading=lazy }
+  <figcaption>Pytest Local Result</figcaption>
 </figure>
 
 ## Running Tests in the CI
@@ -188,11 +188,12 @@ Let's see how we can achieve this in GitHub Actions.
 First, we need to start the database before the app does.
 
 ```yaml title=".github/workflows/ci.yml" linenums="48"
--8<- "docs/codes/2024/0014/ci.yml:48:56"
+-8<- "docs/codes/2024/0014/junk/service.yml:48:56"
 ```
 
 If you notice the syntax is very similar to what you see in a `docker-compose.yml`
-file. Example from the same repository below. :point_down:
+file. Example from the same repository target
+[below][Full-Stack FastAPI Template]. :point_down:
 
 ```yaml title="docker-compose.yml"
 -8<- "docs/codes/2024/0014/docker-compose.yml:1:13"
@@ -200,7 +201,7 @@ file. Example from the same repository below. :point_down:
 
 These so called __services__ are spun up before the actual job starts. That
 gives a good leverage for all the dependencies we need up and running before
-the CI starts its first step, _pun intended_.
+the CI starts its first _step_.
 
 The services defined here will run as soon as possible during the executation
 of our job, as you see below.
@@ -243,14 +244,14 @@ your codebase, whether or not you have a dead code anywhere, etc.
 These are usually static HTML files that can be viewed in a browser for a
 good overall visual on the coverage and the places where you need to improve.
 
-GitHub Pages, on the other hand, is an excellent choice for serving such
-static files right inside your GitHub repository; it's even free of charge
-if you are using a public repository.
+[GitHub Pages](/category/github-pages/), on the other hand, is an excellent
+choice for serving such static files right inside your GitHub repository; it's
+even free of charge if you are using a public repository.
 
 Let's upload the coverage from our last step into GitHub Pages.
 
-```yaml title=".github/workflows/ci.yml" linenums="80" hl_lines="4 10"
--8<- "docs/codes/2024/0014/ci.yml:80:89"
+```yaml title=".github/workflows/ci.yml" linenums="80" hl_lines="4 9"
+-8<- "docs/codes/2024/0014/junk/pages.yml:80:88"
 ```
 
 The resuling CI run will have an artifact in its summary page just as below.
@@ -270,8 +271,8 @@ as shown below, which you can sort based on your custom column.
 
 ## Full Workflow
 
-The final workflow is not rocket science really. It's just a typical workflow
-you would see elsewhere.
+The final workflow is not rocket science really :rocket:. It's just a typical
+workflow you would see elsewhere.
 
 Here is the full workflow for your reference.
 
@@ -311,3 +312,4 @@ next one. Until then, take care and happy hacking! :penguin: :crab:
 [Full-Stack FastAPI Template]: https://github.com/tiangolo/full-stack-fastapi-template/tree/0.6.0
 [before running the tests]: https://github.com/tiangolo/full-stack-fastapi-template/blob/bd8b50308caebd10f0db318ab35f325a64a318b4/.github/workflows/test.yml#L27
 [directive.]: https://docs.gitlab.com/17.0/ee/ci/services/
+[fall into this category]: https://github.com/topics/crud-application
