@@ -74,11 +74,11 @@ post may provide you a robust yet underutilized approach.
 
 ## CRUD Application
 
-  There are numerous apps that [fall into this category], especially opensource
+  There are numerous apps that fall into this category[^1], especially opensource
 products where we are able to grab the source code and tweak it to our needs.
 
-The one picked for this blog post comes from the famous [Sebastián Ramírez],
-the creator of [FastAPI]. The app is called [Full-Stack FastAPI Template].
+The one picked for this blog post comes from the famous Sebastián Ramírez[^2],
+the creator of FastAPI[^3]. The app is called Full-Stack FastAPI Template[^4].
 
 It has both frontend and backend. However, the focus of this blog post will
 be mainly on the backend part of the application.
@@ -166,7 +166,7 @@ running the tests.
 !!! note "Note"
 
     The current version of the CI in the target repository is using a simple
-    `docker-compose up -d` right [before running the tests].
+    `docker-compose up -d` right before running the tests[^5].
 
     Honestly, there is nothing wrong with this approach and if it works for you
     and your team, by all means, go ahead and own your decision and celebrate
@@ -186,7 +186,7 @@ The idea is just the same as we had in our local environment, and the
 implementation and its syntax is specific to GitHub Actions.
 
 For your reference, ^^GitLab^^ also provides the same functionality with the
-`services` [directive.]
+`services` directive[^6].
 
 Let's see how we can achieve this in GitHub Actions.
 
@@ -199,8 +199,7 @@ First, we need to start the database before the app.
 ```
 
 If you notice the syntax is very similar to what you see in a `docker-compose.yml`
-file. Example from the same target repository
-[below][Full-Stack FastAPI Template]. :point_down:
+file. Example from the same target repository below[^4]. :point_down:
 
 ```yaml title="docker-compose.yml"
 -8<- "docs/codes/2024/0014/docker-compose.yml:1:13"
@@ -314,9 +313,9 @@ tooling you need to get started.
 I hope you have enjoyed this blog post and I look forward to seeing you in the
 next one :eyes:. Until then, take care and happy hacking! :penguin: :crab:
 
-[Sebastián Ramírez]: https://github.com/tiangolo/
-[FastAPI]: https://fastapi.tiangolo.com/
-[Full-Stack FastAPI Template]: https://github.com/tiangolo/full-stack-fastapi-template/tree/0.6.0
-[before running the tests]: https://github.com/tiangolo/full-stack-fastapi-template/blob/bd8b50308caebd10f0db318ab35f325a64a318b4/.github/workflows/test.yml#L27
-[directive.]: https://docs.gitlab.com/17.0/ee/ci/services/
-[fall into this category]: https://github.com/topics/crud-application
+[^1]: https://github.com/topics/crud-application
+[^2]: https://github.com/tiangolo/
+[^3]: https://fastapi.tiangolo.com/
+[^4]: https://github.com/tiangolo/full-stack-fastapi-template/tree/0.6.0
+[^5]: https://github.com/tiangolo/full-stack-fastapi-template/blob/bd8b50308caebd10f0db318ab35f325a64a318b4/.github/workflows/test.yml#L27
+[^6]: https://docs.gitlab.com/17.0/ee/ci/services/
