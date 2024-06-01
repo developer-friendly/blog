@@ -5,19 +5,19 @@ description: >-
   to automate the application lifecycle and follow DevOps best practices.
 categories:
   - GitHub Actions
-  - Continuous Integration
+  - Integration Testing
   - CI/CD
-  - FastAPI
   - Docker
+  - Python
   - Automation
   - Best Practices
   - Continuous Deployment
+  - Continuous Integration
   - DevOps
+  - FastAPI
   - GitHub
   - GitHub Pages
-  - Integration Testing
   - PostgreSQL
-  - Python
   - Quality Assurance
   - Software Development
   - Software Testing
