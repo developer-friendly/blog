@@ -6,14 +6,19 @@ categories:
   - GitHub
   - GitHub Actions
   - GitHub Pages
+  - Testing
+  - PostgreSQL
+links:
+  - Source Code: https://github.com/developer-friendly/full-stack-fastapi-template/
 image: assets/images/social/2024/06/03/integration-testing-with-github-actions.png
 ---
 
 # Integration Testing with GitHub Actions
 
 GitHub Actions is a great CI/CD tool to automate the daily operations of your
-application lifecycle in many ways. It comes with many features out of the box
-and even the ones that are missing are wholeheartedly provided by the community.
+application lifecycle in many ways. It comes with a lot of features out of the
+box and even the ones that are missing are wholeheartedly provided by the
+community.
 
 There are many great and brilliant engineers working daily to provide a
 fantastic experience for the rest of us.
@@ -38,7 +43,7 @@ It also allows for a high confidence and a robust delivery, knowing that all
 the changes are gated behind a set of tests that will run automatically for
 every push.
 
-Thanks to GitHub and the huge productivity boost it has provided for the
+Thanks to GitHub and the huge productivity boost it has provided to the
 developer community, we have less to worry about these days when it comes to
 the test infrastructure compared to what used to be the case a few years ago.
 
@@ -56,12 +61,13 @@ accomplish the following tasks:
       caching, etc.) during its runtime operation. The requirement is that the
       app has to be useless without these dependencies. This is a required
       objective as we aim to provide a solution to this very common problem.
-- [x] Have a bunch of integrations tests actually talking to those dependencies
-      and verifying that the application is working as expected.
-- [x] Write a GitHub Actions workflow that spins up the dependencies before
-      the app, and then runs the integration tests against the app with
-      the correct set of configurations so that the app knows where to look for
-      its dependent services.
+- [x] Have a bunch of integrations [tests](/category/testing/) actually talking
+      to those dependencies and verifying that the application is working as
+      expected.
+- [x] Write a [GitHub Actions](/category/github-actions/) workflow that spins
+      up the dependencies before the app, and then runs the integration tests
+      against the app with the correct set of configurations so that the app
+      knows how to talk to its dependencies.
 
 If that is something you have seen and dealt with before in the past, this blog
 post may provide you a robust yet underutilized approach.
@@ -77,8 +83,8 @@ the creator of [FastAPI]. The app is called [Full-Stack FastAPI Template].
 It has both frontend and backend. However, the focus of this blog post will
 be mainly on the backend part of the application.
 
-The backend needs a PostgreSQL database to run and operate and the same goes
-for its integration tests.
+The backend needs a [PostgreSQL](/category/postgresql/) database to run and
+operate and the same goes for its integration tests.
 
 The framework of the test and other aspects of writing tests is not in the scope
 for this blog post. We are mainly interested in:
@@ -94,7 +100,7 @@ dependencies for you.
 ## Run Tests Locally
 
 Let us first run the tests locally, track the dependencies and understand the
-interconnection between the app and the database.
+interconnections between the app and the database.
 
 ```bash title="" linenums="0"
 VERSION="0.6.0"
@@ -142,7 +148,8 @@ poetry run alembic upgrade head
 poetry run pytest
 ```
 
-2 tests are failing at this point, but that is not our concern really! :shrug:
+Two of the tests are failing at this point, but that is not our concern really!
+:shrug:
 
 <figure markdown="span">
   ![Pytest Local Result](/static/img/2024/0014/full-stack-fastapi-template-pytest.webp "Click to zoom in"){ align=left loading=lazy }
@@ -162,8 +169,8 @@ running the tests.
     `docker-compose up -d` right [before running the tests].
 
     Honestly, there is nothing wrong with this approach and if it works for you
-    and your team, by all means, go ahead and own your decision.
-    :person_running:
+    and your team, by all means, go ahead and own your decision and celebrate
+    it proudly. :person_running:
 
     I am not here to tell you which approach is better; that is your
     responsibility to figure out.
@@ -171,9 +178,9 @@ running the tests.
     I would only invite you to read this article to see if the proposed solution
     is something that you would like to try out.
 
-GitHub Actions provide a way to run services before the actual job starts.
-These are great for running dependencies like databases, caches, etc. in the CI
-environment.
+[GitHub Actions](/category/github-actions/) provide a way to run services
+before the actual job starts. These are great for running dependencies like
+databases, caches, etc. in the CI environment.
 
 The idea is just the same as we had in our local environment, and the
 implementation and its syntax is specific to GitHub Actions.
@@ -185,30 +192,30 @@ Let's see how we can achieve this in GitHub Actions.
 
 ### Starting the Database
 
-First, we need to start the database before the app does.
+First, we need to start the database before the app.
 
 ```yaml title=".github/workflows/ci.yml" linenums="48"
 -8<- "docs/codes/2024/0014/junk/service.yml:48:56"
 ```
 
 If you notice the syntax is very similar to what you see in a `docker-compose.yml`
-file. Example from the same repository target
+file. Example from the same target repository
 [below][Full-Stack FastAPI Template]. :point_down:
 
 ```yaml title="docker-compose.yml"
 -8<- "docs/codes/2024/0014/docker-compose.yml:1:13"
 ```
 
-These so called __services__ are spun up before the actual job starts. That
-gives a good leverage for all the dependencies we need up and running before
-the CI starts its first _step_.
+These so called __services__ in GitHub Actions are spun up before the actual
+job starts. That gives a good leverage for all the dependencies we need up and
+running before the CI starts its first _step_.
 
-The services defined here will run as soon as possible during the executation
+The services defined here will run as soon as possible during the execution
 of our job, as you see below.
 
 <figure markdown="span">
-  ![CI Run Initialize Containers](/static/img/2024/0014/full-stack-ci-init-containers.webp "Click to zoom in"){ align=left loading=lazy }
-  <figcaption>CI Run Initialize Containers</figcaption>
+  ![CI Run Initializes Containers](/static/img/2024/0014/full-stack-ci-init-containers.webp "Click to zoom in"){ align=left loading=lazy }
+  <figcaption>CI Run Initializes Containers</figcaption>
 </figure>
 
 And if you dig deeper, you will find the exact environment variables passed
@@ -244,7 +251,7 @@ your codebase, whether or not you have a dead code anywhere, etc.
 These are usually static HTML files that can be viewed in a browser for a
 good overall visual on the coverage and the places where you need to improve.
 
-[GitHub Pages](/category/github-pages/), on the other hand, is an excellent
+Additionally, [GitHub Pages](/category/github-pages/), is an excellent
 choice for serving such static files right inside your GitHub repository; it's
 even free of charge if you are using a public repository.
 
@@ -254,7 +261,7 @@ Let's upload the coverage from our last step into GitHub Pages.
 -8<- "docs/codes/2024/0014/junk/pages.yml:80:88"
 ```
 
-The resuling CI run will have an artifact in its summary page just as below.
+The resulting CI run will have an artifact in its summary page just as below.
 
 <figure markdown="span">
   ![CI Summary](/static/img/2024/0014/full-stack-ci-run-summary.webp "Click to zoom in"){ align=left loading=lazy }
@@ -305,7 +312,7 @@ Most of the time, they are a one-size-fits-all, with all the off-the-shelf
 tooling you need to get started.
 
 I hope you have enjoyed this blog post and I look forward to seeing you in the
-next one. Until then, take care and happy hacking! :penguin: :crab:
+next one :eyes:. Until then, take care and happy hacking! :penguin: :crab:
 
 [Sebastián Ramírez]: https://github.com/tiangolo/
 [FastAPI]: https://fastapi.tiangolo.com/
