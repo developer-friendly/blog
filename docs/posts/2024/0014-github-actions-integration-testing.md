@@ -1,8 +1,5 @@
 ---
 date: 2024-06-03
-social:
-  cards_layout_options:
-    font_variant: Expanded Bold
 description: >-
   Step by Step guide on how to run integration tests using GitHub Actions
   to automate the application lifecycle and follow DevOps best practices.
