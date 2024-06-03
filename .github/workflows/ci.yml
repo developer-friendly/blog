@@ -89,6 +89,7 @@ jobs:
         )
       )
     permissions:
+      attestations: write
       contents: read
       id-token: write
       pages: write
@@ -123,10 +124,16 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
+          name: build-${{ github.ref_name }}
           path: site
+      - uses: actions/attest-build-provenance@v1
+        with:
+          subject-path: build-${{ github.ref_name }}
       - id: deployment
         name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: build-${{ github.ref_name }}
       - if: ${{ github.repository == 'developer-friendly/blog' }}
         id: netlify
         name: Deploy to Netlify
