@@ -1,9 +1,8 @@
 ---
 date: 2024-04-06
-title: "GitOps Demystified: Introduction to FluxCD for Kubernetes"
 description: >-
   Explore the fundamentals of GitOps with FluxCD with a practical real-world
-  example & automate Kubernetes deployments and delivery pipeline.
+  example & automate Kubernetes continuous deployments and delivery pipeline.
 draft: false
 categories:
   - Kubernetes
@@ -13,15 +12,10 @@ categories:
 links:
   - ./posts/2024/0003-kubernetes-the-hard-way.md
   - ./posts/2024/0005-install-k3s-on-ubuntu22.md
-social:
-  cards_layout_options:
-    description: >-
-      Explore the fundamentals of GitOps & FluxCD with a practical real-world
-      example & automate Kubernetes deployments and delivery pipeline.
 image: assets/images/social/2024/04/06/gitops-demystified-introduction-to-fluxcd-for-kubernetes.png
 ---
 
-# Getting Started with GitOps and FluxCD
+# GitOps Demystified: Introduction to FluxCD for Kubernetes
 
 Learn how to leverage your Git repository, the GitOps style, to manage your
 Kubernetes cluster with FluxCD. Enhance your delivery and reduce deployment
