@@ -126,10 +126,6 @@ jobs:
         with:
           name: build-${{ github.ref_name }}
           path: site
-      - name: Attest build provenance
-        uses: actions/attest-build-provenance@v1
-        with:
-          subject-path: site
       - id: deployment
         name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
