@@ -1,5 +1,6 @@
 ---
 date: 2024-03-03
+pin: true
 draft: false
 description: >-
   How to set up Kubernetes components from scratch using Vagrant, VirtualBox,
@@ -32,8 +33,8 @@ I am using differently from the original challenge are:
 - **Ansible**: For configuring everything until the cluster is ready
 - **Cilium**: For the network CNI and as a replacement for the kube-proxy
 
-So, here is my story and how I solved the famous "Kubernetes The Hard Way" by
-the great Kelsey Hightower. Stay tuned if you're interested in the details.
+So, here is my story and how I solved the famous _Kubernetes The Hard Way_ by
+the great Kelsey Hightower. Stick around if you're interested in the details.
 
 <!-- more -->
 
