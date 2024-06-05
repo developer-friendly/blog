@@ -29,6 +29,9 @@ extra:
     - icon: fontawesome/brands/slack
       link: https://communityinviter.com/apps/developerfriendly/join-our-slack
       name: Join our Slack community!
+    - icon: simple/fathom
+      link: https://app.usefathom.com/share/ycdgtiom/developer+friendly+blog?comparison=previous_period&range=last_30_days
+      name: View our analytics!
   analytics:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
