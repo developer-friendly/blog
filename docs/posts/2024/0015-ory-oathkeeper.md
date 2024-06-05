@@ -38,9 +38,9 @@ it to the upstream unless they are explicitly allowed.
 It enforces protective measures to ensure unauthorized requests are denied.
 It does that by sitting at the frontier of your infrastructure, receiving
 traffics as they come in, inspecting its content, and making decisions based
-on the rules you've previously defined and instructed.
+on the rules you've previously defined and instructed it to.
 
-In this blog post, we will explore what Ory Oathkeeper has to offer, deploy
+In this blog post, we will explore what Ory Oathkeeper can do & deploy
 and configure it in a way that will protect our upstream server.
 
 This use-case is very common and you have likely encountered it or implemented
@@ -57,8 +57,8 @@ are some of the highlights you should be aware of:
 - [x] **Proxy Server**: One of the superpower of Oathkeeper is its ability to
   sit at the frontier of your infrastructure and denying unauthorized requests.
   :rocket:
-- [x] **Decision Maker**: The other mode of running Ory Oathkeeper is to use
-  it as a policy enforcer, making decisions whether or not a requests should
+- [x] **Decision Maker**: Another mode of running Ory Oathkeeper is to use
+  it as a policy enforcer, making decisions on whether or not a request should
   be granted access based on the defined rules. :shield:
 - [x] **Open Source**: Ory Oathkeeper is open source with a permissive license
   , meaning you can inspect the source code, contribute to it, and even fork it
@@ -94,12 +94,33 @@ There are two modes of operation for Ory Oathkeeper:
 1. **Reverse Proxy Mode**: Accepting raw traffics from the client and
    forwarding it to the upstream server.
 2. **Decision Maker Mode**: Making decisions whether or not a request should
-   be granted access based on the defined rules. The frontier proxy server
-   will query the decision API of Oathkeeper to grant or deny a request.
+   be granted access. The frontier proxy server will query the decision API of
+   Oathkeeper to grant or deny a request.
 
-Both of these modes heavily rely on the API access rules defined in its
-configuration. You can pass multiple rules to be applied for multiple upstream
-servers or backends.
+Both of these modes rely solely on the API access rules written in
+human-readable YAML format. You can pass multiple rules to be applied for
+multiple upstream servers or backends.
+
+After this rather long introductory, let's get our hands dirty and roll up
+our system administration sleeves.
+
+## Deploying Ory Oathkeeper
+
+There are different ways to deploy Oathkeeper and it highly depends on your
+infrastructure more than anything else.
+
+In this blog post, we will refrain from using Docker Compose as that is
+something publicly available in the corresponding
+repository[^oathkeeper-repository] and example repository[^ory-examples].
+
+Instead, we will share how to deploy Ory Oathkeeper in a [Kubernetes] cluster
+using [FluxCD]. We have in-depth guide on both topics in our archive if you're
+new to them.
 
 [^ory-slack]: https://slack.ory.sh/
 [^oathkeeper-intro]: https://www.ory.sh/docs/oathkeeper/
+[^oathkeeper-repository]: https://github.com/ory/oathkeeper
+[^ory-examples]: https://github.com/ory/examples
+
+[Kubernetes]: /category/kubernetes/
+[FluxCD]: /category/fluxcd/
