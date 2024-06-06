@@ -4,7 +4,7 @@ metadata:
   name: cloudflare-issuer
 spec:
   acme:
-    email: meysam@licenseware.io
+    email: admin@developer-friendly.blog
     enableDurationFeature: true
     privateKeySecretRef:
       name: cloudflare-issuer
