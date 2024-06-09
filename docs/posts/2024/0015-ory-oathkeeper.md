@@ -16,7 +16,8 @@ categories:
   - OpenTelemetry
 links:
   - ./posts/2024/0012-ory-kratos.md
-  - Source Code: https://github.com/developer-friendly/ory/
+  - ./posts/2024/0008-k8s-federated-oidc.md
+  - Source Code: https://github.com/developer-friendly/oathkeeper-beginner-guide
 image: assets/images/social/2024/06/10/ory-oathkeeper-identity-and-access-proxy-server.png
 ---
 
