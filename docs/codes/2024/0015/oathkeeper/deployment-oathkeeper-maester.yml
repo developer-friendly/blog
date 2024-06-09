@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oathkeeper-maester
+spec:
+  selector:
+    matchLabels:
+      app: oathkeeper-maester
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: oathkeeper-maester
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - args:
+            - --metrics-addr=0.0.0.0:8080
+            - controller
+            - --rulesConfigmapName=oathkeeper-rules
+            - --rulesConfigmapNamespace=FILLED_BY_KUSTOMIZATION
+          command:
+            - /manager
+          image: oryd/oathkeeper-maester
+          name: oathkeeper-maester
+          ports:
+            - containerPort: 8080
+              name: metrics
+              protocol: TCP
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+      serviceAccountName: oathkeeper-maester

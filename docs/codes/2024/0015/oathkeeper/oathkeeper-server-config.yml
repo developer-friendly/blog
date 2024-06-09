@@ -1,0 +1,73 @@
+access_rules:
+  matching_strategy: regexp
+  repositories:
+    - file:///etc/rules/access-rules.json
+authenticators:
+  cookie_session:
+    config:
+      check_session_url: http://kratos-public.auth/sessions/whoami
+    enabled: true
+  jwt:
+    config:
+      jwks_urls:
+        - https://login.windows.net/common/discovery/keys
+    enabled: true
+  anonymous:
+    config:
+      subject: guest
+    enabled: true
+errors:
+  handlers:
+    redirect:
+      config:
+        to: https://ory.developer-friendly.blog/login
+        when:
+          - error:
+              - unauthorized
+        code: 301
+      enabled: true
+    json:
+      config:
+        verbose: true
+      enabled: true
+    www_authenticate:
+      enabled: true
+  fallback:
+    - json
+authorizers:
+  allow:
+    enabled: true
+mutators:
+  header:
+    config:
+      headers:
+        x-user-id: "{{ print .Subject }}"
+    enabled: true
+log:
+  format: json
+  leak_sensitive_values: true
+  level: info
+tracing:
+  service_name: oathkeeper
+  providers:
+    jaeger:
+      sampling:
+        trace_id_ratio: 1.0
+        server_url: http://jaeger.monitoring:5778/sampling
+      local_agent_address: jaeger.monitoring:6831
+  provider: jaeger
+serve:
+  proxy:
+    host: 0.0.0.0
+    cors:
+      allowed_origins:
+        - https://*.developer-friendly.blog
+      allow_credentials: true
+      enabled: true
+    port: 4455
+  prometheus:
+    host: 0.0.0.0
+    port: 9000
+  api:
+    host: 0.0.0.0
+    port: 4456

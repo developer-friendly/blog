@@ -26,3 +26,4 @@
 *[NSG]: Network Security Group
 *[STS]: Security Token Service
 *[JWT]: JSON Web Token
+*[AD]: Active Directory
