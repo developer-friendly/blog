@@ -50,7 +50,7 @@ It does that by sitting at the frontier of your infrastructure, receiving
 traffics as they come in, inspecting its content, and making decisions based
 on the rules you've previously defined and instructed it to.
 
-In this blog post, we will explore what Ory Oathkeeper can do & deploy
+In this blog post, we will explore what Ory Oathkeeper can do, deploy
 and configure it in a way that will protect our upstream server.
 
 This use-case is very common and you have likely encountered it or implemented
@@ -83,8 +83,9 @@ are some of the highlights you should be aware of:
   third party service. **This is the key feature that makes the entire suite
   very appealing to me.** :electric_plug:
 - [x] **Full Featured**: It comes with batteries included, providing
-  experimental support for gRPC middleware (if you're into Golang), and also
-  stable support for WebSockets[^websocket-support]. :battery:
+  experimental support for gRPC middleware[^grpc-middleware] (if you're into
+  Golang), and also stable support for WebSockets[^websocket-support].
+  :battery:
 - [x] **Community**: Ory has a great community of developers and users. If you
   ever get stuck, you can always ask for help in the community Slack
   channel[^ory-slack]. :handshake:
@@ -661,6 +662,7 @@ Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 [GitOps Continuous Deployment: FluxCD Advanced CRDs]: ./0011-fluxcd-advanced-topics.md
 [Oathkeeper server configuration]: #oathkeeper-server-configuration
 
+[^grpc-middleware]: https://www.ory.sh/docs/oathkeeper/grpc-middleware
 [^websocket-support]: https://www.ory.sh/docs/oathkeeper/guides/proxy-websockets
 [^ory-slack]: https://slack.ory.sh/
 [^oathkeeper-intro]: https://www.ory.sh/docs/oathkeeper/
