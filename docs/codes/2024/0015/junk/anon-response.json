@@ -1,0 +1,37 @@
+{
+  "host": {
+    "hostname": "echo.developer-friendly.blog",
+    "ip": "::ffff:20.0.0.195",
+    "ips": []
+  },
+  "http": {
+    "baseUrl": "",
+    "method": "GET",
+    "originalUrl": "/",
+    "protocol": "http"
+  },
+  "request": {
+    "body": {},
+    "cookies": {},
+    "headers": {
+      "accept": "*/*",
+      "accept-encoding": "gzip",
+      "b3": "c2720bd50c24d2254f9e593737409cff-3214b34f361875d0-1",
+      "host": "echo.developer-friendly.blog",
+      "traceparent": "00-c2720bd50c24d2254f9e593737409cff-3214b34f361875d0-01",
+      "uber-trace-id": "c2720bd50c24d2254f9e593737409cff:3214b34f361875d0:0:1",
+      "user-agent": "curl/7.81.0",
+      "x-b3-sampled": "1",
+      "x-b3-spanid": "3214b34f361875d0",
+      "x-b3-traceid": "c2720bd50c24d2254f9e593737409cff",
+      "x-envoy-expected-rq-timeout-ms": "15000",
+      "x-envoy-internal": "true",
+      "x-request-id": "97d77949-6ef0-46b0-86d3-59eb32344fe3",
+      "x-user-id": "guest"
+    },
+    "params": {
+      "0": "/"
+    },
+    "query": {}
+  }
+}
