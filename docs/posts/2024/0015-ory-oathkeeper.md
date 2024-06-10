@@ -1,18 +1,33 @@
 ---
 date: 2024-06-10
 description: >-
-  TODO
+  How to protect HTTP backend services with Ory Oathkeeper and Kratos. How to
+  secure public or private upstream applications from unauthorized access.
+social:
+  cards_layout_options:
+    description: >-
+      Learn how to protect HTTP backend services with Ory products using
+      Oathkeeper as proxy-server and Kratos as authentication server.
 categories:
-  - Ory
+  - Oathkeeper
+  - Kratos
   - Authentication
+  - Ory
+  - Security
   - Authorization
-  - Kubernetes
-  - External Secrets
+  - Azure
   - cert-manager
+  - DevOps
+  - External Secrets
   - FluxCD
+  - Gateway API
   - GitOps
-  - Kustomization
+  - IaC
+  - IAM
+  - Infrastructure as Code
   - Jaeger
+  - Kubernetes
+  - Kustomization
   - OpenTelemetry
 links:
   - ./posts/2024/0012-ory-kratos.md
