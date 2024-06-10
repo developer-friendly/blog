@@ -6,6 +6,8 @@ authenticators:
   cookie_session:
     config:
       check_session_url: http://kratos-public.auth/sessions/whoami
+      preserve_path: true
+      preserve_query: true
     enabled: true
   jwt:
     config:

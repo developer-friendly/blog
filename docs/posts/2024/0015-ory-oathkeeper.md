@@ -42,8 +42,8 @@ Chances are, your application needs protection from unauthorized access,
 whether deployed into the internet and exposed publicly, or gated behind
 private network and only accessible to a certain privileged users.
 
-That is what Ory Oathkeeper is good at, making sure that requests won't make
-it to the upstream server unless they are explicitly allowed.
+That is what Ory Oathkeeper is good at, **making sure that requests won't make
+it to the upstream server unless they are explicitly allowed**.
 
 It enforces protective measures to ensure unauthorized requests are denied.
 It does that by sitting at the frontier of your infrastructure, receiving
@@ -53,8 +53,8 @@ on the rules you've previously defined and instructed it to.
 In this blog post, we will explore what Ory Oathkeeper can do, deploy
 and configure it in a way that will protect our upstream server.
 
-This use-case is very common and you have likely encountered it or implemented
-a custom solution for you application before.
+This scenario is quite common, and you've probably come across it or developed
+a custom solution for your application before.
 
 Hold your breath till the end to find out how to leverage this opensource
 solution to your advantage so that you won't ever have to reinvent the wheel
@@ -65,13 +65,13 @@ again.
 There are numerous reasons why Oathkeeper is a good fit at what it does. Here
 are some of the highlights you should be aware of:
 
-- [x] **Proxy Server**: One of the superpower of Oathkeeper is its ability to
+- [x] **Proxy Server**: One of the superpowers of Oathkeeper is its ability to
   sit at the forefront of your infrastructure and denying unauthorized requests.
   :shield:
 - [x] **Decision Maker**: Another mode of running Ory Oathkeeper is to use
   it as a policy enforcer, making decisions on whether or not a request should
   be granted access based on the defined rules. :face_with_monocle:
-- [x] **Open Source**: Ory Oathkeeper is open source with a permissive license,
+- [x] **Open Source**: Ory Oathkeeper is opensource with a permissive license,
   meaning you can inspect the source code, contribute to it, and even fork it
   if you want to. :flag_white:
 - [x] **Stateless**: Ory Oathkeeper is stateless, meaning it doesn't store any
@@ -96,8 +96,8 @@ that comes into play.
 
 !!! note "Disclaimer"
 
-    This blog post is not sponsored by Ory(1). I'm just a happy user of their
-    products and I want to share my experience with you.
+    This blog post is **NOT** sponsored by Ory(1). I'm just a happy user of
+    their products and I want to share my experience with you.
     { .annotate }
 
     1.  Though, I definitely wouldn't mind seeing some dollars.
@@ -118,7 +118,7 @@ human-readable YAML format[^api-access-rules].(1) You can pass multiple rules to
 be applied for multiple upstream servers or backends.
 { .annotate }
 
-1.  Some will disgree with YAML files being _human-readable_ . Though we are
+1.  Some will disagree with YAML files being _human-readable_ . Though we are
     not in the business of picking sides, we are here to provide a technical
     guide. :shrug:
 
@@ -133,9 +133,9 @@ deploy and make sure everything works perfectly, we picked our preferred stack
 as you see below:
 
 - [x] **Kubernetes**: Though you don't have to, this guide is built on top of
-      [Kubernetes], heavingly relying on the operator pattern and the CRDs used
+      [Kubernetes], heavily relying on the operator pattern and the CRDs used
       to deploy our infrastructure as well as the Oathkeeper rules.
-- [x] **cert-manager**: We will need internet-accessible host to our cluster
+- [x] **cert-manager**: We will need internet access to our cluster
       with TLS certificate from a trusted CA. That is where [cert-manager] and
       [Gateway API] are lending a generous hand. :handshake: Take a look at
       [cert-manager: All-in-One Kubernetes TLS Certificate Manager] if you
@@ -153,7 +153,7 @@ as you see below:
       [Ory Kratos: Headless Authentication, Identity and User Management]
 - [ ] **FluxCD**: This is our technology of choice when it comes to Kubernetes
       deployments. You are free to pick simpler tools such as Helm CLI. FluxCD
-      is a great tool that requires a bit of learning. Check out our guide on
+      is a great tool that has a bit of learning curve. Check out our guide on
       [GitOps Demystified: Introduction to FluxCD for Kubernetes] if you need
       a starting point or
       [GitOps Continuous Deployment: FluxCD Advanced CRDs] if you are an
@@ -210,6 +210,10 @@ You can customize each method further with specific values. However, we will
 leave the customization to the Oathkeeper rule later in this blog. The URLs,
 however, are a required field and must be specified at the configuration level.
 
+There will be more blog posts including Ory [Oathkeeper] and other
+authenticators and authorizers in the future. Stay tuned for more.
+:fingers_crossed:
+
 #### Tracing Endoints
 
 In all of the [Ory] products, you can specify where to ship your traces to.
@@ -223,8 +227,8 @@ products as below:
 
 #### CORS Configuration
 
-If you're access the Oathkeeper from the browser, you have to set the allowed
-origin addresses in the configurations.
+If you're accessing the Oathkeeper from the browser, you have to set the
+allowed origin addresses in the configurations.
 
 Those "allowed" URLs are the hostnames that is in the address bar of a browser.
 If you specify a wildcard, Oathkeeper will intelligently allow the concrete
@@ -263,7 +267,7 @@ new to them.
 
     Beware, the following Ory Oathkeeper deployment is using [Kustomization].
 
-    That requires doing a lot of heavy liftings if you're used to simpler
+    That requires doing a lot of heavy lifting if you're used to simpler
     deployment tools such as Helm.
 
     However, the upstream Helm chart seems to be quite inflexible and due to
@@ -317,6 +321,13 @@ Now let's put this all together into a Kustomization file.
 
 ```yaml title="oathkeeper/kustomization.yml"
 -8<- "docs/codes/2024/0015/oathkeeper/kustomization.yml"
+```
+
+Notice the CRD installation in the Kustomization file. Without it, this stack
+won't be deployed properly.
+
+```yaml title="oathkeeper/kustomization.yml" linenums="35"
+-8<- "docs/codes/2024/0015/oathkeeper/kustomization.yml:35:36"
 ```
 
 ### FluxCD Deployment Kustomization
@@ -414,7 +425,7 @@ so far was a preparation for this moment.
 
 ### Internet Accessible Endpoint
 
-The first step is to route all the traffic targetting the upstream server to
+The first step is to route all the traffic targeting the upstream server to
 the Oathkeeper proxy endpoint. Based on different types of deployments, you
 may end up executing this step differently.
 
@@ -433,8 +444,9 @@ Notice that this HTTPRoute has to be in the same namespace as the Oathkeeper.
 The reason is that the Gateway will only route the traffics to the same
 namespace as the HTTPRoute[^httproute-doc].
 
-In short, we send the internet traffics to the Oathkeeper, and if all looks OK,
-it will forward the request to the upstream server.
+In short, we send the internet traffics to the Oathkeeper, and if all looks OK
+(the request is authenticated and whatnot), it will forward the request to the
+upstream server.
 
 Otherwise, the user will get the proper error message from Oathkeeper before
 even a single byte reaches the upstream server. That is the true power of
@@ -470,11 +482,30 @@ the server without any authentication.
 
 The flow of the request is as follows[^oathkeeper-proxy-flow]:
 
-1. Is the request authenticated? Yes, it is anonymous.
-2. Is it authorized? Yes, the rule allows access to everyone.
-3. Do we need to change anything in the request? Yes, add a single `x-user-id`
+:one: Is the request authenticated? Yes, it is anonymous.
+
+```yaml title="echo-server-rule/rule.yml" linenums="6"
+-8<- "docs/codes/2024/0015/junk/anon-rule.yml:6:7"
+```
+
+:two: Is it authorized? Yes, the rule allows access to everyone.
+
+```yaml title="echo-server-rule/rule.yml" linenums="8"
+-8<- "docs/codes/2024/0015/junk/anon-rule.yml:8:9"
+```
+
+:three: Do we need to change anything in the request? Yes, add a single `x-user-id`
 header (`guest` for anonymous).
-4. What if error happens before reaching upstream? Return the error as JSON.
+
+```yaml title="echo-server-rule/rule.yml" linenums="21"
+-8<- "docs/codes/2024/0015/junk/anon-rule.yml:21:22"
+```
+
+:four: What if error happens before reaching upstream? Return the error as JSON.
+
+```yaml title="echo-server-rule/rule.yml" linenums="10"
+-8<- "docs/codes/2024/0015/junk/anon-rule.yml:10:11"
+```
 
 The flow you see above is the most important part of how Ory Oathkeeper works.
 If you master this flow, you can create any kind of rule you want.
@@ -501,22 +532,32 @@ curl https://echo.developer-friendly.blog
 
 The response is as below.
 
-```json title="" hl_lines="33"
+```json title="" hl_lines="30"
 -8<- "docs/codes/2024/0015/junk/anon-response.json"
 ```
 
+The user ID is coming from the following [Oathkeeper server configuration].
+:point_down:
+
+```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="15" hl_lines="3"
+-8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:15:18"
+```
 
 ### Play 2: Authenticated by Ory Kratos
 
 At this stage, we should be able to use our
 [previously deployed Ory Kratos server].
 
-Let's modify this rule so that the authenticated users and the identities of
-Kratos can send their request to this upstream server[^kratos-whoami].
+Let's modify the same rule so that the authenticated users and the identities
+of Kratos can send their request to this upstream server[^kratos-whoami].
 
 ```yaml title="echo-server-rule/rule.yml" hl_lines="7-14"
 -8<- "docs/codes/2024/0015/junk/kratos-rule.yml"
 ```
+
+Note that this will only work for browser users of Kratos. For mobile native
+clients using the API flow of Kratos, you'd want to use the `X-Session-Token`
+header instead of the cookie[^kratos-whoami].
 
 If we authenticate to Kratos first and send an HTTP request to the echo-server,
 this is what we get.
@@ -536,13 +577,28 @@ information from the Kratos itself.
 ### Play 3: Azure VM Access
 
 The idea in this scenario is that the virtual machine in the [Azure] cloud with
-system assigned identity can send authenticated requests to the echo-server,
-while Oathkeeper verifying the authenticity of the request using the Azure AD
-JWKs endpoint.
+[system assigned identity][How to Access AWS From Azure VM Using OpenID Connect]
+can send authenticated requests to the echo-server, while Oathkeeper verifies
+the authenticity of the request using the Azure AD JWKs endpoint.
 
-```yaml title="echo-server-rule/rule.yml" hl_lines="17-22"
+```yaml title="echo-server-rule/rule.yml" hl_lines="15-20"
 -8<- "docs/codes/2024/0015/echo-server-rule/rule.yml"
 ```
+
+#### Azure AD JWT Audience
+
+The `target_audience` you see in this rule will be identical to the `aud` claim
+in the JWT token of the Azure VM. To make sure you get it right, you can fetch
+the access token from within the VM[^azcli-vm-access-token], decode its content
+and check the `aud` claim.
+
+#### Azure AD JWKs Endpoint
+
+How to get the `jwks_url` one might ask!? The answer is simple. If you use the
+same technique to decode the said token, you will see its `iss` claim. Using
+that issuer, you can append `/.well-known/openid-configuration` to get the
+[OpenID Connect] configuration of the server, and in the JSON payload response,
+the JWKs URL will be present.
 
 Using this Oathkeeper rule, if we spin up an Azure VM and enable its system
 identity, we can get a JWT token[^az-vm-token] from Azure AD and send it to
@@ -550,7 +606,15 @@ Oathkeeper.
 
 ```bash title="" linenums="0"
 # From inside the Azure VM
-token=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F' -H Metadata:true -s)
+token=$(curl \
+  'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F' \
+  -H Metadata:true -s)
+
+# or
+token=$(az account get-access-token \
+  --resource https://management.azure.com \
+  --query "accessToken" -o tsv)
+
 curl https://echo.developer-friendly.blog -H "Authorization $token"
 ```
 
@@ -579,8 +643,11 @@ will be denied with a `401 Unauthorized` status code.
 
 That is to say, the order in which Oathkeeper processes the rules is important.
 It will start from the top, and any authenticator that **can** handle the
-authentication process will be used and the rest are ignored, even if the
-matched authentication denies the request!
+authentication process will be the only one ever consulted and the rest of the
+authenticators are comletely ignored, even if the matched authentication denies
+the request! Yes, even if any of the subsequent authenticators would have
+allowed the request. That's something to keep in mind when designing and
+creating your rules.
 
 From the official documentation[^api-access-rules-order]:
 
@@ -591,10 +658,28 @@ From the official documentation[^api-access-rules-order]:
   "falling back" to others, have that authenticator as the first item in the
   array.
 
-All in all, these will help you sleep tight at night, knowing that your
-application is safely guarded by a production grade and robust proxy server,
-consulting the proper authentication server before handing it to the upstream
-backend.
+## Observing the Traces
+
+Remember we mentioned how use you can ship your traces with [Ory] products into
+a backend? Among different available solutions, [Jaeger] is one of the easy
+ones to set up and use.
+
+When we engage both [Oathkeeper] and [Kratos] in one HTTP request, this is what
+we get in the Jaeger UI.
+
+<figure markdown="span">
+  ![Jaeger UI: Oathkeeper & Kratos](/static/img/2024/0015/jaeger-oathkeeper-kratos.webp "Click to zoom in"){ align=left loading=lazy }
+  <figcaption>Jaeger UI: Oathkeeper & Kratos</figcaption>
+</figure>
+
+Pretty neat! Wouldn't you say? :nerd_face:
+
+## Wrapping Up
+
+All in all, [Oathkeeper] design and secure implementation will help you sleep
+tight at night, knowing that your application is safely guarded by a production
+grade and robust proxy server, consulting the proper authentication server
+before handing it to the upstream backend.
 
 These days, I use the Oathkeeper even for my admin pages; even the ones not
 publicly accessible and only exposed to the private network. This helps secure
@@ -602,8 +687,10 @@ the backend from unauthorized access.
 
 There are other types of examples we can provide here, but with the ones you
 see here, you should have a good idea on what's possible and what you can do
-more with Ory Oathkeeper. Even so, we will have more examples of this topic
-in the future for other practical and production use-cases.
+more with Ory Oathkeeper.
+
+Regardless, we will have more examples of this topic in the future for other
+practical and production use-cases.
 
 ## Conclusion
 
@@ -611,22 +698,21 @@ Based on my production experience over the years managing different types of
 applications and backends in various industries, there is the same pattern and
 approach for a desired authentication layer one might want to have.
 
-It usually includes some sort of consulatation with the Identity Provider,
+It usually includes some sort of cunsultation with the Identity Provider,
 making sure the identity is coming from a trusted source, and then tightening
 it further by making an API call to the authorization server, making sure the
 identity is indeed allowed and granted access to such resource.
 
 The plugin architecture of Ory makes this back and forth quite straightforward.
-There is little you can't do with the provided services and with the right
-configuration and architectural mindset, you can secure many of the knowingly
-hard-to-protect applications.
+There is little you can't do with the [Ory] suite and with the right
+configuration and architectural mindset, you can secure many of the knowingly hard-to-protect applications.
 
 I can't recommend their products highly enough, being a happy customer and
 whatnot. But, even more so, knowing that it's easy to fall into the trap of
 thinking that one's security and authentication needs are beyond the common
-pattern happening around the industry and customization and in-house
-development is in order.
+pattern happening around the industry
 
+It's tempting to think that customization and in-house development is in order.
 That is wrong, in my humble opinion. You will lose countless engineering hours
 making something not nearly as secure as what is already available as an
 off-the-shelf and opensource solution.
@@ -639,7 +725,7 @@ scratch, I highly recommend trying Ory's products in the tenth of that time.
 should have a basic understanding of what is already available to you around
 the industry before going all in on a custom solution.
 
-Make your decisions wisely, do the right things before doing things right.
+Make your decisions wisely, and do the right things before doing things right.
 
 Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 
@@ -661,6 +747,9 @@ Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 [Gateway API]: /category/gateway-api/
 [GitOps Continuous Deployment: FluxCD Advanced CRDs]: ./0011-fluxcd-advanced-topics.md
 [Oathkeeper server configuration]: #oathkeeper-server-configuration
+[Oathkeeper]: /category/oathkeeper/
+[OpenID Connect]: /category/openid-connect/
+[Kratos]: /category/kratos/
 
 [^grpc-middleware]: https://www.ory.sh/docs/oathkeeper/grpc-middleware
 [^websocket-support]: https://www.ory.sh/docs/oathkeeper/guides/proxy-websockets
@@ -679,5 +768,6 @@ Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 [^httproute-doc]: https://gateway-api.sigs.k8s.io/api-types/httproute/
 [^oathkeeper-proxy-flow]: https://www.ory.sh/docs/oathkeeper/#reverse-proxy
 [^kratos-whoami]: https://www.ory.sh/docs/kratos/reference/api#tag/frontend/operation/listMySessions
+[^azcli-vm-access-token]: https://learn.microsoft.com/en-us/cli/azure/account?view=azure-cli-latest#az-account-get-access-token
 [^az-vm-token]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token#get-a-token-using-curl
 [^api-access-rules-order]: https://www.ory.sh/docs/oathkeeper/api-access-rules#access-rule-format
