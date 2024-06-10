@@ -214,15 +214,15 @@ There will be more blog posts including Ory [Oathkeeper] and other
 authenticators and authorizers in the future. Stay tuned for more.
 :fingers_crossed:
 
-#### Tracing Endoints
+#### Tracing Endpoints
 
 In all of the [Ory] products, you can specify where to ship your traces to.
 
 That is possible through the same configuration over all the (currently) four
 products as below:
 
-```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="50"
--8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:50:58"
+```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="52"
+-8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:52:60"
 ```
 
 #### CORS Configuration
@@ -246,8 +246,8 @@ the Oathkeeper server and you will always get a `401 Unauthorized` response.
 
 That part that makes it possible is in these configuration lines:
 
-```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="59"
--8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:59:66"
+```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="64"
+-8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:64:68"
 ```
 
 ### Kubernetes Deployment Resources
@@ -539,8 +539,8 @@ The response is as below.
 The user ID is coming from the following [Oathkeeper server configuration].
 :point_down:
 
-```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="15" hl_lines="3"
--8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:15:18"
+```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="17" hl_lines="3"
+-8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:17:20"
 ```
 
 ### Play 2: Authenticated by Ory Kratos
