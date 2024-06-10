@@ -10,8 +10,6 @@ spec:
         force_method: GET
         only:
           - ory_kratos_session
-        preserve_path: true
-        preserve_query: true
         subject_from: identity.id
       handler: cookie_session
     - config:
