@@ -218,7 +218,7 @@ and authorization. If you wish to use OAuth2 authentication, before using it
 in a Oathkeeper rule, you have to enable it in the configuration.
 
 ```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="5"
--8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:5:18"
+-8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:5:20"
 ```
 
 You can customize each method further with specific values. However, we will
