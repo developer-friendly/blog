@@ -24,8 +24,8 @@ extra:
       link: https://news.ycombinator.com/submitted?id=meysamazad
       name: Follow us on Hacker News!
     - icon: fontawesome/solid/envelope
-      link: mailto:hi@developer-friendly.blog
-      name: Send us an email!
+      link: https://forms.gle/Jh3KUr3Hof8kv5qs9
+      name: Subscribe to our newsletter!
     - icon: fontawesome/brands/slack
       link: https://communityinviter.com/apps/developerfriendly/join-our-slack
       name: Join our Slack community!
