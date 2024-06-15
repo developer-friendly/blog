@@ -70,6 +70,8 @@ extra_javascript:
 extra_css:
   - static/css/announce.css
 copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
+hooks:
+  - hooks/socialmedia.py
 plugins:
   - typeset
   - minify:
@@ -276,3 +278,4 @@ nav:
 watch:
   - overrides
   - includes
+  - hooks
