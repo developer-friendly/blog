@@ -1,5 +1,8 @@
 ---
 date: 2024-03-24
+description: >-
+  This Privacy Policy explains how Developer Friendly Blog collects, uses,
+  discloses, and safeguards your information when you visit our website.
 hide:
   - navigation
 ---

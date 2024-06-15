@@ -1,5 +1,8 @@
 ---
 date: 2024-05-21
+description: >-
+  These Terms and Conditions govern your use of Developer Friendly Blog. By
+  accessing or using our Website, you agree to be bound by these Terms.
 hide:
   - navigation
 ---

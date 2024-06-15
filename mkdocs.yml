@@ -94,6 +94,8 @@ plugins:
       assets_exclude:
         - pagead2.googlesyndication.com/*
         - www.googletagmanager.com/*
+      links_attr_map:
+        target: _blank
   - meta:
       enabled: !ENV [CI, false]
   - social:
@@ -113,7 +115,7 @@ plugins:
       post_readtime: true
       blog_toc: true
       post_date_format: long
-      archive: true
+      archive: false
       archive_pagination: true
       pagination: true
       pagination_format: "$link_first $link_previous ~2~ $link_next $link_last"
