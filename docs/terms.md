@@ -5,6 +5,7 @@ description: >-
   accessing or using our Website, you agree to be bound by these Terms.
 hide:
   - navigation
+comments: false
 ---
 
 # Terms and Conditions

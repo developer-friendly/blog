@@ -97,7 +97,7 @@ plugins:
       links_attr_map:
         target: _blank
   - meta:
-      enabled: !ENV [CI, false]
+      enabled: true
   - social:
       enabled: true
       cards: true
