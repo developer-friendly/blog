@@ -1,0 +1,16 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: victoria-metrics-operator
+spec:
+  chart:
+    spec:
+      chart: victoria-metrics-operator
+      sourceRef:
+        kind: HelmRepository
+        name: victoria-metrics
+      version: 0.x
+  interval: 30m
+  maxHistory: 10
+  releaseName: victoria-metrics-operator
+  timeout: 5m
