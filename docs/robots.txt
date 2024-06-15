@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /cgi-bin/
 
 Sitemap: https://developer-friendly.blog/sitemap.xml
