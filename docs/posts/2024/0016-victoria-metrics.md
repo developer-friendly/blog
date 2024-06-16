@@ -10,11 +10,10 @@ categories:
   - Observability
   - Metrics
   - Grafana
-  - FluxCD
-  - GitOps
   - Kube Prometheus Stack
   - Kube State Metrics
   - Node Exporter
+  - Ansible
 links:
 social:
   cards_layout_options:
@@ -233,12 +232,12 @@ and one or more `VMUser` CRD[^vmauth].
 
 See an example below. :point_down:
 
-```yaml title=""
+```yaml title="" hl_lines="5 36"
 -8<- "docs/codes/2024/0016/junk/vmauth.yml"
 ```
 
-A few seconds after applying these two, a new Kubernetes Service and a Secret
-in the target namespace will be created.
+A few seconds after applying these resources, a new Kubernetes Service and a
+Secret in the target namespace will be created.
 
 We can get the corresponding password for the user by running:
 
@@ -250,14 +249,268 @@ kubectl get \
   base64 -d -
 ```
 
-And if we create an externally accessible endpoint to that Service, we will be
-prompted for basic HTTP authentication before being able to access the upstream
-service.
+Having the password we grabbed from the Secret, and the address from the
+`HTTPRoute` resource, we will be prompted for basic HTTP authentication upon
+the first visit to the address.
+
+<figure markdown="span">
+  ![VMAuth Authentication Proxy](/static/img/2024/0016/vmauth-basic-auth.webp "Click to zoom in"){ align=left loading=lazy }
+  <figcaption>VMAuth Authentication Proxy</figcaption>
+</figure>
 
 The best thing about this architecture is that any piece of it is replaceable
 by your preferred tooling. If you choose to use a different authentication
 proxy server such as [Ory Oathkeeper](/category/oathkeeper/) to take advantage
 of your current Identity Provider, you definitely can[^oathkeeper-access-rules].
+
+## Migration From Kube Prometheus Stack
+
+At this point, we will assume that you have the Kube Prometheus
+Stack[^k8s-prom-stack] installed in your cluster. Due to the massive adoption
+of the Kube Prometheus Stack, this assumption is not far-fetched.
+
+That stack comes with a number of CRDs that make it easier for discovering
+new targets for your Prometheus server.
+
+Upon the [installation of Victoria Metrics Operator](#victoria-metrics-operator),
+you are, by default and unless excplicitly disabled, opting in for automatic
+conversion of every one of the Prometheus Stack's CRDs into that of Victoria
+Metrics Operator[^vm-object-conversion].
+
+That, in essence, means that the following conversion table applies to you:
+
+| Kube Prometheus Stack CRD | Victoria Metrics Operator CRD |
+|---------------------------|-------------------------------|
+| `ServiceMonitor`          | `VMServiceScrape`             |
+| `PodMonitor`              | `VMPodScrape`                 |
+| `Probe`                   | `VMProbe`                     |
+| `PrometheusRule`          | `VMRule`                      |
+| `AlertmanagerConfig`      | `VMAlertmanagerConfig`        |
+| `ScrapeConfig`            | `VMScrapeConfig`              |
+
+With this table in mind, moving away from Prometheus to Victoria Metrics has
+the least overhead. All your current scrape targets (e.g., `ServiceMonitor` &
+`PodMonitor`) will continue to work when replacing a Prometheus server with a
+`VMAgent` instance.
+
+Your Grafana dashboard will also continue to work as expected just by a change
+of datasource address from Prometheus URL to that of Victoria Metrics.
+
+## Scrape Targets with Victoria Metrics
+
+At this point, we should visit our last objective for this blog post. We aim to
+scrape targets with Victoria Metrics components and ship them to a storage to
+later be queried.
+
+For this purpose, we aim to provide the following variations:
+
+1. Shipping metrics from `kube-state-metrics` and `node-exporter` to
+   Victoria Metrics, as you saw earlier in the diagram above.
+2. Shipping metrics from the same sources to Grafana Cloud.
+3. Shipping metrics from another Prometheus instance elsewhere or a `VMAgent`
+   to the Victoria Metrics storage.
+
+### Deploy Victoria Metrics to Kubernetes Cluster
+
+For the deployment of the Victoria Metrics storage, you have the option to
+deploy them one by one or all in a single instance. The former gives you more
+scalability, whereas the latter gives you more simplicity.
+
+We will deploy the `VMCluster` in this section and leave `VMSingle` for the
+last section[^vm-cluster-arch].
+
+We first deploy the storage component , the query component (`select`) and the
+ingestion component (`insert`)[^vm-cluster]. These components are the core of
+Victoria Metrics.
+
+```yaml title="victoria-metrics-cluster/vmcluster.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmcluster.yml"
+```
+
+We then deploy a `VMAgent`, scraping metrics from any of the discovered targets
+and ship them to the cluster created with `VMCluster`.
+
+```yaml title="victoria-metrics-cluster/vmagent.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmagent.yml"
+```
+
+Notice that in the `VMAgent`, the URL we are passing to the remote-write is
+coming from our `VMCluster` instance, one that can be verified with the
+`kubectl get service` command, as well as looking through the documentation for
+Vicoria Metrics endpoints[^vm-url-formats].
+
+Lastly, we need to be able to access the UI from our browser. That's where the
+rest of the components come as you see below.
+
+```yaml title="victoria-metrics-cluster/vmauth.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmauth.yml"
+```
+
+```yaml title="victoria-metrics-cluster/vmuser.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmuser.yml"
+```
+
+```yaml title="victoria-metrics-cluster/httproute.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-cluster/httproute.yml"
+```
+
+```yaml title="victoria-metrics-cluster/kustomization.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-cluster/kustomization.yml"
+```
+
+```yaml title="victoria-metrics-cluster/kustomize.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-cluster/kustomize.yml"
+```
+
+Finally, to deploy this stack:
+
+```bash title="" linenums="0"
+kubectl apply -f victoria-metrics-cluster/kustomize.yml
+```
+
+Opening the target address at `/vmui` endopint, we will see the Victoria
+Metrics query dashboard as you see below.
+
+<figure markdown="span">
+  ![Victoria Metrics UI](/static/img/2024/0016/vm-cluster-ui.webp "Click to zoom in"){ align=left loading=lazy }
+  <figcaption>Victoria Metrics UI</figcaption>
+</figure>
+
+This concludes our first objective, to scrape and ship metrics from the same
+cluster.
+
+### Remote Write Victoria Metrics to Grafana Cloud
+
+Grafana Cloud makes it very easy for you to ship your metrics with the least
+overhead. You will be responsible for only scraping your targets. The rest is
+the taken care of by their infrastructure, including storage, query, scaling,
+availabilty, etc.
+
+Let's create a single `VMAgent` to scrape all the metrics and ship them to the
+Grafana Cloud.
+
+If you already have one or if you create a new account, they provide a generous
+free tier to try out their services.
+
+For the Prometheus server, you will have a remote write URL similar to what you
+see below.
+
+```yaml title=""
+-8<- "docs/codes/2024/0016/junk/grafana-cloud-remote-write-prom.yml"
+```
+
+Let's use this configuration to create such a `VMAgent` instance.
+
+```yaml title="grafana-cloud/vmagent.yml"
+-8<- "docs/codes/2024/0016/grafana-cloud/vmagent.yml"
+```
+
+This agent will also, just like the last one, scrape all the `ServiceMonitor`,
+`PodMonitor`, `VMServiceScrape` & `VMPodScrape` resources.
+
+The difference is, however, that this agent will ship the metrics to the remote
+write URL of Grafana Cloud and we won't have to manage any storage or grafana
+instance of our own anymore.
+
+### Monitor Standalone Hosts with Victoria Metrics
+
+For addressing the last objective, we aim to make things a bit more different
+in that we will scrape the target host from a single standalone machine
+(outside Kubernetes) and ship those to the in-cluster Victoria Metrics we
+created earlier in our `VMCluster` setup.
+
+Since this is assumed to be a standalone machine, we will use our beloved tool
+[Ansible](/category/ansible/). This helps reproducibility as well as
+documenting the steps for future reference.
+
+```yaml title="standalone-host/victoria-metrics/vars/vars-aarch64.yml"
+-8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/vars/vars-aarch64.yml"
+```
+
+```yaml title="standalone-host/victoria-metrics/vars/vars-x86_64.yml"
+-8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/vars/vars-x86_64.yml"
+```
+
+```ini title="standalone-host/victoria-metrics/templates/vmagent.service.j2"
+-8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/templates/vmagent.service.j2"
+```
+
+```yaml title="standalone-host/victoria-metrics/templates/vmagent.yml.j2"
+-8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/templates/vmagent.yml.j2"
+```
+
+```yaml title="standalone-host/victoria-metrics/tasks/main.yml"
+-8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/tasks/main.yml"
+```
+
+```yaml title="standalone-host/victoria-metrics/handlers/main.yml"
+-8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/handlers/main.yml"
+```
+
+Having this Ansible role, we can now use it to monitor our target host.
+
+But, before doing that, let's deploy a `VMSingle` instance to our Kubernetes
+cluster as promised earlier.
+
+```yaml title="victoria-metrics-standalone/vmsingle.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-standalone/vmsingle.yml"
+```
+
+```yaml title="victoria-metrics-standalone/httproute.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-standalone/httproute.yml"
+```
+
+```yaml title="victoria-metrics-standalone/kustomization.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-standalone/kustomization.yml"
+```
+
+```yaml title="victoria-metrics-standalone/kustomize.yml"
+-8<- "docs/codes/2024/0016/victoria-metrics-standalone/kustomize.yml"
+```
+
+Finally, to deploy this stack:
+
+```bash title="" linenums="0"
+kubectl apply -f victoria-metrics-standalone/kustomize.yml
+```
+
+And now we are ready to run the following Ansible playbook.
+
+```yaml title="standalone-host/main.yml"
+-8<- "docs/codes/2024/0016/standalone-host/main.yml"
+```
+
+```bash title="" linenums="0"
+ansible-playbook standalone-host/main.yml
+```
+
+All of these approaches are just a few of the many ways you can monitor your
+infrastructure with Victoria Metrics. We covered some of the most typical ways
+you would normally monitor a production setup. This should give you a good idea
+of how to get started with Victoria Metrics.
+
+## Conclusion
+
+Victoria Metrics is a powerful, high-performance and resource efficient
+monitoring solution that can easily replace Prometheus in your monitoring
+stack. It offers a wide range of features and capabilities that make it an
+ideal choice for handling large-scale data and optimizing monitoring
+performance.
+
+By following the steps outlined in this guide, you can migrate or integrate
+your current monitoring setup with Victoria Metrics effortlessly and take
+advantage of its advanced features and benefits.
+
+We have covered some of the most common patterns for monitoring the target
+hosts and scraping the metrics to Victoria Metrics. You can use these examples
+to build up your own monitoring solution in a way that fits your environment.
+
+If you are looking for a high-performance, scalable, and cost-effective
+monitoring solution, Victoria Metrics is definitely worth considering.
+
+Give it a try today and see how it can transform your monitoring experience!
+
+Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 
 <!--
 Introduction
@@ -349,3 +602,8 @@ Introduction
 [^vm-operator]: https://artifacthub.io/packages/helm/victoriametrics/victoria-metrics-operator/0.32.2
 [^vmauth]: https://docs.victoriametrics.com/operator/auth/
 [^oathkeeper-access-rules]: https://www.ory.sh/docs/oathkeeper/api-access-rules
+[^k8s-prom-stack]: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack/60.1.0
+[^vm-object-conversion]: https://docs.victoriametrics.com/operator/migration/#objects-conversion
+[^vm-cluster-arch]: https://docs.victoriametrics.com/cluster-victoriametrics/#architecture-overview
+[^vm-cluster]: https://docs.victoriametrics.com/operator/quick-start/#vmcluster-vmselect-vminsert-vmstorage
+[^vm-url-formats]: https://docs.victoriametrics.com/cluster-victoriametrics/#url-format

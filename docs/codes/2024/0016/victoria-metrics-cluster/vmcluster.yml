@@ -1,0 +1,24 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMCluster
+metadata:
+  name: vmserver
+spec:
+  retentionPeriod: 1d
+  vmstorage:
+    replicaCount: 1
+    storage:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: "1Gi"
+  vmselect:
+    replicaCount: 1
+    storage:
+      volumeClaimTemplate:
+        spec:
+          resources:
+            requests:
+              storage: "1Gi"
+  vminsert:
+    replicaCount: 1

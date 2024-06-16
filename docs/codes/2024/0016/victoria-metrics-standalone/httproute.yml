@@ -1,29 +1,10 @@
----
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMAuth
-metadata:
-  name: auth-proxy
-spec:
-  selectAllByDefault: true
----
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMUser
-metadata:
-  name: john-doe
-spec:
-  generatePassword: true
-  targetRefs:
-    - static:
-        urls:
-          - http://victoria-metrics.monitoring:8428
----
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: vmproxy
+  name: victoria-metrics
 spec:
   hostnames:
-    - vmproxy.developer-friendly.blog
+    - vmsingle.developer-friendly.blog
   parentRefs:
     - group: gateway.networking.k8s.io
       kind: Gateway
@@ -33,8 +14,8 @@ spec:
   rules:
     - backendRefs:
         - kind: Service
-          name: vmauth-auth-proxy
-          port: 8427
+          name: vmsingle-standalone
+          port: 8429
       filters:
         - responseHeaderModifier:
             set:
