@@ -1,61 +1,42 @@
 ---
 date: 2024-06-17
 description: >-
-  TODO
+  What is monitoring? Best time-series database. How to deploy VictoriaMetrics?
+  Prometheus vs. VictoriaMetrics. Prometheus drop-in replacement.
 categories:
-  - Kubernetes
-  - Monitoring
+  - VictoriaMetrics
   - Prometheus
-  - Victoria Metrics
+  - Monitoring
+  - Time Series Database
   - Observability
-  - Metrics
+  - Ansible
+  - Automation
+  - Best Practices
+  - DevOps
+  - FluxCD
+  - GitOps
   - Grafana
+  - Infrastructure Monitoring
   - Kube Prometheus Stack
   - Kube State Metrics
+  - Kubernetes
+  - Kustomization
+  - Metrics
+  - Multi Tenancy
   - Node Exporter
-  - Ansible
-links:
+  - Performance Monitoring
 social:
   cards_layout_options:
     description: >-
-      TODO
-image: TODO
+      Discover why monitoring is crucial, explore VictoriaMetrics & deployment
+      steps, and seamlessly migrate from Prometheus. Perfect for all monitoring
+      workloads.
+links:
+  - ./posts/2024/0015-ory-oathkeeper.md
+image: assets/images/social/2024/06/17/unlocking-the-power-of-victoriametrics-a-prometheus-alternative.png
 ---
 
-# Victoria Metrics
-
-<!--
-VictoriaMetrics: The Ultimate Guide to High-Performance Monitoring
-Top 10 Features of VictoriaMetrics You Need to Know
-VictoriaMetrics vs. Prometheus: A Detailed Comparison
-Getting Started with VictoriaMetrics: Installation and Setup
-Why VictoriaMetrics is the Best Choice for Time Series Database
-Scaling with VictoriaMetrics: Tips and Best Practices
-How to Optimize Your Monitoring with VictoriaMetrics
-VictoriaMetrics for Beginners: A Comprehensive Tutorial
-Advanced Querying Techniques in VictoriaMetrics
-VictoriaMetrics Performance Tuning: Expert Tips and Tricks
-How VictoriaMetrics Can Be Your Drop-In Replacement for Prometheus
-Unlocking the Power of VictoriaMetrics: A Prometheus Alternative
-VictoriaMetrics vs. Prometheus: Why You Should Switch Today
-Step-by-Step Guide to Migrating from Prometheus to VictoriaMetrics
-VictoriaMetrics: Superior Performance and Scalability for Your Data
-Transform Your Monitoring with VictoriaMetrics: A Prometheus Replacement
-The Benefits of Using VictoriaMetrics Over Prometheus
-How VictoriaMetrics Simplifies Time Series Data Management
-Boost Your Monitoring Efficiency with VictoriaMetrics
-VictoriaMetrics: The High-Performance Alternative to Prometheus
-From Prometheus to VictoriaMetrics: A Seamless Transition Guide
-Why VictoriaMetrics Is the Future of Time Series Databases
-Optimizing Your Infrastructure with VictoriaMetrics
-A Deep Dive into VictoriaMetrics: Features, Benefits, and Use Cases
-VictoriaMetrics: The Scalable Solution for Large-Scale Monitoring
-How to Get the Most Out of VictoriaMetrics for Your Monitoring Needs
-The Ultimate Comparison: VictoriaMetrics vs. Prometheus
-Leveraging VictoriaMetrics for Advanced Monitoring and Analytics
-Why Developers Are Choosing VictoriaMetrics Over Prometheus
-Effortless Monitoring with VictoriaMetrics: A Complete Guide
--->
+# Unlocking the Power of VictoriaMetrics: A Prometheus Alternative
 
 One of the main tasks of an operations team in any organization is to provide a
 solid and robust monitoring solution for the platform, the application, and the
@@ -90,23 +71,25 @@ environment.
 
 ## Introduction to Victoria Metrics
 
-Victoria Metrics[^vm] is a high-performance[^vm-perf], cost-effective time
-series database designed for monitoring and observability. It's known for its
-speed, efficiency, and scalability, making it an excellent choice for handling
-large volumes of data effortlessly.
+Victoria Metrics[^vm-landing-page] is a high-performance[^last9-prometheus-comparison],
+cost-effective time series database designed for monitoring and observability.
+It's known for its speed, efficiency, and scalability, making it an excellent
+choice for handling large volumes of data effortlessly.
 
-Furthermore, it’s fully compatible with Prometheus, offering an effortless
-transition for those looking to migrate their current monitoring setup.
+Furthermore, it’s fully compatible with Prometheus[^seifeddinerajhi-medium],
+offering an effortless transition for those looking to migrate their current
+monitoring setup.
 
 ## Why Victoria Metrics?
 
 Victoria Metrics stands out because of multiple factors.
 
 For one, it is scalable, which is a perfect choice for handling vast amounts of
-time series data.
+time series data[^vm-prominent-features].
 
 Also, it’s designed to be a drop-in replacement for Prometheus, offering
-**faster queries**, better compression, and multi-tenant support.
+**faster queries**, better compression[^vm-blog-comparing-agents], and
+multi-tenant support.
 
 For me personally, I came across Victoria Metrics looking for a long-term
 storage solution for Prometheus. Looking through the available tools, the most
@@ -114,12 +97,13 @@ compelling ones were Victoria Metrics and Thanos.
 
 I chose Victoria Metrics because it was far more resource efficient and a lot
 easier to set up and configure. With Thanos, there's a huge learning curve and
-the overhead and maintainability cost really weighed in on the decision.
+the overhead and maintainability cost outweighed the benefits.
 
 ## Key Features of Victoria Metrics
 
-- Delivers high performance with fast query capabilities.
-- Offers efficient data compression to save storage space.
+- Delivers high performance with fast query capabilities[^vm-vs-prom-perf].
+- Offers efficient data compression to save storage space, e.g., it provides a
+  decent performance on HDD storage.
 - Ensures smooth handling of multiple data sources with multi-tenant support.
 - Provides effortless compatibility with Prometheus for easy integration.
 - Scales easily to manage large datasets.
@@ -133,9 +117,9 @@ the overhead and maintainability cost really weighed in on the decision.
 - **Long-term Storage**: Victoria Metrics has native support for long-term
   storage, whereas with Prometheus, you need to set up a separate solution like
   Thanos[^prometheus-long-term-storage].
-- **Scalability**: Victoria Metrics is designed to be scalable both veritically
+- **Scalability**: Victoria Metrics is designed to be scalable both vertically
   and horizontally. Prometheus, on the other hand, falls short in that regard
-  and requires additional tools like Thanos to scale.
+  and requires additional tools like Thanos to scale[^last9-vm-vs-thanos].
 
 ## Deploy Victoria Metrics
 
@@ -158,15 +142,26 @@ flowchart TD
     kubeStateMetrics([kube-state-metrics])
     nodeExporter([node-exporter])
     vmagent([VMAgent])
-    victoriaMetrics([Victoria Metrics])
+    externalSources["External Sources"]
+
+    subgraph "VictoriaMetrics Cluster"
+        vminsert([VMInsert])
+        vmstorage([VMStorage])
+        vmselect([VMSelect])
+
+        vminsert -- "Store Metrics" --> vmstorage
+        vmstorage -- "Query Metrics" --> vmselect
+    end
+
     grafana([Grafana])
 
     kubeStateMetrics -- "ServiceMonitor" --> vmagent
     nodeExporter -- "ServiceMonitor" --> vmagent
+    externalSources -- "/metrics endpoint" --> vmagent
 
-    vmagent -- "Remote Write URL" --> victoriaMetrics
+    vmagent -- "Remote Write URL" --> vminsert
 
-    victoriaMetrics -- "Datasource for Dashboards" --> grafana
+    vmselect -- "Datasource for Dashboards" --> grafana
 ```
 
 ### Victoria Metrics Operator
@@ -224,7 +219,10 @@ And the output:
 </figure>
 
 Just by looking at the CRDs here, you can quickly realize how powerful this
-mode of installation is and how much flexibility it provides.
+mode of installation is and how much flexibility it provides. Because, at any
+point in time, you can scale your VictoriaMetrics instance components, resize
+or completely replace them with a different architecture.
+:building_construction:
 
 For example, one of the quickest ways to provide authentication on top of any
 of the Victoria Metrics component instances is to create a `VMAuth` as a proxy
@@ -273,7 +271,7 @@ That stack comes with a number of CRDs that make it easier for discovering
 new targets for your Prometheus server.
 
 Upon the [installation of Victoria Metrics Operator](#victoria-metrics-operator),
-you are, by default and unless excplicitly disabled, opting in for automatic
+you are, by default and unless explicitly disabled, opting in for automatic
 conversion of every one of the Prometheus Stack's CRDs into that of Victoria
 Metrics Operator[^vm-object-conversion].
 
@@ -289,9 +287,10 @@ That, in essence, means that the following conversion table applies to you:
 | `ScrapeConfig`            | `VMScrapeConfig`              |
 
 With this table in mind, moving away from Prometheus to Victoria Metrics has
-the least overhead. All your current scrape targets (e.g., `ServiceMonitor` &
-`PodMonitor`) will continue to work when replacing a Prometheus server with a
-`VMAgent` instance.
+the least overhead[^vm-migration-guide]. All your current scrape targets (e.g.,
+`ServiceMonitor` & `PodMonitor`) will continue to work when replacing a
+Prometheus server with a `VMAgent` instance; the Victoria Metrics Operator
+takes care of the CRD conversion and the `VMAgent` will scrape those targets.
 
 Your Grafana dashboard will also continue to work as expected just by a change
 of datasource address from Prometheus URL to that of Victoria Metrics.
@@ -302,24 +301,24 @@ At this point, we should visit our last objective for this blog post. We aim to
 scrape targets with Victoria Metrics components and ship them to a storage to
 later be queried.
 
-For this purpose, we aim to provide the following variations:
+As such, we aim to provide the following variations:
 
 1. Shipping metrics from `kube-state-metrics` and `node-exporter` to
-   Victoria Metrics, as you saw earlier in the diagram above.
+   Victoria Metrics, as you saw earlier in [the diagram above](#deploy-victoria-metrics).
 2. Shipping metrics from the same sources to Grafana Cloud.
 3. Shipping metrics from another Prometheus instance elsewhere or a `VMAgent`
-   to the Victoria Metrics storage.
+   to the Victoria Metrics standalone deployment.
 
 ### Deploy Victoria Metrics to Kubernetes Cluster
 
 For the deployment of the Victoria Metrics storage, you have the option to
 deploy them one by one or all in a single instance. The former gives you more
-scalability, whereas the latter gives you more simplicity.
+scalability, whereas the latter gives you more simplicity[^vm-cluster-arch].
 
-We will deploy the `VMCluster` in this section and leave `VMSingle` for the
-last section[^vm-cluster-arch].
+We will deploy the `VMCluster` in this section and leave `VMSingle` for
+[the last section](#monitor-standalone-hosts-with-victoria-metrics).
 
-We first deploy the storage component , the query component (`select`) and the
+We first deploy the `storage` component , the query component (`select`) and the
 ingestion component (`insert`)[^vm-cluster]. These components are the core of
 Victoria Metrics.
 
@@ -337,10 +336,14 @@ and ship them to the cluster created with `VMCluster`.
 Notice that in the `VMAgent`, the URL we are passing to the remote-write is
 coming from our `VMCluster` instance, one that can be verified with the
 `kubectl get service` command, as well as looking through the documentation for
-Vicoria Metrics endpoints[^vm-url-formats].
+Victoria Metrics endpoints[^vm-url-formats]. :point_down:
+
+```yaml title="victoria-metrics-cluster/vmagent.yml" linenums="9"
+-8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmagent.yml:9:10"
+```
 
 Lastly, we need to be able to access the UI from our browser. That's where the
-rest of the components come as you see below.
+rest of the components come as you see below[^vm-operator-vmauth].
 
 ```yaml title="victoria-metrics-cluster/vmauth.yml"
 -8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmauth.yml"
@@ -368,7 +371,7 @@ Finally, to deploy this stack:
 kubectl apply -f victoria-metrics-cluster/kustomize.yml
 ```
 
-Opening the target address at `/vmui` endopint, we will see the Victoria
+Opening the target address at `/vmui` endpoint, we will see the Victoria
 Metrics query dashboard as you see below.
 
 <figure markdown="span">
@@ -376,8 +379,8 @@ Metrics query dashboard as you see below.
   <figcaption>Victoria Metrics UI</figcaption>
 </figure>
 
-This concludes our first objective, to scrape and ship metrics from the same
-cluster.
+This concludes [our first objective](#scrape-targets-with-victoria-metrics), to
+scrape and ship metrics from the same cluster.
 
 ### Remote Write Victoria Metrics to Grafana Cloud
 
@@ -389,8 +392,10 @@ availabilty, etc.
 Let's create a single `VMAgent` to scrape all the metrics and ship them to the
 Grafana Cloud.
 
-If you already have one or if you create a new account, they provide a generous
-free tier to try out their services.
+!!! tip "Grafana Cloud Account"
+
+    If don't already have one, they provide a generous free tier for you to
+    try out their services[^grafana-cloud-product-page].
 
 For the Prometheus server, you will have a remote write URL similar to what you
 see below.
@@ -405,22 +410,23 @@ Let's use this configuration to create such a `VMAgent` instance.
 -8<- "docs/codes/2024/0016/grafana-cloud/vmagent.yml"
 ```
 
-This agent will also, just like the last one, scrape all the `ServiceMonitor`,
-`PodMonitor`, `VMServiceScrape` & `VMPodScrape` resources.
+This agent will also, just like the last one, scrape all the  `VMServiceScrape`
+& `VMPodScrape` resources.
 
 The difference is, however, that this agent will ship the metrics to the remote
-write URL of Grafana Cloud and we won't have to manage any storage or grafana
-instance of our own anymore.
+write URL of the Grafana Cloud and we won't have to manage any storage or
+[Grafana](/category/grafana/) instance of our own anymore.
 
 ### Monitor Standalone Hosts with Victoria Metrics
 
-For addressing the last objective, we aim to make things a bit more different
-in that we will scrape the target host from a single standalone machine
-(outside Kubernetes) and ship those to the in-cluster Victoria Metrics we
-created earlier in our `VMCluster` setup.
+For addressing [the last objective](#scrape-targets-with-victoria-metrics), we
+aim to make things a bit more different in that we will scrape the target host
+from a single standalone machine (outside [Kubernetes](/category/kubernetes/))
+and ship those to the in-cluster Victoria Metrics we will create with the
+`VMSingle` CRD resource.
 
 Since this is assumed to be a standalone machine, we will use our beloved tool
-[Ansible](/category/ansible/). This helps reproducibility as well as
+[Ansible](/category/ansible/) :hugging:. This helps reproducibility as well as
 documenting the steps for future reference.
 
 ```yaml title="standalone-host/victoria-metrics/vars/vars-aarch64.yml"
@@ -456,7 +462,7 @@ cluster as promised earlier.
 -8<- "docs/codes/2024/0016/victoria-metrics-standalone/vmsingle.yml"
 ```
 
-```yaml title="victoria-metrics-standalone/httproute.yml"
+```yaml title="victoria-metrics-standalone/httproute.yml" hl_lines="17"
 -8<- "docs/codes/2024/0016/victoria-metrics-standalone/httproute.yml"
 ```
 
@@ -485,9 +491,9 @@ ansible-playbook standalone-host/main.yml
 ```
 
 All of these approaches are just a few of the many ways you can monitor your
-infrastructure with Victoria Metrics. We covered some of the most typical ways
-you would normally monitor a production setup. This should give you a good idea
-of how to get started with Victoria Metrics.
+infrastructure with [Victoria Metrics](/category/victoriametrics/). We covered
+some of the most typical ways you would normally monitor a production setup.
+This should give you a good idea on how to get started with Victoria Metrics.
 
 ## Conclusion
 
@@ -495,15 +501,18 @@ Victoria Metrics is a powerful, high-performance and resource efficient
 monitoring solution that can easily replace Prometheus in your monitoring
 stack. It offers a wide range of features and capabilities that make it an
 ideal choice for handling large-scale data and optimizing monitoring
-performance.
+performance. Although we didn't cover it in this blog post, VictoriaMetrics
+come with a product for logging as well which is just as powerful as their
+metrics product[^victorialogs-docs].
 
 By following the steps outlined in this guide, you can migrate or integrate
 your current monitoring setup with Victoria Metrics effortlessly and take
 advantage of its advanced features and benefits.
 
 We have covered some of the most common patterns for monitoring the target
-hosts and scraping the metrics to Victoria Metrics. You can use these examples
-to build up your own monitoring solution in a way that fits your environment.
+hosts and scraping the metrics using Victoria Metrics. You can use these
+examples to build up your own monitoring solution in a way that fits your
+environment.
 
 If you are looking for a high-performance, scalable, and cost-effective
 monitoring solution, Victoria Metrics is definitely worth considering.
@@ -512,98 +521,28 @@ Give it a try today and see how it can transform your monitoring experience!
 
 Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 
-<!--
-Introduction
+**If you enjoyed this blog post, consider sharing it with these buttons**
+:point_down:.
+**Please leave a comment for us at the end, we read & love 'em
+all.**. :heart_exclamation:
 
-    Brief introduction to VictoriaMetrics
-    Importance of monitoring systems in modern infrastructure
-    Purpose of the article: Why consider VictoriaMetrics as a Prometheus replacement
-
-1. Overview of VictoriaMetrics
-
-    What is VictoriaMetrics?
-    Key features and capabilities
-    Typical use cases and industry adoption
-
-2. VictoriaMetrics vs. Prometheus
-
-    Performance Comparison
-        Query performance and speed
-        Storage efficiency and data retention
-    Scalability
-        Handling large-scale data
-        Horizontal and vertical scaling capabilities
-    Resource Usage
-        Memory and CPU efficiency
-        Cost-effectiveness in terms of infrastructure
-
-3. Seamless Transition from Prometheus to VictoriaMetrics
-
-    Drop-In Replacement Explained
-    Compatibility with Prometheus Query Language (PromQL)
-    Step-by-Step Migration Guide
-        Data migration strategies
-        Configuration and setup
-        Testing and validation
-
-4. Unique Features of VictoriaMetrics
-
-    Built-in Multi-Tenant Support
-    Advanced Compression Algorithms
-    Native support for Prometheus Remote Write API
-    Long-term storage solutions
-    High availability and fault tolerance
-
-5. Practical Use Cases and Case Studies
-
-    Real-world examples of VictoriaMetrics deployment
-    Case studies highlighting performance improvements
-    Testimonials from companies that switched from Prometheus
-
-6. Optimization and Best Practices
-
-    Tips for optimizing VictoriaMetrics performance
-    Best practices for data ingestion and retention
-    Query optimization techniques
-
-7. Tools and Integrations
-
-    Compatible tools and integrations
-    Using Grafana with VictoriaMetrics
-    Alerting and visualization tools
-
-8. Troubleshooting and Support
-
-    Common issues and solutions
-    Community and enterprise support options
-    Documentation and resources
-
-9.  Conclusion
-
-    Recap of VictoriaMetrics benefits
-    Final thoughts on why VictoriaMetrics is a superior choice
-    Call to action: Try VictoriaMetrics today
-
-10. Additional Resources
-
-    Links to official documentation
-    Tutorials and guides for deeper learning
-    Community forums and discussion groups
-
-11. FAQs
-
-    Address common questions about VictoriaMetrics
-    Provide quick answers and direct links to detailed sections of the blog
--->
-
-[^vm]: https://victoriametrics.com/
-[^vm-perf]: https://last9.io/blog/prometheus-vs-victoriametrics/
+[^vm-landing-page]: https://victoriametrics.com/
+[^last9-prometheus-comparison]: https://last9.io/blog/prometheus-vs-victoriametrics/
+[^seifeddinerajhi-medium]: https://medium.com/@seifeddinerajhi/victoriametrics-a-comprehensive-guide-comparing-it-to-prometheus-and-implementing-kubernetes-03eb8feb0cc2
+[^vm-prominent-features]: https://docs.victoriametrics.com/single-server-victoriametrics/#prominent-features
+[^vm-blog-comparing-agents]: https://victoriametrics.com/blog/comparing-agents-for-scraping/
+[^vm-vs-prom-perf]: https://zetablogs.medium.com/prometheus-vs-victoria-metrics-load-testing-3fa0cc782912
 [^prometheus-long-term-storage]: https://prometheus.io/docs/prometheus/latest/storage/#operational-aspects
+[^last9-vm-vs-thanos]: https://last9.io/blog/thanos-vs-victoriametrics/
 [^vm-operator]: https://artifacthub.io/packages/helm/victoriametrics/victoria-metrics-operator/0.32.2
 [^vmauth]: https://docs.victoriametrics.com/operator/auth/
 [^oathkeeper-access-rules]: https://www.ory.sh/docs/oathkeeper/api-access-rules
 [^k8s-prom-stack]: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack/60.1.0
 [^vm-object-conversion]: https://docs.victoriametrics.com/operator/migration/#objects-conversion
+[^vm-migration-guide]: https://docs.victoriametrics.com/operator/migration/
 [^vm-cluster-arch]: https://docs.victoriametrics.com/cluster-victoriametrics/#architecture-overview
 [^vm-cluster]: https://docs.victoriametrics.com/operator/quick-start/#vmcluster-vmselect-vminsert-vmstorage
 [^vm-url-formats]: https://docs.victoriametrics.com/cluster-victoriametrics/#url-format
+[^vm-operator-vmauth]: https://docs.victoriametrics.com/operator/quick-start/#vmauth
+[^grafana-cloud-product-page]: https://grafana.com/products/cloud/
+[^victorialogs-docs]: https://docs.victoriametrics.com/victorialogs/
