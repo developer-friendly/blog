@@ -521,11 +521,6 @@ Give it a try today and see how it can transform your monitoring experience!
 
 Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 
-**If you enjoyed this blog post, consider sharing it with these buttons**
-:point_down:.
-**Please leave a comment for us at the end, we read & love 'em
-all.**. :heart_exclamation:
-
 [^vm-landing-page]: https://victoriametrics.com/
 [^last9-prometheus-comparison]: https://last9.io/blog/prometheus-vs-victoriametrics/
 [^seifeddinerajhi-medium]: https://medium.com/@seifeddinerajhi/victoriametrics-a-comprehensive-guide-comparing-it-to-prometheus-and-implementing-kubernetes-03eb8feb0cc2
