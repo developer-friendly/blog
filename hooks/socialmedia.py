@@ -5,9 +5,10 @@ import re
 
 x_intent = "https://twitter.com/intent/tweet"
 x_id = "@devfriendly_"
-fb_sharer = "https://www.facebook.com/sharer/sharer.php"
+_fb_sharer = "https://www.facebook.com/sharer/sharer.php"
 lnkd_sharer = "https://www.linkedin.com/sharing/share-offsite/"
 reddit_sharer = "https://www.reddit.com/submit"
+hackernews = "https://news.ycombinator.com/submitlink"
 include = re.compile(r"[1-9].*")
 
 
@@ -23,9 +24,9 @@ def on_page_markdown(markdown, **kwargs):
 
     return markdown + dedent(
         f"""
+    [Share on :fontawesome-brands-hacker-news:]({hackernews}?u={page_url}&t={page_title}){{ .md-button .md-button--primary }}
     [Share on :simple-linkedin:]({lnkd_sharer}?url={page_url}){{ .md-button .md-button--primary }}
     [Share on :simple-reddit:]({reddit_sharer}?url={page_url}&title={page_title}){{ .md-button .md-button--primary }}
     [Share on :simple-x:]({x_intent}?text={page_title_x}&url={page_url}){{ .md-button .md-button--primary }}
-    [Share on :simple-facebook:]({fb_sharer}?u={page_url}){{ .md-button .md-button--primary }}
     """
     )
