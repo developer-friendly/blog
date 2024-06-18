@@ -14,12 +14,15 @@ extra:
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/@developer-friendly
       name: Subscribe to our YouTube channel!
-    - icon: fontawesome/brands/hacker-news
-      link: https://news.ycombinator.com/submitted?id=meysamazad
-      name: Follow us on Hacker News!
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/devfriendly_
+      name: Follow us on Twitter!
     - icon: simple/reddit
       link: https://www.reddit.com/user/meysam81/
       name: Follow us on Reddit!
+    - icon: fontawesome/brands/hacker-news
+      link: https://news.ycombinator.com/submitted?id=meysamazad
+      name: Follow us on Hacker News!
     - icon: simple/stackoverflow
       link: https://stackoverflow.com/users/8282345/meysam
       name: Follow us on Stack Overflow!
