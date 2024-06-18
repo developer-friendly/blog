@@ -11,24 +11,24 @@ extra:
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/developer-friendly
       name: Follow us on LinkedIn!
-    - icon: fontawesome/solid/square-rss
-      link: /feed_rss_created.xml
-      name: Subscribe to our RSS feed!
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/@developer-friendly
       name: Subscribe to our YouTube channel!
-    - icon: simple/stackoverflow
-      link: https://stackoverflow.com/users/8282345/meysam
-      name: Follow us on Stack Overflow!
     - icon: fontawesome/brands/hacker-news
       link: https://news.ycombinator.com/submitted?id=meysamazad
       name: Follow us on Hacker News!
-    - icon: fontawesome/solid/envelope
-      link: https://forms.gle/Jh3KUr3Hof8kv5qs9
-      name: Subscribe to our newsletter!
+    - icon: simple/reddit
+      link: https://www.reddit.com/user/meysam81/
+      name: Follow us on Reddit!
+    - icon: simple/stackoverflow
+      link: https://stackoverflow.com/users/8282345/meysam
+      name: Follow us on Stack Overflow!
     - icon: fontawesome/brands/slack
       link: https://communityinviter.com/apps/developerfriendly/join-our-slack
       name: Join our Slack community!
+    - icon: fontawesome/solid/square-rss
+      link: /feed_rss_created.xml
+      name: Subscribe to our RSS feed!
   analytics:
     provider: google
     property: !ENV [GA_PROPERTY, ""]
