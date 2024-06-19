@@ -4,6 +4,11 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/developer-friendly/blog)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/developer-friendly/blog)
 
+## Sponsors
+
+These are our really cool sponsors!
+
+<!-- sponsors --><!-- sponsors -->
 
 ## Star History
 

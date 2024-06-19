@@ -279,6 +279,7 @@ markdown_extensions:
 nav:
   - index.md
   - Subscribe: https://developerfriendly.eo.page/newsletter
+  - sponsors.md
   - terms.md
   - privacy.md
 watch:
