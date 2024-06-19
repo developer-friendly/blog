@@ -8,7 +8,7 @@
 
 These are our really cool sponsors! 💖
 
-<!-- sponsors -->No sponsors yet. Become the first sponsor!<!-- sponsors -->
+<!-- sponsors -->*No sponsors yet. Become the first sponsor!* 💝<!-- sponsors -->
 
 ## Star History
 
