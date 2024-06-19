@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 
 {% block extrahead %}
-{{ super() }}
-  <!-- LogRocket -->
-  <script src="https://cdn.logr-ingest.com/LogRocket.min.js" crossorigin="anonymous" async></script>
-  <!-- Google AdSense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2492369509427475" crossorigin="anonymous"></script>
+  {{ super() }}
+  {% include "partials/logrocket.html" ignore missing %}
+  {% include "partials/google-ads.html" ignore missing %}
 {% endblock %}
 
 {% block announce %}{% include "partials/announce.html" ignore missing %}{% endblock %}

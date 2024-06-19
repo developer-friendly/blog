@@ -61,14 +61,17 @@ extra:
       github: GitHub
       logrocket:
         name: Logrocket
+        property: !ENV [LOGROCKET_PROPERTY, ""]
         checked: true
       personalization:
         name: Ads Personalization
         checked: true
+  ads:
+    google:
+      property: !ENV [ADSENSE_PROPERTY, ""]
   status:
     new: Recently added
 extra_javascript:
-  - static/js/consent.js
   - static/js/announce.js
 extra_css:
   - static/css/announce.css
