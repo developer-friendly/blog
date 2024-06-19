@@ -2,6 +2,10 @@
   {% set property = config.extra.ads.google.property | d("", true) %}
 {% endif %}
 
-{%if property %}
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ property }}" crossorigin="anonymous"></script>
+{% if property %}
+<script
+  async
+  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ property }}"
+  crossorigin="anonymous"
+></script>
 {% endif %}

@@ -2,6 +2,7 @@
   {% set property = config.extra.analytics.property | d("", true) %}
 {% endif %}
 
+{% if property %}
 <!-- Integrate with Google Analytics 4 -->
 <script id="__analytics">
   function __md_analytics() {
@@ -79,14 +80,10 @@
       })
 
       /* Setup Google AdSense consent v2 */
-      document$.subscribe(function googleConsentV2() {
-        console.log("Google AdSense consent v2 check ...");
-        var consent = __md_get("__consent");
-        if (consent && consent.personalization) {
-          console.log("Google AdSense consent v2 granted");
-          consentGrantAll();
-        }
-      });
+      var consent = __md_get("__consent");
+      if (consent && consent.personalization) {
+        consentGrantAll();
+      }
     })
 
     /* Create script tag */
@@ -99,3 +96,4 @@
     container.insertAdjacentElement("afterEnd", script)
   }
 </script>
+{% endif %}
