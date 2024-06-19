@@ -204,6 +204,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+    env:
+      FALLBACK_MESSAGE: "*No sponsors yet. Become the first sponsor!* 💝"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -212,13 +214,13 @@ jobs:
         with:
           token: ${{ secrets.PAT_SPONSORS }}
           file: README.md
-          fallback: No sponsors yet. Become the first sponsor!
+          fallback: ${{ env.FALLBACK_MESSAGE }}
       # - name: Generate Sponsors - sponsors
       #   uses: JamesIves/github-sponsors-readme-action@v1
       #   with:
       #     token: ${{ secrets.PAT_SPONSORS }}
       #     file: docs/sponsors.md
-      #     fallback: No sponsors yet. Become the first sponsor!
+      #     fallback: ${{ env.FALLBACK_MESSAGE }}
       - name: Verify changed
         id: changed
         run: |

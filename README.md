@@ -6,7 +6,7 @@
 
 ## Sponsors
 
-These are our really cool sponsors!
+These are our really cool sponsors! 💖
 
 <!-- sponsors -->No sponsors yet. Become the first sponsor!<!-- sponsors -->
 
