@@ -1,15 +1,15 @@
 {% if config.extra.consent.cookies and config.extra.consent.cookies.logrocket %}
-  {% set property = config.extra.consent.cookies.logrocket.property | d("", true) %}
+  {% set logrocketProperty = config.extra.consent.cookies.logrocket.property | d("", true) %}
 {% endif %}
 
-{% if property %}
+{% if logrocketProperty %}
 <script src="https://cdn.logr-ingest.com/LogRocket.min.js" crossorigin="anonymous" async></script>
 <script>
-  document.addEventListener("DOMContentLoaded", function domLoaded() {
+  document.addEventListener("DOMContentLoaded", function logRocketListener() {
     document$.subscribe(function enableLogRocket() {
       var consent = __md_get("__consent");
       if (consent && consent.logrocket) {
-        window.LogRocket && window.LogRocket.init("{{ property }}");
+        window.LogRocket && window.LogRocket.init("{{ logrocketProperty }}");
       }
     });
   });

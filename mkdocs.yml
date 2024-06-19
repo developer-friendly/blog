@@ -65,10 +65,8 @@ extra:
         checked: true
       personalization:
         name: Ads Personalization
+        property: !ENV [ADSENSE_PROPERTY, ""]
         checked: true
-  ads:
-    google:
-      property: !ENV [ADSENSE_PROPERTY, ""]
   status:
     new: Recently added
 extra_javascript:

@@ -21,6 +21,8 @@ env:
   NETLIFY_DEPLOY_TO_PROD: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
   PYTHON_VERSION: 3.x
   URL_DOWNLOAD: "true"
+  LOGROCKET_PROPERTY: ${{ vars.LOGROCKET_PROPERTY }}
+  ADSENSE_PROPERTY: ${{ vars.ADSENSE_PROPERTY }}
 
 jobs:
   preview:

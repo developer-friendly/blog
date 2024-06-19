@@ -1,11 +1,11 @@
-{% if config.extra.ads and config.extra.ads.google %}
-  {% set property = config.extra.ads.google.property | d("", true) %}
+{% if config.extra.consent.cookies and config.extra.consent.cookies.personalization %}
+  {% set adsProperty = config.extra.consent.cookies.personalization.property | d("", true) %}
 {% endif %}
 
-{% if property %}
+{% if adsProperty %}
 <script
   async
-  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ property }}"
+  src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ adsProperty }}"
   crossorigin="anonymous"
 ></script>
 {% endif %}
