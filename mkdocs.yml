@@ -8,6 +8,9 @@ extra:
     - icon: fontawesome/brands/paypal
       link: http://paypal.me/meysamazad
       name: Thank the author!
+    - icon: simple/buymeacoffee
+      link: https://buymeacoffee.com/meysam
+      name: Buy me a coffee!
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/developer-friendly
       name: Follow us on LinkedIn!
