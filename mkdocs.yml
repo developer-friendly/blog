@@ -70,6 +70,10 @@ extra:
         name: Ads Personalization
         property: !ENV [ADSENSE_PROPERTY, ""]
         checked: true
+      convertkit:
+        name: ConvertKit
+        property: !ENV [CONVERTKIT_PROPERTY, ""]
+        checked: true
   status:
     new: Recently added
 extra_javascript:
