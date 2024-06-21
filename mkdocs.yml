@@ -70,6 +70,10 @@ extra:
         name: Ads Personalization
         property: !ENV [ADSENSE_PROPERTY, ""]
         checked: true
+      convertkit:
+        name: ConvertKit
+        property: !ENV [CONVERTKIT_PROPERTY, ""]
+        checked: true
   status:
     new: Recently added
 extra_javascript:
@@ -282,7 +286,7 @@ markdown_extensions:
       custom_checkbox: true
 nav:
   - index.md
-  - Subscribe: https://developerfriendly.eo.page/newsletter
+  - Subscribe: https://developer-friendly.ck.page/
   - sponsors.md
   - terms.md
   - privacy.md
