@@ -1,8 +1,13 @@
 ---
 date: 2024-06-24
-draft: true
 description: >-
-  TODO
+  How to deploy one instance of an application upon each pull request with
+  GitHub Actions and Kubernetes. How to speed up code reviews and feedback loop.
+social:
+  cards_layout_options:
+    description: >-
+      Learn how to spin up a preview environment for each pull request when
+      working in a team to speed up merge queue & facilitate code reviews.
 categories:
   - Kubernetes
   - cert-manager
@@ -17,130 +22,201 @@ categories:
   - OpenID Connect
   - OIDC
   - Security
+  - Code Review
+  - GitHub
+  - GitHub Actions
+image: assets/images/social/2024/06/24/how-to-set-up-preview-environments-for-pull-requests.png
 ---
 
-# Per-PR Deployment (think of a better name)
+# How to Set Up Preview Environments for Pull Requests
 
-You have most likely seen Netlify giving you a preview URL using which you can
-inspect your applications and to verify the changes you've made to the codebase
-are the ones you intended.
+<!--
+preview deployment with kubernetes
+live application for each pull request
+Deploy Preview Versions Instantly on Every Pull Request
+How to Set Up Preview Environments for Pull Requests
+increase your feedback loop with CI/CD and preview environments
+enhanced CI/CD with preview environments on each pull request
+game up your CI/CD with preview environments
+how to set up preview environments for pull requests
+-->
 
-That is usually a benefit of working in the frontend codebase.
+Have you ever been frustrated at long merge queues? Did you ever wish there was
+a better and faster way to get feedback on your code changes and approval from
+your team members?
 
-However, the same idea can be achived for backend applications (and even
-frontend ones) using Kubernetes, dynamic DNS & wildcard certificates.
+You may have also been on the other side of the table, reviewing pull requests
+and wishing there was a better way to actually test the revisions before
+approving it; giving you a sense of what it would feel and look like if it were
+to merge.
 
-If you like to see how to expose pr123.test.example.com, buckle up cause this
-is about to get really exciting!
+Netlify and other frontend hosting services have spoiled us with the ability to
+spin up a live instance of the application for each pull request for static
+files. But what about backend applications? How can we achieve the same and
+deploy our backend for every new proposed change in the pull request?
 
-<!-- more -->
+In this blog post, we will explore how to set up preview environments for each
+pull request using GitHub Actions and Kubernetes. This guide includes spinning
+up the application as a live instance with an internet accessible URL to
+preview and verify the changes before they find their way into the main trunk.
 
 ## Introduction
 
-Netlify has spoiled us a little, I admit. For any piece of frontend code that
-I get in touch with, even if it is't meant to be deployed and delivered to
-production through Netlify, I still use its preview feature to understand how
-the upcoming changes will look like.
+When working in a team environment, it's common to adopt the pull-request style
+for collaborations. This ensures that the quality of the codebase is maintained
+having some guardrails to avoid merging changes that are undesired and/or do
+not meet a certain standard of the team.
 
-In fact, the CI pipeline of [developer-friendly.blog](/) is written in a way that
-prints out a preview URL if a new pull-request is opened against the `main`
-branch. Take a look at [the source code if you're interested].
+This process can become tedious, especially at scale and working with more than
+a few team members. Although there are tools and practices to help with the
+coordination and overhead associated with code reviews, there is still an
+ongoing maintainance cost when it comes to keeping up with the flow and pace
+of changes proposed to the codebase, i.e., pull requests.
 
-Let's see why this is an important feature to have and to implement in any
-infrastructure and continuous delivery pipeline.
+One of the main reasons code reviews are tough to deal with is the efforts
+required to spin up the application as proposed in the pull request. Any of the
+modern day applications today depends on many services and dependencies, e.g.,
+databases, caches, queues, etc.
 
-## Why? No Really
+Not only that it is not easy to set up all these dependencies right out of the
+box, the communication between the application and these services is often a
+giant undertaking on its own, perhaps nothing less than setting up a full
+production environment; we all know how cumbersome that can be due to the
+planning and operational mindset required.
 
-This is a truly powerful mechanism in which you will see the live preview
-version of the modified app before it gets merged.
+Furthermore, the application and all its dependent services need computation
+power and resources to run. This is challenging when your production
+environment is working at scale of a country, continent, or even the world.
+Imagine having to deploy Zookeeper, Kafka, and Cassandra just to test a small
+change in the application. It's not only time-consuming but also resource
+intensive.
 
-What do you get in return?
+That is where the preview environments come into play. It allows you to see the
+live state of the application as proposed in the pull request, with all the
+bells and whistles, without having to set up the environment yourself.
 
-1. There comes a time where you don't want or can't deploy the new version of
-   the app to see the changes; perhaps due to resource constraint or maybe
-   because you're not behind a workstation.
-2. The live preview URL can be shared with your colleagues so that everyone
-   gets to see the same version of the app. No more "it works on my machine"!
-3. If you plan this right, you may also benefit from compute cost optimization;
-   for example, if you deploy your preview application next to your dev
-   instance, you're benefiting a lot from the idle resources in your
-   infrastructure.
-4. The deployed application in the live preview will stay up for as long as
-   you require. Your teammates can be on different timezones and you won't have
-   to wait for a build to finish before sharing your changes with them. They
-   will have access to the deployed app as soon as it's up and running.
-5. If you employ techniques such as traffic-mirroring, you'll be able to verify
-   the integrity and correctness of your changes with the live traffic from
-   your users. This gives you a clear picture on whether your changes have
-   actually improved the app and whether or not there was a regression.
-6. It's not just your technical colleagues who can test your changes. You shall
-   be able to pass the preview URL to your sales and/or product team and they
-   will tell you whether or not the changes are aligned with the business
-   requirements.
-7. The author of the change, as well as every one else in the team will not
-   have to wait for a production release to see the changes. Although other
-   practices such as trunk-based development and continuous delivery are
-   also targetting this issue, the live preview URL is a great alternative for
-   teams who don't lean towards these practices.
-8. This technique closely resembles *A/B testing* and *feature flags*
-   techniques. They allow you to avoid touching your live production application
-   and still get a feeling of what it will look like if and when deployed.
+## What is a Preview Environment?
 
-## But, How?
+A preview environment is a live instance of the application that is spun up
+after each push to the pull request branch. This environment is usually an
+identical copy of the dev or ideally prod environment with all the services and
+dependencies that the application relies on. If the application needs to talk
+to a database or the cache system, those communications are also set up in the
+preview environment.
 
-I hope that you are convinced the true power this approach brings to the
-table (I can't do a better job if you aren't).
+The whole point of preview environments is to help the author of the pull
+request and other team members to see the application as it would look like if
+the changes were to merge. This helps in speeding up the feedback loop and the
+approval process, as the reviewers can see the changes in action and verify
+that they are desirable.
 
-If that got you interested and want to learn more, stick around till the end
-so that I can prove my case with a concrete example of such a setup.
+What's more, the preview environment helps reduce the procrastination factor to
+zero, not requiring any of the reviewers to go through the manual labor of
+pulling the changes and setting up the environment locally to see the new
+state of the application. As a result, the feedback loop is shortened and the
+merge queue less congested.
 
-The idea is to do whatever it needs doing to build the app and deploy it
-somewhere. The requirement is that **the target environment needs to have all
-the dependencies prepared (e.g. database, cache, etc.)**.
+To help better replicate the production environment, the preview environment is
+usually designed in a way that closely resembles that environment, or at least
+as close as possible. This ensures there is no surprises when the pull requests
+are merged and the regressions are minimized.
 
-Ultimately, using a previously fetched wildcard TLS certificate and wildcard DNS
-record, we will assign a dynamic URL to the pull request and notify the
-author(s), assignee(s) & reviewer(s) by commenting the URL to the pull request.
+To help with the cost optimizations, there is the possibility of sharing the
+services and dependencies between the preview environment and the dev
+environment. Sharing it with the prod, however, is way too risky and outweights
+the benefits; any proposed change in the pull request is error prone and
+susceptible to bugs and regressions that can have an unpredictable impact to
+your end-users.
 
-By the end of this blog post, you shall see something similar to the following.
+```mermaid
+flowchart TB
+    mainBranch[Main Branch]
+    pullRequestBranch[Pull Request Branch]
 
-!!! bug "TODO"
+    mainBranch -->|checkout -b| pullRequestBranch
 
-      Screenshot of the PR comment
+    subgraph devEnv["Live Dev Environment"]
+        liveDevInstance(["app.example.com"])
+    end
 
-## Step 0: Initial Commit
+    subgraph previewEnv["Preview Environment"]
+        previewInstance(["pr123.test.example.com"])
+    end
 
-The first step is to actually have an application. Due to the preference of the
-author :innocent:, we will write a Rust :crab: application. Throughout this
-blog post, we will modify the codebase and deploy the app to our dev server.
+    subgraph dbEnv["Dev Dependencies"]
+        postgresDB[(PostgreSQL Database)]
+    end
 
-### Prerequisites
+    liveDevInstance -->|Connects to| postgresDB
+    previewInstance -->|Connects to| postgresDB
 
-Before going forward, make sure you have the following setup ready.
+    mainBranch -->|Deploys to| devEnv
+    pullRequestBranch --> previewEnv
 
-- [x] A Kubernetes cluster (v1.30 as of writing). Feel free to go through
-      our archive if you need assistance:
-    - [Kubernetes the Hard Way](./0003-kubernetes-the-hard-way.md)
-    - [K3s Installation](./0005-install-k3s-on-ubuntu22.md)
-    - [Managed Azure AKS](./0009-external-secrets-aks-to-aws-ssm.md)
-- [x] cert-manager installed in your cluster. We have covered the
-      [cert-manager operator](./0010-cert-manager.md) in our last week's guide.
-- [ ] Optionally, External Secrets Operator installed in your cluster. There
-      are more than one blog post on [ESO](/category/external-secrets/) in our
-      archive, but you can start with
-      [External Secrets Operator](./0009-external-secrets-aks-to-aws-ssm.md).
-- [ ] A basic understanding of GitOps and FluxCD. We have a beginner guide in
-      our archive: [Getting Started with FluxCD](./0006-gettings-started-with-gitops-and-fluxcd.md)
-- [ ] Optionally, a basic understanding of Rust programming language. The
-      latest stable version is v1.78 as of [writing this blog post].
-
-
-### Create the Project
-
-```shell title="" linenums="0"
-cargo new echo-server
-cd echo-server
+    classDef dottedBox fill:none,stroke-dasharray: 5 5;
+    class devEnv,previewEnv,dbEnv dottedBox;
 ```
 
-[the source code if you're interested]: https://github.com/developer-friendly/blog/blob/bb44aa926007e2fd3fd09dcc9dfc197c244cfd6b/.github/workflows/ci.yml#L53-L73
-[writing this blog post]: https://www.rust-lang.org/tools/install
+Additionally, depending on the structure and deployment of the dev or prod
+environment, the preview environment is accessible from the internet using a
+unique URL, e.g., `pr123.test.example.com`.
+
+Having an internet-accessible endpoint allows other team members to test,
+review and verify the proposed changes in the pull request as a live instance.
+This greatly facilitates team working for organizations working in an async
+fashion, possibly from different timezones, to collaborate and provide feedback
+on the changes as soon as possible, with the least delay and to help unblock
+the merge queue.
+
+## What Preview Environment is NOT?
+
+It's important to highlight that in no way the preview environment can be a
+substitute for regular workflow of the software development lifecycle.
+
+Even with a preview environment for each pull request, the author of the
+changes still need to locally run the application, review, test and verify that
+everything works as expected.
+
+Moreover, the automated tests of the application need to run before or at least
+during the deployment of the preview environment. You should, at the very
+least, run your small and fast unit tests locally before pushing the changes to
+the pull request branch.
+
+The preview environment is a powerful tool, but it's not a silver bullet. At
+the end of the day, when all is said and done, *no tool and technology can
+replace the engineering culture and mindset of the team*.
+
+## Why is Preview Environments beneficial?
+
+Working in a team and receiving instant feedback from the impact of your work
+is essential to the success of the project. It allows using all the powers of
+the team combined, and not just the sum of each individual's effort.
+
+Here are the main reasons why you should consider setting up preview
+environments for each pull request.
+
+- [x] **Speed up the feedback loop**: The preview environment allows the author
+      of the pull request and the reviewers to see the new revisions instantly.
+      This greatly speeds up the feedback loop and the approval process.
+- [x] **Enhanced continuous integration**: Having fast and short feedback loop
+      upon code reviews, as well as the automated tests running in parallel,
+      allows the dev team to see their changes faster in the codebase, giving
+      the sense of accomplishment, seeing the result of their work in the
+      codebase.
+- [x] **Powers up the code reviews**: The reviewers have less manual labor when
+      verifying the integrity and correctness of the new revision of the code.
+      The live instance of the application can quickly give a look 'n feel of
+      the changes and the impact it will have on the application.
+- [x] **Improved (remote) collaboration**: People have different task
+      priorities on their working day and one may or may not be able to review
+      a change in the codebase at the same time as the author. The preview
+      environment facilitates asynchronous collaboration.
+- [x] **Better developer/testing experience**: Having instant access to an
+      already deployed instance of the new application is a boost in
+      productivity, enabling fast validation within the dev team as well as the
+      product team.
+- [x] **Short merge queues**: A better code review results in instant
+      verification. Having the newer revision of the app available for testing
+      on-demand significantly increases the likelihood of convincing reviewers
+      to provide input and feedback. This is because there is less resistance
+      due to the time required for testing.
