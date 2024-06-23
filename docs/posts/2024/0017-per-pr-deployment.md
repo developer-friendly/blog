@@ -1,52 +1,51 @@
 ---
 date: 2024-06-24
 description: >-
-  How to deploy one instance of an application upon each pull request with
-  GitHub Actions and Kubernetes. How to speed up code reviews and feedback loop.
+  Master the art of efficient software development: A step-by-step guide to
+  deploying preview environments for pull requests with GitHub Actions and Kubernetes.
 social:
   cards_layout_options:
     description: >-
-      Learn how to spin up a preview environment for each pull request when
-      working in a team to speed up merge queue & facilitate code reviews.
+      Learn the secrets to faster code reviews: How to deploy individual
+      preview environments for each pull request using GitHub Actions and
+      Kubernetes.
 categories:
+  - GitHub Actions
   - Kubernetes
+  - CI/CD
+  - Code Review
+  - DevOps
+  - Automation
   - cert-manager
   - Cilium
-  - Gateway API
-  - External Secrets
+  - Continuous Deployment
+  - Continuous Integration
+  - Docker
   - FluxCD
+  - Gateway API
+  - GitHub
+  - GitHub Container Registry
   - GitOps
   - IaC
   - Infrastructure as Code
+  - Kustomization
   - OAuth2
-  - OpenID Connect
   - OIDC
+  - OpenID Connect
+  - Quality Assurance
   - Security
-  - Code Review
-  - GitHub
-  - GitHub Actions
-  - Docker
-  - GitHub Container Registry
-  - CI/CD
-  - Continuous Integration
-  - Continuous Deployment
+  - Software Development
+  - Testing
+  - TLS
+  - Tutorial
 links:
   - ./posts/2024/0014-github-actions-integration-testing.md
+  - ./posts/2024/0011-fluxcd-advanced-topics.md
+  - ./posts/2024/0004-github-actions-dynamic-matrix.md
 image: assets/images/social/2024/06/24/how-to-set-up-preview-environments-for-pull-requests.png
 ---
 
 # How to Set Up Preview Environments for Pull Requests
-
-<!--
-preview deployment with kubernetes
-live application for each pull request
-Deploy Preview Versions Instantly on Every Pull Request
-How to Set Up Preview Environments for Pull Requests
-increase your feedback loop with CI/CD and preview environments
-enhanced CI/CD with preview environments on each pull request
-game up your CI/CD with preview environments
-how to set up preview environments for pull requests
--->
 
 Have you ever been frustrated at long merge queues? Did you ever wish there was
 a better and faster way to get feedback on your code changes and approval from
@@ -761,7 +760,7 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [^github-actions-context]: https://docs.github.com/en/actions/learn-github-actions/contexts
 [^gh-large-runners]: https://docs.github.com/en/actions/using-github-hosted-runners/about-larger-runners
 [^gh-self-hosted-runner]: https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
-[^comment-pr-marketplace]: https://github.com/marketplace/actions/comment-pr
+[^comment-pr-marketplace]: https://github.com/marketplace/actions/github-comment-pr
 [^yaml-multiline-string]: https://yaml-multiline.info/
 [^limitrange]: https://kubernetes.io/docs/concepts/policy/limit-range/
 [^resourcequota]: https://kubernetes.io/docs/concepts/policy/resource-quotas/
