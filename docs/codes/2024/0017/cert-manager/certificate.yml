@@ -5,6 +5,7 @@ metadata:
   namespace: cert-manager
 spec:
   dnsNames:
+    - "*.developer-friendly.blog"
     - "*.test.developer-friendly.blog"
   issuerRef:
     kind: ClusterIssuer

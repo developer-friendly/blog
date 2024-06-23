@@ -101,7 +101,10 @@ jobs:
       pull-requests: write
     steps:
       - name: Delete the stack
-        run: kubectl delete kustomization echo-server-${{ env.PR_NUMBER }} -n flux-system
+        run: |
+          kubectl delete kustomization \
+            echo-server-${{ env.PR_NUMBER }} \
+            -n flux-system
       - name: Comment PR
         uses: meysam81/comment-pr@v1
         with:

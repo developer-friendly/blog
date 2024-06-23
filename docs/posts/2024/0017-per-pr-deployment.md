@@ -30,6 +30,8 @@ categories:
   - CI/CD
   - Continuous Integration
   - Continuous Deployment
+links:
+  - ./posts/2024/0014-github-actions-integration-testing.md
 image: assets/images/social/2024/06/24/how-to-set-up-preview-environments-for-pull-requests.png
 ---
 
@@ -58,7 +60,7 @@ to merge.
 Netlify and other frontend hosting services have spoiled us with the ability to
 spin up a live instance of the application for each pull request for static
 files. But what about backend applications? How can we achieve the same and
-deploy our backend for every new proposed change in the pull request?
+deploy our backend for every new proposed change in pull requests?
 
 In this blog post, we will explore how to set up preview environments for each
 pull request using GitHub Actions and Kubernetes. This guide includes spinning
@@ -82,8 +84,8 @@ of changes proposed to the codebase, i.e., pull requests.
 
 One of the main reasons code reviews are tough to deal with is the efforts
 required to spin up the application as proposed in the pull request. Any of the
-modern day applications today depends on many services and dependencies, e.g.,
-databases, caches, queues, etc.
+modern day applications today depend on many services, e.g., databases, caches,
+queues, etc.
 
 Not only that it is not easy to set up all these dependencies right out of the
 box, the communication between the application and these services is often a
@@ -94,8 +96,8 @@ planning and operational mindset required.
 Furthermore, the application and all its dependent services need computation
 power and resources to run. This is challenging when your production
 environment is working at scale of a country, continent, or even the world.
-Imagine having to deploy Zookeeper, Kafka, and Cassandra just to test a small
-change in the application. It's not only time-consuming but also resource
+Imagine having to deploy Zookeeper, Kafka, and Cassandra locally just to test a
+small change in the application. It's not only time-consuming but also resource
 intensive.
 
 That is where the preview environments come into play. It allows you to see the
@@ -193,7 +195,7 @@ The preview environment is a powerful tool, but it's not a silver bullet. At
 the end of the day, when all is said and done, *no tool and technology can
 replace the engineering culture and mindset of the team*.
 
-## Why is Preview Environments beneficial?
+## Why is Preview Environments Beneficial?
 
 Working in a team and receiving instant feedback from the impact of your work
 is essential to the success of the project. It allows using all the powers of
@@ -202,18 +204,19 @@ the team combined, and not just the sum of each individual's effort.
 Here are the main reasons why you should consider setting up preview
 environments for each pull request.
 
-- [x] **Speed up the feedback loop**: The preview environment allows the author
-      of the pull request and the reviewers to see the new revisions instantly.
-      This greatly speeds up the feedback loop and the approval process.
+- [x] **Speeds up the feedback loop**: The preview environment allows the
+      author of the pull request and the reviewers to see the new revisions
+      instantly. This greatly speeds up the feedback loop and the approval
+      process.
 - [x] **Enhanced continuous integration**: Having fast and short feedback loop
       upon code reviews, as well as the automated tests running in parallel,
       allows the dev team to see their changes faster in the codebase, giving
-      the sense of accomplishment, seeing the result of their work in the
-      codebase.
-- [x] **Powers up the code reviews**: The reviewers have less manual labor when
-      verifying the integrity and correctness of the new revision of the code.
-      The live instance of the application can quickly give a look 'n feel of
-      the changes and the impact it will have on the application.
+      the sense of accomplishment.
+- [x] **Powers up the code reviews**: The reviewers have less manual labor to
+      deal with when verifying the integrity and correctness of the new
+      revision of the code. The live instance of the application can quickly
+      give a look 'n feel of the changes and the impact it will have on the
+      application.
 - [x] **Improved (remote) collaboration**: People have different task
       priorities on their working day and one may or may not be able to review
       a change in the codebase at the same time as the author. The preview
@@ -320,7 +323,7 @@ kubectl apply -f kustomize/dev.yml
 -8<- "docs/codes/2024/0017/echo-server/overlays/test/kustomization.yml"
 ```
 
-Notice that on this file, you see a couple of placeholders in the format of
+Notice that on this stack, you see a couple of placeholders in the format of
 bash interpolation, e.g., `${IMAGE_TAG}` and `${PR_NUMBER}`. These are not
 known at the time of writing. Instead, they are dynamically generated values
 coming from our [GitHub Actions] CI workflow which you will see shortly.
@@ -332,7 +335,7 @@ cluster.
 ## Fetching the Wildcard TLS Certificate
 
 We have already covered the ins and outs of [cert-manager] in our earlier
-guide. If you need a refresher, chech out the following blog post:
+guide. If you need a refresher, check out the following blog post:
 
 [cert-manager: All-in-One Kubernetes TLS Certificate Manager]
 
@@ -348,7 +351,7 @@ Because every one of our pull request deployment will have a different URL,
 dynamically generated with a specific pattern in the following form:
 
 ```plaintext title="" linenums="0"
-pr14.test.developer-friendly.blog
+pr7.test.developer-friendly.blog
 ```
 
 ## GitHub Actions Workflow
@@ -379,7 +382,7 @@ with our latest changes of the application.
 
 The events that we want this CI to be triggered are the ones that involve
 updates to the pull request. It can either be closed, opened, re-opened,
-labeled and un-labeled. These will ensure that any push to the open pull
+labeled and un-labeled, etc.. These will ensure that any push to the open pull
 request will trigger the run of our job.
 
 ```yaml title=".github/workflows/ci.yml" linenums="7"
@@ -426,9 +429,9 @@ Deployment is not up-to-date because the `imagePullPolicy` is by default set to
 image.
 
 The important and very useful note to mention here is that `github.run_id` is
-monotonic and guaranteed to be unique for each run of the workflow. This gives
-us perfect control over the image tag and the idempotency we can achieve with
-how it is valued.
+monotonic and guaranteed to be unique for each run of the
+workflow[^github-actions-context]. This gives us perfect control over the image
+tag and the idempotency we require.
 
 ### Deploy Job on self-hosted Runner
 
@@ -449,9 +452,9 @@ it's an extra step that will not benefit your maintenance costs!
 
 As such, the solution is to either use GitHub large runners[^gh-large-runners]
 or spin up your own VM, assign it an static public IP address and add that
-address to the list of authorized IP of the Kubernetes API Server.
+address to the list of authorized IPs of the Kubernetes API Server.
 
-Either way, the following CI is an example of using a self-hosted GitHub
+The following example uses the latter approach, using a self-hosted GitHub
 runner[^gh-self-hosted-runner].
 
 ```yaml title=".github/workflows/ci.yml" linenums="63"
@@ -473,7 +476,7 @@ manner:
 
 Eventually the above values will be something like the following:
 
-```ini title=""
+```ini title="" linenums="0"
 PR_NUMBER=pr7
 IMAGE_TAG=9633075699
 ```
@@ -492,8 +495,8 @@ That is granted as below:
 ### Preview FluxCD Kustomization
 
 We need a FluxCD [Kustomization] stack to be created dynamically for each pull
-request. This will be very similar to what we had with `kustomize/dev.yml`, yet
-some of the values will obviously differ.
+request. This will be very similar to what we had with `kustomize/dev.yml`
+earlier, yet some of the values will obviously differ.
 
 This is the Kustomization that'll be used inside the CI.
 
@@ -501,7 +504,7 @@ This is the Kustomization that'll be used inside the CI.
 -8<- "docs/codes/2024/0017/kustomize/test.yml"
 ```
 
-This is the CI of the deployment.
+Let's pass that YAML file as a string into the CI.
 
 ```yaml title=".github/workflows/ci.yml" linenums="71"
 -8<- "docs/codes/2024/0017/workflow/ci.yml:71:78"
@@ -514,7 +517,7 @@ This is the CI of the deployment.
     different, you can take inspiration from what you got here and apply it with
     your principle and your preferred style to your environment.
 
-### Public the URL on the Pull Request
+### Comment the URL to the Pull Request
 
 The last part of our deployment CI is to print out the URL of the preview
 environment on the pull request[^comment-pr-marketplace]. This will allow the
@@ -545,7 +548,8 @@ Successful run of this step will result in the following comment.
 
 We have only discussed how to set up the environment so far. But, once the pull
 request is closed or the label is removed, we want to remove the stack as well.
-That ensures that there is no lingering stack that is not needed anymore.
+That ensures that there is no lingering stack left in our stuck to occupy our
+precious resources.
 
 The teardown of the preview environment is similar to what we had so far, only
 with a change of conditional.
@@ -555,8 +559,8 @@ with a change of conditional.
 ```
 
 Notice how powerful it can be to customize the conditional of the job. Consider
-the value to be an string. Passing multi-line string to a YAML can be achieved
-with `|` (pipe characters)[^yaml-multiline-string].
+the value to the `if` conditiona to be an string. Passing multi-line string to
+a YAML can be achieved with `|` (pipe characters)[^yaml-multiline-string].
 
 We will also require the same permission and environment variables as before.
 
@@ -569,20 +573,20 @@ We will also require the same permission and environment variables as before.
 The removal of the [Kustomization] stack is a simple `kubectl` command.
 
 ```yaml title=".github/workflows/ci.yml" linenums="102"
--8<- "docs/codes/2024/0017/workflow/ci.yml:102:104"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:102:107"
 ```
 
 ### Remove the Comment from the Pull Request
 
 The last step of the teardown is to remove the comment from the pull request.
-The rationale is that the URL of a destroyed stack is not valid and should not
-be present to misled our team.
+The rationale is that we no longer need an inaccessible URL to be present in
+our pull request.
 
-```yaml title=".github/workflows/ci.yml" linenums="105"
--8<- "docs/codes/2024/0017/workflow/ci.yml:105"
+```yaml title=".github/workflows/ci.yml" linenums="108"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:108"
 ```
 
-The `title` of the comment ensures the uniqueness of the comment and should be
+The `title` of the comment ensures the uniqueness of the comment and must be
 provided. This allows the removal of such comment by searching for that exact
 text.
 
@@ -596,7 +600,7 @@ text.
 
 ## Considerations
 
-We have discussed one of the common pattern of working in a team environment
+We have discussed one of the common patterns of working in a team environment
 and collaborating on the codebase, while increasing the efficiency of the
 processes and reducing the frictions by employing the powers of the modern
 technologies and tools.
@@ -610,7 +614,7 @@ yourself and your team.
 We have mentioned earlier that it is better to re-use the same resources and
 dependencies as you have in your dev environment. But how much shared should it
 be? Would you give your backend application all the access to the dev database
-and caching system? Or do you separate them into different databases?
+and caching system? Or do you separate them into different networks?
 
 The answer to this question is the undesired and ever so common *it depends*.
 We cannot provide you a general and universal recipe for what may or may not
@@ -620,8 +624,8 @@ The goal of this article has been to provide you with a starting point,
 accompanied with a practical example to solidify the concept.
 
 However, the devil is in the details. When trying to adopt this pattern, you
-ought to consider the limitations and the constraints of your environment and
-decide accordingly.
+ought to consider the limitations and the constraints of your environment for
+yourself and decide accordingly.
 
 ### Is GitOps Required for this?
 
@@ -646,7 +650,7 @@ Go through the resources being created in such a job and make sure you do not
 give it more permissions than it actually needs.
 
 At any point in time when you realize that your CI needs more permissions, you
-will be able to grant it such, but not the other way around.
+will be able to grant it such, but no sooner than that.
 
 ### How Much Resource to Allocate?
 
@@ -654,8 +658,9 @@ The preview environment is a live instance of the application. It will require
 nearly as much as what you are using in your dev environment.
 
 As such, and if you're running in a constrained environment, you should
-seriously consider using `LimitRange` and/or `ResourceQuota` to avoid
-overloading your cluster and causing resource contention.
+seriously consider using `LimitRange`[^limitrange] and/or
+`ResourceQuota`[^resourcequota] to avoid overloading your cluster and causing
+resource contention.
 
 ### How to Handle Secrets?
 
@@ -664,6 +669,11 @@ There is no one-size-fits-all answer to this question.
 You may have picked one or a combination of tools to manage your secrets. As
 such, managing secrets for your preview environments should be a deliberate and
 informed decision on your part.
+
+If it helps, you are more than welcome to take a look at our earlier guide
+on [External Secrets] in this blog post:
+
+[External Secrets Operator: Fetching AWS SSM Parameters into Azure AKS]
 
 ### Do Not Forget About Monitoring and Alerting
 
@@ -691,8 +701,9 @@ maintain.
 If your organization is willing to spend money, there are paid solutions that
 take away the pain from your shoulders, e.g., PullPreview[^pullpreview].
 
-There are also other ways that employ [Terraform] and/or other
-[Infrastructure as Code] tools to achieve the same goal.
+There are also other ways that employ [Terraform], env0[^env0-guide],
+AWS CDK[^aws-cdk-guide], CloudFormation[^cloudformation-preview-deployment]
+and/or other [Infrastructure as Code] tools to achieve the same goal.
 
 The choice is yours to make. Just make sure it's an informed one.
 
@@ -715,7 +726,7 @@ their collaboration, improve the efficiency of code reviews and shorten the
 merge queue.
 
 With faster feedback loops, even your customer is happier, seeing the features
-and bugfixes being deployed faster and with less regressions.
+and bugfixes being deployed faster.
 
 This article should give you a good starting point to set up preview
 environments. Though this is only one of the many ways to achieve the same
@@ -742,11 +753,19 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [cert-manager: All-in-One Kubernetes TLS Certificate Manager]: ./0010-cert-manager.md
 [join our Slack channel]: https://communityinviter.com/apps/developerfriendly/join-our-slack
 [Terraform]: /category/terraform/
+[External Secrets]: /category/external-secrets/
 [Infrastructure as Code]: /category/infrastructure-as-code/
+[External Secrets Operator: Fetching AWS SSM Parameters into Azure AKS]: ./0009-external-secrets-aks-to-aws-ssm.md
 
 [^echo-server-github]: https://github.com/developer-friendly/echo-server/
+[^github-actions-context]: https://docs.github.com/en/actions/learn-github-actions/contexts
 [^gh-large-runners]: https://docs.github.com/en/actions/using-github-hosted-runners/about-larger-runners
 [^gh-self-hosted-runner]: https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
 [^comment-pr-marketplace]: https://github.com/marketplace/actions/comment-pr
 [^yaml-multiline-string]: https://yaml-multiline.info/
+[^limitrange]: https://kubernetes.io/docs/concepts/policy/limit-range/
+[^resourcequota]: https://kubernetes.io/docs/concepts/policy/resource-quotas/
 [^pullpreview]: https://pullpreview.com/
+[^env0-guide]: https://www.env0.com/blog/why-per-pull-request-environments-and-how
+[^aws-cdk-guide]: https://github.com/jgoux/preview-environments-per-pull-request-using-aws-cdk-and-github-actions
+[^cloudformation-preview-deployment]: https://medium.com/nntech/level-up-your-ci-cd-pipeline-with-pull-request-deployments-780878e2f15a
