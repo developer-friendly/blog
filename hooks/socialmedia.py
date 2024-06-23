@@ -22,7 +22,7 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
 
     return markdown + dedent(
         f"""
-    **If you enjoyed this blog post, consider sharing it with these buttons :point_down:. Please leave a comment for us at the end, we read & love 'em all.. :heart_exclamation:**
+    **If you enjoyed this blog post, consider sharing it with these buttons :point_down:. Please leave a comment for us at the end, we read & love 'em all. :heart_exclamation:**
 
     [Share on :fontawesome-brands-hacker-news:]({hackernews}?u={page_url}&t={page_title}){{ .md-button .md-button--primary }}
     [Share on :simple-linkedin:]({lnkd_sharer}?url={page_url}){{ .md-button .md-button--primary }}
