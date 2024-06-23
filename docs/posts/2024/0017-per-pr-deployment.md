@@ -25,6 +25,11 @@ categories:
   - Code Review
   - GitHub
   - GitHub Actions
+  - Docker
+  - GitHub Container Registry
+  - CI/CD
+  - Continuous Integration
+  - Continuous Deployment
 image: assets/images/social/2024/06/24/how-to-set-up-preview-environments-for-pull-requests.png
 ---
 
@@ -222,3 +227,526 @@ environments for each pull request.
       on-demand significantly increases the likelihood of convincing reviewers
       to provide input and feedback. This is because there is less resistance
       due to the time required for testing.
+
+## How to Set Up Preview Environments for Pull Requests?
+
+Based on the infrastructure you will work with, the setup will vary greatly.
+However, for the purpose of this blog post, we have chosen the following tech
+stack:
+
+- [x] A running [Kubernetes] v1.30-ish cluster. Feel free to pick your
+      preferred method for bootstraping a cluster. You are more than welcome to
+      consult our archive if you need help setting up a cluster:
+    - [Kubernetes the Hard Way]
+    - [How to Install Lightweight Kubernetes on Ubuntu 22.04]
+    - [Setting up Azure Managed Kubernetes Cluster]
+- [x] [GitHub Actions] for the CI/CD pipeline.
+- [x] [FluxCD] for the GitOps deployment.
+- [x] [cert-manager] for the TLS certificates.
+- [x] [Kustomization] for the Kubernetes manifests.
+
+For the implementation of this task, we aim to achieve the following tasks
+sequentially:
+
+1. Create a base [Kustomization] for the application.
+2. Create two overlays on top of it, one for dev deployment and the other for
+   preview deployments (per each pull request).
+3. Fetch the wildcard TLS certificate to be used by the preview environment
+   stacks.
+4. Write the [GitHub Actions] workflow to deploy and teardown the preview
+   environment on-demand based on the labels of the pull request.
+
+## Base Kustomization for the Application
+
+Now that you know the steps we will cover, let's get our hands dirty and
+roll up our system administration sleeves.
+
+The following code snippets are using a sample `echo-server` application
+written by us[^echo-server-github]. Though, the principle and the setup can be
+applied to any application you are working with.
+
+```ini title="echo-server/base/configs.env"
+-8<- "docs/codes/2024/0017/echo-server/base/configs.env"
+```
+
+```yaml title="echo-server/base/service.yml"
+-8<- "docs/codes/2024/0017/echo-server/base/service.yml"
+```
+
+```yaml title="echo-server/base/deployment.yml"
+-8<- "docs/codes/2024/0017/echo-server/base/deployment.yml"
+```
+
+```yaml title="echo-server/base/kustomization.yml"
+-8<- "docs/codes/2024/0017/echo-server/base/kustomization.yml"
+```
+
+## Overlay for Dev Deployment
+
+```ini title="echo-server/overlays/dev/configs.env"
+-8<- "docs/codes/2024/0017/echo-server/overlays/dev/configs.env"
+```
+
+```yaml title="echo-server/overlays/dev/deployment.yml"
+-8<- "docs/codes/2024/0017/echo-server/overlays/dev/deployment.yml"
+```
+
+```yaml title="echo-server/overlays/dev/httproute.yml"
+-8<- "docs/codes/2024/0017/echo-server/overlays/dev/httproute.yml"
+```
+
+```yaml title="echo-server/overlays/dev/kustomization.yml"
+-8<- "docs/codes/2024/0017/echo-server/overlays/dev/kustomization.yml"
+```
+
+With our dev stack ready, we can simply deploy it to our cluster with the
+following [FluxCD] CRD resource:
+
+```yaml title="kustomize/dev.yml"
+-8<- "docs/codes/2024/0017/kustomize/dev.yml"
+```
+
+```shell title="" linenums="0"
+kubectl apply -f kustomize/dev.yml
+```
+
+## Overlay for Preview Deployment
+
+```yaml title="echo-server/overlays/test/httproute.yml"
+-8<- "docs/codes/2024/0017/echo-server/overlays/test/httproute.yml"
+```
+
+```yaml title="echo-server/overlays/test/kustomization.yml"
+-8<- "docs/codes/2024/0017/echo-server/overlays/test/kustomization.yml"
+```
+
+Notice that on this file, you see a couple of placeholders in the format of
+bash interpolation, e.g., `${IMAGE_TAG}` and `${PR_NUMBER}`. These are not
+known at the time of writing. Instead, they are dynamically generated values
+coming from our [GitHub Actions] CI workflow which you will see shortly.
+
+With our preview environment definition ready, we should set up some of the
+other relevant and required components before being able to deploy it to our
+cluster.
+
+## Fetching the Wildcard TLS Certificate
+
+We have already covered the ins and outs of [cert-manager] in our earlier
+guide. If you need a refresher, chech out the following blog post:
+
+[cert-manager: All-in-One Kubernetes TLS Certificate Manager]
+
+Using that stack, we can create a wildcard [TLS] certificate with the following
+CRD resource:
+
+```yaml title="cert-manager/certificate.yml"
+-8<- "docs/codes/2024/0017/cert-manager/certificate.yml"
+```
+
+Having a wildcard TLS certificate is a crucial component of this set up.
+Because every one of our pull request deployment will have a different URL,
+dynamically generated with a specific pattern in the following form:
+
+```plaintext title="" linenums="0"
+pr14.test.developer-friendly.blog
+```
+
+## GitHub Actions Workflow
+
+The last piece of the puzzle is what glues the whole setup together. The CI
+definition is satisfying the following criteria:
+
+*For every push to the branch of the pull-requset, if the pull-request is still
+open and labeled `deploy-preview`, create the corresponding Kustomization stack
+with all the values initialized.*
+
+To make it easier to grasp the whole picture, we will break down the workflow
+into smaller chunks, explain each as deserved, and then put them all together
+into one single whole.
+
+### Workflow Concurrency
+
+After naming the workflow with a desired value, we are prohibiting the
+concurrent runs of our job. This ensures that new CI runs will replace the old
+ones and we won't be billed for the obsolete run that is no longer up to date
+with our latest changes of the application.
+
+```yaml title=".github/workflows/ci.yml"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:1:5"
+```
+
+### Trigger on Pull Request
+
+The events that we want this CI to be triggered are the ones that involve
+updates to the pull request. It can either be closed, opened, re-opened,
+labeled and un-labeled. These will ensure that any push to the open pull
+request will trigger the run of our job.
+
+```yaml title=".github/workflows/ci.yml" linenums="7"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:7:18"
+```
+
+Consequently, the conditional of the job will check for a match on the event
+and its relevant attribute when being invoked.
+
+```yaml title=".github/workflows/ci.yml" linenums="20"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:20:26"
+```
+
+### Build Image Job Permission
+
+The runner job that will build our [Docker] image will require write access
+to the [GitHub Container Registry] also known as `ghcr.io`. This is where we
+will store and retrieve our Docker images.
+
+```yaml title=".github/workflows/ci.yml" linenums="27"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:27:29"
+```
+
+### Build and Push Docker Image
+
+These steps will build the [Docker] image as instructed by the repository's
+`Dockerfile` and push the image to the `ghcr.io`, later to be used by our
+cluster when fetching the new image tag.
+
+```yaml title=".github/workflows/ci.yml" linenums="30" hl_lines="32"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:30:61"
+```
+
+Pay close attention to the image tag we are instructing the build step to use.
+We need the `${{ env.IMAGE_REPOSITORY }}:${{ github.run_id }}` to be among the
+tags that the Docker image is built with.
+
+This will allow us to use the same reference when updating the preview stack
+with a new image tag.
+
+Forgetting this step, and we might end up in a situation where our [Kubernetes]
+Deployment is not up-to-date because the `imagePullPolicy` is by default set to
+`IfNotPresent` and the image tag is not updated, resulting in using the old
+image.
+
+The important and very useful note to mention here is that `github.run_id` is
+monotonic and guaranteed to be unique for each run of the workflow. This gives
+us perfect control over the image tag and the idempotency we can achieve with
+how it is valued.
+
+### Deploy Job on self-hosted Runner
+
+One of the main concerns of an operational team should be the security and
+protection of the [Kubernetes] API Server.
+
+Whether or not you are using a managed Kubernetes cluster, your API Server
+should be protected by firewall rules from a certain trusted IP addresses.
+
+Those *trusted* IP addresses will include yours, anyone in your team that
+ought to send requests to the Kubernetes server, as well as your CI runner
+public IP address.
+
+The CI runner has to have an static IP address for this to work. Otherwise,
+you will end up hacking your way into Kubernetes, e.g., by having an step in
+your CI definition to add the current runner IP address to the firewall rules;
+it's an extra step that will not benefit your maintenance costs!
+
+As such, the solution is to either use GitHub large runners[^gh-large-runners]
+or spin up your own VM, assign it an static public IP address and add that
+address to the list of authorized IP of the Kubernetes API Server.
+
+Either way, the following CI is an example of using a self-hosted GitHub
+runner[^gh-self-hosted-runner].
+
+```yaml title=".github/workflows/ci.yml" linenums="63"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:63:65"
+```
+
+### Set up the Environment Variables
+
+As [mentioned before](#overlay-for-preview-deployment), we will use some of the
+dynamic values during our CI run. That allows passing values that are otherwise
+not known at the definition stage.
+
+These values are provided to the runner in its definition in the following
+manner:
+
+```yaml title=".github/workflows/ci.yml" linenums="66"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:66:68"
+```
+
+Eventually the above values will be something like the following:
+
+```ini title=""
+PR_NUMBER=pr7
+IMAGE_TAG=9633075699
+```
+
+### Deploy Job Permissions
+
+Our deployment runner will require write access to the pull request to print
+out the internet-accessible URL of the preview environment.
+
+That is granted as below:
+
+```yaml title=".github/workflows/ci.yml" linenums="69"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:69:70"
+```
+
+### Preview FluxCD Kustomization
+
+We need a FluxCD [Kustomization] stack to be created dynamically for each pull
+request. This will be very similar to what we had with `kustomize/dev.yml`, yet
+some of the values will obviously differ.
+
+This is the Kustomization that'll be used inside the CI.
+
+```yaml title=""
+-8<- "docs/codes/2024/0017/kustomize/test.yml"
+```
+
+This is the CI of the deployment.
+
+```yaml title=".github/workflows/ci.yml" linenums="71"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:71:78"
+```
+
+!!! question "Complex?"
+
+    Maybe! It's your call to define how complex is complex. Yet this is a
+    working example of something you can use. Or, if you prefer something
+    different, you can take inspiration from what you got here and apply it with
+    your principle and your preferred style to your environment.
+
+### Public the URL on the Pull Request
+
+The last part of our deployment CI is to print out the URL of the preview
+environment on the pull request[^comment-pr-marketplace]. This will allow the
+subscribers of the pull request to be notified that the new stack is ready and
+can be accessed.
+
+```yaml title=".github/workflows/ci.yml" linenums="79"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:79:85"
+```
+
+Successful run of this step will result in the following comment.
+
+<figure markdown="span">
+  ![Comment URL on the Pull Request](/static/img/2024/0017/comment-pr.webp "Click to zoom in"){ align=left loading=lazy }
+  <figcaption>Comment URL on the Pull Request</figcaption>
+</figure>
+
+???+ example "Preview Environment"
+
+    Deploying our `echo-server`, we will get the following response if we
+    access it from the browser.
+
+    ```json title=""
+    -8<- "docs/codes/2024/0017/junk/pr7-response.json"
+    ```
+
+## Teardown the Preview Environment
+
+We have only discussed how to set up the environment so far. But, once the pull
+request is closed or the label is removed, we want to remove the stack as well.
+That ensures that there is no lingering stack that is not needed anymore.
+
+The teardown of the preview environment is similar to what we had so far, only
+with a change of conditional.
+
+```yaml title=".github/workflows/ci.yml" linenums="87"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:87:97"
+```
+
+Notice how powerful it can be to customize the conditional of the job. Consider
+the value to be an string. Passing multi-line string to a YAML can be achieved
+with `|` (pipe characters)[^yaml-multiline-string].
+
+We will also require the same permission and environment variables as before.
+
+```yaml title=".github/workflows/ci.yml" linenums="98"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:98:101"
+```
+
+### Remove the Preview Stack from the Cluster
+
+The removal of the [Kustomization] stack is a simple `kubectl` command.
+
+```yaml title=".github/workflows/ci.yml" linenums="102"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:102:104"
+```
+
+### Remove the Comment from the Pull Request
+
+The last step of the teardown is to remove the comment from the pull request.
+The rationale is that the URL of a destroyed stack is not valid and should not
+be present to misled our team.
+
+```yaml title=".github/workflows/ci.yml" linenums="105"
+-8<- "docs/codes/2024/0017/workflow/ci.yml:105"
+```
+
+The `title` of the comment ensures the uniqueness of the comment and should be
+provided. This allows the removal of such comment by searching for that exact
+text.
+
+???+ example "Full CI Definition"
+
+    The full CI definition is as follows:
+
+    ```yaml title=".github/workflows/ci.yml"
+    -8<- "docs/codes/2024/0017/workflow/ci.yml"
+    ```
+
+## Considerations
+
+We have discussed one of the common pattern of working in a team environment
+and collaborating on the codebase, while increasing the efficiency of the
+processes and reducing the frictions by employing the powers of the modern
+technologies and tools.
+
+At this point, we should highlight some of the considerations so that you can
+have a better understanding of what it actually takes to set this up for
+yourself and your team.
+
+### How Much Shared is Shared?
+
+We have mentioned earlier that it is better to re-use the same resources and
+dependencies as you have in your dev environment. But how much shared should it
+be? Would you give your backend application all the access to the dev database
+and caching system? Or do you separate them into different databases?
+
+The answer to this question is the undesired and ever so common *it depends*.
+We cannot provide you a general and universal recipe for what may or may not
+work.
+
+The goal of this article has been to provide you with a starting point,
+accompanied with a practical example to solidify the concept.
+
+However, the devil is in the details. When trying to adopt this pattern, you
+ought to consider the limitations and the constraints of your environment and
+decide accordingly.
+
+### Is GitOps Required for this?
+
+It is not.
+
+You are free to use any other deployment method that you or your team are
+comfortable with.
+
+The GitOps and the selected tool here, [FluxCD], is just one way of doing
+things. That just happens to be the preferred way of doing things by the
+author. :nerd:
+
+### RBAC, Yes or No?
+
+It is absolutely crucial to set up RBAC in your [Kubernetes] cluster to avoid
+unintended suprises and unauthorized access to your resources.
+
+Specifically, the CI runner should have the least amount of permissions to do
+its job.
+
+Go through the resources being created in such a job and make sure you do not
+give it more permissions than it actually needs.
+
+At any point in time when you realize that your CI needs more permissions, you
+will be able to grant it such, but not the other way around.
+
+### How Much Resource to Allocate?
+
+The preview environment is a live instance of the application. It will require
+nearly as much as what you are using in your dev environment.
+
+As such, and if you're running in a constrained environment, you should
+seriously consider using `LimitRange` and/or `ResourceQuota` to avoid
+overloading your cluster and causing resource contention.
+
+### How to Handle Secrets?
+
+There is no one-size-fits-all answer to this question.
+
+You may have picked one or a combination of tools to manage your secrets. As
+such, managing secrets for your preview environments should be a deliberate and
+informed decision on your part.
+
+### Do Not Forget About Monitoring and Alerting
+
+It is imperative to have monitoring and alerting set up for your preview
+environments just as you have for your dev and prod environments.
+
+Nothing is more frustrating than having a broken preview environment and not
+knowing about it until someone reports it.
+
+### What's with the Comment on the Pull Request?
+
+This is just a nice-to-have feature. It is not required for the setup to work.
+However, bear in mind that such a comment can be a good indicator that the
+preview environment is ready and can be accessed.
+
+It also notifies all the subscribers of the pull request. This is perfect if
+you want to maximize your throughput, tending to other tasks while waiting for
+the feedback on the pull request.
+
+### What are the Alternatives?
+
+This type of preview deployments might be cumbersome to setup & hard to
+maintain.
+
+If your organization is willing to spend money, there are paid solutions that
+take away the pain from your shoulders, e.g., PullPreview[^pullpreview].
+
+There are also other ways that employ [Terraform] and/or other
+[Infrastructure as Code] tools to achieve the same goal.
+
+The choice is yours to make. Just make sure it's an informed one.
+
+## Conclusion
+
+When working in a team environment, it is vital to have a fast feedback loop
+on the development process. This motivates the team members to see their
+changes faster and merge their code with confidence.
+
+The confidence that will result from the preview environments created to
+provide a visual and facilitate the testing of the proposed changes in the
+pull request in a live instance.
+
+There is no replacement for a solid engineering culture. The automated tests
+and a continuous integration of the codebase are the foundation of the modern
+day software development.
+
+The preview environments are just a tool to help the team members to enhance
+their collaboration, improve the efficiency of code reviews and shorten the
+merge queue.
+
+With faster feedback loops, even your customer is happier, seeing the features
+and bugfixes being deployed faster and with less regressions.
+
+This article should give you a good starting point to set up preview
+environments. Though this is only one of the many ways to achieve the same
+goal. Make sure you understand the pieces involved and the requirement to
+make it work in your environment.
+
+I hope you have enjoyed reading this article as much as I did writing it. For
+further questions and discussions, feel free to leave a comment or
+[join our Slack channel].
+
+Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
+
+[Kubernetes]: /category/kubernetes/
+[GitHub Actions]: /category/github-actions/
+[FluxCD]: /category/fluxcd/
+[cert-manager]: /category/cert-manager/
+[Kustomization]: /category/kustomization/
+[TLS]: /category/tls/
+[Docker]: /category/docker/
+[GitHub Container Registry]: /category/github-container-registry/
+[Kubernetes the Hard Way]: ./0003-kubernetes-the-hard-way.md
+[How to Install Lightweight Kubernetes on Ubuntu 22.04]: ./0005-install-k3s-on-ubuntu22.md
+[Setting up Azure Managed Kubernetes Cluster]: ./0009-external-secrets-aks-to-aws-ssm.md/#step-0-setting-up-azure-managed-kubernetes-cluster
+[cert-manager: All-in-One Kubernetes TLS Certificate Manager]: ./0010-cert-manager.md
+[join our Slack channel]: https://communityinviter.com/apps/developerfriendly/join-our-slack
+[Terraform]: /category/terraform/
+[Infrastructure as Code]: /category/infrastructure-as-code/
+
+[^echo-server-github]: https://github.com/developer-friendly/echo-server/
+[^gh-large-runners]: https://docs.github.com/en/actions/using-github-hosted-runners/about-larger-runners
+[^gh-self-hosted-runner]: https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
+[^comment-pr-marketplace]: https://github.com/marketplace/actions/comment-pr
+[^yaml-multiline-string]: https://yaml-multiline.info/
+[^pullpreview]: https://pullpreview.com/

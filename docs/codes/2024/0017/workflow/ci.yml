@@ -1,0 +1,111 @@
+name: ci
+
+concurrency:
+  cancel-in-progress: true
+  group: ci-${{ github.ref_name }}-${{ github.event_name }}
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+      - labeled
+      - unlabeled
+      - closed
+
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest
+    if: |
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.state == 'open' &&
+      contains(github.event.pull_request.labels.*.name, 'deploy-preview')
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE_REPOSITORY: ghcr.io/${{ github.repository }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+      - id: meta
+        name: Docker metadata
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_REPOSITORY }}
+      - id: build-push
+        name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          labels: ${{ steps.meta.outputs.labels }}
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ steps.meta.outputs.tags }}
+            ${{ env.IMAGE_REPOSITORY }}:${{ github.run_id }}
+
+  deploy-preview:
+    runs-on: self-hosted
+    needs: build-preview
+    env:
+      PR_NUMBER: pr${{ github.event.pull_request.number }}
+      IMAGE_TAG: ${{ github.run_id }}
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Prepare the manifest
+        run: |
+          cat << 'EOF' > manifest.yml
+            -8<- "docs/codes/2024/0017/kustomize/test.yml"
+          EOF
+      - name: Apply the stack
+        run: kubectl apply -f manifest.yml
+      - name: Comment PR
+        uses: meysam81/comment-pr@v1
+        with:
+          title: "# Preview Deployment"
+          content: >-
+            <https://${{ env.PR_NUMBER }}.test.developer-friendly.blog>
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  teardown-preview:
+    runs-on: self-hosted
+    if: |
+      (
+        github.event_name == 'pull_request' &&
+        github.event.action == 'closed'
+      ) || (
+        github.event_name == 'pull_request' &&
+        github.event.action == 'unlabeled' &&
+        ! contains(github.event.pull_request.labels.*.name, 'deploy-preview')
+      )
+    env:
+      PR_NUMBER: pr${{ github.event.pull_request.number }}
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Delete the stack
+        run: kubectl delete kustomization echo-server-${{ env.PR_NUMBER }} -n flux-system
+      - name: Comment PR
+        uses: meysam81/comment-pr@v1
+        with:
+          title: "# Preview Deployment"
+          content: ""
+          token: ${{ secrets.GITHUB_TOKEN }}
+          state: absent

@@ -1,0 +1,24 @@
+configMapGenerator:
+  - name: echo-server
+    envs:
+      - configs.env
+    behavior: merge
+
+images:
+  - name: ghcr.io/developer-friendly/echo-server
+    newTag: "9624879503"
+
+resources:
+  - ../../base
+
+patches:
+  - path: deployment.yml
+
+commonLabels:
+  app.kubernetes.io/name: echo-server
+  app.kubernetes.io/instance: echo-server
+  app.kubernetes.io/version: 1.0.0
+  app.kubernetes.io/component: echo-server
+  app.kubernetes.io/part-of: echo-server
+  app.kubernetes.io/managed-by: kustomize
+  env: dev

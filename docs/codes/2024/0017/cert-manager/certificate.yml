@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: developer-friendly-blog
+  namespace: cert-manager
+spec:
+  dnsNames:
+    - "*.test.developer-friendly.blog"
+  issuerRef:
+    kind: ClusterIssuer
+    name: cloudflare-issuer
+  secretName: developer-friendly-blog-tls

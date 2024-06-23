@@ -1,0 +1,20 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: echo-server-${{ env.PR_NUMBER }}
+  namespace: flux-system
+spec:
+  force: false
+  interval: 5m
+  nameSuffix: -${{ env.PR_NUMBER }}
+  path: ./echo-server/overlays/test
+  postBuild:
+    substitute:
+      IMAGE_TAG: "${{ env.IMAGE_TAG }}"
+      PR_NUMBER: ${{ env.PR_NUMBER }}
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  targetNamespace: default
+  wait: true

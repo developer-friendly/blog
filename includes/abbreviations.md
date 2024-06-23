@@ -27,3 +27,4 @@
 *[STS]: Security Token Service
 *[JWT]: JSON Web Token
 *[AD]: Active Directory
+*[RBAC]: Role-Based Access Control
