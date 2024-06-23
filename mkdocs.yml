@@ -286,7 +286,7 @@ markdown_extensions:
       custom_checkbox: true
 nav:
   - index.md
-  - Subscribe: https://developer-friendly.ck.page/
+  - Subscribe: https://mailing.developer-friendly.blog/
   - sponsors.md
   - terms.md
   - privacy.md
