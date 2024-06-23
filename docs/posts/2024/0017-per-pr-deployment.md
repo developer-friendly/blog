@@ -60,6 +60,8 @@ pull request using GitHub Actions and Kubernetes. This guide includes spinning
 up the application as a live instance with an internet accessible URL to
 preview and verify the changes before they find their way into the main trunk.
 
+<!-- more -->
+
 ## Introduction
 
 When working in a team environment, it's common to adopt the pull-request style
