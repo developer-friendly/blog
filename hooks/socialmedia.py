@@ -12,9 +12,7 @@ hackernews = "https://news.ycombinator.com/submitlink"
 include = re.compile(r"[1-9].*")
 
 
-def on_page_markdown(markdown, **kwargs):
-    page = kwargs["page"]
-    config = kwargs["config"]
+def on_page_markdown(markdown, page, config, files, **kwargs):
     if not include.match(page.url):
         return markdown
 
