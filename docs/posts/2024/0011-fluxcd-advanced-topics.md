@@ -79,6 +79,8 @@ following inside our Kubernetes cluster:
 
 If you're as pumped as I am, let's not waste any more second and dive right in!
 
+<!-- subscribe -->
+
 ## Pre-requisites
 
 Make sure you have the following setup ready before going forward:

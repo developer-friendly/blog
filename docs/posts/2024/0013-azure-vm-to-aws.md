@@ -75,6 +75,8 @@ discussing various implementations and integration guides when it comes to
 [OpenID Connect](/category/openid-connect/) should you choose to study this
 topic further.
 
+<!-- subscribe -->
+
 ## Why Should You Care?
 
 The main objective is simple and very practical. We want to grant an Azure VM

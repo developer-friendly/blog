@@ -59,6 +59,8 @@ and easy to manage.
       Tutorials. I wanted to add Cilium and Ansible to the mix, so I started
       my own journey. I hope you find this post helpful.
 
+<!-- subscribe -->
+
 ### Why should you care?
 
 That's where [k3s](https://k3s.io/) comes into play. k3s is a lightweight

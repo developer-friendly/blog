@@ -86,6 +86,8 @@ You should do your own research and decide for yourself whether or not what Ory
 Kratos provides fit your need; every problem's context is different and your
 technology stack may or may not be adaptable to Ory Kratos.
 
+<!-- subscribe -->
+
 ## Who is this for?
 
 The reality is, if you're reading this, you're likely an engineer of some sort.

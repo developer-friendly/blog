@@ -48,6 +48,8 @@ store secrets in a secure and encrypted location, e.g., AWS Parameter Store,
 and granting the External Secret Operator the permission to fetch (and if desired
 create/update secrets) in the backend.
 
+<!-- subscribe -->
+
 ## A Working Example
 
 First things first, let's spin up a Kubernetes cluster. I am using kind[^1] to

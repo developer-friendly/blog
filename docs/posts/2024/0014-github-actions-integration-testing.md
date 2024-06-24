@@ -68,6 +68,8 @@ Let's see how we can leverage this great technology in our advantage so that
 our typical flow is not interrupted and every push to the repository triggers
 and enforces the passing of our previously written tests.
 
+<!-- subscribe -->
+
 ## Objective
 
 As per our tradition in this blog post, we should set a clear goal of what we

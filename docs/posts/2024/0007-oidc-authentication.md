@@ -45,6 +45,8 @@ having to update every credential can be cumbersome when working at scale.
 
 That's where [OpenID Connect (OIDC)](/category/openid-connect/) comes in.
 
+<!-- subscribe -->
+
 ## What is OpenID Connect?
 
 Let's provide a formal definition first[^2]:

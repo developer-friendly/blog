@@ -49,6 +49,8 @@ one, this is your chance to really understand the inner workings of Kubernetes.
 Because those tools abstract a lot of the details away from you, which is not
 helping to understand the implementation details if you have a knack for it.
 
+<!-- subscribe -->
+
 ### Objective
 
 The whole point of this exercise is to build a Kubernetes cluster from scratch,

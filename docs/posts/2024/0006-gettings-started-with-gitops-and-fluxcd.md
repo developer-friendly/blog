@@ -34,6 +34,8 @@ In this guide, we will explore the fundamentals of GitOps and FluxCD. We will
 learn how to set up FluxCD in your Kubernetes cluster and automate your
 deployments.
 
+<!-- subscribe -->
+
 ## Prerequisites
 
 Before we start, you need to have the following prerequisites:

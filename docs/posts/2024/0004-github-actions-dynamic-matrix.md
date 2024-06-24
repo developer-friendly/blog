@@ -65,6 +65,8 @@ Now, let's create a GitHub Actions workflow file.
 The highlighted lines are the focus of this post. We will expand on this as
 we go along.
 
+<!-- subscribe -->
+
 ## Dynamic Matrix
 
 Now, the CI workflow above is great, and it works perfectly fine. Here's

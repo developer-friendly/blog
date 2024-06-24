@@ -54,6 +54,8 @@ That's why, the modified version will look like the following.
 Perfect! Now I have a VM machine in my Azure account that I can SSH into for
 further customization before creating the image.
 
+<!-- subscribe -->
+
 ## Customize the VM
 
 To keep things simple, let's just install a MongDB community edition on it and
