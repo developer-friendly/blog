@@ -70,10 +70,8 @@ extra:
         name: Ads Personalization
         property: !ENV [ADSENSE_PROPERTY, ""]
         checked: true
-      convertkit:
-        name: ConvertKit
-        property: !ENV [CONVERTKIT_PROPERTY, ""]
-        checked: true
+  convertkit:
+    property: !ENV [CONVERTKIT_PROPERTY, ""]
   status:
     new: Recently added
 extra_javascript:
@@ -83,6 +81,7 @@ extra_css:
 copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
 hooks:
   - hooks/socialmedia.py
+  - hooks/newsletter.py
 plugins:
   - typeset
   - minify:

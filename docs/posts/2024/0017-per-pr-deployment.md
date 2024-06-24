@@ -103,6 +103,8 @@ That is where the preview environments come into play. It allows you to see the
 live state of the application as proposed in the pull request, with all the
 bells and whistles, without having to set up the environment yourself.
 
+<!-- subscribe -->
+
 ## What is a Preview Environment?
 
 A preview environment is a live instance of the application that is spun up

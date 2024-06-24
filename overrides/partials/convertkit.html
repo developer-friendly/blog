@@ -1,7 +1,7 @@
-{% if config.extra.consent.cookies and config.extra.consent.cookies.convertkit %}
-  {% set kitProperty = config.extra.consent.cookies.convertkit.property | d("", true) %}
+{% if config.extra.convertkit %}
+  {% set kitProperty = config.extra.convertkit.property | d("", true) %}
 {% endif %}
 
 {% if kitProperty %}
-<script async data-uid="{{ kitProperty }}" src="https://developer-friendly.ck.page/{{ kitProperty }}/index.js"></script>
+<script async data-uid="{{ kitProperty }}" src="https://mailing.developer-friendly.blog/{{ kitProperty }}/index.js"></script>
 {% endif %}
