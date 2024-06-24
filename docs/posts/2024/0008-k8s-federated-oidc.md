@@ -83,6 +83,8 @@ worry about other security concerns such as secret rotations!
 
 With that intro out of the way, let's dive in!
 
+<!-- subscribe -->
+
 ## Prerequisites
 
 Make sure you have the following prerequisites in place before proceeding:

@@ -15,3 +15,5 @@ docs/codes/2024/0013/inventory.yml
 __pycache__
 
 internal/concrete
+
+.env

@@ -73,6 +73,8 @@ External Secrets Operator[^2] to
 pass secrets to the Kubernetes cluster without hard-coding them into the
 source code or manually creating the Kubernetes Secret resource.
 
+<!-- subscribe -->
+
 ## Roadmap
 
 Before we start, let's set a clear objective of what we want to achieve in

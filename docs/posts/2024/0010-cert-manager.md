@@ -161,6 +161,8 @@ Before we start, make sure you have the following set up:
         you're interested to learn more:
         *[External Secrets Operator: Fetching AWS SSM Parameters into Azure AKS][ESO]*
 
+<!-- subscribe -->
+
 ## Step 0: Installation
 
 cert-manager comes with a first-class support for Helm chart installation.

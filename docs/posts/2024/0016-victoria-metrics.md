@@ -80,6 +80,8 @@ Furthermore, it’s fully compatible with Prometheus[^seifeddinerajhi-medium],
 offering an effortless transition for those looking to migrate their current
 monitoring setup.
 
+<!-- subscribe -->
+
 ## Why Victoria Metrics?
 
 Victoria Metrics stands out because of multiple factors.
