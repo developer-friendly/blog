@@ -3,7 +3,7 @@ import re
 import os
 
 subscribe_comment = "<!-- subscribe -->"
-newsletter_script = '<script async data-uid="CONVERTKIT_PROPERTY" src="https://mailing.developer-friendly.blog/CONVERTKIT_PROPERTY/index.js"></script>'
+newsletter_script = '<script async data-uid="CONVERTKIT_PROPERTY" src="https://developer-friendly.ck.page/CONVERTKIT_PROPERTY/index.js"></script>'
 include = re.compile(r"[1-9].*")
 
 
