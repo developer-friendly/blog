@@ -209,7 +209,7 @@ jobs:
       pull-requests: write
     env:
       FALLBACK_MESSAGE: |
-        *No sponsors yet. Become the first sponsor!* 💝
+        No sponsors yet. Become the first sponsor! 💝
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -3,12 +3,13 @@
 ![GitHub repo size](https://img.shields.io/github/repo-size/developer-friendly/blog)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/developer-friendly/blog)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/developer-friendly/blog)
+[[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/developer-friendly/blog/main.svg)](https://results.pre-commit.ci/latest/github/developer-friendly/blog/main)](https://results.pre-commit.ci/repo/github/756681840)
 
 ## Sponsors
 
 These are our really cool sponsors! 💖
 
-<!-- sponsors -->*No sponsors yet. Become the first sponsor!* 💝<!-- sponsors -->
+<!-- sponsors -->No sponsors yet. Become the first sponsor! 💝<!-- sponsors -->
 
 ## Star History
 
