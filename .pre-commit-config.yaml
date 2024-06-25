@@ -15,6 +15,8 @@ repos:
         exclude: mkdocs.yml
       - id: detect-private-key
       - id: detect-aws-credentials
+        args:
+          - --allow-missing-credentials
       - id: end-of-file-fixer
         exclude: ads.txt
       - id: name-tests-test
