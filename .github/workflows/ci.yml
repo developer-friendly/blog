@@ -212,7 +212,7 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       github.repository == 'developer-friendly/blog' &&
-      github.ref == 'refs/heads/main'
+      github.ref == 'refs/heads/main' &&
       contains(fromJson('["schedule", "pull_request", "push"]'), github.event_name)
     permissions:
       contents: write
