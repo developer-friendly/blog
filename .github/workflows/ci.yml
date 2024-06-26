@@ -122,13 +122,19 @@ jobs:
         run: |
           pip install -U pip -r requirements.txt
           sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
-      - id: google-auth
-        uses: google-github-actions/auth@v2
-        with:
-          project_id: devfriend-blog-1708096231242
-          workload_identity_provider: projects/11873247243/locations/global/workloadIdentityPools/github/providers/github
-          service_account: github-actions@devfriend-blog-1708096231242.iam.gserviceaccount.com
-          create_credentials_file: "true"
+      # - id: google-auth
+      #   uses: google-github-actions/auth@v2
+      #   with:
+      #     project_id: devfriend-blog-1708096231242
+      #     workload_identity_provider: projects/11873247243/locations/global/workloadIdentityPools/github/providers/github
+      #     # service_account: github-actions@devfriend-blog-1708096231242.iam.gserviceaccount.com
+      #     create_credentials_file: "true"
+      - name: Set up google service account
+        run: |
+          cat << 'EOF' > /tmp/credentials.json
+          ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_FILE }}
+          EOF
+          echo GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json >> $GITHUB_ENV
       - env:
           GA_PROPERTY: ${{ vars.GA_PROPERTY }}
           GA4_PROPERTY: ${{ vars.GA4_PROPERTY }}
