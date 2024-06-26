@@ -13,6 +13,9 @@ on:
       - main
   schedule:
     - cron: "0 3 * * *" # Everyday, 10 WIB: building the site
+  workflow_run:
+    workflows: ["*"]
+    types: [requested, completed]
 permissions:
   contents: write
 
@@ -147,7 +150,9 @@ jobs:
           install_command: echo Skipping installing the dependencies
 
   lychee:
-    if: ${{ github.repository == 'developer-friendly/blog' }}
+    if: |
+      github.repository == 'developer-friendly/blog' &&
+      contains(fromJson('["schedule", "pull_request", "push"]'), github.event_name)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -159,7 +164,9 @@ jobs:
           fail: ${{ github.ref == 'refs/heads/main' }}
 
   trivy:
-    if: ${{ github.repository == 'developer-friendly/blog' }}
+    if: |
+      github.repository == 'developer-friendly/blog' &&
+      contains(fromJson('["schedule", "pull_request", "push"]'), github.event_name)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -179,7 +186,9 @@ jobs:
           trivy-config: trivy.yaml
 
   checkov:
-    if: ${{ github.repository == 'developer-friendly/blog' }}
+    if: |
+      github.repository == 'developer-friendly/blog' &&
+      contains(fromJson('["schedule", "pull_request", "push"]'), github.event_name)
     permissions:
       contents: read
       security-events: write
@@ -204,6 +213,7 @@ jobs:
     if: |
       github.repository == 'developer-friendly/blog' &&
       github.ref == 'refs/heads/main'
+      contains(fromJson('["schedule", "pull_request", "push"]'), github.event_name)
     permissions:
       contents: write
       pull-requests: write
@@ -250,3 +260,18 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr create --fill -H $(git branch --show-current)
+
+  cronitor:
+    if: |
+      github.repository == 'developer-friendly/blog' &&
+      github.event_name == 'workflow_run'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send execution details to the Cronitor for Github Actions agent
+        uses: cronitorio/monitor-github-actions@v7
+        with:
+          event: ${{ toJSON(github.event) }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          cronitor_key: ${{ secrets.CRONITOR_API_KEY }}
+          cronitor_group: actions
+          cronitor_notify: slack
