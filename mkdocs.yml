@@ -72,6 +72,8 @@ extra:
         checked: true
   convertkit:
     property: !ENV [CONVERTKIT_PROPERTY, ""]
+  ga4:
+    property: !ENV [GA4_PROPERTY, ""]
   status:
     new: Recently added
 extra_javascript:
@@ -82,6 +84,7 @@ copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a
 hooks:
   - hooks/socialmedia.py
   - hooks/newsletter.py
+  - hooks/totalviews.py
 plugins:
   - typeset
   - minify:
