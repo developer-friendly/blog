@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import re
 import os
 from functools import lru_cache
@@ -17,6 +18,9 @@ include = re.compile(r"[1-9].*")
 
 page_view = defaultdict(int)
 
+logger = logging.getLogger("mkdocs")
+logger.setLevel(logging.INFO)
+
 
 def on_page_markdown(markdown, page, config, files, **kwargs):
     if not os.getenv("GA4_PROPERTY"):
@@ -30,6 +34,7 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
 
     sample_run_report(os.environ["GA4_PROPERTY"])
 
+    logger.info(f"Total views for {page.url}: {page_view[f'/{page.url}']}")
     page.config.total_views = page_view[f"/{page.url}"]
 
     return markdown
