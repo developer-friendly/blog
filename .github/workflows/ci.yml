@@ -14,7 +14,7 @@ on:
   schedule:
     - cron: "0 3 * * *" # Everyday, 10 WIB: building the site
   workflow_run:
-    workflows: ["*"]
+    workflows: ["ci"]
     types: [requested, completed]
 permissions:
   contents: write
