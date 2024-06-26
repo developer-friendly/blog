@@ -141,13 +141,13 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          name: build-${{ github.ref_name }}
+          name: build-${{ github.ref_name }}-${{ github.run_id }}
           path: site
       - id: deployment
         name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: build-${{ github.ref_name }}
+          artifact_name: build-${{ github.ref_name }}-${{ github.run_id }}
       - if: ${{ github.repository == 'developer-friendly/blog' }}
         id: netlify
         name: Deploy to Netlify
