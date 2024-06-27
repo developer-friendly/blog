@@ -11,3 +11,8 @@ exclude = [
   "https://(www\\.)?linkedin.com/in/meysamazad",
   "https://newsletter.developer-friendly.blog/subscription/form",
 ]
+
+exclude_path = [
+  "overrides/blog-post.html",
+  "overrides/partial/post.html",
+]
