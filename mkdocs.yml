@@ -128,6 +128,7 @@ plugins:
       post_readtime: true
       blog_toc: true
       post_date_format: long
+      post_excerpt: required
       archive: false
       archive_pagination: true
       pagination: true
