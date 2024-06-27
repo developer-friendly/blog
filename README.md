@@ -1,11 +1,11 @@
 # Developer Friendly Blog
 
+[![Developer Friendly Blog](https://cronitor.io/badges/WLQGkJ/production/tWmlOMK91mMryxSCNy674dvZgTI.svg)](https://developer-friendly.cronitorstatus.com/)
+[![ci](https://cronitor.io/badges/Pf30fO/production/Rw6iQhb0A8NIcmujqE6dkK4e8GI.svg)](https://developer-friendly.cronitorstatus.com/)
 [![GitHub repo size](https://img.shields.io/github/repo-size/developer-friendly/blog)](https://github.com/developer-friendly/blog)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/developer-friendly/blog)](https://github.com/developer-friendly/blog/commits/main/)
 [![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/developer-friendly/blog)](https://github.com/developer-friendly/blog)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/developer-friendly/blog/main.svg)](https://results.pre-commit.ci/latest/github/developer-friendly/blog/main)
-[![Developer Friendly Blog](https://cronitor.io/badges/WLQGkJ/production/tWmlOMK91mMryxSCNy674dvZgTI.svg)](https://developer-friendly.cronitorstatus.com/)
-[![ci](https://cronitor.io/badges/Pf30fO/production/Rw6iQhb0A8NIcmujqE6dkK4e8GI.svg)](https://developer-friendly.cronitorstatus.com/)
 
 ## Sponsors
 
