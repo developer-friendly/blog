@@ -7,12 +7,11 @@ exclude = [
   "https://username.github.io/REPOSITORY",
   ".*internal/rss-to-email-py/templates/%7B%7B%20UnsubscribeURL%20%7D%7D$",
   ".*internal/rss-to-email-py/templates/%7B%7B%20\\.Tx\\.Data\\..*%20%7D%7D",
-  "https://paypal.me/meysamazad",
   "https://(www\\.)?linkedin.com/in/meysamazad",
   "https://newsletter.developer-friendly.blog/subscription/form",
+  ".*overrides/partials/%7B%7B%20author.avatar%20|%20url%20%7D%7D",
+  ".*overrides/partials/%7B%7B%20category.url%20|%20url%20%7D%7D",
+  ".*overrides/partials/%7B%7B%20post.url%20|%20url%20%7D%7D",
 ]
 
-exclude_path = [
-  "overrides/blog-post.html",
-  "overrides/partial/post.html",
-]
+accept = [429, 200]
