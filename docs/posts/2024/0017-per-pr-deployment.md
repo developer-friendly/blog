@@ -708,6 +708,8 @@ and/or other [Infrastructure as Code] tools to achieve the same goal.
 
 The choice is yours to make. Just make sure it's an informed one.
 
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdKhI0aZb9myabVzyPJcbQWU0kDuDSSHKLLJ95Zx0sLsRsTcw/viewform?embedded=true" width="600" height="750" frameborder="0" marginheight="0" marginwidth="0">Survey Loading…</iframe>
+
 ## Conclusion
 
 When working in a team environment, it is vital to have a fast feedback loop
