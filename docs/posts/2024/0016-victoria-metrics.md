@@ -497,7 +497,16 @@ infrastructure with [Victoria Metrics](/category/victoriametrics/). We covered
 some of the most typical ways you would normally monitor a production setup.
 This should give you a good idea on how to get started with Victoria Metrics.
 
-<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe5tIJBXmZO5vO_MYLbxl5nvGz6R6I1jf2nO1X54nJI18FCbg/viewform?embedded=true" width="600" height="750" frameborder="0" marginheight="0" marginwidth="0">Survey Loading…</iframe>
+<iframe
+  src="https://docs.google.com/forms/d/e/1FAIpQLSe5tIJBXmZO5vO_MYLbxl5nvGz6R6I1jf2nO1X54nJI18FCbg/viewform?embedded=true"
+  loading="lazy"
+  width="600"
+  height="750"
+  frameborder="0"
+  marginheight="0"
+  marginwidth="0"
+  >Survey Loading…</iframe
+>
 
 ## Conclusion
 
