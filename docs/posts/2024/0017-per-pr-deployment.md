@@ -710,12 +710,12 @@ The choice is yours to make. Just make sure it's an informed one.
 
 <iframe
   src="https://docs.google.com/forms/d/e/1FAIpQLSdKhI0aZb9myabVzyPJcbQWU0kDuDSSHKLLJ95Zx0sLsRsTcw/viewform?embedded=true"
-  loading="lazy"
-  width="600"
-  height="750"
+  width="640"
+  height="594"
   frameborder="0"
   marginheight="0"
   marginwidth="0"
+  loading="lazy"
   >Survey Loading…</iframe
 >
 
