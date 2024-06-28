@@ -719,7 +719,6 @@ The choice is yours to make. Just make sure it's an informed one.
   >Survey Loading…</iframe
 >
 
-
 ## Conclusion
 
 When working in a team environment, it is vital to have a fast feedback loop
