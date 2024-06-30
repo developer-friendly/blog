@@ -483,7 +483,7 @@ matches, a `403 Forbidden` will be returned.
 
 ```mermaid
 flowchart TB
-    alice([alice@example.com])
+    alice([alice@developer-friendly.blog])
     Users[/Users/]
 
     alice --> |Member of| AdminGroup["Admin Group"]
