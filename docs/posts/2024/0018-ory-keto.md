@@ -1,30 +1,39 @@
 ---
 date: 2024-07-01
 description: >-
-  How to authorize users and identities in modern-day applications. How to
-  protect upstream servers using Role-Based Access Control (RBAC) and ABAC.
+  Leveraging Ory Keto, Permission Handler and Policy Enforcer for Scalable and
+  Secure Access Control: A Developer's Guide to RBAC and ABAC.
 # social:
 #   cards_layout_options:
 #     description: >-
 categories:
+  - Keto
   - Authentication
   - Authorization
+  - Ory
+  - Identity Management
+  - Automation
+  - Best Practices
   - cert-manager
   - DevOps
   - Docker
   - External Secrets
   - FluxCD
+  - Gateway API
   - GitOps
   - Helm
   - IaC
+  - IAM
   - Infrastructure as Code
-  - Keto
+  - Jaeger
+  - Kratos
   - Kubernetes
   - Kustomization
   - Linux
   - Multi Tenancy
-  - Ory
+  - Oathkeeper
   - PostgreSQL
+  - RBAC
   - Security
   - Tutorial
   - User Management
@@ -59,11 +68,11 @@ has a lot to offer you. Stick around till the end to find out how.
 ## Introduction
 
 Today's software development is rarely just the software itself. We all get
-tangled up in all the other aspects of production-readiness and the ever so
+tangled up on all the other aspects of production-readiness and the ever so
 famous *checklist*.
 
-We find ourselves doing only %20 application development. The rest gets us all
-so busy with the never ending yak-shavings[^yak-shaving].
+We find ourselves doing application development only 20% of the time. The rest
+gets us all so busy with the never ending yak-shavings[^yak-shaving].
 
 Fortunately for us, [Ory] comes with a bundle of plug-and-play products to make
 our lives easier. We will have one less aspect to worry about when it comes to
@@ -79,8 +88,8 @@ your application scales.
 
 Ory Keto is a one-stop shop for all the authorization needs. With Keto, you can
 define policies, roles, and permissions for your application. These policies
-can be written in the Ory Permission Language(OPL)[^ory-perm-lang] in the form
-of either a programming language SDK, or a configuration file in JSON or YAML.
+can be written either using a programming language SDK in the Ory Permission
+Language(OPL)[^ory-perm-lang], or a configuration file in JSON or YAML[^keto-examples-json-access-policy].
 
 It has a friendly REST API[^keto-http-api] that you can use to query or modify
 the policies on the fly.
@@ -132,10 +141,14 @@ layer rather than solving it.
 All in all, [Ory] Keto is a great place to offload such a tedious task, and it
 comes with a lot of flexibility in the operational and admin layer.
 
-Everything that you would otherwise require a production release to reflect on
-production can be a switch or an API call in the production when managing the
-authorization of your platform at the operational level, using an authorization
-as a service tool such as Ory [keto].
+Without Keto, you'd end up waiting a long time for a change to the application
+code to reflect the new access control policy. With Keto, you can make the
+change in the operational layer and have it reflected in the production
+instantly.
+
+All that's require with Keto is an API call to the admin endpoint when managing
+the authorization of your platform at the operational level, using an
+authorization as a service tool such as Ory [Keto].
 
 !!! note "Disclaimer"
 
@@ -159,7 +172,7 @@ To make the matters more clear, we are gonna use an illustration below.
 
 Bear in mind that this diagram is loaning what we've built before with Ory
 [Kratos] and Ory [Oathkeeper] and you are more than welcome to give those a read
-as well.
+as well to have the full picture.
 
 - [Ory Oathkeeper: Identity and Access Proxy Server]
 - [Ory Kratos: Headless Authentication, Identity and User Management]
@@ -188,7 +201,7 @@ Here are the steps, simplified for better understanding:
    authenticated.
 3. If the request is not authenticated, the user will get a `401 Unauthorized`
    response, redirected to the login page, or another action based on
-   configuration.
+   the configuration.
 4. If the request is authenticated, the Oathkeeper will consult the [Keto] to
    see if the request is authorized.
 5. If the request is not authorized, the user will get a `403 Forbidden`
@@ -224,6 +237,8 @@ template engine would allow your downstream users more wiggle room, but the sad
 reality is that in my opinion, there's a lot of room for improvement in their
 Helm charts[^ory-helm-charts].
 
+As such, we are using [Kustomization] in the following stack:
+
 Here's the tree structure before getting into the code:
 
 ```plaintext title="" linenums="0"
@@ -238,8 +253,6 @@ Here's the tree structure before getting into the code:
 ├── service-read.yml
 └── service-write.yml
 ```
-
-As such, we are using [Kustomization] in the following stack:
 
 ```yaml title="keto/deployment.yml"
 -8<- "docs/codes/2024/0018/keto/deployment.yml"
@@ -261,7 +274,10 @@ The most important part of the [Keto] server configuration below, besides all
 the operational configurations and boilerplates, is the `namespace` definition.
 More on that in a bit.
 
-```yaml title="keto/keto-server-config.yml" hl_lines="7-11"
+Also note the `limit.max_read_depth` which allows for the use of RBAC in our
+system.
+
+```yaml title="keto/keto-server-config.yml" hl_lines="1-2 7-11"
 -8<- "docs/codes/2024/0018/keto/keto-server-config.yml"
 ```
 
@@ -292,6 +308,7 @@ check the connection to the server.
 
 ```bash title="" linenums="0"
 $ export KETO_READ_REMOTE=acl.developer-friendly.blog:443
+$ export KETO_WRITE_REMOTE=acl-admin.developer-friendly.blog:443
 
 $ keto status
 SERVING
@@ -310,7 +327,7 @@ the room :elephant:. The `namespace` in [Keto] is the most important concept
 you should be aware of to understand the model of the [authorization] Keto
 provides.
 
-It is this concept that allows you to create a multi-tenant system, where each
+It is this concept that allows you to create a [multi-tenant] system, where each
 tenant can have its own set of policies, roles, and permissions.
 
 It grants the ability to create hierarchical permission structures, RBAC, and
@@ -341,7 +358,7 @@ flowchart TB
     class Owner,Edit,Read permission;
 ```
 
-Let's explain some of the higlights of this diagram before putting it all into
+Let's explain some of the highlights of this diagram before putting it all into
 code.
 
 - [x] There are two groups of entities in our system, one identity in each.
@@ -358,7 +375,7 @@ permission model, yet it might be harder to maintain over the long run.
 
 Overall, it's not uncommon to see a combination of both models in a system.
 
-### What are my namespaces?
+### What Are My Namespaces?
 
 It's not unusual to get lost in what namespaces you have in your system.
 It can be a bit tricky to define the boundaries of a namespace.
@@ -366,7 +383,7 @@ It can be a bit tricky to define the boundaries of a namespace.
 However, there is one recipe that can help you understand and define those
 namespaces and it is this:
 
-Whenever there is a relationship between a subject or a subject group and
+Whenever there is a relationship between a subject/group and
 an object, there is a namespace.
 
 For example, in the diagram above, we have two namespaces: `roles` and
@@ -386,9 +403,10 @@ you are going to see:
 
 ```plaintext title="" linenums="0"
 ./permissions/
-├── auditbot.json
-├── members.json
-└── rbac.json
+├── admin-rbac.json
+├── auditbot-rbac.json
+├── editor-rbac.json
+└── members.json
 ```
 
 ### Role-Based Access Control (RBAC)
@@ -400,20 +418,14 @@ their members in the [Keto] server[^keto-create-relationship-api].
 -8<- "docs/codes/2024/0018/permissions/members.json"
 ```
 
-You can create these permissions in your own application code by issuing
-requests to the admin interface of these services ([Kratos] & [Keto]).
-
-For example, if a new user signs up to the application, you can decide whether
-or not to add them to a specific group, or grant them a certain permission.
-
-After this initial permission creation in the application code, [Ory] products
-will take care of the authentication and authorization for you, without any
-request ever reaching your application if it is not meant to.
-
 Now, let's grant permissions to our groups.
 
-```json title="permissions/rbac.json"
--8<- "docs/codes/2024/0018/permissions/rbac.json"
+```json title="permissions/admin-rbac.json"
+-8<- "docs/codes/2024/0018/permissions/admin-rbac.json"
+```
+
+```json title="permissions/editor-rbac.json"
+-8<- "docs/codes/2024/0018/permissions/editor-rbac.json"
 ```
 
 These permissions define the following relationships:
@@ -438,8 +450,8 @@ The idea is that our `AuditBot` should be able to view the users of the system.
 This will allow for auditing the system without having to have access to the
 user's data.
 
-```json title="permissions/auditbot.json"
--8<- "docs/codes/2024/0018/permissions/auditbot.json"
+```json title="permissions/auditbot-abac.json"
+-8<- "docs/codes/2024/0018/permissions/auditbot-abac.json"
 ```
 
 Here, we are not adding the audit bot to any group. Instead, we are granting
@@ -449,13 +461,29 @@ The reason why ABAC can be harder to maintain is that you have to keep track of
 all the identities and their permissions in the system. This can be a daunting
 task as the number of identities in a system grows.
 
+These permissions and relationships can be created via either HTTP request to
+the [Keto] server admin API (as you see below), or from inside your application
+code using the available SDKs[^keto-sdk-libraries].
+
+```bash title="" linenums="0"
+-8<- "docs/codes/2024/0018/rules/keto-relation-tuple-create.sh"
+```
+
+For example, if a new user signs up to the application, you can decide whether
+or not to add them to a specific group, or grant them a certain permission.
+
+After this initial permission creation, [Ory] products will take care of the
+authentication and authorization for you, without any request ever reaching
+your application if it is not meant to.
+
 ## Query the Permission Engine
 
 We have created our demo permissions and groups. Now, let's verify that the
 permissions are working as expected.
 
 We will combine the the three flagship products of [Ory] for an integrated auth
-solution in a bit, but let's query the [Keto] server directly for now.
+solution in a bit, but let's query the [Keto] server directly for now
+[^keto-permission-post-api].
 
 ```bash title="" linenums="0"
 -8<- "docs/codes/2024/0018/rules/verify-curl.sh"
@@ -471,8 +499,8 @@ Noticed the beauty? The query is asking for a write permission for an email
 address we never explicitly granted access.
 
 However, the Keto permission and policy engine will recurse through the groups
-until the maximum of predefined `max-depth` is reached. If no permission
-matches, a `403 Forbidden` will be returned[^keto-configuration].
+until the maximum of predefined `max-depth` is reached[^keto-configuration].
+If no permission matches, a `403 Forbidden` will be returned.
 
 In the same HTTP query, you can specify `max-depth` as query parameter, however
 the hard limit of that number is still the configured global
@@ -534,8 +562,8 @@ address.
     ```
 
 The placeholder in the authorizer rule is benefiting from the Go template
-language as specified in the official documentation[^keto-session-template] &
-Official Go `net/url` package[^go-net-url-docs].
+language as specified in the official Ory documentation[^keto-session-template]
+& the Official Go `net/url` package[^go-net-url-docs].
 
 ### Matching Strategy (Oathkeeper)
 
@@ -585,6 +613,19 @@ Beware that the value of the `upstream.url` consists of the Kubernetes Service
 name in the format of `http://<service-name>.<namespace>.svc.cluster.local`.
 The last three are optional!
 
+This echo-server is a Rust :crab: application written by us. Take a look at
+[our previous article for its deployment definition][echo-server-deployment].
+
+## Jaeger
+
+If you configure the tracing of [Ory] products, you will have a view in your
+Jaeger dashboard similar to what you see below.
+
+<figure markdown="span">
+  ![Jaeger Dashboard](/static/img/2024/0018/ory-oathkeeper-kratos-keto-jaeger.webp "Click to zoom in"){ align=left loading=lazy }
+  <figcaption>Jaeger Dashboard</figcaption>
+</figure>
+
 ## Conclusion
 
 In this blog post, we've configured our [Keto] server to handle the
@@ -608,10 +649,10 @@ development*" is nothing but a load of baloney. :shit:
 
 I would recommend everyone in the industry to at least give [Ory] products a
 fair shot before trying to do a sloppy work at reinventing the wheel and
-shooting yourself in the foot. :gun:
+shooting themselves in the foot. :gun:
 
 You may be surprised how comprehensive their suite of products are and how they
-can help you build your app faster and worry about non-sensical aspects less.
+can help you build your app faster and worry about nonsensical aspects less.
 
 I hope you have enjoyed this article as well as I did writing it.
 
@@ -626,12 +667,15 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [Oathkeeper]: /category/oathkeeper/
 [Kustomization]: /category/kustomization/
 [Kubernetes]: /category/kubernetes/
+[multi-tenant]: /category/multi-tenancy/
 [Ory Oathkeeper: Identity and Access Proxy Server]: ./0015-ory-oathkeeper.md
 [Ory Kratos: Headless Authentication, Identity and User Management]: ./0012-ory-kratos.md
-[oathkeeper-blog-config]: ./0015-ory-oathkeeper.md#oathkeeper-server-configuration
+[oathkeeper-blog-config]: ./0015-ory-oathkeeper.md/#oathkeeper-server-configuration
+[echo-server-deployment]: ./0017-per-pr-deployment.md/#base-kustomization-for-the-application
 
 [^yak-shaving]: https://seths.blog/2005/03/dont_shave_that/
 [^ory-perm-lang]: https://www.ory.sh/docs/keto/#ory-permission-language
+[^keto-examples-json-access-policy]: https://github.com/ory/examples/blob/a085b65d21d6d31c1cb728a6b8b28f281f074066/kratos-keto-oathkeeper-k8s/keto/keto-job/config/relation-tuples/admin-access.json
 [^keto-http-api]: https://www.ory.sh/docs/keto/reference/rest-api
 [^casbin]: https://casbin.org/
 [^opa]: https://www.openpolicyagent.org/
@@ -644,6 +688,8 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [^ory-helm-charts]: https://artifacthub.io/packages/search?repo=ory&sort=relevance&page=1
 [^keto-cli-installation]: https://www.ory.sh/docs/keto/install
 [^keto-create-relationship-api]: https://www.ory.sh/docs/keto/reference/rest-api#tag/relationship/operation/createRelationship
+[^keto-sdk-libraries]: https://www.ory.sh/docs/keto/sdk/overview
+[^keto-permission-post-api]: https://www.ory.sh/docs/keto/reference/rest-api#tag/permission/operation/postCheckPermissionOrError
 [^kratos-list-identities-api]: https://www.ory.sh/docs/kratos/reference/api#tag/identity/operation/listIdentities
 [^keto-configuration]: https://www.ory.sh/docs/keto/reference/configuration
 [^keto-check-cli]: https://www.ory.sh/docs/keto/cli/keto-check

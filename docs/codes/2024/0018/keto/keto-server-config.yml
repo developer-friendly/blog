@@ -16,32 +16,8 @@ serve:
   opl:
     host: 0.0.0.0
   read:
-    cors:
-      allow_credentials: true
-      allowed_methods:
-        - GET
-        - POST
-        - PUT
-        - PATCH
-        - DELETE
-        - HEAD
-      allowed_origins:
-        - https://*.developer-friendly.blog
-      enabled: true
     host: 0.0.0.0
   write:
-    cors:
-      allow_credentials: true
-      allowed_methods:
-        - GET
-        - POST
-        - PUT
-        - PATCH
-        - DELETE
-        - HEAD
-      allowed_origins:
-        - https://*.developer-friendly.blog
-      enabled: true
     host: 0.0.0.0
 tracing:
   provider: jaeger
