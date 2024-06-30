@@ -1,0 +1,33 @@
+apiVersion: oathkeeper.ory.sh/v1alpha1
+kind: Rule
+metadata:
+  name: echo-server-write
+spec:
+  authenticators:
+    - handler: cookie_session
+  authorizer:
+    config:
+      remote: http://keto-read.auth/relation-tuples/check
+      payload: |
+        {
+          "namespace": "endpoints",
+          "object": "users",
+          "relation": "write",
+          "subject_id": "{{ print .Extra.email }}"
+        }
+    handler: remote_json
+  errors:
+    - handler: json
+  match:
+    methods:
+      - POST
+      - PUT
+      - DELETE
+      - PATCH
+      - GET
+    url: https://echo.developer-friendly.blog/api/v1/users<.*>
+  mutators:
+    - handler: header
+  upstream:
+    preserveHost: true
+    url: http://echo-server.default

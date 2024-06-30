@@ -3,6 +3,6 @@
     "namespace": "endpoints",
     "object": "users",
     "relation": "read",
-    "subject_id": "auditbot_uuid_placeholder"
+    "subject_id": "auditbot@developer-friendly.blog"
   }
 ]

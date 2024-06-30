@@ -3,12 +3,12 @@
     "namespace": "roles",
     "object": "admin",
     "relation": "member",
-    "subject_id": "alice_uuid_placeholder"
+    "subject_id": "alice@developer-friendly.blog"
   },
   {
     "namespace": "roles",
     "object": "editor",
     "relation": "member",
-    "subject_id": "bob_uuid_placeholder"
+    "subject_id": "bob@developer-friendly.blog"
   }
 ]

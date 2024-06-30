@@ -400,19 +400,6 @@ their members in the [Keto] server[^keto-create-relationship-api].
 -8<- "docs/codes/2024/0018/permissions/members.json"
 ```
 
-The UUID placeholders in the above file are not known to us yet. Those are the
-IDs that our Identity Provider will persist the identity with in its own
-datastore. Since those IDs will be unique for all the identities in the system,
-it's safe to assume that we have narrowed down the permission set to the exact
-identity.
-
-For example, to query the Identity ID from Ory [Kratos], you can issue the
-following HTTP request to its admin API[^kratos-list-identities-api].
-
-```plaintext title="" linenums="0"
-GET /admin/identities
-```
-
 You can create these permissions in your own application code by issuing
 requests to the admin interface of these services ([Kratos] & [Keto]).
 
@@ -462,10 +449,48 @@ The reason why ABAC can be harder to maintain is that you have to keep track of
 all the identities and their permissions in the system. This can be a daunting
 task as the number of identities in a system grows.
 
-## Verify the Permissions and Access Control
+## Query the Permission Engine
 
 We have created our demo permissions and groups. Now, let's verify that the
 permissions are working as expected.
+
+We will combine the Oathkeeper and the Keto for an integrated auth solution
+in a bit, but let's query the Keto server directly for now.
+
+```bash title="" linenums="0"
+curl -X POST \
+  https://acl.developer-friendly.blog/relation-tuples/check \
+  -Hcontent-type:application/json \
+  -d'{"namespace":"endpoints",
+      "object":"users",
+      "relation":"write",
+      "subject_id":"alice@developer-friendly.blog"}' \
+  -D -
+```
+
+The result of this query will be a `200 OK` with the following response:
+
+```json title="" linenums="0"
+{"allowed":true}
+```
+
+Noticed the beauty? The query is asking for specific write permission for the
+email address, yet we did not have any explicit permission for that email.
+
+However, the Keto permission and policy engine will recurse through the groups
+until the maximum of predefined `max-depth` is reached. If no permission
+matches, a `403 Forbidden` will be returned.
+
+```mermaid
+flowchart TB
+    alice([alice@example.com])
+    Users[/Users/]
+
+    alice --> |Member of| AdminGroup["Admin Group"]
+    AdminGroup --> |Write permission| Users
+```
+
+## Verify the Permissions and Access Control
 
 As before, we're heavily relying on our previously built stack on the [Ory]
 series. If you need a refresher, give them a look before proceeding.

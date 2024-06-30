@@ -1,5 +1,5 @@
 limit:
-  max_read_depth: 1
+  max_read_depth: 3
 log:
   format: json
   leak_sensitive_values: true
