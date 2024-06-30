@@ -61,6 +61,10 @@
           </li>
         {% endif %}
 
+        <!-- Pin marker -->
+        {% if post.config.pin %}
+          <span class="md-pin"></span>
+        {% endif %}
       </ul>
 
       <!-- Draft marker -->
@@ -83,6 +87,11 @@
           {{ lang.t("blog.continue") }}
         </a>
       </nav>
+    {% endif %}
+
+    <!-- Pin separator -->
+    {% if post.config.pin %}
+      <hr />
     {% endif %}
   </div>
 </article>
