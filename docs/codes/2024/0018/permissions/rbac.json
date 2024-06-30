@@ -1,0 +1,32 @@
+[
+  {
+    "namespace": "endpoints",
+    "object": "posts",
+    "relation": "write",
+    "subject_set": {
+      "namespace": "roles",
+      "object": "editor",
+      "relation": "member"
+    }
+  },
+  {
+    "namespace": "endpoints",
+    "object": "posts",
+    "relation": "write",
+    "subject_set": {
+      "namespace": "roles",
+      "object": "admin",
+      "relation": "member"
+    }
+  },
+  {
+    "namespace": "endpoints",
+    "object": "users",
+    "relation": "write",
+    "subject_set": {
+      "namespace": "roles",
+      "object": "admin",
+      "relation": "member"
+    }
+  }
+]

@@ -1,0 +1,8 @@
+[
+  {
+    "namespace": "endpoints",
+    "object": "users",
+    "relation": "read",
+    "subject_id": "auditbot_uuid_placeholder"
+  }
+]

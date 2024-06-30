@@ -1,0 +1,54 @@
+limit:
+  max_read_depth: 1
+log:
+  format: json
+  leak_sensitive_values: true
+  level: info
+namespaces:
+  - id: 0
+    name: roles
+  - id: 1
+    name: endpoints
+profiling: cpu
+serve:
+  metrics:
+    host: 0.0.0.0
+  opl:
+    host: 0.0.0.0
+  read:
+    cors:
+      allow_credentials: true
+      allowed_methods:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+        - HEAD
+      allowed_origins:
+        - https://*.developer-friendly.blog
+      enabled: true
+    host: 0.0.0.0
+  write:
+    cors:
+      allow_credentials: true
+      allowed_methods:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+        - HEAD
+      allowed_origins:
+        - https://*.developer-friendly.blog
+      enabled: true
+    host: 0.0.0.0
+tracing:
+  provider: jaeger
+  providers:
+    jaeger:
+      local_agent_address: jaeger.monitoring:6831
+      sampling:
+        server_url: http://jaeger.monitoring:5778/sampling
+        trace_id_ratio: 1
+  service_name: keto

@@ -28,3 +28,5 @@
 *[JWT]: JSON Web Token
 *[AD]: Active Directory
 *[RBAC]: Role-Based Access Control
+*[ABAC]: Attribute-Based Access Control
+*[OPA]: Open Policy Agent

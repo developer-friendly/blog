@@ -1,0 +1,14 @@
+[
+  {
+    "namespace": "roles",
+    "object": "admin",
+    "relation": "member",
+    "subject_id": "alice_uuid_placeholder"
+  },
+  {
+    "namespace": "roles",
+    "object": "editor",
+    "relation": "member",
+    "subject_id": "bob_uuid_placeholder"
+  }
+]

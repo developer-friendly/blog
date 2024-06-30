@@ -1,0 +1,15 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: keto
+  namespace: flux-system
+spec:
+  force: false
+  interval: 5m
+  path: ./keto
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  targetNamespace: auth
+  wait: true
