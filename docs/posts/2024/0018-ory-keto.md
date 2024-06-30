@@ -690,7 +690,6 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [^keto-create-relationship-api]: https://www.ory.sh/docs/keto/reference/rest-api#tag/relationship/operation/createRelationship
 [^keto-sdk-libraries]: https://www.ory.sh/docs/keto/sdk/overview
 [^keto-permission-post-api]: https://www.ory.sh/docs/keto/reference/rest-api#tag/permission/operation/postCheckPermissionOrError
-[^kratos-list-identities-api]: https://www.ory.sh/docs/kratos/reference/api#tag/identity/operation/listIdentities
 [^keto-configuration]: https://www.ory.sh/docs/keto/reference/configuration
 [^keto-check-cli]: https://www.ory.sh/docs/keto/cli/keto-check
 [^maester-repo]: https://github.com/ory/oathkeeper-maester/
