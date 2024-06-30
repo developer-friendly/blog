@@ -1,19 +1,26 @@
 apiVersion: oathkeeper.ory.sh/v1alpha1
 kind: Rule
 metadata:
-  name: echo-server-write
+  name: echo-server
 spec:
   authenticators:
     - handler: cookie_session
+      config:
+        check_session_url: http://kratos-public.auth/sessions/whoami
+        extra_from: "@this"
+        force_method: GET
+        only:
+          - ory_kratos_session
+        subject_from: identity.id
   authorizer:
     config:
       remote: http://keto-read.auth/relation-tuples/check
       payload: |
         {
           "namespace": "endpoints",
-          "object": "users",
-          "relation": "write",
-          "subject_id": "{{ print .Extra.email }}"
+          "object": "{{ print .MatchContext.URL.EscapedPath }}",
+          "relation": "{{ print .MatchContext.Method }}",
+          "subject_id": "{{ print .Extra.identity.traits.email }}"
         }
     handler: remote_json
   errors:
@@ -28,6 +35,10 @@ spec:
     url: https://echo.developer-friendly.blog/api/v1/users<.*>
   mutators:
     - handler: header
+      config:
+        headers:
+          x-user-id: "{{ print .Subject }}"
+          x-user-email: "{{ print .Extra.identity.traits.email }}"
   upstream:
     preserveHost: true
     url: http://echo-server.default

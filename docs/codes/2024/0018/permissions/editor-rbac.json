@@ -1,0 +1,22 @@
+[
+  {
+    "namespace": "endpoints",
+    "object": "/api/v1/posts",
+    "relation": "POST",
+    "subject_set": {
+      "namespace": "roles",
+      "object": "editor",
+      "relation": "member"
+    }
+  },
+  {
+    "namespace": "endpoints",
+    "object": "/api/v1/posts",
+    "relation": "GET",
+    "subject_set": {
+      "namespace": "roles",
+      "object": "editor",
+      "relation": "member"
+    }
+  }
+]

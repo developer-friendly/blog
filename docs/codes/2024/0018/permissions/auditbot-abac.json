@@ -1,8 +1,8 @@
 [
   {
     "namespace": "endpoints",
-    "object": "users",
-    "relation": "read",
+    "object": "/api/v1/users",
+    "relation": "GET",
     "subject_id": "auditbot@developer-friendly.blog"
   }
 ]

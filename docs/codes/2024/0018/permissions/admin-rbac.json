@@ -1,28 +1,8 @@
 [
   {
     "namespace": "endpoints",
-    "object": "posts",
-    "relation": "write",
-    "subject_set": {
-      "namespace": "roles",
-      "object": "editor",
-      "relation": "member"
-    }
-  },
-  {
-    "namespace": "endpoints",
-    "object": "posts",
-    "relation": "read",
-    "subject_set": {
-      "namespace": "roles",
-      "object": "editor",
-      "relation": "member"
-    }
-  },
-  {
-    "namespace": "endpoints",
-    "object": "posts",
-    "relation": "write",
+    "object": "/api/v1/posts",
+    "relation": "POST",
     "subject_set": {
       "namespace": "roles",
       "object": "admin",
@@ -31,8 +11,8 @@
   },
   {
     "namespace": "endpoints",
-    "object": "users",
-    "relation": "write",
+    "object": "/api/v1/posts",
+    "relation": "GET",
     "subject_set": {
       "namespace": "roles",
       "object": "admin",
@@ -41,8 +21,18 @@
   },
   {
     "namespace": "endpoints",
-    "object": "users",
-    "relation": "read",
+    "object": "/api/v1/users",
+    "relation": "POST",
+    "subject_set": {
+      "namespace": "roles",
+      "object": "admin",
+      "relation": "member"
+    }
+  },
+  {
+    "namespace": "endpoints",
+    "object": "/api/v1/users",
+    "relation": "GET",
     "subject_set": {
       "namespace": "roles",
       "object": "admin",

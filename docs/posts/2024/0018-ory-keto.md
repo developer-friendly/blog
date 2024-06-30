@@ -454,18 +454,11 @@ task as the number of identities in a system grows.
 We have created our demo permissions and groups. Now, let's verify that the
 permissions are working as expected.
 
-We will combine the Oathkeeper and the Keto for an integrated auth solution
-in a bit, but let's query the Keto server directly for now.
+We will combine the the three flagship products of [Ory] for an integrated auth
+solution in a bit, but let's query the [Keto] server directly for now.
 
 ```bash title="" linenums="0"
-curl -X POST \
-  https://acl.developer-friendly.blog/relation-tuples/check \
-  -Hcontent-type:application/json \
-  -d'{"namespace":"endpoints",
-      "object":"users",
-      "relation":"write",
-      "subject_id":"alice@developer-friendly.blog"}' \
-  -D -
+-8<- "docs/codes/2024/0018/rules/verify-curl.sh"
 ```
 
 The result of this query will be a `200 OK` with the following response:
@@ -474,12 +467,16 @@ The result of this query will be a `200 OK` with the following response:
 {"allowed":true}
 ```
 
-Noticed the beauty? The query is asking for specific write permission for the
-email address, yet we did not have any explicit permission for that email.
+Noticed the beauty? The query is asking for a write permission for an email
+address we never explicitly granted access.
 
 However, the Keto permission and policy engine will recurse through the groups
 until the maximum of predefined `max-depth` is reached. If no permission
-matches, a `403 Forbidden` will be returned.
+matches, a `403 Forbidden` will be returned[^keto-configuration].
+
+In the same HTTP query, you can specify `max-depth` as query parameter, however
+the hard limit of that number is still the configured global
+value[^keto-check-cli].
 
 ```mermaid
 flowchart TB
@@ -495,15 +492,143 @@ flowchart TB
 As before, we're heavily relying on our previously built stack on the [Ory]
 series. If you need a refresher, give them a look before proceeding.
 
+Let's build the [Oathkeeper] rule as a [Kubernetes] CRD to consult the [Keto]
+server for the permissions.
+
+Applying the following CRD resources, the Oathkeeper Maester[^maester-repo]
+will inform the Oathkeeper server using the following process:
+
+1. Update the corresponding `ConfigMap` with the new rules.
+2. Upon that update, the mounted volume will trigger a reload in the Oathkeeper
+   server, resulting in the new rules being applied.
+
+```yaml title="rules/echo-server.yml"
+-8<- "docs/codes/2024/0018/rules/echo-server.yml"
+```
+
+Let's break down this rule for a better understanding.
+
+### Authenticator Handler (Kratos)
+
+We have discussed the authenticator handler in our
+[Kratos blog post][Ory Kratos: Headless Authentication, Identity and User Management].
+Briefly, the authenticator handler is responsible for checking whether or not
+the request is logged in.
+
+### Authorizer Handler (Keto)
+
+The authorizer config you see in this rule is exactly identical to the `curl`
+command we had earlier. The only difference being that with Kubernetes CRD, we
+are consulting the [Keto] server using the in-cluster Kubernetes Service
+address.
+
+=== "rules/echo-server.yml"
+
+    ```yaml title="" linenums="15"
+    -8<- "docs/codes/2024/0018/rules/echo-server.yml:15:25"
+    ```
+
+=== "Equivalent `curl`"
+    ```bash title="" linenums="0"
+    -8<- "docs/codes/2024/0018/rules/verify-curl.sh"
+    ```
+
+The placeholder in the authorizer rule is benefiting from the Go template
+language as specified in the official documentation[^keto-session-template] &
+Official Go `net/url` package[^go-net-url-docs].
+
+### Matching Strategy (Oathkeeper)
+
+The `match` clause makes sure to only apply this rule to the HTTP requests
+targeting this address:
+
+`https://echo.developer-friendly.blog/api/v1/users<.*>`
+
+Notice that the `<.*>` is a regex pattern that is only effective if
+`access_rules.matching_strategy: regexp`
+[in Oathkeeper configuration is set][oathkeeper-blog-config].
+
+For an HTTP request, this matching is quite comprehensive:
+
+```yaml title="rules/echo-server.yml" linenums="28"
+-8<- "docs/codes/2024/0018/rules/echo-server.yml:28:35"
+```
+
+### Mutator Handler (Oathkeeper)
+
+This is an optional field. You can decide to add `handler: noop` to avoid the
+rule touching the request.
+
+However, adding the subject ID or any other header to the request can be hugely
+benefitial to your upstream servers since they will have access to these
+information without paying the extra cost of a network roundtrip or a database
+query.
+
+```yaml title="rules/echo-server.yml" linenums="36"
+-8<- "docs/codes/2024/0018/rules/echo-server.yml:36:41"
+```
+
+### Upstream Handler (Oathkeeper)
+
+The last part of this equation is to forward the request to the upstream server.
+You can choose to keep the HTTP `Host` header or change it to the value
+specified in your Rule CRD.
+
+Since the value of the `Host` is almost always coming from the end-user, it is
+a good idea to keep it as is, unless you have a specific use-case to change it.
+
+```yaml title="rules/echo-server.yml" linenums="42"
+-8<- "docs/codes/2024/0018/rules/echo-server.yml:42:44"
+```
+
+Beware that the value of the `upstream.url` consists of the Kubernetes Service
+name in the format of `http://<service-name>.<namespace>.svc.cluster.local`.
+The last three are optional!
+
+## Conclusion
+
+In this blog post, we've configured our [Keto] server to handle the
+authorization of our application. With our previously deployed [Kratos] server
+and [Oathkeeper], we managed to protect our upstream service from all the
+unauthenticated and unauthorized requests.
+
+With the knowledge you have gathered here, you are well on your way to be able
+to build a secure, scalable, and maintainable application, while still being
+able to keep the operational aspect of your application outside the source
+code, hugely benefiting yourself, your team and the entire long-term success
+of your product.
+
+These days, I rarely try to build my own [authentication] and [authorization]
+into the application. There are many great tools out there that has truly
+passed the test of time and are battle-tested.
+
+Using either of these tools greatly simplifies your processes and I, for one,
+am one to believe that "*our auth need are very special and need in-house
+development*" is nothing but a load of baloney. :shit:
+
+I would recommend everyone in the industry to at least give [Ory] products a
+fair shot before trying to do a sloppy work at reinventing the wheel and
+shooting yourself in the foot. :gun:
+
+You may be surprised how comprehensive their suite of products are and how they
+can help you build your app faster and worry about non-sensical aspects less.
+
+I hope you have enjoyed this article as well as I did writing it.
+
+Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
+
 [Ory]: /category/ory/
 [Keto]: /category/keto/
 [authorization]: /category/authorization/
+[authentication]: /category/authentication/
 [Kratos]: /category/kratos/
 [Linux]: /category/linux/
 [Oathkeeper]: /category/oathkeeper/
 [Kustomization]: /category/kustomization/
+[Kubernetes]: /category/kubernetes/
 [Ory Oathkeeper: Identity and Access Proxy Server]: ./0015-ory-oathkeeper.md
 [Ory Kratos: Headless Authentication, Identity and User Management]: ./0012-ory-kratos.md
+[oathkeeper-blog-config]: ./0015-ory-oathkeeper.md#oathkeeper-server-configuration
 
 [^yak-shaving]: https://seths.blog/2005/03/dont_shave_that/
 [^ory-perm-lang]: https://www.ory.sh/docs/keto/#ory-permission-language
@@ -520,3 +645,8 @@ series. If you need a refresher, give them a look before proceeding.
 [^keto-cli-installation]: https://www.ory.sh/docs/keto/install
 [^keto-create-relationship-api]: https://www.ory.sh/docs/keto/reference/rest-api#tag/relationship/operation/createRelationship
 [^kratos-list-identities-api]: https://www.ory.sh/docs/kratos/reference/api#tag/identity/operation/listIdentities
+[^keto-configuration]: https://www.ory.sh/docs/keto/reference/configuration
+[^keto-check-cli]: https://www.ory.sh/docs/keto/cli/keto-check
+[^maester-repo]: https://github.com/ory/oathkeeper-maester/
+[^keto-session-template]: https://www.ory.sh/docs/oathkeeper/pipeline#session
+[^go-net-url-docs]: https://pkg.go.dev/net/url#URL.EscapedPath
