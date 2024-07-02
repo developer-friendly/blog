@@ -54,7 +54,7 @@
         {% endif %}
 
         <!-- Post total views: GA4 -->
-        {% if config.extra.ga4 and config.extra.ga4.property %}
+        {% if config.extra.ga4 and config.extra.ga4.property and post.config.total_views %}
           <li class="md-meta__item">
             {{ lang.t("blog.total_views") }}:
             {{ post.config.total_views }}
