@@ -35,7 +35,7 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
     sample_run_report(os.environ["GA4_PROPERTY"])
 
     logger.info(f"Total views for {page.url}: {page_view[f'/{page.url}']}")
-    page.config.total_views = page_view[f"/{page.url}"]
+    page.config.total_views = page_view[f"/{page.url}"] or "N/A"
 
     return markdown
 
