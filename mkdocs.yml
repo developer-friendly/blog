@@ -275,7 +275,7 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
   - pymdownx.snippets:
-      url_download: !ENV [URL_DOWNLOAD, false]
+      url_download: !ENV [URL_DOWNLOAD, true]
       auto_append:
         - includes/abbreviations.md
   - pymdownx.highlight
