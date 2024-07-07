@@ -288,7 +288,7 @@ markdown_extensions:
       custom_checkbox: true
 nav:
   - index.md
-  - Newsletter: https://mailing.developer-friendly.blog/
+  - newsletter.md
   - sponsors.md
   - Status: https://developer-friendly.cronitorstatus.com/
   - terms.md
