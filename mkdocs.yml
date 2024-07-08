@@ -85,6 +85,7 @@ hooks:
   - hooks/socialmedia.py
   # - hooks/newsletter.py
   - hooks/totalviews.py
+  - hooks/rss-feed-description.py
 plugins:
   - search:
       lang: en
