@@ -328,17 +328,6 @@ Cloud Firewall to protect my server.
 -8<- "docs/codes/2024/0005-install-k3s-ubuntu/opentofu/network.tf"
 ```
 
-<iframe
-  src="https://docs.google.com/forms/d/e/1FAIpQLScQ_EFekaOtHLRru46CmlcxpEKx7JpBFUkkE1ISpFQDOAU9UQ/viewform?embedded=true"
-  width="640"
-  height="1280"
-  frameborder="0"
-  marginheight="0"
-  marginwidth="0"
-  loading="lazy"
-  >Survey Loading…</iframe
->
-
 ## Bonus: Multi-Node Cluster
 
 When planning to go for production in this setup, you are advised to go for a
