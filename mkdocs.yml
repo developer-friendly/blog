@@ -62,9 +62,9 @@ extra:
     cookies:
       analytics: Google Analytics
       github: GitHub
-      logrocket:
-        name: Logrocket
-        property: !ENV [LOGROCKET_PROPERTY, ""]
+      clarity:
+        name: Session Recording
+        property: !ENV [CLARITY_PROPERTY, ""]
         checked: true
       personalization:
         name: Ads Personalization
