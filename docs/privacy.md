@@ -59,6 +59,15 @@ not access the Website.
   You can also opt out of a third-party vendor's use of cookies for
   personalized advertising by visiting
   [www.aboutads.info](https://www.aboutads.info/).
+- Microsoft Clarity: We partner with Microsoft Clarity and Microsoft
+  Advertising to capture how you use and interact with our website through
+  behavioral metrics, heatmaps, and session replay to improve and market our
+  products/services. Website usage data is captured using first and third-party
+  cookies and other tracking technologies to determine the popularity of
+  products/services and online activity. Additionally, we use this information
+  for site optimization, fraud/security purposes, and advertising. For more
+  information about how Microsoft collects and uses your data, visit the
+  [Microsoft Privacy Statement].
 
 ## Use of Information
 
@@ -92,3 +101,5 @@ any reason. We will alert you about any changes by updating the
 
 If you have any questions about this Privacy Policy, please contact us at
 <privacy@developer-friendly.blog>.
+
+[Microsoft Privacy Statement]: https://privacy.microsoft.com/privacystatement
