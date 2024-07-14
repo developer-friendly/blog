@@ -76,10 +76,6 @@ extra:
     property: !ENV [GA4_PROPERTY, ""]
   status:
     new: Recently added
-extra_javascript:
-  - static/js/announce.js
-extra_css:
-  - static/css/announce.css
 copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
 hooks:
   - hooks/socialmedia.py
