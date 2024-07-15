@@ -1,5 +1,6 @@
 ---
 date: 2024-07-15
+draft: true
 description: >-
   Learn how to optimize your monorepo workflow by building only the changed
   applications. Discover efficient strategies and best practices for selective builds.
