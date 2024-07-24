@@ -1,7 +1,0 @@
-{% if config.extra.convertkit %}
-  {% set kitProperty = config.extra.convertkit.property | d("", true) %}
-{% endif %}
-
-{% if kitProperty %}
-<script async src="https://f.convertkit.com/ckjs/ck.5.js"></script>
-{% endif %}
