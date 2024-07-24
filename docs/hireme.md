@@ -3,6 +3,7 @@ title: Hire Me
 description: >-
   Expert SRE & DevOps consultant. 7+ years in Kubernetes, cloud, CI/CD. Boost
   reliability & efficiency. AWS, Azure, Terraform pro. Remote-friendly freelancer.
+comments: false
 hide:
   - navigation
 ---
@@ -62,13 +63,13 @@ Ready to elevate your infrastructure to the next level? Let's discuss how my
 SRE expertise can drive your project's success. Together, we'll build a robust
 foundation for your digital future.
 
+> "*Hope is not a strategy.*" - Site Reliability Engineering: How Google Runs
+> Production Systems
+
 ---
 
-*"In the land of cloud infrastructure, reliability isn't just a goal—it's a
-promise I deliver on every day."*
-
-[Book a call][book-call]{ .md-button .md-button--primary }
-[Email][email-me]{ .md-button }
+[Book a call :material-video:][book-call]{ .md-button .md-button--primary }
+[Email :material-email:][email-me]{ .md-button }
 [LinkedIn :simple-linkedin:][linkedin]{ .md-button }
 [Twitter :simple-x:][twitter]{ .md-button }
 
