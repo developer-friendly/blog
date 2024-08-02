@@ -270,7 +270,7 @@ hash output. This may or may not be a compliance requirement for your
 orgniazation, yet it is good to know that it's already the case if the need
 arises.
 
-```shell
+```shell title=""
 find . -type f -exec sha256sum {} \; | \
   awk '{print $1}' | \
   sha256sum - | \
@@ -333,34 +333,28 @@ following steps.
 If you want to find out more about monorepo and how other players in the industry
 are using it, here are some resources to check out:
 
-1. **Google Monorepo Best Practices** - Google's approach to monorepos and selective builds.
-[Google's Approach to Monorepos](https://landing.google.com/sre/sre-book/chapters/monorepo/)
-
-2. **Microsoft DevOps Blog** - Insights into using Azure DevOps for monorepo management and selective builds.
+1. **Microsoft DevOps Blog** - Insights into using Azure DevOps for monorepo management and selective builds.
 [Microsoft DevOps Blog](https://devblogs.microsoft.com/devops/)
 
-3. **GitHub Blog** - Articles on monorepo strategies and build optimization.
+1. **GitHub Blog** - Articles on monorepo strategies and build optimization.
 [GitHub Blog](https://github.blog/)
 
-4. **LinkedIn Engineering Blog** - LinkedIn's practices for managing large codebases with monorepos.
+1. **LinkedIn Engineering Blog** - LinkedIn's practices for managing large codebases with monorepos.
 [LinkedIn Engineering Blog](https://engineering.linkedin.com/blog)
 
-5. **Facebook Engineering Blog** - Facebook's experiences with monorepos and incremental builds.
+1. **Facebook Engineering Blog** - Facebook's experiences with monorepos and incremental builds.
 [Facebook Engineering Blog](https://engineering.fb.com/)
 
-6. **Atlassian Developer Blog** - Insights into monorepo architecture and efficient build practices.
+1. **Atlassian Developer Blog** - Insights into monorepo architecture and efficient build practices.
 [Atlassian Developer Blog](https://developer.atlassian.com/blog/)
 
-7. **ThoughtWorks Insights** - Articles on continuous integration, deployment, and monorepo strategies.
+1. **ThoughtWorks Insights** - Articles on continuous integration, deployment, and monorepo strategies.
 [ThoughtWorks Insights](https://www.thoughtworks.com/insights)
 
-8. **Medium Articles** - Community-driven insights on monorepos and selective builds.
+1. **Medium Articles** - Community-driven insights on monorepos and selective builds.
 [Medium](https://medium.com/)
 
-9. **Stack Overflow** - Discussions and Q&A on monorepo best practices.
+1. **Stack Overflow** - Discussions and Q&A on monorepo best practices.
 [Stack Overflow](https://stackoverflow.com/)
-
-10. **YouTube - Monorepo Talks and Conferences** - Videos and talks from conferences like Google I/O, GitHub Universe, etc., discussing monorepo management.
-Example: [Google I/O - Monorepos: Please Do!](https://www.youtube.com/watch?v=7YmkEmttyVY)
 
 [^software-eating-world]: https://a16z.com/why-software-is-eating-the-world/
