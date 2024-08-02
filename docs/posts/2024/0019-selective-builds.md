@@ -1,9 +1,10 @@
 ---
-date: 2024-07-15
+date: 2024-08-05
 draft: true
 description: >-
   Learn how to optimize your monorepo workflow by building only the changed
-  applications. Discover efficient strategies and best practices for selective builds.
+  applications. Discover efficient strategies and best practices for selective
+  builds.
 categories:
   - Monorepo
   - CI/CD
@@ -26,7 +27,7 @@ categories:
   - Tutorial
   - Version Control
 # links:
-image: assets/images/social/2024/07/01/ory-keto-authorization-and-access-control-as-a-service.png
+image: assets/images/social/2024/08/05/monorepo-strategies-selective-builds-for-changed-applications.png
 ---
 
 # Monorepo Strategies: Selective Builds for Changed Applications
@@ -35,7 +36,7 @@ Monorepo is the practice of storing all your code in a single repository, which
 can be beneficial for code sharing, dependency management, and version control.
 
 However, there is no free lunch! As your codebase grows, managing builds become
-unavoidably complex and time-consuming. This time is billed on your
+unavoidably complex and time-consuming. This build time is billed on your
 organization and it can get quite costly.
 
 In this blog post, we'll explore the challenges of building only changed
@@ -69,16 +70,17 @@ management.
 ```mermaid
 flowchart LR
     subgraph Monorepo
-        Backend
-        Frontend
-        Mobile
+        Payment
+        Accounting
+        Auth
+        Inventory
     end
 ```
 
 It allows standardizing some of the organization-wide practices for packaging,
 building, dependency management, and deployment. It enables more accessible
-codebase where audits are done faster, dependencies can be upgraded simultaneously
-and the overall development experience is more streamlined.
+codebase where audits are done faster, dependencies can be upgraded
+simultaneously and the overall development experience is more streamlined.
 
 ### The Challenge of Building Only Changed Applications
 
@@ -139,8 +141,11 @@ changed.
 
 Structured poorly, this can lead to a lot of wasted time and resources, which
 could be better spent on more productive tasks. Imagine spending on a lambda
-function that runs for 10 minutes, but only 1 minute is spent on the actual
+function that runs for 10 minutes, but only 1 minute is used for the actual
 work!
+
+That's the main reason why optimizing the build process is crucial to benefit
+from the advantages of a monorepo structure, while minimizing the drawbacks.
 
 ### Why Full Rebuilds are Inefficient
 
@@ -155,7 +160,6 @@ Full rebuilds are inefficient for several reasons:
       reduce developer productivity and hinder collaboration between teams.
 - [x] **CI/CD Pipelines**: Full rebuilds can overload CI/CD pipelines and
       increase the risk of build failures and bottlenecks.
-
 
 ## Strategies for Building Only Changed Applications
 
@@ -187,13 +191,17 @@ builds only for the applications that have changed. By setting up automated
 pipelines that monitor changes in the repository, developers can ensure that
 only the necessary applications are rebuilt.
 
+This is the approach we will explore in this article, implementing an efficient
+CI/CD pipeline that will trigger the build for only the applications that have
+changed since the last build.
+
 ## Selective Builds in Practice
 
 We have done a lot of talking so far. Let's get hands-on a bit. :nerd:
 
 Imagine having a monorepo with the following code structure:
 
-```plaintext
+```plaintext title="" linenums="0"
 monorepo/
 ├── payment/
 ├── auth/
@@ -202,6 +210,123 @@ monorepo/
 ├── shipping/
 └── frontend/
 ```
+
+We need a way to findout about the changes in the repository in each
+application. As explained earlier, there are different ways to do this.
+
+To keep things simple, we will follow a naive approach by identifying the
+changes of an application by looking at the changes to the contents of the
+files within its directory.
+
+If we, somehow, figure out a way to map the current contents of the files down
+to a single unique string (i.e. a hash), we can compare future changes of any
+of the files within that directory to the earlier computed hash and determine
+if the application needs a rebuild.
+
+```mermaid
+flowchart LR
+    subgraph Monorepo
+      Payment
+      Accounting
+      Auth
+      Inventory
+    end
+    subgraph Hashes
+      abcd1234
+      efgh1234
+      ijkl1234
+      mnop1234
+    end
+    Payment --> abcd1234
+    Accounting --> efgh1234
+    Auth --> ijkl1234
+    Inventory --> mnop1234
+```
+
+With the hashes we collected in our first run, in any of the future pushes to
+the repository, running the same hash function should either:
+
+1. Generate the same hash output, meaning no changes were made to the files
+   within the application directory, :lock: or
+2. Generate a different hash output, meaning changes were made to the files
+   and we need a rebuild of that application to reflect the new state of the
+   app. :twisted_rightwards_arrows:
+
+### Hash Function for Selective Builds
+
+*What if there was a way we could map our directory's content to a hash?*
+
+That's the question we will cover in this section. It aims to calculate a
+single finite string that represents the current state of the files within a
+directory.
+
+This function has to have knowledge of the contents within each of the files in
+that directory because any future changes to those files should change the
+output of this hash function.
+
+Consequently, and completely irrelevant, the hash function is a one-way
+function, meaning we can't reverse-engineer the contents of the files from the
+hash output. This may or may not be a compliance requirement for your
+orgniazation, yet it is good to know that it's already the case if the need
+arises.
+
+```shell
+find . -type f -exec sha256sum {} \; | \
+  awk '{print $1}' | \
+  sha256sum - | \
+  awk '{print $1}'
+```
+
+There are 4 steps happening in this hash function. Let's break it down:
+
+:one:  We first find all the files in the current working directory using the
+`find` command. Directories are not needed as `sha256sum` works on files!
+For each of the found files, calculate the SHA256 hash of the file's content
+and print it to stdout. Here's the sample output:
+
+```plaintext title="" linenums="0"
+4cde77ce6b1585c84f26e517ce28ce1d6b0c2d0e509110444c5938447e6d5c2b  order/Dockerfile
+0923360dc7503b16d208f70bb3e5d27908c302312ea79b9d7105d360e84b868c  order/main.rs
+8f60efa0e14bd576a88514ad5235cc27ea6067bdf4381e07a857cffdf70bd213  auth/Dockerfile
+d4e0a53dc7f9d1604df94d33ab563935429f798c2a2f903323196c94818fb5e6  auth/main.py
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  payment/Dockerfile
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  payment/main.py
+b8b7a713ff573581ae3925660996343134b0d85d9cade2107db66178bd188ee0  inventory/Dockerfile
+fcccc7035d7f9459577ca137a6d8fc437aef8c4d4df173dd316aeed66d8a834c  inventory/main.go
+```
+
+:two: We will grab the first column of the entire output, giving us the hashes
+of all the files in a columnar format. This will be the output of this step:
+
+```plaintext title="" linenums="0"
+4cde77ce6b1585c84f26e517ce28ce1d6b0c2d0e509110444c5938447e6d5c2b
+0923360dc7503b16d208f70bb3e5d27908c302312ea79b9d7105d360e84b868c
+8f60efa0e14bd576a88514ad5235cc27ea6067bdf4381e07a857cffdf70bd213
+d4e0a53dc7f9d1604df94d33ab563935429f798c2a2f903323196c94818fb5e6
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+b8b7a713ff573581ae3925660996343134b0d85d9cade2107db66178bd188ee0
+fcccc7035d7f9459577ca137a6d8fc437aef8c4d4df173dd316aeed66d8a834c
+```
+
+:three: We grab all these textual outputs and run them through our SHA256 hash
+function one more time to get a single hash output. This will be the hash
+function of the entire directory we'll use later to compare the current state
+against any of the future changes. This will be the sample output:
+
+```plaintext title="" linenums="0"
+474a904ae9f57595d8545fbe69dc0d717ba37b77aec292e3726711548338f475  -
+```
+
+:four: As you see in the last step's output, there is a redundant `-` at the
+end. The `awk` at the last step removes that, leaving us with only the hash
+function output.
+
+:material-check-all: The output of the last step is our final value for getting
+a unique hash string for an entire directory of files. We'll use this in our
+following steps.
+
+## Conclusion
 
 ## Further Reading
 
@@ -237,8 +362,5 @@ are using it, here are some resources to check out:
 
 10. **YouTube - Monorepo Talks and Conferences** - Videos and talks from conferences like Google I/O, GitHub Universe, etc., discussing monorepo management.
 Example: [Google I/O - Monorepos: Please Do!](https://www.youtube.com/watch?v=7YmkEmttyVY)
-
-
-## Conclusion
 
 [^software-eating-world]: https://a16z.com/why-software-is-eating-the-world/
