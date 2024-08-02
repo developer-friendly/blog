@@ -23,6 +23,8 @@ categories:
   - GitOps
   - IaC
   - Infrastructure as Code
+  - Python
+  - Redis
   - Software Development
   - Tutorial
   - Version Control
@@ -295,36 +297,42 @@ b8b7a713ff573581ae3925660996343134b0d85d9cade2107db66178bd188ee0  inventory/Dock
 fcccc7035d7f9459577ca137a6d8fc437aef8c4d4df173dd316aeed66d8a834c  inventory/main.go
 ```
 
-:two: We will grab the first column of the entire output, giving us the hashes
-of all the files in a columnar format. This will be the output of this step:
-
-```plaintext title="" linenums="0"
-4cde77ce6b1585c84f26e517ce28ce1d6b0c2d0e509110444c5938447e6d5c2b
-0923360dc7503b16d208f70bb3e5d27908c302312ea79b9d7105d360e84b868c
-8f60efa0e14bd576a88514ad5235cc27ea6067bdf4381e07a857cffdf70bd213
-d4e0a53dc7f9d1604df94d33ab563935429f798c2a2f903323196c94818fb5e6
-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-b8b7a713ff573581ae3925660996343134b0d85d9cade2107db66178bd188ee0
-fcccc7035d7f9459577ca137a6d8fc437aef8c4d4df173dd316aeed66d8a834c
-```
-
-:three: We grab all these textual outputs and run them through our SHA256 hash
-function one more time to get a single hash output. This will be the hash
-function of the entire directory we'll use later to compare the current state
-against any of the future changes. This will be the sample output:
+:two: We grab all these textual outputs and run them through our SHA256 hash
+function to get a single hash output. This will be the hash function of the
+entire directory we'll use later to compare the current state against any of
+the future changes. This will be the sample output:
 
 ```plaintext title="" linenums="0"
 474a904ae9f57595d8545fbe69dc0d717ba37b77aec292e3726711548338f475  -
 ```
 
-:four: As you see in the last step's output, there is a redundant `-` at the
+:three: As you see in the last step's output, there is a redundant `-` at the
 end. The `awk` at the last step removes that, leaving us with only the hash
 function output.
 
 :material-check-all: The output of the last step is our final value for getting
 a unique hash string for an entire directory of files. We'll use this in our
 following steps.
+
+### Comparing Hashes for Selective Builds on Changes
+
+In our naive approach, we will consider an application to be changed if any of
+the files within it has changed their contents, e.g. addition, deletion, etc.
+
+To be able to determine the change, we need to store the "state" somewhere,
+that is, the hash function output of previous runs. That's how we'll later be
+able to compare the hashes and decide if a rebuild is needed.
+
+To make the process programmatic, we'll use [Python] to have more flexibility.
+
+Furthermore, for our datastore, among many available options, we'll pick
+[Redis] for its simpicity and ease of use. As for the Redis server, we'll use
+the free tier of Upstash[^upstash], a managed Redis service.
+
+!!! info "DISCLOSURE"
+
+    This post is **NOT** sponsored by Upstash. I'm just a happy user of their
+    services.
 
 ## Conclusion
 
@@ -357,4 +365,8 @@ are using it, here are some resources to check out:
 1. **Stack Overflow** - Discussions and Q&A on monorepo best practices.
 [Stack Overflow](https://stackoverflow.com/)
 
+[Python]: /category/python/
+[Redis]: /category/redis/
+
 [^software-eating-world]: https://a16z.com/why-software-is-eating-the-world/
+[^upstash]: https://console.upstash.com/redis
