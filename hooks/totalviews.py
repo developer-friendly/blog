@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
-import re
 import os
-from functools import lru_cache
+import re
 from collections import defaultdict
+from functools import lru_cache
 
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
 from google.analytics.data_v1beta.types import (

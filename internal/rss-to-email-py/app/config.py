@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from typing import Optional
 import warnings
+from typing import Optional
 
 import pydantic
 import pydantic_settings

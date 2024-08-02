@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from textwrap import dedent
-import urllib.parse
 import re
+import urllib.parse
+from textwrap import dedent
 
 x_intent = "https://twitter.com/intent/tweet"
 x_id = "@devfriendly_"

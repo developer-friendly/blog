@@ -6,7 +6,6 @@ import colorlog
 
 from .config import settings
 
-
 logger = logging.getLogger("rss-to-email-py")
 handler = logging.StreamHandler()
 handler.setFormatter(

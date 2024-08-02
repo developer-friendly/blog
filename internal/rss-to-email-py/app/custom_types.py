@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from typing import Optional
 from enum import Enum
-
+from typing import Optional
 
 import pydantic
 

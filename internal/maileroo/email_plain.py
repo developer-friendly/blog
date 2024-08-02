@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import httpx
-
-
 from config import settings
 from helpers import get_html
 

@@ -2,14 +2,13 @@
 
 import os
 import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
-from email.mime.base import MIMEBase
 from email import encoders
+from email.mime.base import MIMEBase
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 from config import settings
 from helpers import get_html
-
 
 SMTP_HOST = "smtp.maileroo.com"
 SMTP_PORT = 587

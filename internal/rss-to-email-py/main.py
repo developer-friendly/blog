@@ -1,24 +1,24 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
 import json
-from app.logger import logger
-from app.custom_types import Campaign, Cli
-from app.cli import parser
-from app.helpers import next_monday
-from app.config import settings
-from app.newsletter import (
-    update_campaign,
-    test_campaign,
-    prepare_html_for_newsletter,
-    create_campaign,
-    update_template,
-    list_subscribers,
-    list_lists,
-    list_campaigns,
-    change_campaign_status,
-)
+import os
 
+from app.cli import parser
+from app.config import settings
+from app.custom_types import Campaign, Cli
+from app.helpers import next_monday
+from app.logger import logger
+from app.newsletter import (
+    change_campaign_status,
+    create_campaign,
+    list_campaigns,
+    list_lists,
+    list_subscribers,
+    prepare_html_for_newsletter,
+    test_campaign,
+    update_campaign,
+    update_template,
+)
 
 if __name__ == "__main__":
     args = parser.parse_args()

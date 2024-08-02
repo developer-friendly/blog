@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from .custom_types import Cli, CampaignStatus
-
 import argparse
 
+from .custom_types import CampaignStatus, Cli
 
 parser = argparse.ArgumentParser()
 

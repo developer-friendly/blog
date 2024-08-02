@@ -329,7 +329,6 @@ We will now store the hash for all the directories of a given root path.
 -8<- "docs/codes/2024/0019/prepare-all-hashes.py"
 ```
 
-
 ### Comparing Hashes for Selective Builds on Changes
 
 In our naive approach, we will consider an application to be changed **if any

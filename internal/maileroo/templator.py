@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-import sys
-from jinja2 import Environment, FileSystemLoader
 import csv
+import sys
 from pathlib import Path
+
+from jinja2 import Environment, FileSystemLoader
 
 rootdir = Path(__file__).resolve().parent
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import os
 import hashlib
+import os
 import subprocess
 
 

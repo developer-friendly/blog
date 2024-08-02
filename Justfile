@@ -1,3 +1,6 @@
+check:
+  pre-commit run -a
+
 reqs:
   pip install -U pip -r requirements.txt
 

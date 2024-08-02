@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-import tempfile
-from templator import get_html
 import subprocess
+import tempfile
 from pathlib import Path
+
+from templator import get_html
 
 rootdir = Path(__file__).resolve().parent
 

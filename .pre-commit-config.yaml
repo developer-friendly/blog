@@ -57,5 +57,15 @@ repos:
     rev: v0.5.5
     hooks:
       - id: ruff
-        args: [ --fix ]
+        types_or:
+          - python
+          - pyi
+          - jupyter
+        args:
+          - --fix
+          - --select=I
       - id: ruff-format
+        types_or:
+          - python
+          - pyi
+          - jupyter

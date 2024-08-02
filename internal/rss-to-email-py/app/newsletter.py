@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
+import os
 from datetime import datetime
 from time import mktime
 
-
 import feedparser
 import httpx
-import os
 
+from .custom_types import Author, Campaign, FeedEntry
 from .logger import logger
-from .custom_types import Author, FeedEntry, Campaign
-
 
 url = "https://developer-friendly.blog/feed_rss_created.xml"
 base_url = "https://newsletter.developer-friendly.blog"
