@@ -314,19 +314,37 @@ function output.
 a unique hash string for an entire directory of files. We'll use this in our
 following steps.
 
+To make the process programmatic, we'll use [Python] to have more flexibility.
+
+```python title="main.py"
+-8<- "docs/codes/2024/0019/calculate-hash.py"
+```
+
+Notice that we need both [Python] and the `find` command installed on the host.
+That's something to consider for when you try to ship it to your CI/CD pipeline.
+
+We will now store the hash for all the directories of a given root path.
+
+```python title="main.py" hl_lines="2 14-25"
+-8<- "docs/codes/2024/0019/prepare-all-hashes.py"
+```
+
+
 ### Comparing Hashes for Selective Builds on Changes
 
-In our naive approach, we will consider an application to be changed if any of
-the files within it has changed their contents, e.g. addition, deletion, etc.
+In our naive approach, we will consider an application to be changed **if any
+of the files within it has changed their contents**, e.g. addition, deletion,
+etc.
 
 To be able to determine the change, we need to store the "state" somewhere,
 that is, the hash function output of previous runs. That's how we'll later be
 able to compare the hashes and decide if a rebuild is needed.
 
-To make the process programmatic, we'll use [Python] to have more flexibility.
 
 Furthermore, for our datastore, among many available options, we'll pick
-[Redis] for its simpicity and ease of use. As for the Redis server, we'll use
+[Redis] for its simpicity and ease of use.
+
+For the Redis server, we'll use
 the free tier of Upstash[^upstash], a managed Redis service.
 
 !!! info "DISCLOSURE"

@@ -8,7 +8,3 @@ def caclculate_directory_hash(directory) -> str:
         ["find", directory, "-type", "f", "-exec", "sha256sum", "{}", ";"],
     )
     return hashlib.sha256(output).hexdigest()
-
-
-if __name__ == "__main__":
-    print(caclculate_directory_hash("."))
