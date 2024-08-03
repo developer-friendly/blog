@@ -86,7 +86,7 @@ if __name__ == "__main__":
     match sys.argv[1]:
         case "mark":
             github_output(changed_apps)
-        case "save":
+        case "submit":
             write_changed_hashes(store, new_hashes, store_key)
         case default:
             raise ValueError(f"Unknown action: {sys.argv[1]}")
