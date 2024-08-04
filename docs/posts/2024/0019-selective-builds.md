@@ -439,6 +439,12 @@ Here's what each of the three jobs will look like in a sample monorepo:
 
 Notice a couple of important points in the workflow:
 
+- [x] There are two triggers for this CI/CD workflow; one for the pushes to
+      `main`, the default branch of the repository and understandably since
+      we want to tie our live state to the `HEAD` of the repository. The next
+      trigger is scheduled to run daily; this is present to avoid Upstash
+      removing your possibly unused Redis instance as part of their resource
+      management.
 - [x] This workflow will run the three jobs in sequential order, waiting for
       the completion of one before starting the other. However, the build of
       the applications will be in parallel, thanks to the dynamic matrix
