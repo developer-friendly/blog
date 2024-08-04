@@ -4,6 +4,16 @@
 
 {% if clarityProperty %}
 <script type="text/javascript">
+  document.addEventListener("DOMContentLoaded", function clarityConsentLoader() {
+    var consent = __md_get("__consent");
+    if (consent && consent.clarity) {
+      window.clarity("consent");
+      console.log("clarity consent");
+    } else {
+      console.log("clarity rejected");
+    }
+  });
+
   (function (c, l, a, r, i, t, y) {
     c[a] =
       c[a] ||
