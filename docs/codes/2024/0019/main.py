@@ -57,7 +57,7 @@ def github_output(changed_apps: list[str]):
     github_output_file = os.environ["GITHUB_OUTPUT"]
 
     with open(github_output_file, "a") as f:
-        f.write(f"apps={changed_apps}\n")
+        f.write(f"directory={changed_apps}\n")
         f.write(f"length={num_changed_apps}\n")
 
 
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         password=REDIS_PASSWORD,
         ssl=REDIS_SSL,
     )
-    store_key = "app_hashes"
+    store_key = "app-hashes"
 
     if len(sys.argv) > 2:
         app_root_path = sys.argv[2]
