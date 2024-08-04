@@ -3,6 +3,7 @@ description: >-
   SRE consultation booked! Prepare for expert insights on cloud, Kubernetes,
   GitOps, and DevOps. Optimize your infrastructure with our seasoned pro.
 comments: false
+template: booking-confirmed.html
 hide:
   - navigation
 ---
