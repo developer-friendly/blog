@@ -73,7 +73,7 @@ foundation for your digital future.
 [LinkedIn :simple-linkedin:][linkedin]{ .md-button }
 [Twitter :simple-x:][twitter]{ .md-button }
 
-[blog]: /
+[blog]: ./index.md
 [book-call]: https://calendly.com/meysam81
 [email-me]: mailto:meysam@developer-friendly.blog
 [linkedin]: https://linkedin.com/in/meysamazad
