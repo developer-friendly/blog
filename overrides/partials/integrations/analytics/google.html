@@ -9,6 +9,7 @@
   function __md_analytics() {
     window.dataLayer = window.dataLayer || []
     function gtag() { dataLayer.push(arguments) }
+    window.gtag = gtag
 
     /* Set up integration and send page view */
     gtag("js", new Date())
