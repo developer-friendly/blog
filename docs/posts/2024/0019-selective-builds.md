@@ -1,39 +1,49 @@
 ---
 date: 2024-08-05
-draft: true
 description: >-
-  Learn how to optimize your monorepo workflow by building only the changed
-  applications. Discover efficient strategies and best practices for selective
-  builds.
+  Optimize monorepo builds: Implement selective builds in CI/CD with GitHub
+  Actions. Reduce build times and improve productivity in large codebases.
 categories:
   - Monorepo
+  - Selective Builds
   - CI/CD
   - Automation
   - GitHub Actions
+  - DevOps
   - Best Practices
-  - Build Performance
+  - Build Optimization
   - Build Tools
+  - CI/CD Optimization
   - Codebase Management
   - Continuous Deployment
   - Continuous Integration
-  - DevOps
+  - Development Productivity
   - Docker
   - GitHub
   - GitHub Container Registry
   - GitOps
+  - Hash Functions
   - IaC
   - Infrastructure as Code
+  - JavaScript
+  - Parallel Builds
   - Python
   - Redis
+  - Resource Utilization
+  - Scalability
   - Software Development
+  - Software Development Workflow
   - Tutorial
+  - Upstash
   - Version Control
 links:
   - ./posts/2024/0004-github-actions-dynamic-matrix.md
-image: assets/images/social/2024/08/05/monorepo-strategies-selective-builds-for-changed-applications.png
+  - ./posts/2024/0006-gettings-started-with-gitops-and-fluxcd.md
+  - ./posts/2024/0014-github-actions-integration-testing.md
+image: assets/images/social/2024/08/05/supercharge-monorepo-cicd-unlock-selective-builds.png
 ---
 
-# Monorepo Strategies: Selective Builds for Changed Applications
+# Supercharge Monorepo CI/CD: Unlock Selective Builds
 
 Monorepo is the practice of storing all your code in a single repository, which
 can be beneficial for code sharing, dependency management, and version control.
@@ -57,8 +67,8 @@ is eating the world*[^software-eating-world], it's important to stay sharp and
 ahead of the game, not falling victom of our own success.
 
 Monorepo is one of the strategies to help manage the codebase of multiple
-applications, while keeping them in a single repository, squeezing every ounce
-of collaboration and teamwork out of your team.
+applications[^monorepo-wikipedia], while keeping them in a single repository, squeezing
+every ounce of collaboration and teamwork out of your team.
 
 It comes with its own benefit and challenges of course. Let's explore them in
 more detail.
@@ -68,7 +78,7 @@ more detail.
 A monorepo is a single repository that contains the source code for multiple
 projects or applications. This approach is commonly used by organizations to
 manage large codebases, share code between projects, and simplify dependency
-management.
+management[^monorepo-tools].
 
 ```mermaid
 flowchart LR
@@ -104,13 +114,14 @@ changed since the last build.
 
 ### Key Advantages of Using a Monorepo Structure
 
-Monorepo comes with a couple of very sexy and appealing advantages:
+Monorepo comes with a couple of very sexy and appealing
+advantages[^circleci-monorepo]:
 
 - [x] **Code Sharing**: Developers can easily share code between projects and
       applications, reducing duplication and improving consistency.
 - [x] **Dependency Management**: Dependencies can be managed at the repository
       level, ensuring that all applications use the same versions of libraries
-      and packages.
+      and packages[^awesome-monorepo].
 - [x] **Version Control**: Changes to multiple applications can be tracked and
       managed in a single repository, simplifying version control and code reviews.
 - [x] **Collaboration**: Teams can work together more effectively by sharing
@@ -118,7 +129,7 @@ Monorepo comes with a couple of very sexy and appealing advantages:
 - [x] **Consistency**: Standardized build processes, testing frameworks, and
       deployment pipelines can be applied across all applications in the repository.
 
-### Disadvantages of Monorepo Structure
+### Downsides of Monorepo Structure
 
 However, there are some disadvantages to using a monorepo structure:
 
@@ -134,6 +145,9 @@ However, there are some disadvantages to using a monorepo structure:
 - [x] **Security Risks**: A single repository can be a single point of failure
       for security breaches, so it's important to implement strong access controls
       and security measures to protect the codebase.
+- [x] **Bigger Size at Scale**: When the teamsize grows, so does the size of
+      the applications within it. As a result, even a single `git status`
+      might take minutes[^monorepo-please-dont].
 
 ## The Problem with Full Rebuilds
 
@@ -143,9 +157,9 @@ can be inefficient and time-consuming, especially if only a few applications hav
 changed.
 
 Structured poorly, this can lead to a lot of wasted time and resources, which
-could be better spent on more productive tasks. Imagine spending on a lambda
-function that runs for 10 minutes, but only 1 minute is used for the actual
-work!
+could be better spent on more productive tasks. Imagine paying for an AWS
+lambda function that runs for 10 minutes, but only 1 minute is used for the
+actual work!
 
 That's the main reason why optimizing the build process is crucial to benefit
 from the advantages of a monorepo structure, while minimizing the drawbacks.
@@ -189,10 +203,12 @@ specific applications and only rebuild those targets when changes are detected.
 
 ### Leveraging CI/CD Pipelines for Optimized Builds
 
-CI/CD pipelines can also be used to optimize builds in a monorepo by triggering
-builds only for the applications that have changed. By setting up automated
-pipelines that monitor changes in the repository, developers can ensure that
-only the necessary applications are rebuilt.
+The third approach to selective builds is to employ CI/CD pipelines to optimize
+builds in a monorepo by triggering builds **only for the applications that have
+changed**.
+
+By setting up automated pipelines that monitor changes in the repository,
+developers can ensure that only the necessary applications are rebuilt.
 
 This is the approach we will explore in this article, implementing an efficient
 CI/CD pipeline that will trigger the build for only the applications that have
@@ -224,6 +240,9 @@ to a single unique string (i.e. a hash), we can compare future changes of any
 of the files within that directory to the earlier computed hash and determine
 if the application needs a rebuild.
 
+Chances are, collisions are close to none and we won't have false negatives,
+i.e. to not build an application if it needs to be built. :fingers_crossed:
+
 ```mermaid
 flowchart LR
     subgraph Monorepo
@@ -238,10 +257,10 @@ flowchart LR
       ijkl1234
       mnop1234
     end
-    Auth --> ijkl1234
-    Inventory --> mnop1234
-    Order --> efgh1234
-    Payment --> abcd1234
+    Auth --> abcd1234
+    Inventory --> efgh1234
+    Order --> ijkl1234
+    Payment --> mnop1234
 ```
 
 With the hashes we collected in our first run, in any of the future pushes to
@@ -272,28 +291,45 @@ orgniazation, yet it is good to know that it's already the case if the need
 arises.
 
 ```shell title=""
-find . -type f -exec sha256sum {} \; | \
-  awk '{print $1}' | \
-  sha256sum - | \
-  awk '{print $1}'
+find . -maxdepth 1 -type d -print0 | \
+   while IFS= read -r -d '' dir; do
+     find "$dir" -type f -exec sha256sum {} \; | \
+     sha256sum - | \
+     awk '{print $1}' | \
+     xargs -I {} echo "$dir: {}"
+   done | \
+   sha256sum - | \
+   awk '{print $1}'
 ```
 
-There are 4 steps happening in this hash function. Let's break it down:
+There are 3 steps happening in this hash function. Let's break it down:
 
-:one:  We first find all the files in the current working directory using the
-`find` command. Directories are not needed as `sha256sum` works on files!
-For each of the found files, calculate the SHA256 hash of the file's content
-and print it to stdout. Here's the sample output:
+:one: We first find all the directories at the root of the current working
+directory and pass that to the next step.
+
+:two: For each of the found directories, we calculate the SHA256 hash of the
+contents of the files within that directory and pass it to the next pipe.
+
+In the next pipe, we'll grab all the hashes of the files within each directory
+and calculate another SHA256 hash of these textual outputs.
+
+Here's a visual diagram of everything that's happened so far.
+
+```mermaid
+flowchart LR
+    A["./auth/\n├── Dockerfile\n└── main.py"] -->|the hash function| B[abcd1234]
+    style A text-align:start
+    style B text-align:start
+```
+
+And here's a sample output of the script:
 
 ```plaintext title="" linenums="0"
-4cde77ce6b1585c84f26e517ce28ce1d6b0c2d0e509110444c5938447e6d5c2b  order/Dockerfile
-0923360dc7503b16d208f70bb3e5d27908c302312ea79b9d7105d360e84b868c  order/main.rs
-8f60efa0e14bd576a88514ad5235cc27ea6067bdf4381e07a857cffdf70bd213  auth/Dockerfile
-d4e0a53dc7f9d1604df94d33ab563935429f798c2a2f903323196c94818fb5e6  auth/main.py
-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  payment/Dockerfile
-e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  payment/main.py
-b8b7a713ff573581ae3925660996343134b0d85d9cade2107db66178bd188ee0  inventory/Dockerfile
-fcccc7035d7f9459577ca137a6d8fc437aef8c4d4df173dd316aeed66d8a834c  inventory/main.go
+./:          0bb5ea223d6c1d8a01694e98d1e8c5da12eb7e45d7530276d85a77a2466779d1
+./order:     58013061b734d86cb1794a7d0542db559b4dd4c55201a7cb6cd1c8a331ce1180
+./auth:      ad39a5acefb8599684aa7761c3713c5bf4a67e217f0b00514abe19af58d74668
+./payment:   50addb41c31a91220677a981eb1ac9b818c024d066997ad59f3a61ca0fa65aed
+./inventory: 6e061f94f199396d210ce2be5ffc9ec88a87bd78d5b1895e9055791fdf34944e
 ```
 
 :two: We grab all these textual outputs and run them through our SHA256 hash
@@ -302,7 +338,7 @@ entire directory we'll use later to compare the current state against any of
 the future changes. This will be the sample output:
 
 ```plaintext title="" linenums="0"
-474a904ae9f57595d8545fbe69dc0d717ba37b77aec292e3726711548338f475  -
+2c3d76bc29e8f1123c2e07b85d4f7796c3516604f1558cfd0c549aa255f92990  -
 ```
 
 :three: As you see in the last step's output, there is a redundant `-` at the
@@ -321,8 +357,8 @@ The following snippet is probably not the best in class; yet, as there are
 usually multiple ways to get the job done in programming languages, let's just
 see it to completion for now.
 
-```js title="index.js" linenums="7"
--8<- "docs/codes/2024/0019/index.js:7:12"
+```js title="index.js"
+-8<- "docs/codes/2024/0019/index.js::12"
 ```
 
 We will now store the hash for all the directories of a given root path.
@@ -348,17 +384,17 @@ Furthermore, for our datastore, among many available options, we'll pick
 -8<- "docs/codes/2024/0019/index.js:55:71"
 ```
 
-### Mark Changes Services for Rebuild
+### Mark Changed Services for Rebuild
 
 At this stage we're ready to putting it all together. We'll use the previous
-scripts to determine the changes in the repository and mark the applications
-that need a rebuild because of a change in their contents.
+codes to determine the changes in the repository and mark the applications
+that need a rebuild if the contents of a file in that directory has changed.
 
 Since this script will be used in the [GitHub Actions] workflow, we should
 write the output to a special temporary file accessible by `$GITHUB_OUTPUT`.
 
 ```js title="index.js" linenums="73"
--8<- "docs/codes/2024/0019/index.js:73:94"
+-8<- "docs/codes/2024/0019/index.js:73:96"
 ```
 
 ### JavaScript GitHub Actions
@@ -397,7 +433,7 @@ In our monorepo, we can define a [GitHub Actions] workflow that has three jobs:
 
 Here's what each of the three jobs will look like in a sample monorepo:
 
-```yaml title=".github/workflows/ci.yml" hl_lines="16-17 23 ß34 36 39 72 89 95"
+```yaml title=".github/workflows/ci.yml" hl_lines="16-17 23 34 36 39 72 89 95"
 -8<- "docs/codes/2024/0019/ci.yml"
 ```
 
@@ -406,9 +442,9 @@ Notice a couple of important points in the workflow:
 - [x] This workflow will run the three jobs in sequential order, waiting for
       the completion of one before starting the other. However, the build of
       the applications will be in parallel, thanks to the dynamic matrix
-      feature of GitHub Actions.
+      feature of [GitHub Actions].
 - [x] The second job, named `build`, is expecting two outputs from the first
-      job and it is important to higlight that the value of each output is an
+      job and it is important to highlight that the value of each output is an
       string, yet the format expected in the `strategy.matrix` is a JSON
       serialized string.
       It will turn out to be something like this in the end:
@@ -428,9 +464,9 @@ Notice a couple of important points in the workflow:
       last one to update the Redis server with the new hashes.
 
 **NOTE**: As smart as it may sound to merge the last two jobs, that would
-actually result in duplicate and overwriting writes to the Redis server. This
-may or may not be an issue for your use case, yet it is clearly evident that
-it is redundant and not a good idea!
+actually result in duplicate work and overwriting the writes to the Redis
+server. This may or may not be an issue for your use case, yet it is clearly
+evident that it is redundant and not a good idea!
 
 ### Save the Hashes of the Changes to the Upstash Redis Server
 
@@ -438,20 +474,20 @@ In order to be able to later compare the current state of the repo against old
 states, we have to write the new hashes at the end of every workflow after the
 build.
 
-To to that in our [JavaScript] code, we'll simply use the SDK API.
+To do that in our [JavaScript] code, we'll simply use the [Redis] API.
 
 ```js title="index.js" linenums="96"
--8<- "docs/codes/2024/0019/index.js:96:98"
+-8<- "docs/codes/2024/0019/index.js:98:100"
 ```
 
 ### Entrypoint to the JavaScript GitHub Actions
 
 The main starting point of this script, fetching all the inputs and producing
-the expected output is as follows. Notice the heavy usage of the GitHub Actions
-SDK API in this code to access the input.
+the expected output is as follows. Notice the heavy usage of the
+[GitHub Actions] SDK API in this code to access the input.
 
 ```js title="index.js" linenums="100"
--8<- "docs/codes/2024/0019/index.js:100:153"
+-8<- "docs/codes/2024/0019/index.js:102:"
 ```
 
 The first run of this script will trigger a build on all the directories as
@@ -481,42 +517,41 @@ of all the applications.
   <figcaption>Selective Build on Changes</figcaption>
 </figure>
 
+## Considerations
+
+While the proposed method works great for some teams and processes, it's good
+to be aware of the following considerations:
+
+- [x] **Build Process May Vary**: Some of the applications may have different
+      build processes, dependencies, or requirements. In such cases, a selective
+      build approach may not be suitable for all applications in the monorepo.
+      The proposed method is using the same build pipeline for all
+      applications, which may not be ideal for all use cases.
+- [x] **Human Collaboration**: As much as the proposed method is a streamlined
+      approach into building projects and producing artifacts, it is important
+      to highlight that no amount of technology can replace the chemistry
+      and collaboration between team members. If one of the the teams decide
+      to change their build for a specific application, the end result may
+      end up breaking every other app's build process!
+
+It's great to tackle this with the consultation of your team members. If the
+majority of the team is happy with a process in place, that'll benefit the
+overall productivity!
+
 ## Conclusion
 
-In conclusion, implementing selective builds in a monorepo can greatly improve
-the efficiency of your CI/CD pipeline. By utilizing hash functions to compare
-the current state against previous states, you can identify which applications
-have changed and only rebuild those that are affected. This not only saves time
-and resources, but also allows for faster feedback loops and quicker
-deployments.
+Here's a crisp recap of what we covered in this blog post:
 
-Using JavaScript and GitHub Actions, you can easily automate the process of
-determining changes and marking applications for rebuild. By leveraging the
-power of dynamic matrices, you can parallelize the build process and optimize
-resource utilization.
+- [x] Selective builds in monorepos improve CI/CD efficiency
+- [x] Hash functions identify changed applications for targeted rebuilds
+- [x] JavaScript and GitHub Actions automate the process
+- [x] Redis stores hashes to track repository state
+- [x] Benefits include faster build times, reduced rebuilds, and improved
+      productivity
 
-Storing the hashes in a Redis server provides a simple and efficient way to
-track the state of the repository and make informed decisions about which
-applications need to be rebuilt.
-
-By adopting selective builds in your monorepo, you can achieve faster build
-times, reduce unnecessary rebuilds, and improve overall development
-productivity. This approach is particularly beneficial for large codebases with
-multiple applications, where selective builds can significantly speed up the
-CI/CD process. With the right tools and strategies in place, you can optimize
-your development workflow and deliver high-quality software more efficiently.
-
-In summary, selective builds offer a practical solution for optimizing the
-build process in monorepos. By intelligently identifying changes and
-selectively rebuilding applications, you can save time, resources, and improve
-the overall efficiency of your CI/CD pipeline.
-
-With the power of JavaScript, GitHub Actions, and Redis, you can easily
-implement this approach and reap the benefits of faster feedback loops and
-quicker deployments. So why wait?
-
-Start implementing selective builds in your monorepo today and experience the
-difference it can make in your development workflow.
+To close this up, it is recommended to implement selective builds using
+JavaScript, GitHub Actions, and Redis to optimize your monorepo's development
+workflow, especially for large codebases with multiple applications.
 
 ## Further Reading
 
@@ -547,6 +582,10 @@ industry are using it, here are some resources to check out:
 1. **Stack Overflow** - Discussions and Q&A on monorepo best
    practices[^stack-overflow].
 
+1. **Guide to Monorepos for Front-end Code** by Toptal[^toptal-monorepo]
+
+1. **Monorepos in Git** by Atlassian[^atlassian-monorepo-git]
+
 ## Bonus: Python Equivalent Script
 
 If you have made it thus far, you deserve a goodie! :candy:
@@ -567,6 +606,11 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [GitHub Actions dynamic matrix]: ./0004-github-actions-dynamic-matrix.md
 
 [^software-eating-world]: https://a16z.com/why-software-is-eating-the-world/
+[^monorepo-wikipedia]: https://en.wikipedia.org/wiki/Monorepo
+[^monorepo-tools]: https://monorepo.tools/
+[^circleci-monorepo]: https://circleci.com/blog/monorepo-dev-practices/
+[^awesome-monorepo]: https://github.com/korfuri/awesome-monorepo
+[^monorepo-please-dont]: https://medium.com/@mattklein123/monorepos-please-dont-e9a279be011b
 [^upstash]: https://console.upstash.com/redis
 [^microsoft-devops-blog]: https://devblogs.microsoft.com/devops/
 [^github-blog]: https://github.blog/
@@ -576,3 +620,5 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [^thoughtWorks-insights]: https://www.thoughtworks.com/insights
 [^medium]: https://medium.com/
 [^stack-overflow]: https://stackoverflow.com/
+[^toptal-monorepo]: https://www.toptal.com/front-end/guide-to-monorepos
+[^atlassian-monorepo-git]: https://www.atlassian.com/git/tutorials/monorepos

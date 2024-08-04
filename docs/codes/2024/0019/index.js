@@ -83,7 +83,9 @@ function githubOutput(changedApps) {
   core.info(`Changed apps: ${stringifyApps}`);
   core.info(`Number of changed apps: ${numChangedApps}`);
 
+  // e.g. matrix: '{"directory": ["./auth"]}'
   core.setOutput("matrix", stringifyApps);
+  // e.g. length: '1'
   core.setOutput("length", numChangedApps);
 }
 
