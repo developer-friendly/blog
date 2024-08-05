@@ -74,7 +74,7 @@ foundation for your digital future.
 [Twitter :simple-x:][twitter]{ .md-button }
 
 [blog]: ./index.md
-[book-call]: https://calendly.com/meysam81
+[book-call]: https://cal.com/meysam
 [email-me]: mailto:meysam@developer-friendly.blog
 [linkedin]: https://linkedin.com/in/meysamazad
 [twitter]: https://x.com/meysamazing
