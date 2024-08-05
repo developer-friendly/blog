@@ -285,6 +285,7 @@ markdown_extensions:
 nav:
   - index.md
   - hireme.md
+  - Newsletter: https://developerfriendly.eo.page/
   - sponsors.md
   - Status: https://developer-friendly.cronitorstatus.com/
   - terms.md
