@@ -39,7 +39,6 @@ repos:
       - id: debug-statements
       - id: destroyed-symlinks
       - id: fix-byte-order-marker
-      - id: fix-encoding-pragma
       - id: forbid-new-submodules
       - id: forbid-submodules
       - id: mixed-line-ending

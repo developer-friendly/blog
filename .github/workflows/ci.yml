@@ -247,3 +247,25 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr create --fill -H $(git branch --show-current)
+
+  ga-reports:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' && github.repository == 'developer-friendly/blog'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Set the GA report starting date to last month
+        run: |
+          GA4_START_DATE=$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m-01)
+          echo GA4_START_DATE=$GA4_START_DATE >> $GITHUB_ENV
+      - name: Install requirements
+        run: pip install -U pip -r ./internal/ga/requirements.txt
+      - env:
+          GA4_PROPERTY: ${{ vars.GA4_PROPERTY }}
+          GA_REPORTS_DSN: ${{ secrets.GA_REPORTS_DSN }}
+        name: Fetch GA reports into PostgreSQL
+        run: ./internal/ga/main.py update

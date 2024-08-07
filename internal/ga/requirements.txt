@@ -1,0 +1,5 @@
+colorlog<7
+google-analytics-data<19
+psycopg2-binary<3
+pydantic<3
+pydantic-settings<3
