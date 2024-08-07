@@ -5,12 +5,6 @@ extra:
     - icon: octicons/heart-fill-16
       link: https://github.com/sponsors/meysam81/
       name: Sponsor the author!
-    - icon: fontawesome/brands/paypal
-      link: https://paypal.me/developerfriendly
-      name: Thank the author!
-    - icon: simple/buymeacoffee
-      link: https://buymeacoffee.com/meysam
-      name: Buy me a coffee!
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/company/developer-friendly
       name: Follow us on LinkedIn!
