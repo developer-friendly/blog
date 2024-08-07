@@ -72,6 +72,8 @@ start_date = settings.GA4_START_DATE
 page_view = defaultdict(dict)
 DSN = settings.GA_REPORTS_DSN.get_secret_value()
 
+property_id = settings.GA4_PROPERTY
+
 logger = get_logger(settings.LOG_LEVEL)
 
 parser = ArgumentParser()
@@ -192,7 +194,7 @@ if __name__ == "__main__":
         case "migrate":
             logger.info(("Migration result", migration()))
         case "update":
-            logger.debug(("Sample run report", sample_run_report()))
+            logger.debug(("Sample run report", sample_run_report(property_id)))
             logger.info(("Update DB result", update_db()))
         case "query":
             logger.info(("Query result", query_page_views()))
