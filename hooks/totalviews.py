@@ -5,15 +5,8 @@ import re
 from collections import defaultdict
 from functools import lru_cache
 
-from google.analytics.data_v1beta import BetaAnalyticsDataClient
-from google.analytics.data_v1beta.types import (
-    DateRange,
-    Dimension,
-    Metric,
-    RunReportRequest,
-)
+import psycopg2
 
-start_date = os.getenv("GA4_START_DATE", "2024-02-13")
 include = re.compile(r"[1-9].*")
 
 page_view = defaultdict(int)
@@ -21,18 +14,14 @@ page_view = defaultdict(int)
 logger = logging.getLogger("mkdocs")
 logger.setLevel(logging.INFO)
 
+DSN = os.environ["GA_REPORTS_DSN"]
+
 
 def on_page_markdown(markdown, page, config, files, **kwargs):
-    if not os.getenv("GA4_PROPERTY"):
-        return markdown
-
-    if not os.getenv("GOOGLE_APPLICATION_CREDENTIALS"):
-        return markdown
-
     if not include.match(page.url):
         return markdown
 
-    sample_run_report(os.environ["GA4_PROPERTY"])
+    query_page_views()
 
     logger.info(f"Total views for {page.url}: {page_view[f'/{page.url}']}")
     page.config.total_views = page_view[f"/{page.url}"] or "N/A"
@@ -41,24 +30,23 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
 
 
 @lru_cache(maxsize=1)
-def sample_run_report(property_id):
-    client = BetaAnalyticsDataClient()
+def query_page_views():
+    with psycopg2.connect(DSN) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                """
+                SELECT page_path, SUM(views) AS total_views
+                FROM total_views
+                GROUP BY page_path
+                ORDER BY total_views DESC;
+                """
+            )
 
-    request = RunReportRequest(
-        property=f"properties/{property_id}",
-        dimensions=[Dimension(name="pagePath")],
-        metrics=[Metric(name="screenPageViews")],
-        date_ranges=[DateRange(start_date=start_date, end_date="today")],
-    )
-    response = client.run_report(request)
+            cols = [desc[0] for desc in cur.description]
+            results = [dict(zip(cols, row)) for row in cur.fetchall()]
 
-    for row in response.rows:
-        page_view[row.dimension_values[0].value] = row.metric_values[0].value
+            page_view.update(
+                {result["page_path"]: result["total_views"] for result in results}
+            )
 
-    return page_view
-
-
-if __name__ == "__main__":
-    from pprint import pprint as pp
-
-    pp(sample_run_report(os.environ["GA4_PROPERTY"]))
+            return page_view

@@ -1,4 +1,3 @@
-google-analytics-data<0.19
 mkdocs-exclude<2
 mkdocs-git-authors-plugin<1
 mkdocs-git-committers-plugin-2<3
@@ -8,4 +7,5 @@ mkdocs-material[imaging] @ git+https://${GH_TOKEN}@github.com/squidfunk/mkdocs-m
 mkdocs-minify-plugin<1
 mkdocs-rss-plugin<2
 mkdocs-table-reader-plugin<3
+psycopg2-binary<3
 pymdown-extensions<11

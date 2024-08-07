@@ -174,7 +174,7 @@ def query_page_views():
         with conn.cursor() as cur:
             cur.execute(
                 """
-                SELECT page_path, SUM(views) as total_views
+                SELECT page_path, SUM(views) AS total_views
                 FROM total_views
                 GROUP BY page_path
                 ORDER BY total_views DESC;

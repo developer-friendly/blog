@@ -127,7 +127,7 @@
                     {% endif %}
 
                     <!-- Post total views -->
-                    {% if config.extra.ga4 and config.extra.ga4.property and page.config.total_views %}
+                    {% if page.config.total_views %}
                     <li class="md-nav__item">
                       <div class="md-nav__link">
                         {% include ".icons/material/eye.svg" %}
