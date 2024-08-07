@@ -20,10 +20,8 @@ env:
   NETLIFY_SITE_ID: developer-friendly
   NETLIFY_DEPLOY_TO_PROD: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
   PYTHON_VERSION: 3.x
-  URL_DOWNLOAD: "true"
-  LOGROCKET_PROPERTY: ${{ vars.LOGROCKET_PROPERTY }}
   ADSENSE_PROPERTY: ${{ vars.ADSENSE_PROPERTY }}
-  CONVERTKIT_PROPERTY: ${{ vars.CONVERTKIT_PROPERTY }}
+  GA_PROPERTY: ${{ vars.GA_PROPERTY }}
 
 jobs:
   preview:
@@ -48,7 +46,7 @@ jobs:
           sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
       - env:
           DRAFT: ${{ github.event_name == 'pull_request' }}
-          GA_PROPERTY: ${{ vars.GA_PROPERTY }}
+          GA_REPORTS_DSN: ${{ secrets.GA_REPORTS_DSN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # git-committers plugin
         name: Build the site
         run: mkdocs build
@@ -133,8 +131,7 @@ jobs:
           EOF
           echo GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json >> $GITHUB_ENV
       - env:
-          GA_PROPERTY: ${{ vars.GA_PROPERTY }}
-          GA4_PROPERTY: ${{ vars.GA4_PROPERTY }}
+          GA_REPORTS_DSN: ${{ secrets.GA_REPORTS_DSN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         name: Build the site
         run: mkdocs build
@@ -253,10 +250,6 @@ jobs:
     if: |
       (
         github.event_name == 'schedule' &&
-        github.repository == 'developer-friendly/blog'
-      ) || (
-        github.event_name == 'push' &&
-        github.ref == 'refs/heads/main' &&
         github.repository == 'developer-friendly/blog'
       )
     steps:
