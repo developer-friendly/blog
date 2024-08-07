@@ -144,6 +144,9 @@ def migration():
 
 
 def update_db():
+    total_records = len(page_view)
+    logger.info(f"Updating DB with {total_records} records...")
+
     with get_db() as conn:
         with conn.cursor() as cur:
             data = [
@@ -189,6 +192,7 @@ if __name__ == "__main__":
         case "migrate":
             logger.info(("Migration result", migration()))
         case "update":
+            logger.debug(("Sample run report", sample_run_report()))
             logger.info(("Update DB result", update_db()))
         case "query":
             logger.info(("Query result", query_page_views()))
