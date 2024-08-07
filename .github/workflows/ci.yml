@@ -250,7 +250,15 @@ jobs:
 
   ga-reports:
     runs-on: ubuntu-latest
-    if: github.event_name == 'schedule' && github.repository == 'developer-friendly/blog'
+    if: |
+      (
+        github.event_name == 'schedule' &&
+        github.repository == 'developer-friendly/blog'
+      ) || (
+        github.event_name == 'push' &&
+        github.ref == 'refs/heads/main' &&
+        github.repository == 'developer-friendly/blog'
+      )
     steps:
       - name: Checkout
         uses: actions/checkout@v4
