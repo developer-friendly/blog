@@ -75,6 +75,7 @@ hooks:
   - hooks/socialshare.py
   - hooks/totalviews.py
   - hooks/rss-feed-description.py
+  - hooks/canonical-url.py
 plugins:
   - search:
       lang: en
