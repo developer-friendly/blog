@@ -20,11 +20,12 @@
   }
 
   document.addEventListener("DOMContentLoaded", function clarityConsentLoader() {
+    console.log("clarity consent loader...")
     var consent = __md_get("__consent");
     if (consent && consent.clarity) {
+      startClarity();
       window.clarity("consent");
       console.log("clarity consent");
-      startClarity();
     } else {
       console.log("clarity rejected");
     }
