@@ -320,7 +320,7 @@ NEXT PAGE TOKEN
 IS LAST PAGE    true
 ```
 
-## What is the Namespace in Ory Keto?
+## Ory Permission Language
 
 We've been putting it off for a while, but it's time to address the elephant in
 the room :elephant:. The `namespace` in [Keto] is the most important concept

@@ -1,9 +1,8 @@
 ---
 date: 2024-04-14
 description: >-
-  Learn how to grant GitHub Actions runner jobs access to the AWS services
-  without storing long-lived credentials and avoiding the overhead of secrets
-  rotation.
+  What is OpenID Connect? Establish trust relationship between GitHub runners
+  and AWS IAM using OIDC. OpenID Connect Authentication.
 draft: false
 categories:
   - OpenID Connect

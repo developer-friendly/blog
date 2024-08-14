@@ -1,8 +1,8 @@
 ---
 date: 2024-05-27
 description: >-
-  How to fetch access token in Azure VM with assigned identity. How to create
-  trust relationship from Azure Active Directory to AWS services with OIDC.
+  How to connect Azure to AWS with OpenID Connect. What is AWS OpenID Connect.
+  Establish trust relationship between Azure AD to AWS services with OIDC.
 categories:
   - AWS
   - Azure

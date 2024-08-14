@@ -64,7 +64,7 @@ for you!
 
 <!-- more -->
 
-## Introduction
+## Kratos Auth
 
 Over the entire course of my professional career, I have seen countless times
 where the application needed the same type and pattern of authentication
@@ -102,7 +102,7 @@ _what is and what isn't authentication_ that is.
 I will mention the highlighting factors when it comes to theories, but this
 blog post is mainly hands-on with a lot of codes and examples.
 
-## Objective
+## Ory Kratos
 
 We should set a clear objective of what we're trying to achieve here so that
 we can best prepare for the journey ahead.

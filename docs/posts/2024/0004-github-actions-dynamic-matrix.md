@@ -2,8 +2,8 @@
 date: 2024-03-09
 draft: false
 description: >-
-  Learn how to leverage GitHub Actions to define a dynamic matrix that can
-  parallelize your jobs and increases your CI/CD throughput on-demand.
+  Learn how to leverage GitHub Actions to define a dynamic matrix to
+  parallelize your CI/CD throughput. Github Actions Matrix
 categories:
   - GitHub
   - CI/CD
@@ -35,7 +35,7 @@ Actions using a real-world example.
 
 <!-- more -->
 
-## First, a Static Matrix
+## Github Actions Matrix
 
 Let's start with a simple example. Let's suppose we want to build our Rust
 application for different platforms.

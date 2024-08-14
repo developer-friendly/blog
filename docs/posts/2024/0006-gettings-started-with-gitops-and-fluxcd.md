@@ -1,8 +1,8 @@
 ---
 date: 2024-04-06
 description: >-
-  Explore the fundamentals of GitOps with FluxCD with a practical real-world
-  example & automate Kubernetes continuous deployments and delivery pipeline.
+  What is GitOps Kubernetes? Learn FluxCD with a practical real-world
+  example to automate & optimize GitOps repository structure.
 draft: false
 categories:
   - Kubernetes

@@ -2,9 +2,8 @@
 date: 2024-04-29
 draft: false
 description: >-
-  Get started with ESO to create Kubernetes Secret resources
-  from external secrets management systems using OpenID Connect &
-  IAM Role trust relationship.
+  External Secrets Parameter Store. Kubernetes Secrets Management. OpenID
+  Connect trust relationship between Azure AKS and AWS IAM.
 categories:
   - Kubernetes
   - External Secrets

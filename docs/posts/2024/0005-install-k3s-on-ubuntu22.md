@@ -29,7 +29,7 @@ using OpenTofu & Ansible on Hetzner Cloud with Cilium as the CNI.
 
 <!-- more -->
 
-## Introduction
+## How to Install Kubernetes on Ubuntu 22.04
 
 Kubernetes is a powerful container orchestration platform that allows you to
 deploy, scale, and manage containerized applications. However, setting up a
@@ -61,7 +61,7 @@ and easy to manage.
 
 <!-- subscribe -->
 
-### Why should you care?
+### Lightweight Kubernetes
 
 That's where [k3s](https://k3s.io/) comes into play. k3s is a lightweight
 Kubernetes distribution that is designed for production workloads, resource-constrained
@@ -243,7 +243,7 @@ Ansible inventory.
 -8<- "docs/codes/2024/0005-install-k3s-ubuntu/ansible/inventory.yml"
 ```
 
-## Step 2: Bootstrap the cluster
+## Step 2: Install Kubernetes on Ubuntu 22.04
 
 So far, we have provisioned the cluster using OpenTofu. But, if you SSH into
 the machine, `kubectl get nodes` will return a `NotReady` state for your node.
@@ -291,7 +291,7 @@ the playbook as it runs.
       -8<- "docs/codes/2024/0005-install-k3s-ubuntu/ansible/ansible.cfg"
       ```
 
-## Step 3: Use the Cluster
+## Step 3: K3s Ubuntu
 
 We have done all the heavy lifting thus far and now it's time to use the
 cluster.

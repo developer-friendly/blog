@@ -2,8 +2,8 @@
 date: 2024-04-22
 draft: false
 description: >-
-  How to access AWS with bare-metal Kubernetes (K3s) Service Accounts tokens
-  by establishing an OIDC trust relationship between the Kubernetes and AWS IAM.
+  What is OIDC Kubernetes? How to establish trust relationship between
+  kubernetes & AWS using OpenID Connect. What is Rancher OIDC?
 categories:
   - Kubernetes
   - AWS
@@ -39,7 +39,7 @@ services using OIDC & without storing long-lived credentials.
 
 <!-- more -->
 
-## Introduction
+## FluxCD
 
 In our [previous post](./0007-oidc-authentication.md), we discussed what
 OpenID Connect (OIDC) is and how to use it to authenticate identities from one

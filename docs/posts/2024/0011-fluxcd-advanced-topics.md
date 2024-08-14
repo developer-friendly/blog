@@ -132,7 +132,7 @@ This can include sending notifications or alerts to Slack, Discord, etc.
 This is just an introduction and sounds a bit vague. So let's get hands-on and
 see how we can use these controllers in our cluster.
 
-## Application Scaffold
+## FluxCD Kustomization
 
 Since you will see a lot of code snippets in this post, here's the directory
 structure you better be prepared for:
@@ -286,7 +286,7 @@ kubectl apply -k echo-server/kustomize.yml
     There is going to be a lot of code snippets. Get ready to be bombarded with
     all that we had stored in the cannon. :bomb: :grimacing:
 
-## Step 3: Application Deployment
+## Step 3: GitOps Kustomize
 
 Now that we have our GitRepository set up, we can deploy the application.
 
@@ -493,7 +493,7 @@ access as you see below.
   <figcaption>GitHub Repository Admin Access</figcaption>
 </figure>
 
-## Step 4: Receiver and Webhook
+## Step 4: FluxCD CRDs
 
 FluxCD allows you to configure a Receiver so that external services can trigger
 the controllers of FluxCD to reconcile before the configured interval.
@@ -623,7 +623,7 @@ changes are landed in the repository.
 It's a perfect setup for instant deployment of your changes as soon as they
 are ready. :partying_face:
 
-## Step 5: Notifications & Alert
+## Step 5: FluxCD HelmRelease
 
 With the application deployed, and the receiver of our GitOps ready to be
 notified on every new change, we should be able to get notified of info and

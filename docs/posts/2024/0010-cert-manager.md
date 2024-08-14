@@ -2,8 +2,8 @@
 date: 2024-05-06
 draft: false
 description: >-
-  Install cert-manager Helm chart and create ClusterIssuer for AWS Route53 and
-  Cloudflare. Fetch & renew wildcard certificates for Ingress & Gateway API.
+  Install Kubernetes cert-manager Helm chart. Kubernetes TLS Certificate
+  Manager. Fetch TLS certificates from AWS Route53 and Cloudflare.
 categories:
   - Kubernetes
   - AWS
@@ -62,7 +62,7 @@ If that gets you excited, hop on and let's get started!
 
 <!-- more -->
 
-## Introduction
+## Kubernetes Certificate Manager
 
 If you have deployed any reverse proxy in the pre-Kubernetes era, you might
 have, at some point or another, bumped into the issuance and renewal of TLS

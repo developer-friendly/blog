@@ -47,7 +47,7 @@ Stick around till the end to find out how.
 
 <!-- more -->
 
-## Introduction
+## GitHub Actions Integration Tests
 
 If you're a fan of writing tests for your software, there's a good chance that
 you like to run the fast and small tests on your machine, and delegate the task
@@ -70,7 +70,7 @@ and enforces the passing of our previously written tests.
 
 <!-- subscribe -->
 
-## Objective
+## Developer Friendly Workflows
 
 As per our tradition in this blog post, we should set a clear goal of what we
 aim to achieve in here. If things work for the best, we should
@@ -175,7 +175,7 @@ Two of the tests are failing at this point, but that is not our concern really!
   <figcaption>Pytest Local Result</figcaption>
 </figure>
 
-## Running Tests in the CI
+## GitHub Integration Testing
 
 Now that we have a locally working example, let's move on to the CI part.
 

@@ -1,8 +1,8 @@
 ---
 date: 2024-06-17
 description: >-
-  What is monitoring? Best time-series database. How to deploy VictoriaMetrics?
-  Prometheus vs. VictoriaMetrics. Prometheus drop-in replacement.
+  Best time-series database. How to deploy VictoriaMetrics? Prometheus vs.
+  VictoriaMetrics. Prometheus drop-in replacement. Grafana datasource.
 categories:
   - VictoriaMetrics
   - Prometheus
