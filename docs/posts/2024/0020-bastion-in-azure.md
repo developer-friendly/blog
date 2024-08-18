@@ -4,33 +4,53 @@ description: >-
   Learn how to create and implement Azure n hostsn for secure, scalable access
   to your cloud resources. Step-by-step guide and best practices included.
 categories:
+  - Azure Bastion
+  - Cloud Security
+  - Secure Cloud Access
+  - IaC
+  - Azure Networking
   - Authentication
   - Authorization
   - Automation
-  - Azure
   - Azure AD
+  - Azure CLI
+  - Bastion Host
   - Best Practices
   - Cloud Computing
+  - Cloud Infrastructure
+  - Compliance
   - DevOps
-  - IaC
   - IAM
+  - Identity and Access Management (IAM)
   - Identity Management
   - Infrastructure as Code
+  - Jump Server
   - Linux
+  - Network Security
   - OIDC
   - OpenID Connect
   - OpenTofu
   - RBAC
+  - Remote Access
   - Security
+  - Security Best Practices
+  - SSH Security
   - Terraform
   - Terragrunt
   - Tutorial
   - User Management
+  - Virtual Networks
+social:
+  cards_layout_options:
+    description: >-
+      Secure your Azure resources with Bastion. Learn to implement
+      and optimize this powerful tool for seamless, cost-effective remote
+      access and compliance.
 links:
   - ./posts/2024/0001-azure-shared-image-gallery.md
   - ./posts/2024/0009-external-secrets-aks-to-aws-ssm.md
   - ./posts/2024/0013-azure-vm-to-aws.md
-image: assets/images/socia/2024/08/19/azure-bastion-host-secure-cloud-access-made-simple.png
+image: assets/images/social/2024/08/19/azure-bastion-host-secure-cloud-access-made-simple.png
 ---
 
 # Azure Bastion Host: Secure Cloud Access Made Simple
