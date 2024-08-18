@@ -337,4 +337,4 @@ next one :eyes:. Until then, take care and happy hacking! :penguin: :crab:
 [^3]: https://fastapi.tiangolo.com/
 [^4]: https://github.com/tiangolo/full-stack-fastapi-template/tree/0.6.0
 [^5]: https://github.com/tiangolo/full-stack-fastapi-template/blob/bd8b50308caebd10f0db318ab35f325a64a318b4/.github/workflows/test.yml#L27
-[^6]: https://docs.gitlab.com/17.0/ee/ci/services/
+[^6]: https://archives.docs.gitlab.com/17.0/ee/ci/services/
