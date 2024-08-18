@@ -19,10 +19,12 @@ resource "azurerm_bastion_host" "this" {
   location            = data.azurerm_resource_group.this.location
   resource_group_name = data.azurerm_resource_group.this.name
 
-  sku = "Standard"
-
   # Native Client i.e. ssh from the command line
   tunneling_enabled = true
+
+  # Native Client requires at least `Standard` SKU
+  sku = "Standard"
+
 
   ip_configuration {
     name                 = module.naming.firewall_ip_configuration.name_unique

@@ -57,5 +57,6 @@ resource "azurerm_linux_virtual_machine" "this" {
     storage_account_type = "Standard_LRS"
   }
 
+  # Rocky Linux ARM64
   source_image_id = "/communityGalleries/rocky-dc1c6aa6-905b-4d9c-9577-63ccc28c482a/images/Rocky-9-aarch64/versions/9.4.20240509"
 }

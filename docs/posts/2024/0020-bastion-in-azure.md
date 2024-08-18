@@ -1,7 +1,7 @@
 ---
 date: 2024-08-19
 description: >-
-  Learn how to create and implement Azure n hostsn for secure, scalable access
+  Learn how to create and implement Azure Bastion for secure, scalable access
   to your cloud resources. Step-by-step guide and best practices included.
 categories:
   - Azure Bastion
@@ -61,7 +61,7 @@ secure access to your Azure resources, and provides a step-by-step walkthrough
 for implementation.
 
 You'll learn how to enhance your network security, simplify remote access, and
-automate Bastion deployment using tools like Terraform and Azure CLI. Dive in
+automate Bastion deployment using tools like OpenTofu and Azure CLI. Dive in
 to unlock the full potential of secure, scalable cloud access for your
 organization.
 
@@ -88,7 +88,7 @@ end of the day, you're still in charge of anything happening to your production
 workloads and as a result, your customers.
 
 One of the most critical aspect of managing a production workload is to ensure
-its compliant with your security policies, not allowing adversaries to take
+it is compliant with your security policies, not allowing adversaries to take
 control and damage your business, financially and reputation-wise.
 
 ### Bastion Host: Secure Cloud Access Made Simple
@@ -127,12 +127,12 @@ jump. :kangaroo:
 A Bastion host, often referred to as a jump server or jump box, is a specially
 designed computer on a network that serves as a critical access point for a
 protected network, particularly when accessing internally isolated
-environments.
+environments[^bastion-wikipedia].
 
 In the context of [cloud computing], a Bastion host acts as a secure,
 intermediate server that allows authorized users to connect to other servers or
 services within a private network, typically a Virtual Private Cloud (VPC) or
-Virtual Network (VNet).
+Virtual Network (VNet)[^azure-vnet].
 
 The primary purpose of a Bastion host is to provide a controlled and monitored
 entry point into a protected network environment, reducing the attack surface
@@ -144,7 +144,7 @@ detailed logging, and fine-grained access controls.
 
 The provided capabilities for audit allows organization to adhere to the strict
 compliance requirements and security standards, ensuring that only authorized
-users can access sensitive resources.
+users can access sensitive resources[^az-compliance].
 
 ### The Evolution of Bastion Hosts: From On-Premises to Cloud
 
@@ -159,7 +159,7 @@ meet the unique challenges of distributed and scalable environments. Cloud
 providers like [Azure] have introduced managed Bastion services, such as Azure
 Bastion, which offer enhanced security features, seamless integration with
 cloud resources, and simplified management compared to traditional jump
-servers.
+servers[^azure-bastion].
 
 The modern cloud-based Bastion host builds upon its on-premises predecessors by
 incorporating advanced technologies like SSL/TLS encryption, automated
@@ -174,20 +174,21 @@ while leveraging the flexibility and scalability of cloud environments.
 
 ### Security Benefits of Azure Bastion: Fortifying Your Cloud Perimeter
 
-Azure Bastion provides a robust set of security features that significantly
+[Azure Bastion] provides a robust set of security features that significantly
 enhance your cloud infrastructure's protection. By acting as a secure gateway,
 it eliminates the need to expose RDP and SSH ports directly to the internet,
-dramatically reducing the attack surface.
+dramatically reducing the attack surface[^azure-faq].
 
 Azure Bastion implements strong encryption for all remote connections, ensuring
 that data in transit remains confidential. Additionally, it supports Azure
 Active Directory integration, enabling multi-factor authentication and
-just-in-time access, further strengthening your security posture.
+just-in-time access, further strengthening your security posture[^az-bastion-intro].
 
 ### Compliance Advantages: Meeting Regulatory Requirements with Azure Bastion
 
 For organizations operating in regulated industries, Azure Bastion offers
-several compliance advantages:
+compliance advantages that are essential for maintaining data security and
+privacy.
 
 It helps meet various compliance standards by providing detailed audit logs of
 all remote access sessions, aiding in forensic analysis and regulatory
@@ -199,13 +200,11 @@ process for cloud environments.
 
 ### Simplified Access Management: Streamlining Secure Remote Connections
 
-Azure Bastion simplifies access management by centralizing remote access to
-your Azure-hosted resources.
-
-It eliminates the need for managing multiple VPN connections or distributing
-and maintaining SSH keys. With its browser-based console, users can securely
-access resources from any device without requiring additional client software,
-reducing administrative overhead and improving user experience.
+Azure Bastion eliminates the need for managing multiple VPN connections or
+distributing and maintaining SSH keys. With its browser-based console, users
+can securely access resources from any device without requiring additional
+client software, reducing administrative overhead and improving user
+experience.
 
 ## Azure Bastion vs. Traditional Jump Servers: A Comparative Analysis
 
@@ -222,7 +221,7 @@ more seamless experience compared to standalone jump servers.
 
 ### Advantages of Azure Bastion: Elevating Cloud Access Security
 
-Azure Bastion offers several advantages over traditional jump servers:
+[Azure Bastion] offers several advantages over traditional jump servers:
 
 1. [x] Automated patching and updates, ensuring the latest security measures
        are always in place
@@ -248,7 +247,7 @@ Azure Bastion integrates seamlessly with [Azure] Virtual Network, providing
 secure access to all VMs within the VNet without requiring public IP addresses.
 
 It utilizes Azure's backbone network for connectivity, ensuring
-high-performance and low-latency connections.
+high-performance and low-latency connections[^az-networking].
 
 This integration allows for granular network security group rules, enabling you
 to precisely control which resources can be accessed through the Bastion host.
@@ -300,41 +299,6 @@ below:
 - [x] `bastion`: Azure Bastion Host. This is the main stack we'll focus on.
 - [x] `vm`: Azure Virtual Machine. We'll use this to test the Bastion host.
 
-<!--
-├── bastion
-│   ├── data.tf
-│   ├── locals.tf
-│   ├── main.tf
-│   ├── naming.tf
-│   ├── outputs.tf
-│   ├── terraform.tfstate
-│   ├── terraform.tfstate.backup
-│   ├── terragrunt.hcl
-│   ├── tfplan
-│   ├── variables.tf
-│   └── versions.tf
-├── vm
-│   ├── data.tf
-│   ├── locals.tf
-│   ├── main.tf
-│   ├── naming.tf
-│   ├── outputs.tf
-│   ├── terraform.tfstate
-│   ├── terraform.tfstate.backup
-│   ├── terragrunt.hcl
-│   ├── tfplan
-│   ├── variables.tf
-│   └── versions.tf
-└── vnet
-    ├── main.tf
-    ├── naming.tf
-    ├── outputs.tf
-    ├── terraform.tfstate
-    ├── terragrunt.hcl
-    ├── tfplan
-    └── versions.tf
--->
-
 ### Configuring the Azure Virtual Network
 
 You can safely skip this step if you already have a VNet in your [Azure] cloud
@@ -377,7 +341,7 @@ terragrunt apply tfplan
 
 ### Deploying Azure Bastion
 
-Now that we have our VNet ready, we can proceed to create the Azure Bastion
+Now that we have our VNet ready, we can proceed to create the [Azure Bastion]
 host. The following files will be used to create the Bastion host:
 
 ```tf title="bastion/versions.tf"
@@ -468,7 +432,7 @@ either the Azure Portal or the Azure CLI. Unfortunately though, since the
 Azure Bastion Host is a PaaS offering, we can't use the `ssh` command directly
 from the command line[^az-bastion-native-client].
 
-```shell title="" linenums="0" hl_lines="21"
+```shell title="" linenums="0" hl_lines="20"
 cd ./bastion
 bastion_name=$(terragrunt output -raw bastion_name)
 
@@ -482,7 +446,6 @@ terragrunt output -raw ssh_private_key > ~/.ssh/bastion
 chmod 600 ~/.ssh/bastion
 
 # if not already installed
-az extension add -n account
 az extension add -n bastion
 az extension add -n ssh
 
@@ -516,7 +479,7 @@ az network bastion ssh \
 Another useful feature of Azure Bastion is the ability to create an SSH tunnel
 to your Azure VMs through the Bastion host. This can be particularly useful for
 accessing services running on the VM that are not exposed to the public
-internet.
+internet[^az-bastion-native-client].
 
 To create an SSH tunnel, you can use the following commands:
 
@@ -567,10 +530,10 @@ world.
 
 When implementing Azure Bastion, security should be your top priority. Start by
 ensuring that your Azure Bastion subnet is named `AzureBastionSubnet` and has a
-minimum size of /27.
+minimum subnet mask of `/27`[^security-bast-practices].
 
 Furthermore, implement Network Security Groups (NSGs) to control traffic flow,
-allowing only necessary inbound and outbound connections.
+allowing only necessary inbound and outbound connections[^bastion-nsg].
 
 On top of that, enable Azure Bastion's native logging features and integrate
 with Azure Monitor for comprehensive visibility into access patterns and
@@ -593,7 +556,7 @@ techniques:
 ### Cost Management Tips: Minimizing Azure Bastion Expenses
 
 While [Azure] Bastion provides significant security benefits, it's essential to
-manage costs effectively:
+manage costs effectively[^bastion-pricing]:
 
 1. Choose the right SKU based on your usage patterns – `Basic` for smaller
    deployments, Standard for larger or more dynamic environments.
@@ -643,90 +606,25 @@ cloud security posture while streamlining access management.
 [Infrastructure as Code]: /category/infrastructure-as-code/
 [OpenTofu]: /category/opentofu/
 [Terragrunt]: /category/terragrunt/
+[Azure Bastion]: /category/azure-bastion/
 
 [Terragrunt v0.66]: https://github.com/gruntwork-io/terragrunt/releases/tag/v0.66.8
 [OpenTofu v1.8]: https://github.com/opentofu/opentofu/releases/tag/v1.8.1
 [Azure CLI v2.63]: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?pivots=apt
 
+[^bastion-wikipedia]: https://en.wikipedia.org/wiki/Bastion_host
+[^azure-vnet]: https://learn.microsoft.com/en-us/azure/networking/
+[^az-compliance]: https://docs.microsoft.com/en-us/azure/compliance/offerings/
+[^azure-bastion]: https://learn.microsoft.com/en-us/azure/bastion/bastion-overview
+[^azure-faq]: https://learn.microsoft.com/en-us/azure/bastion/bastion-faq
+[^az-bastion-intro]: https://docs.microsoft.com/en-us/azure/bastion/bastion-overview
+[^az-networking]: https://learn.microsoft.com/en-us/azure/networking/fundamentals/networking-overview
 [^az-cli-auth]: https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli
 [^tf-remote-state]: https://developer.hashicorp.com/terraform/language/state/remote-state-data
 [^az-pe]: https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview
-[^az-vault]: https://learn.microsoft.com/en-us/azure/key-vault/general/basic-concepts
 [^az-sql]: https://learn.microsoft.com/en-us/azure/azure-sql/database/sql-database-paas-overview?view=azuresql
+[^az-vault]: https://learn.microsoft.com/en-us/azure/key-vault/general/basic-concepts
 [^az-bastion-native-client]: https://learn.microsoft.com/en-us/azure/bastion/native-client
-
-<!--
-Azure Bastion Official Documentation:
-https://docs.microsoft.com/en-us/azure/bastion/bastion-overview
-What is Azure Bastion?:
-https://docs.microsoft.com/en-us/azure/bastion/bastion-overview#what-is-azure-bastion
-Azure Bastion Security Benefits:
-https://docs.microsoft.com/en-us/azure/bastion/bastion-overview#key-features
-Azure Bastion Compliance:
-https://docs.microsoft.com/en-us/azure/compliance/offerings/
-Azure Bastion Architecture:
-https://docs.microsoft.com/en-us/azure/bastion/bastion-overview#architecture
-Azure Bastion vs. Jump Servers:
-https://docs.microsoft.com/en-us/azure/bastion/bastion-overview#why-use-azure-bastion
-Azure Bastion Integration with Azure Virtual Network:
-https://docs.microsoft.com/en-us/azure/bastion/bastion-nsg
-Azure Bastion Pricing and SLA:
-https://azure.microsoft.com/en-us/pricing/details/azure-bastion/
-Azure Bastion Best Practices:
-https://docs.microsoft.com/en-us/azure/bastion/bastion-best-practices
-Azure Bastion FAQ:
-https://docs.microsoft.com/en-us/azure/bastion/bastion-faq
-Azure Security Best Practices:
-https://docs.microsoft.com/en-us/azure/security/fundamentals/best-practices-and-patterns
-Azure Networking Documentation:
-https://docs.microsoft.com/en-us/azure/networking/
-
-1. **Azure Bastion Overview**
-   - [Azure Bastion Overview](https://learn.microsoft.com/en-us/azure/bastion/bastion-overview)
-   - [What is Azure Bastion?](https://learn.microsoft.com/en-us/azure/bastion/bastion-overview#what-is-azure-bastion)
-
-2. **Azure Bastion Security Features**
-   - [Azure Bastion Security Benefits](https://learn.microsoft.com/en-us/azure/bastion/bastion-overview#key-features)
-   - [Azure Bastion Compliance](https://learn.microsoft.com/en-us/azure/compliance/offerings/)
-
-3. **Azure Bastion Architecture**
-   - [Azure Bastion Architecture](https://learn.microsoft.com/en-us/azure/bastion/bastion-overview#architecture)
-
-4. **Azure Bastion vs. Traditional Jump Servers**
-   - [Why Use Azure Bastion?](https://learn.microsoft.com/en-us/azure/bastion/bastion-overview#why-use-azure-bastion)
-
-5. **Azure Bastion Integration with Azure Virtual Network**
-   - [Azure Bastion NSG Integration](https://learn.microsoft.com/en-us/azure/bastion/bastion-nsg)
-
-6. **Azure Bastion Pricing and SLA**
-   - [Azure Bastion Pricing](https://azure.microsoft.com/en-us/pricing/details/azure-bastion/)
-   - [Azure Bastion SLA](https://azure.microsoft.com/en-us/support/legal/sla/bastion/v1_0/)
-
-7. **Azure Bastion Best Practices**
-   - [Azure Bastion Best Practices](https://learn.microsoft.com/en-us/azure/bastion/bastion-best-practices)
-
-8. **Additional Azure Security Best Practices**
-   - [Azure Security Best Practices](https://learn.microsoft.com/en-us/azure/security/fundamentals/best-practices-and-patterns)
-
-9. **Azure Networking Documentation**
-   - [Azure Networking Documentation](https://learn.microsoft.com/en-us/azure/networking/)
-
-10. **Azure CLI Authentication**
-    - [Azure CLI Authentication](https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli)
-
-11. **Terraform Remote State Data Source**
-    - [Terraform Remote State Data Source](https://developer.hashicorp.com/terraform/language/state/remote-state-data)
-
-12. **Azure Bastion Native Client**
-    - [Azure Bastion Native Client](https://learn.microsoft.com/en-us/azure/bastion/native-client)
-
-13. **Azure Private Link**
-    - [Azure Private Endpoint Overview](https://learn.microsoft.com/en-us/azure/private-link/private-endpoint-overview)
-
-14. **Azure Key Vault**
-    - [Azure Key Vault Basic Concepts](https://learn.microsoft.com/en-us/azure/key-vault/general/basic-concepts)
-
-15. **Azure SQL Database**
-    - [Azure SQL Database Overview](https://learn.microsoft.com/en-us/azure/azure-sql/database/sql-database-paas-overview?view=azuresql)
-
--->
+[^bastion-nsg]: https://docs.microsoft.com/en-us/azure/bastion/bastion-nsg
+[^security-bast-practices]: https://docs.microsoft.com/en-us/azure/security/fundamentals/best-practices-and-patterns
+[^bastion-pricing]: https://azure.microsoft.com/en-us/pricing/details/azure-bastion/

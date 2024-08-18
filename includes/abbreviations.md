@@ -31,3 +31,4 @@
 *[ABAC]: Attribute-Based Access Control
 *[OPA]: Open Policy Agent
 *[PaaS]: Platform as a Service
+*[RDP]: Remote Desktop Protocol
