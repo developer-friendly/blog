@@ -95,7 +95,6 @@ plugins:
   - privacy:
       enabled: !ENV [PRIVACY, false]
       assets_exclude:
-        - pagead2.googlesyndication.com/*
         - www.googletagmanager.com/*
       links_attr_map:
         target: _blank
