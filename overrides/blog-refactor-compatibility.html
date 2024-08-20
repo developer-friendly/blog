@@ -1,0 +1,8 @@
+<script type="text/javascript">
+  var l = window.location;
+
+  if (l.pathname.match(/^\/2024\//)) {
+    console.log(`Keeping backward compatibility for old blog URLs: ${l.pathname}`);
+    l.pathname = '/blog' + l.pathname;
+  }
+</script>
