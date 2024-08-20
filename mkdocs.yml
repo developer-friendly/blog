@@ -277,7 +277,7 @@ markdown_extensions:
       custom_checkbox: true
 nav:
   - index.md
-  - Blog: ./blog/
+  - Blog: ./blog/index.md
   - Newsletter: https://developerfriendly.eo.page/
   - sponsors.md
   - Status: https://developer-friendly.cronitorstatus.com/
