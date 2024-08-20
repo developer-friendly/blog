@@ -112,7 +112,7 @@ plugins:
       pagination_format: "$link_first $link_previous ~2~ $link_next $link_last"
   - rss:
       enabled: true
-      match_path: posts/.*
+      match_path: blog/posts/.*
       date_from_meta:
         as_creation: date
       categories:
