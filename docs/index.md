@@ -9,6 +9,7 @@ hide:
   - navigation
   - feedback
 comments: false
+glightbox: false
 ---
 
 # About Me
