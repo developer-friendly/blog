@@ -1,0 +1,13 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: echo-server
+spec:
+  imageRepositoryRef:
+    name: echo-server
+    namespace: PLACEHOLDER
+  filterTags:
+    pattern: ^[0-9]+$ # github run-id, monotonic per repository
+  policy:
+    numerical:
+      order: asc

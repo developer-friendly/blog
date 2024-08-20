@@ -1,0 +1,16 @@
+---
+- name: Restart wellknown-server
+  ansible.builtin.systemd:
+    name: wellknown-server
+    state: restarted
+    daemon_reload: true
+- name: Restart static-web-server-prepare
+  ansible.builtin.systemd:
+    name: static-web-server-prepare
+    state: restarted
+    daemon_reload: true
+- name: Restart static-web-server
+  ansible.builtin.systemd:
+    name: static-web-server
+    state: restarted
+    daemon_reload: true

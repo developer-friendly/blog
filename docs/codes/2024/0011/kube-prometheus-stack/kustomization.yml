@@ -1,7 +1,0 @@
-resources:
-  - repository.yml
-  - externalsecret.yml
-  - release.yml
-  - alertmanagerconfig.yml
-
-namespace: flux-system

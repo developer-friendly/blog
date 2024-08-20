@@ -1,0 +1,24 @@
+resources:
+  - ../../base
+  - externalsecret-docker.yml
+  - externalsecret-gpgkey.yml
+  - imagerepository.yml
+  - imagepolicy.yml
+  - imageupdateautomation.yml
+  - httproute.yml
+commonLabels:
+  env: dev
+images:
+  - name: ghcr.io/developer-friendly/echo-server
+    newTag: "9050352340" # {"$imagepolicy"(1): "default:echo-server:tag"}
+namespace: default
+patches:
+  - patch: |
+      - op: replace
+        path: /spec/imageRepositoryRef/namespace
+        value: default
+    target:
+      group: image.toolkit.fluxcd.io
+      version: v1beta2
+      kind: ImagePolicy
+      name: echo-server

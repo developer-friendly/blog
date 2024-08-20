@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: aws-developer-friendly-blog
+spec:
+  dnsNames:
+  - '*.aws.developer-friendly.blog'
+  issuerRef:
+    kind: ClusterIssuer
+    name: route53-issuer
+  privateKey:
+    rotationPolicy: Always
+  revisionHistoryLimit: 5
+  secretName: aws-developer-friendly-blog-tls

@@ -1,0 +1,6 @@
+# ... truncated for brevity ...
+# NOTE: In a production scenario, this would contain the full contents of
+# the source helm values file.
+serviceAccount:
+  # We will patch the following later in our TF code
+  annotations: {}

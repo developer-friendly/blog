@@ -1,0 +1,21 @@
+{
+  "aio": "E2NgYMg8Gbb806e+uKXTa+/9sfu7GwA=",
+  "appid": "00000000-0000-0000-0000-000000000000",
+  "appidacr": "2",
+  "aud": "https://management.core.windows.net/",
+  "exp": 1716610771,
+  "iat": 1716524071,
+  "idp": "https://sts.windows.net/00000000-0000-0000-0000-000000000000/",
+  "idtyp": "app",
+  "iss": "https://sts.windows.net/00000000-0000-0000-0000-000000000000/",
+  "nbf": 1716524071,
+  "oid": "828b741f-e7af-4737-9490-770b12926479",
+  "rh": "0.AXkAC4levVMMqkiN4sz38azlP0ZIf3kAutdPukPawfj2MBOUAAA.",
+  "sub": "828b741f-e7af-4737-9490-770b12926479",
+  "tid": "00000000-0000-0000-0000-000000000000",
+  "uti": "2BN2WjhkWE2mjPzyHC8hAA",
+  "ver": "1.0",
+  "xms_az_rid": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/aws-oidc-rg/providers/Microsoft.Compute/virtualMachines/oidc-vm",
+  "xms_mirid": "/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/aws-oidc-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/aws-oidc-identity",
+  "xms_tcdt": "1650467252"
+}

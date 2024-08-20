@@ -1,0 +1,9 @@
+---
+- name: Install cilium
+  ansible.builtin.command:
+    cmd: cilium install --set kubeProxyReplacement=true --wait --version {{ cilium_version }}
+  register: cilium_install
+  changed_when: false
+  ignore_errors: true
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml

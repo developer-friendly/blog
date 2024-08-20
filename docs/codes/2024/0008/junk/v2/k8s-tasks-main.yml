@@ -1,9 +1,0 @@
----
-- name: Cilium
-  ansible.builtin.import_tasks: cilium.yml
-  tags:
-    - cilium
-- name: Certbot
-  ansible.builtin.import_tasks: certbot.yml
-  tags:
-    - certbot

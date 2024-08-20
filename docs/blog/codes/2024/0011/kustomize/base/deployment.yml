@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-server
+spec:
+  template:
+    spec:
+      containers:
+        - envFrom:
+            - configMapRef:
+                name: echo-server
+          image: ghcr.io/developer-friendly/echo-server
+          name: echo-server
+          ports:
+            - containerPort: 3000
+              name: http

@@ -1,0 +1,14 @@
+configurations:
+  - kustomizeconfig.yml
+
+configMapGenerator:
+  - files:
+      - values.yaml=./values.yml
+    name: cert-manager-config
+
+resources:
+  - namespace.yml
+  - repository.yml
+  - release.yml
+
+namespace: cert-manager

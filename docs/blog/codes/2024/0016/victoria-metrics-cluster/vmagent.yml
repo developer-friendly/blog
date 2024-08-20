@@ -1,0 +1,10 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMAgent
+metadata:
+  name: vmscrape
+spec:
+  extraArgs:
+    promscrape.maxScrapeSize: 32MiB
+  selectAllByDefault: true
+  remoteWrite:
+    - url: http://vminsert-vmserver.monitoring:8480/insert/0/prometheus

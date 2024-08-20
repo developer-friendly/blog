@@ -1,0 +1,15 @@
+[Unit]
+Description=Wellknown Server
+
+[Service]
+ExecStartPre=/bin/mkdir -p {{ acme_home }}/.well-known/acme-challenge
+ExecStart=/usr/bin/python3 -m http.server -d {{ acme_home }} 80
+Restart=on-failure
+WorkingDirectory={{ acme_home }}
+User=acme
+Group=acme
+RestartSec=5
+AmbientCapabilities=cap_net_bind_service
+
+[Install]
+WantedBy=multi-user.target

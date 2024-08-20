@@ -1,0 +1,3 @@
+resources:
+  - httproute.yml
+  - rule.yml

@@ -1,0 +1,8 @@
+[
+  {
+    "namespace": "endpoints",
+    "object": "/api/v1/users",
+    "relation": "GET",
+    "subject_id": "auditbot@developer-friendly.blog"
+  }
+]

@@ -1,4 +1,0 @@
-k8s:
-  hosts:
-    k3s-cluster:
-      ansible_host: k3s-cluster.hetzner

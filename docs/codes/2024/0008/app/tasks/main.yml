@@ -1,7 +1,0 @@
----
-- name: Apply the app job
-  kubernetes.core.k8s:
-    template: manifest.yml
-    state: present
-    force: true
-    wait: true

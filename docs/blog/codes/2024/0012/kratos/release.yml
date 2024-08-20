@@ -1,0 +1,86 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: kratos
+spec:
+  chart:
+    spec:
+      chart: kratos
+      sourceRef:
+        kind: HelmRepository
+        name: ory
+      version: 0.42.x
+  interval: 30m
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: kratos
+            patch: |
+              - op: add
+                path: /spec/template/spec/initContainers/0/envFrom
+                value:
+                  - secretRef:
+                      name: kratos-secrets
+          - target:
+              kind: Deployment
+              name: kratos
+            patch: |
+              - op: replace
+                path: /spec/template/spec/containers/0/args
+                value:
+                  - serve
+                  - all
+                  - --config
+                  - /var/lib/kratos/config/config.yml
+          - target:
+              kind: StatefulSet
+              name: kratos-courier
+            patch: |
+              - op: replace
+                path: /spec/template/spec/containers/0/args
+                value:
+                  - courier
+                  - watch
+                  - --config
+                  - /var/lib/kratos/config/config.yml
+                  - --expose-metrics-port
+                  - "4434"
+  releaseName: kratos
+  test:
+    enable: false
+  timeout: 5m
+  upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
+    remediation:
+      remediateLastFailure: true
+  values:
+    deployment:
+      extraVolumes:
+        - name: kratos-config
+          configMap:
+            name: kratos-config
+            items:
+              - key: kratos-server-config.yml
+                path: config.yml
+      extraVolumeMounts:
+        - name: kratos-config
+          mountPath: /var/lib/kratos/config
+          readOnly: true
+    statefulSet:
+      extraVolumes:
+        - name: kratos-config
+          configMap:
+            name: kratos-config
+            items:
+              - key: kratos-server-config.yml
+                path: config.yml
+      extraVolumeMounts:
+        - name: kratos-config
+          mountPath: /var/lib/kratos/config
+          readOnly: true
+  valuesFrom:
+    - kind: ConfigMap
+      name: kratos-config

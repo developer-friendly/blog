@@ -1,0 +1,39 @@
+resources:
+  - deployment.yml
+  - service.yml
+  - httproute.yml
+
+images:
+  - name: ealen/echo-server
+    newTag: 0.9.2
+
+configMapGenerator:
+  - name: echo-server
+    envs:
+      - configs.env
+
+replacements:
+  - source:
+      kind: Deployment
+      name: echo-server
+      fieldPath: spec.template.metadata.labels
+    targets:
+      - select:
+          kind: Service
+          name: echo-server
+        fieldPaths:
+          - spec.selector
+        options:
+          create: true
+  - source:
+      kind: ConfigMap
+      name: echo-server
+      fieldPath: data.PORT
+    targets:
+      - select:
+          kind: Deployment
+          name: echo-server
+        fieldPaths:
+          - spec.template.spec.containers.[name=echo-server].ports.[name=http].containerPort
+
+namespace: default

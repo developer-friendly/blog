@@ -1,4 +1,0 @@
----
-- name: Cilium
-  include_tasks: cilium.yml
-  tags: cilium

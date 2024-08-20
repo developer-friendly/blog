@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keto
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    spec:
+      initContainers:
+        - name: keto-automigrate
+          image: oryd/keto
+          command:
+            - keto
+          args:
+            - migrate
+            - up
+            - --yes
+            - --config
+            - /etc/config/keto.yaml
+          envFrom:
+            - secretRef:
+                name: keto-secrets
+          volumeMounts:
+            - name: keto-config
+              mountPath: /etc/config/keto.yaml
+              subPath: keto.yaml
+              readOnly: true
+      containers:
+        - image: oryd/keto
+          name: keto
+          command:
+            - keto
+          args:
+            - serve
+            - --config
+            - /etc/config/keto.yaml
+          envFrom:
+            - secretRef:
+                name: keto-secrets
+          ports:
+            - containerPort: 4466
+              name: keto-read
+            - containerPort: 4467
+              name: keto-write
+          volumeMounts:
+            - name: keto-config
+              mountPath: /etc/config/keto.yaml
+              subPath: keto.yaml
+              readOnly: true
+          resources: {}
+      volumes:
+        - name: keto-config
+          configMap:
+            name: keto-config
+            optional: false
+            items:
+              - key: keto-server-config.yml
+                path: keto.yaml

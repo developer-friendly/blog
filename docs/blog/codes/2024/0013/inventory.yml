@@ -1,0 +1,7 @@
+oidc:
+  hosts:
+    4.185.94.86:
+      ansible_host: 4.185.94.86
+      ansible_ssh_user: adminuser
+      ansible_ssh_private_key_file: /tmp/oidc-vm.pem
+      ansible_ssh_common_args: "-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -o PasswordAuthentication=no"

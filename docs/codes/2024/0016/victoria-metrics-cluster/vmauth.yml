@@ -1,6 +1,0 @@
-apiVersion: operator.victoriametrics.com/v1beta1
-kind: VMAuth
-metadata:
-  name: auth-proxy
-spec:
-  selectAllByDefault: true

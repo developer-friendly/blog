@@ -1,4 +1,0 @@
-# NOTE: truncated for brevity ...
-# In a production setup, the whole file will be stored in VCS as is!
-
-installCRDs: true

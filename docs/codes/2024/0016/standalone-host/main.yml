@@ -1,6 +1,0 @@
-- name: Monitor targets with Victoria Metrics
-  hosts: monitoring
-  roles:
-    - victoria-metrics
-  vars:
-    remote_write_url: https://vminsert.developer-friendly.blog/api/v1/write

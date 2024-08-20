@@ -1,0 +1,20 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: aws-parameter-store
+spec:
+  provider:
+    aws:
+      auth:
+        secretRef:
+          accessKeyIDSecretRef:
+            key: AWS_ACCESS_KEY_ID
+            name: aws-ssm-user
+            namespace: default
+          secretAccessKeySecretRef:
+            key: AWS_SECRET_ACCESS_KEY
+            name: aws-ssm-user
+            namespace: default
+      region: eu-central-1
+      role: arn:aws:iam::123456789012:role/aws-ssm-user
+      service: ParameterStore

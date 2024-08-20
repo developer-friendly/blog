@@ -1,0 +1,28 @@
+[Unit]
+Description=Static Web Server
+
+[Service]
+ExecStartPre=/usr/bin/test -s cert.pem
+ExecStartPre=/usr/bin/test -s key.pem
+ExecStartPre=/usr/bin/test -s .well-known/openid-configuration
+ExecStartPre=/usr/bin/test -s openid/v1/jwks
+ExecStart=/usr/local/bin/static-web-server \
+  --host 0.0.0.0 \
+  --port 443 \
+  --root . \
+  --log-level info \
+  --http2 \
+  --http2-tls-cert cert.pem \
+  --http2-tls-key key.pem \
+  --compression \
+  --health \
+  --experimental-metrics
+Restart=on-failure
+WorkingDirectory={{ static_web_server_home }}
+User=static-web-server
+Group=static-web-server
+RestartSec=5
+AmbientCapabilities=cap_net_bind_service
+
+[Install]
+WantedBy=multi-user.target

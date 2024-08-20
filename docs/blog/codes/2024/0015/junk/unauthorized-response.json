@@ -1,0 +1,8 @@
+{
+  "error": {
+    "code": 401,
+    "message": "Access credentials are invalid",
+    "request": "d1b7eadf-1383-4951-a162-f35717e3ee1b",
+    "status": "Unauthorized"
+  }
+}

@@ -1,6 +1,0 @@
-resources:
-  - externalsecret.yml
-  - httproute.yml
-  - receiver.yml
-
-namespace: flux-system

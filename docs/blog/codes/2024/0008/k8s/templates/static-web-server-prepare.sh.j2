@@ -1,0 +1,23 @@
+#!/usr/bin/env sh
+
+# This script will run as root to prepare the files for the static web server
+
+set -eu
+
+mkdir -p {{ static_web_server_home }}/.well-known \
+  {{ static_web_server_home }}/openid/v1
+
+kubectl get --raw /.well-known/openid-configuration > \
+  {{ static_web_server_home }}/.well-known/openid-configuration
+
+kubectl get --raw /openid/v1/jwks > \
+  {{ static_web_server_home }}/openid/v1/jwks
+
+cp /etc/letsencrypt/live/{{ domain_name }}/fullchain.pem \
+  {{ static_web_server_home }}/cert.pem
+
+cp /etc/letsencrypt/live/{{ domain_name }}/privkey.pem \
+  {{ static_web_server_home }}/key.pem
+
+
+chown -R static-web-server:static-web-server {{ static_web_server_home }}

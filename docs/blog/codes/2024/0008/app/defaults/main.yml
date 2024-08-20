@@ -1,0 +1,3 @@
+---
+aws_region: eu-central-1
+role_session_name: k3s-cluster

@@ -1,0 +1,47 @@
+---
+- name: Configure Azure VM Identity
+  hosts: oidc
+  become: false
+  gather_facts: false
+  vars:
+    aws_profile: default
+  tasks:
+    - name: Login with identity
+      ansible.builtin.command:
+        cmd: az login -i --allow-no-subscriptions
+        creates: ~/.azure/azureProfile.json
+    - name: Fetch Azure access token
+      ansible.builtin.command:
+        cmd: az account get-access-token
+      no_log: true
+      changed_when: false
+      register: azure_access_token
+    - name: Place the VM identity token in ~/.azure/vm-identity-token
+      ansible.builtin.copy:
+        content: "{{ azure_access_token.stdout | from_json | json_query('accessToken') }}"
+        dest: "~/.azure/vm-identity-token"
+        mode: "0400"
+    - name: Fetch role-arn from AWS SSM if not set from CLI
+      ansible.builtin.set_fact:
+        role_arn: "{{ lookup('amazon.aws.ssm_parameter', '/azure/oidc/role-arn', profile=aws_profile) }}"
+      when: role_arn is not defined
+    - name: Ensure ~/.aws/ dir exists
+      ansible.builtin.file:
+        path: "~/.aws"
+        state: directory
+        mode: "0700"
+    - name: Create the AWS config
+      ansible.builtin.copy:
+        content: |
+          [default]
+          region = eu-central-1
+          output = json
+          web_identity_token_file = /home/{{ ansible_user }}/.azure/vm-identity-token
+          role_arn = {{ role_arn }}
+          role_session_name = azure-oidc-vm
+        dest: "~/.aws/config"
+        mode: "0400"
+    - name: List AWS S3 buckets
+      ansible.builtin.command:
+        cmd: aws s3 ls
+      changed_when: false

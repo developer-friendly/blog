@@ -1,8 +1,0 @@
-apiVersion: notification.toolkit.fluxcd.io/v1beta3
-kind: Provider
-metadata:
-  name: alertmanager
-spec:
-  secretRef:
-    name: alertmanager-address
-  type: alertmanager

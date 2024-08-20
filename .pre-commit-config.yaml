@@ -4,6 +4,10 @@ repos:
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=800"]
+        exclude: |
+          (?x)^(
+              docs/assets/me.png
+          )$
       - id: check-ast
       - id: check-executables-have-shebangs
       - id: check-json
@@ -18,7 +22,6 @@ repos:
         args:
           - --allow-missing-credentials
       - id: end-of-file-fixer
-        exclude: ads.txt
       - id: name-tests-test
       - id: file-contents-sorter
       - id: requirements-txt-fixer
@@ -45,7 +48,7 @@ repos:
       - id: pretty-format-json
         args:
           - --autofix
-        exclude: .*docs/codes/2024/0012/junk/registration-flow-response.json
+        exclude: .*docs/blog/codes/2024/0012/junk/registration-flow-response.json
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
     rev: v9.16.0
     hooks:

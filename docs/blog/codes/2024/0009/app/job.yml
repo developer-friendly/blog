@@ -1,0 +1,22 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: app
+spec:
+  template:
+    spec:
+      containers:
+        - name: mongo
+          image: mongo
+          command:
+            - sh
+            - -c
+            - |
+              set -eu
+
+              mongosh --eval 'db.runCommand({ serverStatus : 1 })' "$MONGO_DSN"
+          envFrom:
+            - secretRef:
+                name: app
+      restartPolicy: Never
+  backoffLimit: 2

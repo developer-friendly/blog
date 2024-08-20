@@ -1,5 +1,0 @@
-{
-  "Account": "XXXXXXXXXXXX",
-  "Arn": "arn:aws:sts::XXXXXXXXXXXX:assumed-role/k3s-demo-app/k3s-cluster",
-  "UserId": "AROAYTLV5GLUYXO2EKETN:k3s-cluster"
-}

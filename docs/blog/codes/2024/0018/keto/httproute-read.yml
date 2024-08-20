@@ -1,0 +1,28 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: keto-read
+spec:
+  hostnames:
+    - acl.developer-friendly.blog
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: developer-friendly-blog
+      namespace: cert-manager
+      sectionName: https
+  rules:
+    - backendRefs:
+        - kind: Service
+          name: keto-read
+          port: 80
+      filters:
+        - responseHeaderModifier:
+            set:
+              - name: Strict-Transport-Security
+                value: max-age=31536000; includeSubDomains; preload
+          type: ResponseHeaderModifier
+      matches:
+        - path:
+            type: PathPrefix
+            value: /

@@ -1,0 +1,13 @@
+[Unit]
+Description=Update TLS & K8s OIDC Config
+
+[Service]
+Environment=KUBECONFIG={{ kubeconfig }}
+ExecStartPre=/bin/mkdir -p .well-known openid/v1
+ExecStart=/usr/local/bin/static-web-server-prepare
+Restart=on-failure
+Type=oneshot
+WorkingDirectory={{ static_web_server_home }}
+
+[Install]
+WantedBy=multi-user.target

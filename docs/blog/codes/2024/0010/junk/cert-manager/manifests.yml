@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+---
+apiVersion: v1
+data:
+  values.yaml: |
+    # NOTE: truncated for brevity ...
+    # In a production setup, the whole file will be stored in VCS as is!
+
+    installCRDs: true
+kind: ConfigMap
+metadata:
+  name: cert-manager-config-8b8tf9hfb4
+  namespace: cert-manager
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  chart:
+    spec:
+      chart: cert-manager
+      sourceRef:
+        kind: HelmRepository
+        name: cert-manager
+      version: v1.14.x
+  interval: 30m
+  maxHistory: 10
+  releaseName: cert-manager
+  targetNamespace: cert-manager
+  timeout: 2m
+  valuesFrom:
+  - kind: ConfigMap
+    name: cert-manager-config-8b8tf9hfb4
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: cert-manager
+  namespace: cert-manager
+spec:
+  interval: 60m
+  url: https://charts.jetstack.io

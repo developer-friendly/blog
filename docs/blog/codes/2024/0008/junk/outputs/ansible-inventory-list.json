@@ -1,0 +1,26 @@
+{
+  "_meta": {
+    "hostvars": {
+      "k3s-cluster": {
+        "ansible_host": "XX.XX.XX.XX",
+        "ansible_ssh_common_args": "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o PasswordAuthentication=no",
+        "ansible_ssh_private_key_file": "~/.ssh/k3s-cluster",
+        "ansible_user": "k8s",
+        "discovered_interpreter_python": {
+          "__ansible_unsafe": "/usr/bin/python3"
+        }
+      }
+    }
+  },
+  "all": {
+    "children": [
+      "ungrouped",
+      "k8s"
+    ]
+  },
+  "k8s": {
+    "hosts": [
+      "k3s-cluster"
+    ]
+  }
+}

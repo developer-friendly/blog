@@ -1,0 +1,14 @@
+configurations:
+  - kustomizeconfig.yml
+
+configMapGenerator:
+  - files:
+      - values.yaml=./helm-values.yml
+      - ./kratos-server-config.yml
+    name: kratos-config
+
+resources:
+  - repository.yml
+  - release.yml
+  - externalsecret.yml
+  - httproute.yml

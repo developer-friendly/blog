@@ -1,0 +1,8 @@
+[Unit]
+Description=Update TLS & K8s OIDC Config Every Minute
+
+[Timer]
+OnCalendar=*-*-* *:*:00
+
+[Install]
+WantedBy=multi-user.target

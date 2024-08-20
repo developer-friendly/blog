@@ -1,0 +1,51 @@
+- name: Bootstrap the Kubernetes cluster
+  hosts: localhost
+  gather_facts: false
+  become: true
+  environment:
+    KUBECONFIG: ~/.kube/config
+  vars:
+    helm_version: v3.14.4
+    kube_context: k3d-k3s-default
+  tasks:
+    - name: Install Kubernetes library
+      ansible.builtin.pip:
+        name: kubernetes<30
+        state: present
+    - name: Install helm binary
+      ansible.builtin.shell:
+        cmd: "{{ lookup('ansible.builtin.url', 'https://git.io/get_helm.sh', split_lines=false) }}"
+        creates: /usr/local/bin/helm
+      environment:
+        DESIRED_VERSION: "{{ helm_version }}"
+    - name: Install Kubernetes gateway CRDs
+      kubernetes.core.k8s:
+        src: "{{ item }}"
+        state: present
+        context: "{{ kube_context }}"
+      loop:
+        - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/standard-install.yaml
+        - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.0.0/experimental-install.yaml
+    - name: Install cilium
+      block:
+        - name: Add cilium helm repository
+          kubernetes.core.helm_repository:
+            name: cilium
+            repo_url: https://helm.cilium.io
+        - name: Install cilium helm release
+          kubernetes.core.helm:
+            name: cilium
+            chart_ref: cilium/cilium
+            namespace: kube-system
+            state: present
+            chart_version: 1.15.x
+            kube_context: "{{ kube_context }}"
+            values:
+              gatewayAPI:
+                enabled: true
+              kubeProxyReplacement: true
+              encryption:
+                enabled: true
+                type: wireguard
+              operator:
+                replicas: 1

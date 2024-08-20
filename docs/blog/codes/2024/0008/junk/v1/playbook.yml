@@ -1,0 +1,7 @@
+---
+- name: Bootstrap k8s node
+  hosts: k3s-cluster
+  gather_facts: false
+  become: true
+  roles:
+    - k8s

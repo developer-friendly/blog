@@ -1,6 +1,0 @@
-resources:
-  - vmcluster.yml
-  - vmagent.yml
-  - vmuser.yml
-  - vmauth.yml
-  - httproute.yml

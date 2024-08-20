@@ -1,0 +1,20 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta2
+kind: HelmRelease
+metadata:
+  name: cert-manager
+spec:
+  chart:
+    spec:
+      chart: cert-manager
+      sourceRef:
+        kind: HelmRepository
+        name: cert-manager
+      version: v1.14.x
+  interval: 30m
+  maxHistory: 10
+  releaseName: cert-manager
+  targetNamespace: cert-manager
+  timeout: 2m
+  valuesFrom:
+    - kind: ConfigMap
+      name: cert-manager-config

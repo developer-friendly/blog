@@ -1,5 +1,0 @@
-Config/Flag,Description
-`--disable-network-policy`,"This flag disables the default network policy controller in k3s. We will use Cilium as the CNI plugin, which comes with its own network policy controller."
-`--flannel-backend none`,"This flag disables the default Flannel CNI plugin in k3s. Again, we will use Cilium as the CNI plugin."
-`--secrets-encryption`,"This flag enables the secrets encryption feature in k3s. This is a security feature that encrypts the secrets stored in etcd."
-`--disable traefik`,"We will not require Traefik as an Ingress Controller in our setup. We will use Cilium with the help of ServiceLB of k3s."

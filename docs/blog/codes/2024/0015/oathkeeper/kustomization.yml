@@ -1,0 +1,44 @@
+configMapGenerator:
+  - name: oathkeeper-config
+    files:
+      - config.yml=oathkeeper-server-config.yml
+
+images:
+  - name: oryd/oathkeeper
+    newTag: v0.40.7
+  - name: oryd/oathkeeper-maester
+    newTag: v0.1.10-arm64
+
+replacements:
+  - source:
+      kind: Deployment
+      name: oathkeeper
+      fieldPath: metadata.namespace
+    targets:
+      - select:
+          kind: Deployment
+          name: oathkeeper-maester
+        fieldPaths:
+          - spec.template.spec.containers.[name=oathkeeper-maester].args.3
+        options:
+          delimiter: "="
+          index: 1
+          create: false
+      - select:
+          kind: ClusterRoleBinding
+          name: oathkeeper-maester-role-binding
+        fieldPaths:
+          - subjects.[kind=ServiceAccount].namespace
+        options:
+          create: true
+
+resources:
+  - https://github.com/ory/oathkeeper-maester//config/crd?timeout=30s&ref=v0.1.10
+  - clusterrole.yml
+  - clusterrolebinding.yml
+  - service-oathkeeper-api.yml
+  - service-oathkeeper-metrics.yml
+  - service-oathkeeper-proxy.yml
+  - serviceaccount-maester.yml
+  - deployment-oathkeeper-maester.yml
+  - deployment-oathkeeper.yml
