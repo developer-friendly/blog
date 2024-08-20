@@ -674,9 +674,9 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [echo-server-deployment]: ./0017-per-pr-deployment.md/#base-kustomization-for-the-application
 
 [^yak-shaving]: https://seths.blog/2005/03/dont_shave_that/
-[^ory-perm-lang]: https://www.ory.sh/docs/blog/keto/#ory-permission-language
+[^ory-perm-lang]: https://www.ory.sh/docs/keto/#ory-permission-language
 [^keto-examples-json-access-policy]: https://github.com/ory/examples/blob/a085b65d21d6d31c1cb728a6b8b28f281f074066/kratos-keto-oathkeeper-k8s/keto/keto-job/config/relation-tuples/admin-access.json
-[^keto-http-api]: https://www.ory.sh/docs/blog/keto/reference/rest-api
+[^keto-http-api]: https://www.ory.sh/docs/keto/reference/rest-api
 [^casbin]: https://casbin.org/
 [^opa]: https://www.openpolicyagent.org/
 [^auth0]: https://auth0.com/
@@ -686,12 +686,12 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [^ory-network]: https://console.ory.sh/
 [^ory-helm-repo]: https://github.com/ory/k8s
 [^ory-helm-charts]: https://artifacthub.io/packages/search?repo=ory&sort=relevance&page=1
-[^keto-cli-installation]: https://www.ory.sh/docs/blog/keto/install
-[^keto-create-relationship-api]: https://www.ory.sh/docs/blog/keto/reference/rest-api#tag/relationship/operation/createRelationship
-[^keto-sdk-libraries]: https://www.ory.sh/docs/blog/keto/sdk/overview
-[^keto-permission-post-api]: https://www.ory.sh/docs/blog/keto/reference/rest-api#tag/permission/operation/postCheckPermissionOrError
-[^keto-configuration]: https://www.ory.sh/docs/blog/keto/reference/configuration
-[^keto-check-cli]: https://www.ory.sh/docs/blog/keto/cli/keto-check
+[^keto-cli-installation]: https://www.ory.sh/docs/keto/install
+[^keto-create-relationship-api]: https://www.ory.sh/docs/keto/reference/rest-api#tag/relationship/operation/createRelationship
+[^keto-sdk-libraries]: https://www.ory.sh/docs/keto/sdk/overview
+[^keto-permission-post-api]: https://www.ory.sh/docs/keto/reference/rest-api#tag/permission/operation/postCheckPermissionOrError
+[^keto-configuration]: https://www.ory.sh/docs/keto/reference/configuration
+[^keto-check-cli]: https://www.ory.sh/docs/keto/cli/keto-check
 [^maester-repo]: https://github.com/ory/oathkeeper-maester/
-[^keto-session-template]: https://www.ory.sh/docs/blog/oathkeeper/pipeline#session
+[^keto-session-template]: https://www.ory.sh/docs/oathkeeper/pipeline#session
 [^go-net-url-docs]: https://pkg.go.dev/net/url#URL.EscapedPath

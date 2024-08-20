@@ -764,8 +764,8 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [^gh-self-hosted-runner]: https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
 [^comment-pr-marketplace]: https://github.com/marketplace/actions/github-comment-pr
 [^yaml-multiline-string]: https://yaml-multiline.info/
-[^limitrange]: https://kubernetes.io/docs/blog/concepts/policy/limit-range/
-[^resourcequota]: https://kubernetes.io/docs/blog/concepts/policy/resource-quotas/
+[^limitrange]: https://kubernetes.io/docs/concepts/policy/limit-range/
+[^resourcequota]: https://kubernetes.io/docs/concepts/policy/resource-quotas/
 [^pullpreview]: https://pullpreview.com/
 [^env0-guide]: https://www.env0.com/blog/why-per-pull-request-environments-and-how
 [^aws-cdk-guide]: https://github.com/jgoux/preview-environments-per-pull-request-using-aws-cdk-and-github-actions

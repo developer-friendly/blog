@@ -659,7 +659,7 @@ encryption out of the box. I wouldn't want to be charged extra money if I
 really don't have to.
 
 <!-- References -->
-[^1]: https://kubernetes.io/docs/blog/concepts/configuration/secret/
+[^1]: https://kubernetes.io/docs/concepts/configuration/secret/
 [^2]: https://external-secrets.io/v0.9.16/
 [^3]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
 [^4]: https://registry.terraform.io/modules/Azure/aks/azurerm/8.0.0

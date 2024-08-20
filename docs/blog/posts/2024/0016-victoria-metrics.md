@@ -529,11 +529,11 @@ Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 [^vm-prominent-features]: https://docs.victoriametrics.com/single-server-victoriametrics/#prominent-features
 [^vm-blog-comparing-agents]: https://victoriametrics.com/blog/comparing-agents-for-scraping/
 [^vm-vs-prom-perf]: https://zetablogs.medium.com/prometheus-vs-victoria-metrics-load-testing-3fa0cc782912
-[^prometheus-long-term-storage]: https://prometheus.io/docs/blog/prometheus/latest/storage/#operational-aspects
+[^prometheus-long-term-storage]: https://prometheus.io/docs/prometheus/latest/storage/#operational-aspects
 [^last9-vm-vs-thanos]: https://last9.io/blog/thanos-vs-victoriametrics/
 [^vm-operator]: https://artifacthub.io/packages/helm/victoriametrics/victoria-metrics-operator/0.32.2
 [^vmauth]: https://docs.victoriametrics.com/operator/auth/
-[^oathkeeper-access-rules]: https://www.ory.sh/docs/blog/oathkeeper/api-access-rules
+[^oathkeeper-access-rules]: https://www.ory.sh/docs/oathkeeper/api-access-rules
 [^k8s-prom-stack]: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack/60.1.0
 [^vm-object-conversion]: https://docs.victoriametrics.com/operator/migration/#objects-conversion
 [^vm-migration-guide]: https://docs.victoriametrics.com/operator/migration/

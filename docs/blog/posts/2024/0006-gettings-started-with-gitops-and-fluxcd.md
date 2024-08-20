@@ -428,7 +428,7 @@ The full repository is publicly available on GitHub[^12] under the
 [Apache 2.0 license][license].
 
 [k8s-the-hard-way]: ./0003-kubernetes-the-hard-way.md
-[minikube]: https://minikube.sigs.k8s.io/docs/blog/
+[minikube]: https://minikube.sigs.k8s.io/docs/
 [kind]: https://kind.sigs.k8s.io/
 [k3s-setup]: ./0005-install-k3s-on-ubuntu22.md
 [kustomize]: https://kustomize.io/
@@ -441,7 +441,7 @@ The full repository is publicly available on GitHub[^12] under the
 [^5]: https://fluxcd.io/flux/flux-gh-action/
 [^6]: https://fluxcd.io/flux/components/notification/
 [^7]: https://github.com/settings/tokens/new
-[^8]: https://prometheus.io/docs/blog/alerting/latest/alertmanager/
+[^8]: https://prometheus.io/docs/alerting/latest/alertmanager/
 [^9]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/configmapgenerator/
 [^10]: https://en.wikipedia.org/wiki/Minimal_reproducible_example
 [^11]: https://gateway-api.sigs.k8s.io/

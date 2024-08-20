@@ -757,18 +757,18 @@ Until next time :saluting_face:, *ciao* :cowboy: and happy hacking! :crab:
 
 [^1]: https://certbot.eff.org/
 [^2]: https://cert-manager.io/
-[^3]: https://kubernetes.io/docs/blog/concepts/extend-kubernetes/operator/
+[^3]: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
 [^4]: https://www.cncf.io/
-[^5]: https://kubernetes.io/docs/blog/concepts/services-networking/ingress/
+[^5]: https://kubernetes.io/docs/concepts/services-networking/ingress/
 [^6]: https://gateway-api.sigs.k8s.io/
 [^7]: https://github.com/developer-friendly/blog/commit/eedf71d1f179a8a994a030e77c62f380440ed4d8
 [^8]: https://squidfunk.github.io/mkdocs-material
 [^9]: https://github.com/opentofu/opentofu/releases/tag/v1.7.0
 [^10]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
 [^11]: https://fluxcd.io/flux/components/kustomize/kustomizations/
-[^12]: https://cert-manager.io/docs/blog/configuration/acme/dns01/
+[^12]: https://cert-manager.io/docs/configuration/acme/dns01/
 [^13]: https://developer.hashicorp.com/terraform/language/meta-arguments/for_each#limitations-on-values-used-in-for_each
-[^14]: https://cert-manager.io/docs/blog/configuration/acme/dns01/route53/#set-up-an-iam-role
+[^14]: https://cert-manager.io/docs/configuration/acme/dns01/route53/#set-up-an-iam-role
 [^15]: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html
 [^16]: https://github.com/cert-manager/cert-manager/issues/2147#issuecomment-2094066782
 [^17]: https://github.com/aws/aws-sdk-go

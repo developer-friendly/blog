@@ -661,8 +661,8 @@ avoiding the overloaded use of `const` keyword, and not using triple equals
 Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
  :crab:
 
-[^1]: https://www.ory.sh/docs/blog/kratos/ory-kratos-intro
-[^2]: https://www.ory.sh/docs/blog/oathkeeper/
+[^1]: https://www.ory.sh/docs/kratos/ory-kratos-intro
+[^2]: https://www.ory.sh/docs/oathkeeper/
 [^3]: https://artifacthub.io/packages/helm/ory/kratos/0.42.0
 [^4]: https://gateway-api.sigs.k8s.io/
 [^5]: https://github.com/developer-friendly/ory
@@ -670,17 +670,17 @@ Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
 [^7]: https://bun.sh/docs
 [^8]: https://firtman.github.io/vanilla/
 [^9]: https://pages.github.com/
-[^10]: https://www.ory.sh/docs/blog/kratos/bring-your-own-ui/custom-ui-overview
-[^11]: https://www.ory.sh/docs/blog/
-[^12]: https://www.ory.sh/docs/blog/kratos/reference/configuration
-[^13]: https://www.ory.sh/docs/blog/kratos/manage-identities/identity-schema
+[^10]: https://www.ory.sh/docs/kratos/bring-your-own-ui/custom-ui-overview
+[^11]: https://www.ory.sh/docs/
+[^12]: https://www.ory.sh/docs/kratos/reference/configuration
+[^13]: https://www.ory.sh/docs/kratos/manage-identities/identity-schema
 [^14]: https://console.ory.sh/
-[^15]: https://www.ory.sh/docs/blog/kratos/configuring
+[^15]: https://www.ory.sh/docs/kratos/configuring
 [^16]: https://stackoverflow.com/questions/30193851/ajax-call-following-302-redirect-sets-origin-to-null
 [^17]: https://github.com/orgs/community/discussions/64096
 [^18]: https://github.com/rafgraph/spa-github-pages
-[^19]: https://www.ory.sh/docs/blog/kratos/self-service/flows/user-logout
-[^20]: https://www.ory.sh/docs/blog/ecosystem/projects#ory-kratos
+[^19]: https://www.ory.sh/docs/kratos/self-service/flows/user-logout
+[^20]: https://www.ory.sh/docs/ecosystem/projects#ory-kratos
 [^21]: https://frontendmasters.com/teachers/kyle-simpson/
 
 [fluxcd-guide]: ./0006-gettings-started-with-gitops-and-fluxcd.md

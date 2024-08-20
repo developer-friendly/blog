@@ -768,14 +768,14 @@ Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 [OpenID Connect]: /category/openid-connect/
 [Kratos]: /category/kratos/
 
-[^grpc-middleware]: https://www.ory.sh/docs/blog/oathkeeper/grpc-middleware
-[^websocket-support]: https://www.ory.sh/docs/blog/oathkeeper/guides/proxy-websockets
+[^grpc-middleware]: https://www.ory.sh/docs/oathkeeper/grpc-middleware
+[^websocket-support]: https://www.ory.sh/docs/oathkeeper/guides/proxy-websockets
 [^ory-slack]: https://slack.ory.sh/
-[^oathkeeper-intro]: https://www.ory.sh/docs/blog/oathkeeper/
+[^oathkeeper-intro]: https://www.ory.sh/docs/oathkeeper/
 [^decision-api]: https://github.com/ory/oathkeeper/blob/6d628fbcc6de9428491add8ab3862e9ed2ba5936/api/decision.go#L56:L121
-[^api-access-rules]: https://www.ory.sh/docs/blog/oathkeeper/api-access-rules
-[^oathkeeper-configuration]: https://www.ory.sh/docs/blog/oathkeeper/reference/configuration
-[^oathkeeper-installation]: https://www.ory.sh/docs/blog/oathkeeper/install
+[^api-access-rules]: https://www.ory.sh/docs/oathkeeper/api-access-rules
+[^oathkeeper-configuration]: https://www.ory.sh/docs/oathkeeper/reference/configuration
+[^oathkeeper-installation]: https://www.ory.sh/docs/oathkeeper/install
 [^oathkeeper-repository]: https://github.com/ory/oathkeeper/tree/v0.40.7
 [^ory-examples]: https://github.com/ory/examples/tree/a085b65d21d6d31c1cb728a6b8b28f281f074066
 [^maester-repo]: https://github.com/ory/oathkeeper-maester/tree/v0.1.10
@@ -783,8 +783,8 @@ Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 [^helm-installation]: https://artifacthub.io/packages/helm/ory/oathkeeper/0.43.1
 [^echo-server]: https://github.com/Ealenn/Echo-Server/tree/0.9.2
 [^httproute-doc]: https://gateway-api.sigs.k8s.io/api-types/httproute/
-[^oathkeeper-proxy-flow]: https://www.ory.sh/docs/blog/oathkeeper/#reverse-proxy
-[^kratos-whoami]: https://www.ory.sh/docs/blog/kratos/reference/api#tag/frontend/operation/listMySessions
+[^oathkeeper-proxy-flow]: https://www.ory.sh/docs/oathkeeper/#reverse-proxy
+[^kratos-whoami]: https://www.ory.sh/docs/kratos/reference/api#tag/frontend/operation/listMySessions
 [^azcli-vm-access-token]: https://learn.microsoft.com/en-us/cli/azure/account?view=azure-cli-latest#az-account-get-access-token
 [^az-vm-token]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token#get-a-token-using-curl
-[^api-access-rules-order]: https://www.ory.sh/docs/blog/oathkeeper/api-access-rules#access-rule-format
+[^api-access-rules-order]: https://www.ory.sh/docs/oathkeeper/api-access-rules#access-rule-format

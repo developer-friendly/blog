@@ -737,7 +737,7 @@ Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
 [^5]: https://github.com/ansible/ansible/releases/tag/v2.16.6
 [^6]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_create_oidc.html
 [^7]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
-[^8]: https://kubernetes.io/docs/blog/tasks/configure-pod-container/configure-service-account/
+[^8]: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
 [^9]: https://openid.net/specs/openid-connect-core-1_0.html
 [^10]: https://dash.cloudflare.com/profile/api-tokens
 [^11]: https://docs.hetzner.com/cloud/api/getting-started/generating-api-token/

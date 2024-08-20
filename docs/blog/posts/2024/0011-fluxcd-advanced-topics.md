@@ -785,7 +785,7 @@ Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
 [^2]: https://fluxcd.io/flux/components/notification/
 [^3]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
 [^4]: https://gateway-api.sigs.k8s.io/
-[^5]: https://kubernetes.io/docs/blog/concepts/services-networking/ingress-controllers/
+[^5]: https://kubernetes.io/docs/concepts/services-networking/ingress-controllers/
 [^6]: https://github.com/cli/cli/releases/tag/v2.49.1
 [^7]: https://fluxcd.io/flux/components/source/
 [^8]: https://github.com/fluxcd/source-controller/tree/v1.3.0
@@ -800,7 +800,7 @@ Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
 [^17]: https://github.com/octo-sts
 [^18]: https://fluxcd.io/flux/guides/image-update/#configure-image-update-for-custom-resources
 [^19]: https://semver.org/
-[^20]: https://kubernetes.io/docs/blog/reference/kubernetes-api/cluster-resources/event-v1/
+[^20]: https://kubernetes.io/docs/reference/kubernetes-api/cluster-resources/event-v1/
 [^21]: https://github.com/fluxcd/notification-controller/blob/580497beeb8bee4cee99163bb63fba679cd2d735/api/v1beta1/alert_types.go#L39
 [^22]: https://github.com/prometheus-operator/prometheus-operator/discussions/3733#discussioncomment-8237810
 
