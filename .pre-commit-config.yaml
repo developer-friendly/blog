@@ -4,6 +4,10 @@ repos:
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=800"]
+        exclude: |
+          (?x)^(
+              docs/assets/me.png
+          )$
       - id: check-ast
       - id: check-executables-have-shebangs
       - id: check-json

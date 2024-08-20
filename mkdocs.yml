@@ -53,17 +53,6 @@ extra:
       as to measure the effectiveness of our documentation and whether users
       find what they're searching for. With your consent, you're helping us to
       make our documentation better.
-    cookies:
-      analytics: Google Analytics
-      github: GitHub
-      clarity:
-        name: Session Recording
-        property: !ENV [CLARITY_PROPERTY, ""]
-        checked: true
-      personalization:
-        name: Ads Personalization
-        property: !ENV [ADSENSE_PROPERTY, ""]
-        checked: true
   convertkit:
     property: !ENV [CONVERTKIT_PROPERTY, ""]
   ga4:

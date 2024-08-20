@@ -24,6 +24,11 @@ from 2021-2022.
 
 I'm currently living in Indonesia :flag_id: as of 2022.
 
+<figure markdown="span">
+  ![Photo Taken in Bali](./assets/me.png){ width="300" align=left }
+  <figcaption>Photo Taken in Bali</figcaption>
+</figure>
+
 I married :fontawesome-solid-venus-mars: here to a beautiful girl :princess_tone3: whom I love
 :octicons-heart-fill-24:{ .mdx-heart }.
 
@@ -59,8 +64,6 @@ I believe in simplicity.
 ---
 
 ## Let’s Connect
-
-Looking to boost your system's reliability or optimize your DevOps processes?
 
 I'm available for **consulting and freelance SRE projects**.
 
