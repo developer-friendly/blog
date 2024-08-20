@@ -23,8 +23,13 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
 
     query_page_views()
 
+    # NOTE: to keep backward compatibility, we remove the blog/ prefix
+    old_url = page.url.replace("blog/", "")
+
     logger.info(f"Total views for {page.url}: {page_view[f'/{page.url}']}")
-    page.config.total_views = page_view[f"/{page.url}"] or "N/A"
+    page.config.total_views = (
+        page_view[f"/{page.url}"] or page_view[f"/{old_url}"] or "N/A"
+    )
 
     return markdown
 
