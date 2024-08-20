@@ -24,7 +24,7 @@ from 2021-2022.
 I'm currently living in Indonesia :flag_id: as of 2022.
 
 <figure markdown="span">
-  ![Photo Taken in Bali](./assets/me.png){ width="300" align=left }
+  ![Photo Taken in Bali](./assets/me.png){ width="300" align=left loading=lazy }
   <figcaption>Photo Taken in Bali</figcaption>
 </figure>
 
