@@ -2,7 +2,6 @@
 social:
   cards_layout_options:
     title: Site Reliability Engineering
-# a great SEO description that helps the page rank better in search engines
 description: >-
   Expert SRE & DevOps consultant. 7+ years in Kubernetes, cloud, CI/CD. Boost
   reliability & efficiency. AWS, Azure, Terraform pro. Remote-friendly freelancer.
@@ -30,7 +29,7 @@ I'm currently living in Indonesia :flag_id: as of 2022.
 </figure>
 
 I married :fontawesome-solid-venus-mars: here to a beautiful girl :princess_tone3: whom I love
-:octicons-heart-fill-24:{ .mdx-heart }.
+:octicons-heart-fill-24:{ .mdx-heart .mdx-insiders }.
 
 I have two dogs :dog: named Ruby :simple-ruby: & Sky.
 
