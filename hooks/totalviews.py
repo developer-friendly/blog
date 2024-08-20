@@ -7,7 +7,7 @@ from functools import lru_cache
 
 import psycopg2
 
-include = re.compile(r"[1-9].*")
+include = re.compile(r"blog/[1-9].*")
 
 page_view = defaultdict(int)
 
