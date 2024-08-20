@@ -42,15 +42,6 @@ not access the Website.
   Google Analytics JavaScript (ga.js, analytics.js, and dc.js) from sharing
   information with Google Analytics. You can learn more about Google Analytics'
   privacy practices here: https://policies.google.com/privacy.
-- Google AdSense: We use Google AdSense to display ads on our Website. Google
-  AdSense uses cookies to serve ads based on a user's prior visits to our
-  Website or other websites. Google's use of advertising cookies enables it and
-  its partners to serve ads to our users based on their visit to our Website
-  and/or other sites on the Internet. Users may opt out of personalized
-  advertising by visiting [Ads Settings](https://www.google.com/settings/ads).
-  You can also opt out of a third-party vendor's use of cookies for
-  personalized advertising by visiting
-  [www.aboutads.info](https://www.aboutads.info/).
 - Microsoft Clarity: We partner with Microsoft Clarity and Microsoft
   Advertising to capture how you use and interact with our website through
   behavioral metrics, heatmaps, and session replay to improve and market our
