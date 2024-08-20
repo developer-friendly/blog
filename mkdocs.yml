@@ -112,7 +112,6 @@ plugins:
   - blog:
       draft: !ENV [DRAFT, false]
       draft_if_future_date: true
-      blog_dir: .
       authors_profiles: !ENV [AUTHORS_PROFILE, false]
       post_readtime: true
       blog_toc: true
@@ -278,7 +277,7 @@ markdown_extensions:
       custom_checkbox: true
 nav:
   - index.md
-  - hireme.md
+  - Blog: ./blog/
   - Newsletter: https://developerfriendly.eo.page/
   - sponsors.md
   - Status: https://developer-friendly.cronitorstatus.com/

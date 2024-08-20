@@ -35,7 +35,7 @@ First things first, we need to creat the Virtual Machine. I create the Linux VM
 using the example provided in the OpenTofu Registry.
 
 ```hcl title="compute-v1.tf"
--8<- "docs/codes/2024/0001-azure-image-gallery/sample-only/compute-v1.tf"
+-8<- "docs/blog/codes/2024/0001-azure-image-gallery/sample-only/compute-v1.tf"
 ```
 
 This setup works just alright, except that it has no public IP address and I
@@ -48,7 +48,7 @@ On top of that, it also will require a public SSH key for the authentication.
 That's why, the modified version will look like the following.
 
 ```hcl title="compute-v2.tf" hl_lines="20-27 39 43-53 68 84-110"
--8<- "docs/codes/2024/0001-azure-image-gallery/compute-v2.tf"
+-8<- "docs/blog/codes/2024/0001-azure-image-gallery/compute-v2.tf"
 ```
 
 Perfect! Now I have a VM machine in my Azure account that I can SSH into for
@@ -68,14 +68,14 @@ Before being able to run Ansible on the target machine, I will need to create
 my inventory.
 
 ```hcl title="inventory.tf"
--8<- "docs/codes/2024/0001-azure-image-gallery/inventory.tf"
+-8<- "docs/blog/codes/2024/0001-azure-image-gallery/inventory.tf"
 ```
 
 And now, I can either use null resource, or run the `ansible-playbook` from the
 CLI. I prefer the former, since it is replicatable across runs.
 
 ```hcl title="playbook.tf"
--8<- "docs/codes/2024/0001-azure-image-gallery/playbook.tf"
+-8<- "docs/blog/codes/2024/0001-azure-image-gallery/playbook.tf"
 ```
 
 ### Installing the MongoDB
@@ -84,7 +84,7 @@ One last piece to customize the VM is to install the dependencies we need.
 Here's the playbook I am using.
 
 ```yaml title="bootstrap.yml"
--8<- "docs/codes/2024/0001-azure-image-gallery/bootstrap.yml"
+-8<- "docs/blog/codes/2024/0001-azure-image-gallery/bootstrap.yml"
 ```
 
 That's it. After applying this stack with `tofu apply`, I will have a
@@ -115,7 +115,7 @@ waste of resource and money.
 Let's create the image with the following resources.
 
 ```hcl title="image-v1.tf"
--8<- "docs/codes/2024/0001-azure-image-gallery/sample-only/image-v1.tf"
+-8<- "docs/blog/codes/2024/0001-azure-image-gallery/sample-only/image-v1.tf"
 ```
 
 Now this is where it gets tricky, because so far, this will only create the
@@ -125,7 +125,7 @@ it allow you to create VM instances out of it later on.
 For that, you will need to create an image version.
 
 ```hcl title="image-v2.tf" hl_lines="32-44"
--8<- "docs/codes/2024/0001-azure-image-gallery/sample-only/image-v2.tf"
+-8<- "docs/blog/codes/2024/0001-azure-image-gallery/sample-only/image-v2.tf"
 ```
 
 Now, you might go happy about it and call it a day. But this will throw an error
@@ -157,7 +157,7 @@ And to get around it, you will need to create the image as well.
 Just as you see below.
 
 ```hcl title="image-v3.tf" hl_lines="32-37 45"
--8<- "docs/codes/2024/0001-azure-image-gallery/image-v3.tf"
+-8<- "docs/blog/codes/2024/0001-azure-image-gallery/image-v3.tf"
 ```
 
 ## Versions
@@ -166,14 +166,14 @@ To help with reproducibility, I will include the versions of the providers in
 this post.
 
 ```hcl title="versions.tf"
--8<- "docs/codes/2024/0001-azure-image-gallery/versions.tf"
+-8<- "docs/blog/codes/2024/0001-azure-image-gallery/versions.tf"
 ```
 
 ## Source Code
 
 The code for this post is available from the following link.
 
-[Source code](https://github.com/developer-friendly/blog/blob/main/docs/codes/2024/0001-azure-image-gallery)
+[Source code](https://github.com/developer-friendly/blog/blob/main/docs/blog/codes/2024/0001-azure-image-gallery)
 
 ## Conclusion
 

@@ -31,9 +31,9 @@ categories:
   - Terraform
   - User Management
 links:
-  - ./posts/2024/0005-install-k3s-on-ubuntu22.md
-  - ./posts/2024/0007-oidc-authentication.md
-  - ./posts/2024/0004-github-actions-dynamic-matrix.md
+  - ./blog/posts/2024/0005-install-k3s-on-ubuntu22.md
+  - ./blog/posts/2024/0007-oidc-authentication.md
+  - ./blog/posts/2024/0004-github-actions-dynamic-matrix.md
   - Source Code: https://github.com/developer-friendly/ory
 social:
   cards_layout_options:
@@ -179,7 +179,7 @@ that.
 The basic configuration that can kick things off looks something like this:
 
 ```yaml title="kratos/kratos-server-config.yml"
--8<- "docs/codes/2024/0012/kratos/kratos-server-config.yml"
+-8<- "docs/blog/codes/2024/0012/kratos/kratos-server-config.yml"
 ```
 
 There is a lot to uncover in this configuration file, and believe me there are
@@ -208,7 +208,7 @@ In essence, the following identity schema JSON definition will result in the
 HTML form you see in the next screenshot.
 
 ```yaml title=""
--8<- "docs/codes/2024/0012/junk/kratos.identity-schema.json"
+-8<- "docs/blog/codes/2024/0012/junk/kratos.identity-schema.json"
 ```
 
 <figure markdown="span">
@@ -269,7 +269,7 @@ We are also using [External Secrets Operator][eso-guide] and [cert-manager] in
 this setup. We have guides on those as well, so feel free to check them out.
 
 ```yaml title="kratos/repository.yml"
--8<- "docs/codes/2024/0012/kratos/repository.yml"
+-8<- "docs/blog/codes/2024/0012/kratos/repository.yml"
 ```
 
 Kratos server is able to read the config file from the specified file, or from
@@ -278,7 +278,7 @@ in the following ExternalSecret resource; remember all those values in our
 `kratos/kratos-server-config.yml` where we passed `PLACEHOLDER` as value!?
 
 ```yaml title="kratos/externalsecret.yml" hl_lines="4"
--8<- "docs/codes/2024/0012/kratos/externalsecret.yml"
+-8<- "docs/blog/codes/2024/0012/kratos/externalsecret.yml"
 ```
 
 The following [Kustomization](/category/kustomization/) patches applied to the
@@ -286,29 +286,29 @@ HelmRelease are just because of the lack of flexibility in the Ory Kratos' Helm
 chart. We have to manually pass some of the otherwise missing values.
 
 ```yaml title="kratos/release.yml" hl_lines="25 66 78"
--8<- "docs/codes/2024/0012/kratos/release.yml"
+-8<- "docs/blog/codes/2024/0012/kratos/release.yml"
 ```
 
 ```yaml title="kratos/helm-values.yml" hl_lines="13 23"
--8<- "docs/codes/2024/0012/kratos/helm-values.yml"
+-8<- "docs/blog/codes/2024/0012/kratos/helm-values.yml"
 ```
 
 ```yaml title="kratos/httproute.yml"
--8<- "docs/codes/2024/0012/kratos/httproute.yml"
+-8<- "docs/blog/codes/2024/0012/kratos/httproute.yml"
 ```
 
 ```yaml title="kratos/kustomizeconfig.yml"
--8<- "docs/codes/2024/0012/kratos/kustomizeconfig.yml"
+-8<- "docs/blog/codes/2024/0012/kratos/kustomizeconfig.yml"
 ```
 
 ```yaml title="kratos/kustomization.yml" hl_lines="7"
--8<- "docs/codes/2024/0012/kratos/kustomization.yml"
+-8<- "docs/blog/codes/2024/0012/kratos/kustomization.yml"
 ```
 
 Finally, we will create this stack as follow:
 
 ```yaml title="kratos/kustomize.yml"
--8<- "docs/codes/2024/0012/kratos/kustomize.yml"
+-8<- "docs/blog/codes/2024/0012/kratos/kustomize.yml"
 ```
 
 ```shell title="" linenums="0"
@@ -351,7 +351,7 @@ The app's starting page is the following `index.html` file. It's simple, and
 that is its superpower. :superhero:
 
 ```html title="frontend/index.html"
--8<- "docs/codes/2024/0012/junk/index-without-spa-hack.html"
+-8<- "docs/blog/codes/2024/0012/junk/index-without-spa-hack.html"
 ```
 
 ### CSS
@@ -362,7 +362,7 @@ is nothing special about the styling either. :point_down:
 ??? example "Click to expand"
 
     ```css title="frontend/assets/styles.css"
-    -8<- "docs/codes/2024/0012/frontend/assets/styles.css"
+    -8<- "docs/blog/codes/2024/0012/frontend/assets/styles.css"
     ```
 
 ## Flow 101
@@ -412,7 +412,7 @@ passed it earlier.
 If you know `curl`, this will be the registration flow in a nutshell:
 
 ```shell title="" linenums="0"
--8<- "docs/codes/2024/0012/junk/registration-flow-by-curl.sh"
+-8<- "docs/blog/codes/2024/0012/junk/registration-flow-by-curl.sh"
 ```
 
 If that sounds too complicated to comprehend, don't worry. We'll break it down
@@ -422,7 +422,7 @@ Remember the diagram we saw earlier between the frontend and the Ory Kratos?
 We will start by initiating a flow.
 
 ```javascript title="frontend/src/utils.js" hl_lines="4"
--8<- "docs/codes/2024/0012/junk/init-flow.js"
+-8<- "docs/blog/codes/2024/0012/junk/init-flow.js"
 ```
 
 Pay close attention that we are explicitly asking the fetch API to **include the
@@ -431,7 +431,7 @@ in the required cookies not being sent to the server and your flow will never
 go pass the initial step! :warning:
 
 ```javascript title="frontend/src/flow.js"
--8<- "docs/codes/2024/0012/junk/get-flow-json.js"
+-8<- "docs/blog/codes/2024/0012/junk/get-flow-json.js"
 ```
 
 :material-check-all: Note the `accept` header we pass to the fetch API on line
@@ -453,7 +453,7 @@ resembles a lot like the identity schema we passed to the Kratos server earlier.
 ??? example "Click to expand"
 
     ```json title=""
-    -8<- "docs/codes/2024/0012/junk/registration-flow-response.json"
+    -8<- "docs/blog/codes/2024/0012/junk/registration-flow-response.json"
     ```
 
 By visualizing the JSON response, we can see that the `.ui.nodes` has all the
@@ -464,7 +464,7 @@ This step is a lot subjective and you can get very creative. Yet we simply
 create a bunch of inputs and labels inside an HTML form.
 
 ```javascript title="frontend/src/utils.js" hl_lines="22-92"
--8<- "docs/codes/2024/0012/frontend/src/utils.js"
+-8<- "docs/blog/codes/2024/0012/frontend/src/utils.js"
 ```
 
 Not much is to say regarding the logic happening here. However, notice that
@@ -474,18 +474,18 @@ send the orders of inputs as we'd like it; I would expect Kratos to do
 this out of the box!
 
 ```javascript title="frontend/src/flow.js" hl_lines="1 4 11-15 19 21"
--8<- "docs/codes/2024/0012/frontend/src/flow.js"
+-8<- "docs/blog/codes/2024/0012/frontend/src/flow.js"
 ```
 
 We have most of what we need as far as JavaScript goes, yet there is still the
 entrypoint as well as the Vanilla JS router to take care of.
 
 ```javascript title="frontend/src/router.js"
--8<- "docs/codes/2024/0012/frontend/src/router.js"
+-8<- "docs/blog/codes/2024/0012/frontend/src/router.js"
 ```
 
 ```javascript title="frontend/app.js"
--8<- "docs/codes/2024/0012/frontend/app.js"
+-8<- "docs/blog/codes/2024/0012/frontend/app.js"
 ```
 
 ## Bundling the Frontend
@@ -496,7 +496,7 @@ VanillaJS) is the ability to override the variables from the environment
 variables. That is where ViteJS provides a great hand. :handshake:
 
 ```javascript title="frontend/src/config.js"
--8<- "docs/codes/2024/0012/frontend/src/config.js"
+-8<- "docs/blog/codes/2024/0012/frontend/src/config.js"
 ```
 
 This way, whenever we want to customize the target Kratos server URL, all we
@@ -513,7 +513,7 @@ For this project, we have picked Bun[^7] as our build tool. It's simple & fast
 :zap: and does the job well. :muscle:
 
 ```json title="frontend/package.json"
--8<- "docs/codes/2024/0012/frontend/package.json"
+-8<- "docs/blog/codes/2024/0012/frontend/package.json"
 ```
 
 ```shell title="" linenums="0"
@@ -528,7 +528,7 @@ When our project is ready to be published, we will use
 the [GitHub Pages](/category/github-pages/).
 
 ```yaml title=".github/workflows/ci.yml"
--8<- "docs/codes/2024/0012/junk/ci.yml"
+-8<- "docs/blog/codes/2024/0012/junk/ci.yml"
 ```
 
 With this workflow, upon every push to the `main` branch we will have our
@@ -549,7 +549,7 @@ On the other hand, the `index.html` will also include a JavaScript code to
 parse the query parameter and let our Vanilla JS router take care of the rest.
 
 ```html title="frontend/404.html"
--8<- "docs/codes/2024/0012/frontend/404.html"
+-8<- "docs/blog/codes/2024/0012/frontend/404.html"
 ```
 
 **NOTE**: The parsing of the query parameter in the `index.html` has to happen
@@ -557,13 +557,13 @@ before the our own JS code is loaded. This allows for our router not to worry
 about this hacky redirection. :exclamation:
 
 ```html title="frontend/index.html" hl_lines="9-20"
--8<- "docs/codes/2024/0012/frontend/index.html"
+-8<- "docs/blog/codes/2024/0012/frontend/index.html"
 ```
 
 And now we need to include the new `404.html` as an asset in ViteJS config:
 
 ```javascript title="frontend/vite.config.js"
--8<- "docs/codes/2024/0012/frontend/vite.config.js"
+-8<- "docs/blog/codes/2024/0012/frontend/vite.config.js"
 ```
 
 ## Logout Flow
@@ -575,7 +575,7 @@ to include a confirmation page for your app but that's out of scope as far as
 Kratos server is concerned.
 
 ```javascript title="frontend/src/logout.js"
--8<- "docs/codes/2024/0012/frontend/src/logout.js"
+-8<- "docs/blog/codes/2024/0012/frontend/src/logout.js"
 ```
 
 ## Bonus: GitHub Pages Custom Domain
@@ -596,21 +596,21 @@ not** charge you extra for this feature.
 
 The DNS record we want to create should be the following:
 
-{{ read_csv('docs/codes/2024/0012/junk/dns.csv') }}
+{{ read_csv('docs/blog/codes/2024/0012/junk/dns.csv') }}
 
 And since the [developer-friendly.blog] domain is hosted on Cloudflare, here's
 how the [IaC](/category/iac/) will look like for such a change.
 
 ```hcl title="dns/variables.tf"
--8<- "docs/codes/2024/0012/dns/variables.tf"
+-8<- "docs/blog/codes/2024/0012/dns/variables.tf"
 ```
 
 ```hcl title="dns/versions.tf"
--8<- "docs/codes/2024/0012/dns/versions.tf"
+-8<- "docs/blog/codes/2024/0012/dns/versions.tf"
 ```
 
 ```hcl title="dns/main.tf"
--8<- "docs/codes/2024/0012/dns/main.tf"
+-8<- "docs/blog/codes/2024/0012/dns/main.tf"
 ```
 
 Now, let's apply this stack using [OpenTofu](/category/opentofu/):
@@ -661,8 +661,8 @@ avoiding the overloaded use of `const` keyword, and not using triple equals
 Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
  :crab:
 
-[^1]: https://www.ory.sh/docs/kratos/ory-kratos-intro
-[^2]: https://www.ory.sh/docs/oathkeeper/
+[^1]: https://www.ory.sh/docs/blog/kratos/ory-kratos-intro
+[^2]: https://www.ory.sh/docs/blog/oathkeeper/
 [^3]: https://artifacthub.io/packages/helm/ory/kratos/0.42.0
 [^4]: https://gateway-api.sigs.k8s.io/
 [^5]: https://github.com/developer-friendly/ory
@@ -670,17 +670,17 @@ Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
 [^7]: https://bun.sh/docs
 [^8]: https://firtman.github.io/vanilla/
 [^9]: https://pages.github.com/
-[^10]: https://www.ory.sh/docs/kratos/bring-your-own-ui/custom-ui-overview
-[^11]: https://www.ory.sh/docs/
-[^12]: https://www.ory.sh/docs/kratos/reference/configuration
-[^13]: https://www.ory.sh/docs/kratos/manage-identities/identity-schema
+[^10]: https://www.ory.sh/docs/blog/kratos/bring-your-own-ui/custom-ui-overview
+[^11]: https://www.ory.sh/docs/blog/
+[^12]: https://www.ory.sh/docs/blog/kratos/reference/configuration
+[^13]: https://www.ory.sh/docs/blog/kratos/manage-identities/identity-schema
 [^14]: https://console.ory.sh/
-[^15]: https://www.ory.sh/docs/kratos/configuring
+[^15]: https://www.ory.sh/docs/blog/kratos/configuring
 [^16]: https://stackoverflow.com/questions/30193851/ajax-call-following-302-redirect-sets-origin-to-null
 [^17]: https://github.com/orgs/community/discussions/64096
 [^18]: https://github.com/rafgraph/spa-github-pages
-[^19]: https://www.ory.sh/docs/kratos/self-service/flows/user-logout
-[^20]: https://www.ory.sh/docs/ecosystem/projects#ory-kratos
+[^19]: https://www.ory.sh/docs/blog/kratos/self-service/flows/user-logout
+[^20]: https://www.ory.sh/docs/blog/ecosystem/projects#ory-kratos
 [^21]: https://frontendmasters.com/teachers/kyle-simpson/
 
 [fluxcd-guide]: ./0006-gettings-started-with-gitops-and-fluxcd.md

@@ -32,7 +32,7 @@ social:
       steps, and seamlessly migrate from Prometheus. Perfect for all monitoring
       workloads.
 links:
-  - ./posts/2024/0015-ory-oathkeeper.md
+  - ./blog/posts/2024/0015-ory-oathkeeper.md
 image: assets/images/social/2024/06/17/unlocking-the-power-of-victoriametrics-a-prometheus-alternative.png
 ---
 
@@ -179,23 +179,23 @@ We are using [FluxCD](/category/fluxcd/) as our [GitOps](/category/gitops/)
 tool of choice, but feel free to use any other tool you are comfortable with.
 
 ```yaml title="victoria-metrics-operator/namespace.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-operator/namespace.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-operator/namespace.yml"
 ```
 
 ```yaml title="victoria-metrics-operator/repository.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-operator/repository.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-operator/repository.yml"
 ```
 
 ```yaml title="victoria-metrics-operator/release.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-operator/release.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-operator/release.yml"
 ```
 
 ```yaml title="victoria-metrics-operator/kustomization.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-operator/kustomization.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-operator/kustomization.yml"
 ```
 
 ```yaml title="victoria-metrics-operator/kustomize.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-operator/kustomize.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-operator/kustomize.yml"
 ```
 
 Finally, to deploy this stack:
@@ -233,7 +233,7 @@ and one or more `VMUser` CRD[^vmauth].
 See an example below. :point_down:
 
 ```yaml title="" hl_lines="5 36"
--8<- "docs/codes/2024/0016/junk/vmauth.yml"
+-8<- "docs/blog/codes/2024/0016/junk/vmauth.yml"
 ```
 
 A few seconds after applying these resources, a new Kubernetes Service and a
@@ -325,14 +325,14 @@ ingestion component (`insert`)[^vm-cluster]. These components are the core of
 Victoria Metrics.
 
 ```yaml title="victoria-metrics-cluster/vmcluster.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmcluster.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-cluster/vmcluster.yml"
 ```
 
 We then deploy a `VMAgent`, scraping metrics from any of the discovered targets
 and ship them to the cluster created with `VMCluster`.
 
 ```yaml title="victoria-metrics-cluster/vmagent.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmagent.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-cluster/vmagent.yml"
 ```
 
 Notice that in the `VMAgent`, the URL we are passing to the remote-write is
@@ -341,30 +341,30 @@ coming from our `VMCluster` instance, one that can be verified with the
 Victoria Metrics endpoints[^vm-url-formats]. :point_down:
 
 ```yaml title="victoria-metrics-cluster/vmagent.yml" linenums="9"
--8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmagent.yml:9:10"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-cluster/vmagent.yml:9:10"
 ```
 
 Lastly, we need to be able to access the UI from our browser. That's where the
 rest of the components come as you see below[^vm-operator-vmauth].
 
 ```yaml title="victoria-metrics-cluster/vmauth.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmauth.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-cluster/vmauth.yml"
 ```
 
 ```yaml title="victoria-metrics-cluster/vmuser.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-cluster/vmuser.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-cluster/vmuser.yml"
 ```
 
 ```yaml title="victoria-metrics-cluster/httproute.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-cluster/httproute.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-cluster/httproute.yml"
 ```
 
 ```yaml title="victoria-metrics-cluster/kustomization.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-cluster/kustomization.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-cluster/kustomization.yml"
 ```
 
 ```yaml title="victoria-metrics-cluster/kustomize.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-cluster/kustomize.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-cluster/kustomize.yml"
 ```
 
 Finally, to deploy this stack:
@@ -403,13 +403,13 @@ For the Prometheus server, you will have a remote write URL similar to what you
 see below.
 
 ```yaml title=""
--8<- "docs/codes/2024/0016/junk/grafana-cloud-remote-write-prom.yml"
+-8<- "docs/blog/codes/2024/0016/junk/grafana-cloud-remote-write-prom.yml"
 ```
 
 Let's use this configuration to create such a `VMAgent` instance.
 
 ```yaml title="grafana-cloud/vmagent.yml"
--8<- "docs/codes/2024/0016/grafana-cloud/vmagent.yml"
+-8<- "docs/blog/codes/2024/0016/grafana-cloud/vmagent.yml"
 ```
 
 This agent will also, just like the last one, scrape all the  `VMServiceScrape`
@@ -432,27 +432,27 @@ Since this is assumed to be a standalone machine, we will use our beloved tool
 documenting the steps for future reference.
 
 ```yaml title="standalone-host/victoria-metrics/vars/vars-aarch64.yml"
--8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/vars/vars-aarch64.yml"
+-8<- "docs/blog/codes/2024/0016/standalone-host/victoria-metrics/vars/vars-aarch64.yml"
 ```
 
 ```yaml title="standalone-host/victoria-metrics/vars/vars-x86_64.yml"
--8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/vars/vars-x86_64.yml"
+-8<- "docs/blog/codes/2024/0016/standalone-host/victoria-metrics/vars/vars-x86_64.yml"
 ```
 
 ```ini title="standalone-host/victoria-metrics/templates/vmagent.service.j2"
--8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/templates/vmagent.service.j2"
+-8<- "docs/blog/codes/2024/0016/standalone-host/victoria-metrics/templates/vmagent.service.j2"
 ```
 
 ```yaml title="standalone-host/victoria-metrics/templates/vmagent.yml.j2"
--8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/templates/vmagent.yml.j2"
+-8<- "docs/blog/codes/2024/0016/standalone-host/victoria-metrics/templates/vmagent.yml.j2"
 ```
 
 ```yaml title="standalone-host/victoria-metrics/tasks/main.yml"
--8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/tasks/main.yml"
+-8<- "docs/blog/codes/2024/0016/standalone-host/victoria-metrics/tasks/main.yml"
 ```
 
 ```yaml title="standalone-host/victoria-metrics/handlers/main.yml"
--8<- "docs/codes/2024/0016/standalone-host/victoria-metrics/handlers/main.yml"
+-8<- "docs/blog/codes/2024/0016/standalone-host/victoria-metrics/handlers/main.yml"
 ```
 
 Having this Ansible role, we can now use it to monitor our target host.
@@ -461,19 +461,19 @@ But, before doing that, let's deploy a `VMSingle` instance to our Kubernetes
 cluster as promised earlier.
 
 ```yaml title="victoria-metrics-standalone/vmsingle.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-standalone/vmsingle.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-standalone/vmsingle.yml"
 ```
 
 ```yaml title="victoria-metrics-standalone/httproute.yml" hl_lines="17"
--8<- "docs/codes/2024/0016/victoria-metrics-standalone/httproute.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-standalone/httproute.yml"
 ```
 
 ```yaml title="victoria-metrics-standalone/kustomization.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-standalone/kustomization.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-standalone/kustomization.yml"
 ```
 
 ```yaml title="victoria-metrics-standalone/kustomize.yml"
--8<- "docs/codes/2024/0016/victoria-metrics-standalone/kustomize.yml"
+-8<- "docs/blog/codes/2024/0016/victoria-metrics-standalone/kustomize.yml"
 ```
 
 Finally, to deploy this stack:
@@ -485,7 +485,7 @@ kubectl apply -f victoria-metrics-standalone/kustomize.yml
 And now we are ready to run the following Ansible playbook.
 
 ```yaml title="standalone-host/main.yml"
--8<- "docs/codes/2024/0016/standalone-host/main.yml"
+-8<- "docs/blog/codes/2024/0016/standalone-host/main.yml"
 ```
 
 ```bash title="" linenums="0"
@@ -529,11 +529,11 @@ Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 [^vm-prominent-features]: https://docs.victoriametrics.com/single-server-victoriametrics/#prominent-features
 [^vm-blog-comparing-agents]: https://victoriametrics.com/blog/comparing-agents-for-scraping/
 [^vm-vs-prom-perf]: https://zetablogs.medium.com/prometheus-vs-victoria-metrics-load-testing-3fa0cc782912
-[^prometheus-long-term-storage]: https://prometheus.io/docs/prometheus/latest/storage/#operational-aspects
+[^prometheus-long-term-storage]: https://prometheus.io/docs/blog/prometheus/latest/storage/#operational-aspects
 [^last9-vm-vs-thanos]: https://last9.io/blog/thanos-vs-victoriametrics/
 [^vm-operator]: https://artifacthub.io/packages/helm/victoriametrics/victoria-metrics-operator/0.32.2
 [^vmauth]: https://docs.victoriametrics.com/operator/auth/
-[^oathkeeper-access-rules]: https://www.ory.sh/docs/oathkeeper/api-access-rules
+[^oathkeeper-access-rules]: https://www.ory.sh/docs/blog/oathkeeper/api-access-rules
 [^k8s-prom-stack]: https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack/60.1.0
 [^vm-object-conversion]: https://docs.victoriametrics.com/operator/migration/#objects-conversion
 [^vm-migration-guide]: https://docs.victoriametrics.com/operator/migration/

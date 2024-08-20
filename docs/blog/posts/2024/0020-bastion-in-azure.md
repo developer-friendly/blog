@@ -47,9 +47,9 @@ social:
       and optimize this powerful tool for seamless, cost-effective remote
       access and compliance.
 links:
-  - ./posts/2024/0001-azure-shared-image-gallery.md
-  - ./posts/2024/0009-external-secrets-aks-to-aws-ssm.md
-  - ./posts/2024/0013-azure-vm-to-aws.md
+  - ./blog/posts/2024/0001-azure-shared-image-gallery.md
+  - ./blog/posts/2024/0009-external-secrets-aks-to-aws-ssm.md
+  - ./blog/posts/2024/0013-azure-vm-to-aws.md
 image: assets/images/social/2024/08/19/azure-bastion-host-secure-cloud-access-made-simple.png
 ---
 
@@ -305,29 +305,29 @@ You can safely skip this step if you already have a VNet in your [Azure] cloud
 environment. For the sake of thoroughness, we'll create one from scratch.
 
 ```tf title="vnet/versions.tf"
--8<- "docs/codes/2024/0020/vnet/versions.tf"
+-8<- "docs/blog/codes/2024/0020/vnet/versions.tf"
 ```
 
 ```tf title="vnet/naming.tf"
--8<- "docs/codes/2024/0020/vnet/naming.tf"
+-8<- "docs/blog/codes/2024/0020/vnet/naming.tf"
 ```
 
 ```tf title="vnet/main.tf"
--8<- "docs/codes/2024/0020/vnet/main.tf"
+-8<- "docs/blog/codes/2024/0020/vnet/main.tf"
 ```
 
 The following outputs will be used in other stacks when we define dependencies
 to help [Terragrunt] understand the order of execution:
 
 ```tf title="vnet/outputs.tf"
--8<- "docs/codes/2024/0020/vnet/outputs.tf"
+-8<- "docs/blog/codes/2024/0020/vnet/outputs.tf"
 ```
 
 The following [Terragrunt] HCL file is identical to being empty, yet we are
 specifying an empty `input` block for readability.
 
 ```hcl title="vnet/terragrunt.hcl"
--8<- "docs/codes/2024/0020/vnet/terragrunt.hcl"
+-8<- "docs/blog/codes/2024/0020/vnet/terragrunt.hcl"
 ```
 
 Applying this stack as well as the other following two stack is similar. Simply
@@ -345,31 +345,31 @@ Now that we have our VNet ready, we can proceed to create the [Azure Bastion]
 host. The following files will be used to create the Bastion host:
 
 ```tf title="bastion/versions.tf"
--8<- "docs/codes/2024/0020/bastion/versions.tf"
+-8<- "docs/blog/codes/2024/0020/bastion/versions.tf"
 ```
 
 ```tf title="bastion/naming.tf"
--8<- "docs/codes/2024/0020/bastion/naming.tf"
+-8<- "docs/blog/codes/2024/0020/bastion/naming.tf"
 ```
 
 ```tf title="bastion/data.tf"
--8<- "docs/codes/2024/0020/bastion/data.tf"
+-8<- "docs/blog/codes/2024/0020/bastion/data.tf"
 ```
 
 ```tf title="bastion/locals.tf"
--8<- "docs/codes/2024/0020/bastion/locals.tf"
+-8<- "docs/blog/codes/2024/0020/bastion/locals.tf"
 ```
 
 ```tf title="bastion/variables.tf"
--8<- "docs/codes/2024/0020/bastion/variables.tf"
+-8<- "docs/blog/codes/2024/0020/bastion/variables.tf"
 ```
 
 ```tf title="bastion/main.tf"
--8<- "docs/codes/2024/0020/bastion/main.tf"
+-8<- "docs/blog/codes/2024/0020/bastion/main.tf"
 ```
 
 ```tf title="bastion/outputs.tf"
--8<- "docs/codes/2024/0020/bastion/outputs.tf"
+-8<- "docs/blog/codes/2024/0020/bastion/outputs.tf"
 ```
 
 Notice how we are using the outputs from the `vnet` stack in our current
@@ -377,7 +377,7 @@ Notice how we are using the outputs from the `vnet` stack in our current
 source[^tf-remote-state].
 
 ```hcl title="bastion/terragrunt.hcl"
--8<- "docs/codes/2024/0020/bastion/terragrunt.hcl"
+-8<- "docs/blog/codes/2024/0020/bastion/terragrunt.hcl"
 ```
 
 ### Connecting to VMs using Azure Bastion
@@ -390,31 +390,31 @@ Azure Key Vault[^az-vault], etc.
 Let us create a demo VM to test the Bastion host.
 
 ```tf title="vm/versions.tf"
--8<- "docs/codes/2024/0020/vm/versions.tf"
+-8<- "docs/blog/codes/2024/0020/vm/versions.tf"
 ```
 
 ```tf title="vm/naming.tf"
--8<- "docs/codes/2024/0020/vm/naming.tf"
+-8<- "docs/blog/codes/2024/0020/vm/naming.tf"
 ```
 
 ```tf title="vm/data.tf"
--8<- "docs/codes/2024/0020/vm/data.tf"
+-8<- "docs/blog/codes/2024/0020/vm/data.tf"
 ```
 
 ```tf title="vm/locals.tf"
--8<- "docs/codes/2024/0020/vm/locals.tf"
+-8<- "docs/blog/codes/2024/0020/vm/locals.tf"
 ```
 
 ```tf title="vm/variables.tf"
--8<- "docs/codes/2024/0020/vm/variables.tf"
+-8<- "docs/blog/codes/2024/0020/vm/variables.tf"
 ```
 
 ```tf title="vm/main.tf"
--8<- "docs/codes/2024/0020/vm/main.tf"
+-8<- "docs/blog/codes/2024/0020/vm/main.tf"
 ```
 
 ```tf title="vm/outputs.tf"
--8<- "docs/codes/2024/0020/vm/outputs.tf"
+-8<- "docs/blog/codes/2024/0020/vm/outputs.tf"
 ```
 
 Just as we had in the `bastion` stack, we're using the outputs from the `vnet`
@@ -422,7 +422,7 @@ stack in our current `vm` stack using the `dependency` block provided by
 [Terragrunt].
 
 ```hcl title="vm/terragrunt.hcl"
--8<- "docs/codes/2024/0020/vm/terragrunt.hcl"
+-8<- "docs/blog/codes/2024/0020/vm/terragrunt.hcl"
 ```
 
 ### Native SSH Connection to Azure VM

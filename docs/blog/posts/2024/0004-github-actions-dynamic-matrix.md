@@ -59,7 +59,7 @@ This will give me the following directory structure.
 Now, let's create a GitHub Actions workflow file.
 
 ```yaml title=".github/workflows/ci.yml" hl_lines="21 23-29 47"
--8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/build-rust-ci.yml"
+-8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/build-rust-ci.yml"
 ```
 
 The highlighted lines are the focus of this post. We will expand on this as
@@ -107,7 +107,7 @@ post is to use a community GitHub Action.
 Let's see how.
 
 ```yaml title="Fetch changed files" hl_lines="21 26"
--8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/step1-prepare.yml"
+-8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/step1-prepare.yml"
 ```
 
 The key here is to fetch all the repository, hence the `fetch-depth: 0`. This
@@ -123,7 +123,7 @@ Next step is to realize if any of the changed files in the previous step modifie
 any of the services we're interested in.
 
 ```yaml title="Filter services only" hl_lines="12 14 19 25 31"
--8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml"
+-8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml"
 ```
 
 Wait a minute! There's a lot going on here. Let's break it down.
@@ -139,7 +139,7 @@ is empty. (1)
     in their documentations[^1].
 
 ```yaml title="" linenums="12"
--8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml:12:12"
+-8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml:12:12"
 ```
 
 #### Filter only the top-level directories
@@ -149,7 +149,7 @@ This will allow us to trim down on all the files that are not inherently related
 to the services.
 
 ```yaml title="" linenums="14"
--8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml:14:14"
+-8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml:14:14"
 ```
 
 It's important to mention here that the `actions/checkout` is necessary before
@@ -162,7 +162,7 @@ the `json.dumps` to avoid running into issue at later steps when decoding the
 JSON.
 
 ```yaml title="" linenums="19"
--8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml:19:19"
+-8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml:19:19"
 ```
 
 #### Prepare the matrix
@@ -176,11 +176,11 @@ happen that you changes haven't affected any of the services, and in that case
 we don't want to run the Docker image build job.
 
 ```yaml title="" linenums="25"
--8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml:25:25"
+-8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml:25:25"
 ```
 
 ```yaml title="" linenums="31"
--8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml:31:31"
+-8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/step2-determine.yml:31:31"
 ```
 
 ### Step 3: Build the Docker image(s)
@@ -191,7 +191,7 @@ for this next step to ensure no unnecessary job runs, nor do we hit any error
 due to an empty list in the `matrix` input.
 
 ```yaml title="Build the Image" hl_lines="4 7 25 32"
--8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/step3-build-image.yml"
+-8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/step3-build-image.yml"
 ```
 
 As you see in the conditional, this job will only run if the length of the list
@@ -218,7 +218,7 @@ If two of our services have changed, the `matrix` will take the following form.
 === "Configured `matrix`"
 
     ```yaml title="" linenums="7"
-    -8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/step3-build-image.yml:7:7"
+    -8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/step3-build-image.yml:7:7"
     ```
 
 Lastly, the `matrix` passed from the first job is accessed in lines 25 and 32.
@@ -265,7 +265,7 @@ job will be skipped, as expected.
 ??? details "The full definition of the CI workflow"
 
     ```yaml title=".github/workflows/ci.yml"
-    -8<- "docs/codes/2024/0004-dynamic-github-actions-matrix/full-ci-definition.yml"
+    -8<- "docs/blog/codes/2024/0004-dynamic-github-actions-matrix/full-ci-definition.yml"
     ```
 
 ## Conclusion

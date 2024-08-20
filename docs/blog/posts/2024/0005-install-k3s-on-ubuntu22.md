@@ -13,7 +13,7 @@ categories:
   - Cloud Computing
   - Hetzner
 links:
-  - ./posts/2024/0003-kubernetes-the-hard-way.md
+  - ./blog/posts/2024/0003-kubernetes-the-hard-way.md
 social:
   cards_layout_options:
     description: >-
@@ -104,7 +104,7 @@ Let us structure our project directory as follows:
 Now, let's pin the version for the required TF provider.
 
 ```hcl title="opentofu/versions.tf" hl_lines="19"
--8<- "docs/codes/2024/0005-install-k3s-ubuntu/opentofu/demo/old-versions.tf"
+-8<- "docs/blog/codes/2024/0005-install-k3s-ubuntu/opentofu/demo/old-versions.tf"
 ```
 
 ???+ tip "Provider Versioning"
@@ -133,7 +133,7 @@ export TF_VAR_hetzner_api_token="PLACEHOLDER"
 Next, we'll define the creation of the Hetzner Cloud Server in our TF file.
 
 ```hcl title="opentofu/main.tf" hl_lines="7"
--8<- "docs/codes/2024/0005-install-k3s-ubuntu/opentofu/main.tf"
+-8<- "docs/blog/codes/2024/0005-install-k3s-ubuntu/opentofu/main.tf"
 ```
 
 I don't know about you, but I personally love ARM processors. They are energy
@@ -160,7 +160,7 @@ That's an important piece of the whole puzzle. Let's create that file.
     ```
 
 ```yaml title="opentofu/cloud-init.yml" hl_lines="37-42"
--8<- "docs/codes/2024/0005-install-k3s-ubuntu/opentofu/cloud-init.yml"
+-8<- "docs/blog/codes/2024/0005-install-k3s-ubuntu/opentofu/cloud-init.yml"
 ```
 
 The first line of this file is not a normal comment. It's a directive that tells
@@ -186,12 +186,12 @@ config. It has a similar behavior to the shebang in shell scripts.
 All the config in cloud-init file is self-explanatory. However, I'd like to
 highlight a few important points.
 
-{{ read_csv('docs/codes/2024/0005-install-k3s-ubuntu/k3d-flags.csv') }}
+{{ read_csv('docs/blog/codes/2024/0005-install-k3s-ubuntu/k3d-flags.csv') }}
 
 Finally, let's create the relevant output that we'll use for later steps.
 
 ```hcl title="opentofu/output.tf"
--8<- "docs/codes/2024/0005-install-k3s-ubuntu/opentofu/output.tf"
+-8<- "docs/blog/codes/2024/0005-install-k3s-ubuntu/opentofu/output.tf"
 ```
 
 We have our TF files ready for provisioning the server. Let's create the server
@@ -240,7 +240,7 @@ Now, let's prepare the Ansible inventory file using the `yaml` plugin of
 Ansible inventory.
 
 ```yaml title="ansible/inventory.yml"
--8<- "docs/codes/2024/0005-install-k3s-ubuntu/ansible/inventory.yml"
+-8<- "docs/blog/codes/2024/0005-install-k3s-ubuntu/ansible/inventory.yml"
 ```
 
 ## Step 2: Install Kubernetes on Ubuntu 22.04
@@ -256,7 +256,7 @@ But, using Ansible gives more flexibility and control over the steps involved
 and it will make it reproducible upon future invocations.
 
 ```yaml title="ansible/playbook.yml" hl_lines="23-24 39-40"
--8<- "docs/codes/2024/0005-install-k3s-ubuntu/ansible/playbook.yml"
+-8<- "docs/blog/codes/2024/0005-install-k3s-ubuntu/ansible/playbook.yml"
 ```
 
 As you see in the highlighted lines, we will use Kubernetes Gateway API[^6] as
@@ -288,7 +288,7 @@ the playbook as it runs.
       Completely contradictory to what the Ansible *sane* defaults are.
 
       ```ini title="~/.ansible.cfg"
-      -8<- "docs/codes/2024/0005-install-k3s-ubuntu/ansible/ansible.cfg"
+      -8<- "docs/blog/codes/2024/0005-install-k3s-ubuntu/ansible/ansible.cfg"
       ```
 
 ## Step 3: K3s Ubuntu
@@ -308,7 +308,7 @@ machine, you will need to update the `server` field in the `~/.kube/config` file
 as it is pointing to the `127.0.0.1` by default.
 
 ```yaml title="~/.kube/config" hl_lines="5"
--8<- "docs/codes/2024/0005-install-k3s-ubuntu/kubeconfig"
+-8<- "docs/blog/codes/2024/0005-install-k3s-ubuntu/kubeconfig"
 ```
 
 ## Step 4: Protect the Server
@@ -321,11 +321,11 @@ That said, I would, as a last step, deploy the **free** Hetzner
 Cloud Firewall to protect my server.
 
 ```hcl title="opentofu/versions.tf" hl_lines="7-10"
--8<- "docs/codes/2024/0005-install-k3s-ubuntu/opentofu/versions.tf"
+-8<- "docs/blog/codes/2024/0005-install-k3s-ubuntu/opentofu/versions.tf"
 ```
 
 ```hcl title="opentofu/network.tf" hl_lines="11 17-19"
--8<- "docs/codes/2024/0005-install-k3s-ubuntu/opentofu/network.tf"
+-8<- "docs/blog/codes/2024/0005-install-k3s-ubuntu/opentofu/network.tf"
 ```
 
 ## Bonus: Multi-Node Cluster
@@ -349,7 +349,7 @@ All the code examples in this post are publicly available[^9] on GitHub under th
 [^6]: https://gateway-api.sigs.k8s.io/
 [^7]: https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/
 [^8]: https://docs.k3s.io/cli/agent#cluster-options
-[^9]: https://github.com/developer-friendly/blog/tree/main/docs/codes/2024/0005-install-k3s-ubuntu
+[^9]: https://github.com/developer-friendly/blog/tree/main/docs/blog/codes/2024/0005-install-k3s-ubuntu
 
 [license]: https://github.com/developer-friendly/blog/tree/main/LICENSE
 [opentofu-github]: https://github.com/opentofu/opentofu

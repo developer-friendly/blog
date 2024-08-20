@@ -26,9 +26,9 @@ categories:
   - OIDC
   - Security
 links:
-  - ./posts/2024/0005-install-k3s-on-ubuntu22.md
-  - ./posts/2024/0008-k8s-federated-oidc.md
-  - ./posts/2024/0006-gettings-started-with-gitops-and-fluxcd.md
+  - ./blog/posts/2024/0005-install-k3s-on-ubuntu22.md
+  - ./blog/posts/2024/0008-k8s-federated-oidc.md
+  - ./blog/posts/2024/0006-gettings-started-with-gitops-and-fluxcd.md
   - Source Code: https://github.com/developer-friendly/cert-manager-guide
 social:
   cards_layout_options:
@@ -171,15 +171,15 @@ This makes the installation rather straightforward.
 As mentioned earlier, we will install the Helm chart using FluxCD CRDs.
 
 ```yaml title="cert-manager/namespace.yml"
--8<- "docs/codes/2024/0010/cert-manager/namespace.yml"
+-8<- "docs/blog/codes/2024/0010/cert-manager/namespace.yml"
 ```
 
 ```yaml title="cert-manager/repository.yml"
--8<- "docs/codes/2024/0010/cert-manager/repository.yml"
+-8<- "docs/blog/codes/2024/0010/cert-manager/repository.yml"
 ```
 
 ```yaml title="cert-manager/release.yml" hl_lines="20"
--8<- "docs/codes/2024/0010/cert-manager/release.yml"
+-8<- "docs/blog/codes/2024/0010/cert-manager/release.yml"
 ```
 
 Although not required, it is hugely beneficial to store the Helm values as it
@@ -193,17 +193,17 @@ helm show values jetstack/cert-manager \
 ```
 
 ```yaml title="cert-manager/values.yml"
--8<- "docs/codes/2024/0010/cert-manager/values.yml"
+-8<- "docs/blog/codes/2024/0010/cert-manager/values.yml"
 ```
 
 Additionally, we will use Kubernetes Kustomize[^10]:
 
 ```yaml title="cert-manager/kustomizeconfig.yml"
--8<- "docs/codes/2024/0010/cert-manager/kustomizeconfig.yml"
+-8<- "docs/blog/codes/2024/0010/cert-manager/kustomizeconfig.yml"
 ```
 
 ```yaml title="cert-manager/kustomization.yml" hl_lines="7"
--8<- "docs/codes/2024/0010/cert-manager/kustomization.yml"
+-8<- "docs/blog/codes/2024/0010/cert-manager/kustomization.yml"
 ```
 
 Notice the namespace we are instructing Kustomization to place the resources in.
@@ -213,7 +213,7 @@ the Helm release itself is placed in the `cert-manager` namespace.
 Ultimately, to create this stack, we will create a FluxCD Kustomization resource[^11]:
 
 ```yaml title="cert-manager/kustomize.yml"
--8<- "docs/codes/2024/0010/cert-manager/kustomize.yml"
+-8<- "docs/blog/codes/2024/0010/cert-manager/kustomize.yml"
 ```
 
 You may either advantage from the recursive reconciliation of FluxCD, add it
@@ -235,7 +235,7 @@ kubectl apply -f cert-manager/kustomize.yml
     And the output:
 
     ```yaml title=""
-    -8<- "docs/codes/2024/0010/junk/cert-manager/manifests.yml"
+    -8<- "docs/blog/codes/2024/0010/junk/cert-manager/manifests.yml"
     ```
 
 ## Step 1.0: Issuer 101
@@ -289,19 +289,19 @@ to talk to the Route53 API for record creation and domain verfication.
 </figure>
 
 ```hcl title="hosted-zone/variables.tf"
--8<- "docs/codes/2024/0010/hosted-zone/variables.tf"
+-8<- "docs/blog/codes/2024/0010/hosted-zone/variables.tf"
 ```
 
 ```hcl title="hosted-zone/versions.tf"
--8<- "docs/codes/2024/0010/hosted-zone/versions.tf"
+-8<- "docs/blog/codes/2024/0010/hosted-zone/versions.tf"
 ```
 
 ```hcl title="hosted-zone/main.tf"
--8<- "docs/codes/2024/0010/hosted-zone/main.tf"
+-8<- "docs/blog/codes/2024/0010/hosted-zone/main.tf"
 ```
 
 ```hcl title="hosted-zone/outputs.tf"
--8<- "docs/codes/2024/0010/hosted-zone/outputs.tf"
+-8<- "docs/blog/codes/2024/0010/hosted-zone/outputs.tf"
 ```
 
 To apply this stack we'll use [OpenTofu](/category/opentofu).
@@ -353,19 +353,19 @@ Make sure you have a good understanding of the
 the trust relationship of the AWS IAM Role.
 
 ```hcl title="route53-iam-role/variables.tf"
--8<- "docs/codes/2024/0010/route53-iam-role/variables.tf"
+-8<- "docs/blog/codes/2024/0010/route53-iam-role/variables.tf"
 ```
 
 ```hcl title="route53-iam-role/versions.tf"
--8<- "docs/codes/2024/0010/route53-iam-role/versions.tf"
+-8<- "docs/blog/codes/2024/0010/route53-iam-role/versions.tf"
 ```
 
 ```hcl title="route53-iam-role/main.tf" hl_lines="34 48 57"
--8<- "docs/codes/2024/0010/route53-iam-role/main.tf"
+-8<- "docs/blog/codes/2024/0010/route53-iam-role/main.tf"
 ```
 
 ```hcl title="route53-iam-role/outputs.tf"
--8<- "docs/codes/2024/0010/route53-iam-role/outputs.tf"
+-8<- "docs/blog/codes/2024/0010/route53-iam-role/outputs.tf"
 ```
 
 ```shell title="" linenums="0"
@@ -399,23 +399,23 @@ We will also create a ClusterIssuer CRD to be responsible for fetching the TLS
 certificates from the trusted CA.
 
 ```hcl title="route53-issuer/variables.tf"
--8<- "docs/codes/2024/0010/route53-issuer/variables.tf"
+-8<- "docs/blog/codes/2024/0010/route53-issuer/variables.tf"
 ```
 
 ```hcl title="route53-issuer/versions.tf"
--8<- "docs/codes/2024/0010/route53-issuer/versions.tf"
+-8<- "docs/blog/codes/2024/0010/route53-issuer/versions.tf"
 ```
 
 ```yaml title="route53-issuer/values.yml.tftpl"
--8<- "docs/codes/2024/0010/route53-issuer/values.yml.tftpl"
+-8<- "docs/blog/codes/2024/0010/route53-issuer/values.yml.tftpl"
 ```
 
 ```hcl title="route53-issuer/main.tf" hl_lines="31 34-37"
--8<- "docs/codes/2024/0010/route53-issuer/main.tf"
+-8<- "docs/blog/codes/2024/0010/route53-issuer/main.tf"
 ```
 
 ```hcl title="route53-issuer/outputs.tf"
--8<- "docs/codes/2024/0010/route53-issuer/outputs.tf"
+-8<- "docs/blog/codes/2024/0010/route53-issuer/outputs.tf"
 ```
 
 ```shell title="" linenums="0"
@@ -471,38 +471,38 @@ the AWS IAM User credentials to the cert-manager controller (easy peasy, no
 drama!).
 
 ```hcl title="iam-user/variables.tf"
--8<- "docs/codes/2024/0010/iam-user/variables.tf"
+-8<- "docs/blog/codes/2024/0010/iam-user/variables.tf"
 ```
 
 ```hcl title="iam-user/versions.tf"
--8<- "docs/codes/2024/0010/iam-user/versions.tf"
+-8<- "docs/blog/codes/2024/0010/iam-user/versions.tf"
 ```
 
 ```hcl title="iam-user/main.tf" hl_lines="41-42"
--8<- "docs/codes/2024/0010/iam-user/main.tf"
+-8<- "docs/blog/codes/2024/0010/iam-user/main.tf"
 ```
 
 ```hcl title="iam-user/outputs.tf"
--8<- "docs/codes/2024/0010/iam-user/outputs.tf"
+-8<- "docs/blog/codes/2024/0010/iam-user/outputs.tf"
 ```
 
 And now let's create the corresponding ClusterIssuer, passing the credentials
 like a normal human being!
 
 ```hcl title="route53-issuer-creds/variables.tf"
--8<- "docs/codes/2024/0010/route53-issuer-creds/variables.tf"
+-8<- "docs/blog/codes/2024/0010/route53-issuer-creds/variables.tf"
 ```
 
 ```hcl title="route53-issuer-creds/versions.tf"
--8<- "docs/codes/2024/0010/route53-issuer-creds/versions.tf"
+-8<- "docs/blog/codes/2024/0010/route53-issuer-creds/versions.tf"
 ```
 
 ```hcl title="route53-issuer-creds/main.tf" hl_lines="19-20 22-23 53 56"
--8<- "docs/codes/2024/0010/route53-issuer-creds/main.tf"
+-8<- "docs/blog/codes/2024/0010/route53-issuer-creds/main.tf"
 ```
 
 ```hcl title="route53-issuer-creds/outputs.tf"
--8<- "docs/codes/2024/0010/route53-issuer-creds/outputs.tf"
+-8<- "docs/blog/codes/2024/0010/route53-issuer-creds/outputs.tf"
 ```
 
 We're now done with the AWS issuer. Let's switch gear for a bit to create the
@@ -525,19 +525,19 @@ Parameter Store and pass it down to our Kubernetes cluster as a Secret resource.
 Notice the highlighted lines.
 
 ```yaml title="cloudflare-issuer/externalsecret.yml" hl_lines="4 9"
--8<- "docs/codes/2024/0010/cloudflare-issuer/externalsecret.yml"
+-8<- "docs/blog/codes/2024/0010/cloudflare-issuer/externalsecret.yml"
 ```
 
 ```yaml title="cloudflare-issuer/clusterissuer.yml" hl_lines="4 16-17"
--8<- "docs/codes/2024/0010/cloudflare-issuer/clusterissuer.yml"
+-8<- "docs/blog/codes/2024/0010/cloudflare-issuer/clusterissuer.yml"
 ```
 
 ```yaml title="cloudflare-issuer/kustomization.yml"
--8<- "docs/codes/2024/0010/cloudflare-issuer/kustomization.yml"
+-8<- "docs/blog/codes/2024/0010/cloudflare-issuer/kustomization.yml"
 ```
 
 ```yaml title="cloudflare-issuer/kustomize.yml"
--8<- "docs/codes/2024/0010/cloudflare-issuer/kustomize.yml"
+-8<- "docs/blog/codes/2024/0010/cloudflare-issuer/kustomize.yml"
 ```
 
 ```shell title="" linenums="0"
@@ -565,19 +565,19 @@ verify the ownership within the cluster through the DNS01 challenge and using
 the access we've provided it.
 
 ```yaml title="tls-certificates/aws-subdomain.yml" hl_lines="10"
--8<- "docs/codes/2024/0010/tls-certificates/aws-subdomain.yml"
+-8<- "docs/blog/codes/2024/0010/tls-certificates/aws-subdomain.yml"
 ```
 
 ```yaml title="tls-certificates/cloudflare-root.yml" hl_lines="10"
--8<- "docs/codes/2024/0010/tls-certificates/cloudflare-root.yml"
+-8<- "docs/blog/codes/2024/0010/tls-certificates/cloudflare-root.yml"
 ```
 
 ```yaml title="tls-certificates/kustomization.yml"
--8<- "docs/codes/2024/0010/tls-certificates/kustomization.yml"
+-8<- "docs/blog/codes/2024/0010/tls-certificates/kustomization.yml"
 ```
 
 ```yaml title="tls-certificates/kustomize.yml"
--8<- "docs/codes/2024/0010/tls-certificates/kustomize.yml"
+-8<- "docs/blog/codes/2024/0010/tls-certificates/kustomize.yml"
 ```
 
 ```shell title="" linenums="0"
@@ -594,7 +594,7 @@ The final result will have a Secret with two keys: `tls.crt` and `tls.key`.
 This will look similar to what you see below.
 
 ```yaml title=""
--8<- "docs/codes/2024/0010/junk/tls-certificates/manifests.yml"
+-8<- "docs/blog/codes/2024/0010/junk/tls-certificates/manifests.yml"
 ```
 
 ## Step 3: Use the TLS Certificates in Gateway
@@ -619,13 +619,13 @@ We have covered the [Cilium installation before][k3s-ubuntu], but, for the sake
 of completeness, here's the way to do it[^20].
 
 ```yaml title="cilium/playbook.yml" hl_lines="27-28 44-46"
--8<- "docs/codes/2024/0010/cilium/playbook.yml"
+-8<- "docs/blog/codes/2024/0010/cilium/playbook.yml"
 ```
 
 And now, let's create the Gateway CRD.
 
 ```yaml title="gateway/gateway.yml" hl_lines="6 11 17 24 28"
--8<- "docs/codes/2024/0010/gateway/gateway.yml"
+-8<- "docs/blog/codes/2024/0010/gateway/gateway.yml"
 ```
 
 Notice that we did not create the `gatewayClassName`. It comes as
@@ -648,18 +648,18 @@ However, if you have set up your mTLS the way we did with Wireguard encryption
 communications will also be encrypted.
 
 ```yaml title="gateway/http-to-https-redirect.yml" hl_lines="11"
--8<- "docs/codes/2024/0010/gateway/http-to-https-redirect.yml"
+-8<- "docs/blog/codes/2024/0010/gateway/http-to-https-redirect.yml"
 ```
 
 Though not required, the above HTTP to HTTPS redirect allows you to avoid
 accepting any plaintext HTTP traffic on your domain.
 
 ```yaml title="gateway/kustomization.yml"
--8<- "docs/codes/2024/0010/gateway/kustomization.yml"
+-8<- "docs/blog/codes/2024/0010/gateway/kustomization.yml"
 ```
 
 ```yaml title="gateway/kustomize.yml"
--8<- "docs/codes/2024/0010/gateway/kustomize.yml"
+-8<- "docs/blog/codes/2024/0010/gateway/kustomize.yml"
 ```
 
 ```shell title="" linenums="0"
@@ -672,27 +672,27 @@ That's all the things we aimed to do today. At this point, we can create our
 HTTPS-only application and expose it securely to the wild internet!
 
 ```yaml title="app/deployment.yml"
--8<- "docs/codes/2024/0010/app/deployment.yml"
+-8<- "docs/blog/codes/2024/0010/app/deployment.yml"
 ```
 
 ```yaml title="app/service.yml"
--8<- "docs/codes/2024/0010/app/service.yml"
+-8<- "docs/blog/codes/2024/0010/app/service.yml"
 ```
 
 ```yaml title="app/httproute.yml" hl_lines="7-8"
--8<- "docs/codes/2024/0010/app/httproute.yml"
+-8<- "docs/blog/codes/2024/0010/app/httproute.yml"
 ```
 
 ```ini title="app/configs.env"
--8<- "docs/codes/2024/0010/app/configs.env"
+-8<- "docs/blog/codes/2024/0010/app/configs.env"
 ```
 
 ```yaml title="app/kustomization.yml"
--8<- "docs/codes/2024/0010/app/kustomization.yml"
+-8<- "docs/blog/codes/2024/0010/app/kustomization.yml"
 ```
 
 ```yaml title="app/kustomize.yml"
--8<- "docs/codes/2024/0010/app/kustomize.yml"
+-8<- "docs/blog/codes/2024/0010/app/kustomize.yml"
 ```
 
 
@@ -757,18 +757,18 @@ Until next time :saluting_face:, *ciao* :cowboy: and happy hacking! :crab:
 
 [^1]: https://certbot.eff.org/
 [^2]: https://cert-manager.io/
-[^3]: https://kubernetes.io/docs/concepts/extend-kubernetes/operator/
+[^3]: https://kubernetes.io/docs/blog/concepts/extend-kubernetes/operator/
 [^4]: https://www.cncf.io/
-[^5]: https://kubernetes.io/docs/concepts/services-networking/ingress/
+[^5]: https://kubernetes.io/docs/blog/concepts/services-networking/ingress/
 [^6]: https://gateway-api.sigs.k8s.io/
 [^7]: https://github.com/developer-friendly/blog/commit/eedf71d1f179a8a994a030e77c62f380440ed4d8
 [^8]: https://squidfunk.github.io/mkdocs-material
 [^9]: https://github.com/opentofu/opentofu/releases/tag/v1.7.0
 [^10]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
 [^11]: https://fluxcd.io/flux/components/kustomize/kustomizations/
-[^12]: https://cert-manager.io/docs/configuration/acme/dns01/
+[^12]: https://cert-manager.io/docs/blog/configuration/acme/dns01/
 [^13]: https://developer.hashicorp.com/terraform/language/meta-arguments/for_each#limitations-on-values-used-in-for_each
-[^14]: https://cert-manager.io/docs/configuration/acme/dns01/route53/#set-up-an-iam-role
+[^14]: https://cert-manager.io/docs/blog/configuration/acme/dns01/route53/#set-up-an-iam-role
 [^15]: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html
 [^16]: https://github.com/cert-manager/cert-manager/issues/2147#issuecomment-2094066782
 [^17]: https://github.com/aws/aws-sdk-go

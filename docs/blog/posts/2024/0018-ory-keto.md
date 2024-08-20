@@ -38,9 +38,9 @@ categories:
   - Tutorial
   - User Management
 links:
-  - ./posts/2024/0012-ory-kratos.md
-  - ./posts/2024/0015-ory-oathkeeper.md
-  - ./posts/2024/0007-oidc-authentication.md
+  - ./blog/posts/2024/0012-ory-kratos.md
+  - ./blog/posts/2024/0015-ory-oathkeeper.md
+  - ./blog/posts/2024/0007-oidc-authentication.md
 image: assets/images/social/2024/07/01/ory-keto-authorization-and-access-control-as-a-service.png
 ---
 
@@ -255,19 +255,19 @@ Here's the tree structure before getting into the code:
 ```
 
 ```yaml title="keto/deployment.yml"
--8<- "docs/codes/2024/0018/keto/deployment.yml"
+-8<- "docs/blog/codes/2024/0018/keto/deployment.yml"
 ```
 
 ```yaml title="keto/externalsecret.yml"
--8<- "docs/codes/2024/0018/keto/externalsecret.yml"
+-8<- "docs/blog/codes/2024/0018/keto/externalsecret.yml"
 ```
 
 ```yaml title="keto/httproute-read.yml"
--8<- "docs/codes/2024/0018/keto/httproute-read.yml"
+-8<- "docs/blog/codes/2024/0018/keto/httproute-read.yml"
 ```
 
 ```yaml title="keto/httproute-write.yml"
--8<- "docs/codes/2024/0018/keto/httproute-write.yml"
+-8<- "docs/blog/codes/2024/0018/keto/httproute-write.yml"
 ```
 
 The most important part of the [Keto] server configuration below, besides all
@@ -278,25 +278,25 @@ Also note the `limit.max_read_depth` which allows for the use of RBAC in our
 system.
 
 ```yaml title="keto/keto-server-config.yml" hl_lines="1-2 7-11"
--8<- "docs/codes/2024/0018/keto/keto-server-config.yml"
+-8<- "docs/blog/codes/2024/0018/keto/keto-server-config.yml"
 ```
 
 ```yaml title="keto/kustomization.yml"
--8<- "docs/codes/2024/0018/keto/kustomization.yml"
+-8<- "docs/blog/codes/2024/0018/keto/kustomization.yml"
 ```
 
 ```yaml title="keto/service-read.yml"
--8<- "docs/codes/2024/0018/keto/service-read.yml"
+-8<- "docs/blog/codes/2024/0018/keto/service-read.yml"
 ```
 
 ```yaml title="keto/service-write.yml"
--8<- "docs/codes/2024/0018/keto/service-write.yml"
+-8<- "docs/blog/codes/2024/0018/keto/service-write.yml"
 ```
 
 Lastly, let's apply this stack:
 
 ```yaml title="keto/kustomize.yml"
--8<- "docs/codes/2024/0018/keto/kustomize.yml"
+-8<- "docs/blog/codes/2024/0018/keto/kustomize.yml"
 ```
 
 ```bash title="" linenums="0"
@@ -415,17 +415,17 @@ Now that we know what is and isn't a *namespace*, let's create our groups and
 their members in the [Keto] server[^keto-create-relationship-api].
 
 ```json title="permissions/members.json"
--8<- "docs/codes/2024/0018/permissions/members.json"
+-8<- "docs/blog/codes/2024/0018/permissions/members.json"
 ```
 
 Now, let's grant permissions to our groups.
 
 ```json title="permissions/admin-rbac.json"
--8<- "docs/codes/2024/0018/permissions/admin-rbac.json"
+-8<- "docs/blog/codes/2024/0018/permissions/admin-rbac.json"
 ```
 
 ```json title="permissions/editor-rbac.json"
--8<- "docs/codes/2024/0018/permissions/editor-rbac.json"
+-8<- "docs/blog/codes/2024/0018/permissions/editor-rbac.json"
 ```
 
 These permissions define the following relationships:
@@ -451,7 +451,7 @@ This will allow for auditing the system without having to have access to the
 user's data.
 
 ```json title="permissions/auditbot-abac.json"
--8<- "docs/codes/2024/0018/permissions/auditbot-abac.json"
+-8<- "docs/blog/codes/2024/0018/permissions/auditbot-abac.json"
 ```
 
 Here, we are not adding the audit bot to any group. Instead, we are granting
@@ -466,7 +466,7 @@ the [Keto] server admin API (as you see below), or from inside your application
 code using the available SDKs[^keto-sdk-libraries].
 
 ```bash title="" linenums="0"
--8<- "docs/codes/2024/0018/rules/keto-relation-tuple-create.sh"
+-8<- "docs/blog/codes/2024/0018/rules/keto-relation-tuple-create.sh"
 ```
 
 For example, if a new user signs up to the application, you can decide whether
@@ -486,7 +486,7 @@ solution in a bit, but let's query the [Keto] server directly for now
 [^keto-permission-post-api].
 
 ```bash title="" linenums="0"
--8<- "docs/codes/2024/0018/rules/verify-curl.sh"
+-8<- "docs/blog/codes/2024/0018/rules/verify-curl.sh"
 ```
 
 The result of this query will be a `200 OK` with the following response:
@@ -531,7 +531,7 @@ will inform the Oathkeeper server using the following process:
    server, resulting in the new rules being applied.
 
 ```yaml title="rules/echo-server.yml"
--8<- "docs/codes/2024/0018/rules/echo-server.yml"
+-8<- "docs/blog/codes/2024/0018/rules/echo-server.yml"
 ```
 
 Let's break down this rule for a better understanding.
@@ -553,12 +553,12 @@ address.
 === "rules/echo-server.yml"
 
     ```yaml title="" linenums="15"
-    -8<- "docs/codes/2024/0018/rules/echo-server.yml:15:25"
+    -8<- "docs/blog/codes/2024/0018/rules/echo-server.yml:15:25"
     ```
 
 === "Equivalent `curl`"
     ```bash title="" linenums="0"
-    -8<- "docs/codes/2024/0018/rules/verify-curl.sh"
+    -8<- "docs/blog/codes/2024/0018/rules/verify-curl.sh"
     ```
 
 The placeholder in the authorizer rule is benefiting from the Go template
@@ -579,7 +579,7 @@ Notice that the `<.*>` is a regex pattern that is only effective if
 For an HTTP request, this matching is quite comprehensive:
 
 ```yaml title="rules/echo-server.yml" linenums="28"
--8<- "docs/codes/2024/0018/rules/echo-server.yml:28:35"
+-8<- "docs/blog/codes/2024/0018/rules/echo-server.yml:28:35"
 ```
 
 ### Mutator Handler (Oathkeeper)
@@ -593,7 +593,7 @@ information without paying the extra cost of a network roundtrip or a database
 query.
 
 ```yaml title="rules/echo-server.yml" linenums="36"
--8<- "docs/codes/2024/0018/rules/echo-server.yml:36:41"
+-8<- "docs/blog/codes/2024/0018/rules/echo-server.yml:36:41"
 ```
 
 ### Upstream Handler (Oathkeeper)
@@ -606,7 +606,7 @@ Since the value of the `Host` is almost always coming from the end-user, it is
 a good idea to keep it as is, unless you have a specific use-case to change it.
 
 ```yaml title="rules/echo-server.yml" linenums="42"
--8<- "docs/codes/2024/0018/rules/echo-server.yml:42:44"
+-8<- "docs/blog/codes/2024/0018/rules/echo-server.yml:42:44"
 ```
 
 Beware that the value of the `upstream.url` consists of the Kubernetes Service
@@ -674,9 +674,9 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [echo-server-deployment]: ./0017-per-pr-deployment.md/#base-kustomization-for-the-application
 
 [^yak-shaving]: https://seths.blog/2005/03/dont_shave_that/
-[^ory-perm-lang]: https://www.ory.sh/docs/keto/#ory-permission-language
+[^ory-perm-lang]: https://www.ory.sh/docs/blog/keto/#ory-permission-language
 [^keto-examples-json-access-policy]: https://github.com/ory/examples/blob/a085b65d21d6d31c1cb728a6b8b28f281f074066/kratos-keto-oathkeeper-k8s/keto/keto-job/config/relation-tuples/admin-access.json
-[^keto-http-api]: https://www.ory.sh/docs/keto/reference/rest-api
+[^keto-http-api]: https://www.ory.sh/docs/blog/keto/reference/rest-api
 [^casbin]: https://casbin.org/
 [^opa]: https://www.openpolicyagent.org/
 [^auth0]: https://auth0.com/
@@ -686,12 +686,12 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [^ory-network]: https://console.ory.sh/
 [^ory-helm-repo]: https://github.com/ory/k8s
 [^ory-helm-charts]: https://artifacthub.io/packages/search?repo=ory&sort=relevance&page=1
-[^keto-cli-installation]: https://www.ory.sh/docs/keto/install
-[^keto-create-relationship-api]: https://www.ory.sh/docs/keto/reference/rest-api#tag/relationship/operation/createRelationship
-[^keto-sdk-libraries]: https://www.ory.sh/docs/keto/sdk/overview
-[^keto-permission-post-api]: https://www.ory.sh/docs/keto/reference/rest-api#tag/permission/operation/postCheckPermissionOrError
-[^keto-configuration]: https://www.ory.sh/docs/keto/reference/configuration
-[^keto-check-cli]: https://www.ory.sh/docs/keto/cli/keto-check
+[^keto-cli-installation]: https://www.ory.sh/docs/blog/keto/install
+[^keto-create-relationship-api]: https://www.ory.sh/docs/blog/keto/reference/rest-api#tag/relationship/operation/createRelationship
+[^keto-sdk-libraries]: https://www.ory.sh/docs/blog/keto/sdk/overview
+[^keto-permission-post-api]: https://www.ory.sh/docs/blog/keto/reference/rest-api#tag/permission/operation/postCheckPermissionOrError
+[^keto-configuration]: https://www.ory.sh/docs/blog/keto/reference/configuration
+[^keto-check-cli]: https://www.ory.sh/docs/blog/keto/cli/keto-check
 [^maester-repo]: https://github.com/ory/oathkeeper-maester/
-[^keto-session-template]: https://www.ory.sh/docs/oathkeeper/pipeline#session
+[^keto-session-template]: https://www.ory.sh/docs/blog/oathkeeper/pipeline#session
 [^go-net-url-docs]: https://pkg.go.dev/net/url#URL.EscapedPath

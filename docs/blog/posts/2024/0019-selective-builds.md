@@ -37,9 +37,9 @@ categories:
   - Upstash
   - Version Control
 links:
-  - ./posts/2024/0004-github-actions-dynamic-matrix.md
-  - ./posts/2024/0006-gettings-started-with-gitops-and-fluxcd.md
-  - ./posts/2024/0014-github-actions-integration-testing.md
+  - ./blog/posts/2024/0004-github-actions-dynamic-matrix.md
+  - ./blog/posts/2024/0006-gettings-started-with-gitops-and-fluxcd.md
+  - ./blog/posts/2024/0014-github-actions-integration-testing.md
 image: assets/images/social/2024/08/05/supercharge-monorepo-cicd-unlock-selective-builds.png
 ---
 
@@ -369,13 +369,13 @@ usually multiple ways to get the job done in programming languages, let's just
 see it to completion for now.
 
 ```js title="index.js"
--8<- "docs/codes/2024/0019/index.js::12"
+-8<- "docs/blog/codes/2024/0019/index.js::12"
 ```
 
 We will now store the hash for all the directories of a given root path.
 
 ```js title="index.js" linenums="14"
--8<- "docs/codes/2024/0019/index.js:14:53"
+-8<- "docs/blog/codes/2024/0019/index.js:14:53"
 ```
 
 ### Comparison for Selective Builds on Changes
@@ -392,7 +392,7 @@ Furthermore, for our datastore, among many available options, we'll pick
 [Redis] for its simpicity and ease of use.
 
 ```js title="index.js" linenums="55"
--8<- "docs/codes/2024/0019/index.js:55:71"
+-8<- "docs/blog/codes/2024/0019/index.js:55:71"
 ```
 
 ### Mark Changed Services for Rebuild
@@ -405,7 +405,7 @@ Since this script will be used in the [GitHub Actions] workflow, we should
 write the output to a special temporary file accessible by `$GITHUB_OUTPUT`.
 
 ```js title="index.js" linenums="73"
--8<- "docs/codes/2024/0019/index.js:73:96"
+-8<- "docs/blog/codes/2024/0019/index.js:73:96"
 ```
 
 ### JavaScript GitHub Actions
@@ -414,7 +414,7 @@ To run this script, we will provide the required file `action.yml` for this
 script to be used in the GitHub Actions workflow.
 
 ```yaml title="action.yml"
--8<- "docs/codes/2024/0019/action.yml"
+-8<- "docs/blog/codes/2024/0019/action.yml"
 ```
 
 For the Redis server, we'll use the free tier of Upstash[^upstash], a managed Redis service.
@@ -445,7 +445,7 @@ In our monorepo, we can define a [GitHub Actions] workflow that has three jobs:
 Here's what each of the three jobs will look like in a sample monorepo:
 
 ```yaml title=".github/workflows/ci.yml" hl_lines="16-17 23 34 36 39 72 89 95"
--8<- "docs/codes/2024/0019/ci.yml"
+-8<- "docs/blog/codes/2024/0019/ci.yml"
 ```
 
 Notice a couple of important points in the workflow:
@@ -494,7 +494,7 @@ build.
 To do that in our [JavaScript] code, we'll simply use the [Redis] API.
 
 ```js title="index.js" linenums="96"
--8<- "docs/codes/2024/0019/index.js:98:100"
+-8<- "docs/blog/codes/2024/0019/index.js:98:100"
 ```
 
 ### Entrypoint to the JavaScript GitHub Actions
@@ -504,7 +504,7 @@ the expected output is as follows. Notice the heavy usage of the
 [GitHub Actions] SDK API in this code to access the input.
 
 ```js title="index.js" linenums="100"
--8<- "docs/codes/2024/0019/index.js:102:"
+-8<- "docs/blog/codes/2024/0019/index.js:102:"
 ```
 
 The first run of this script will trigger a build on all the directories as
@@ -611,7 +611,7 @@ Here is the equivalent Python script for the JavaScript script we have
 discussed so far. It does the same thing, albeit in Python.
 
 ```python title="main.py"
--8<- "docs/codes/2024/0019/main.py"
+-8<- "docs/blog/codes/2024/0019/main.py"
 ```
 
 Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:

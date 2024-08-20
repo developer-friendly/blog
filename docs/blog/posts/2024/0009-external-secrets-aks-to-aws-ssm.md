@@ -22,8 +22,8 @@ categories:
   - GitOps
   - FluxCD
 links:
-  - ./posts/2024/0008-k8s-federated-oidc.md
-  - ./posts/2024/0002-external-secret-immutable-target.md
+  - ./blog/posts/2024/0008-k8s-federated-oidc.md
+  - ./blog/posts/2024/0002-external-secret-immutable-target.md
   - Source Code: https://github.com/developer-friendly/external-secrets-guide
 social:
   cards_layout_options:
@@ -180,19 +180,19 @@ First things first, let's set up the Azure AKS Kubernetes cluster using the
 official TF module[^4].
 
 ```hcl title="aks/variables.tf"
--8<- "docs/codes/2024/0009/aks/variables.tf"
+-8<- "docs/blog/codes/2024/0009/aks/variables.tf"
 ```
 
 ```hcl title="aks/versions.tf"
--8<- "docs/codes/2024/0009/aks/versions.tf"
+-8<- "docs/blog/codes/2024/0009/aks/versions.tf"
 ```
 
 ```hcl title="aks/main.tf"
--8<- "docs/codes/2024/0009/aks/main.tf"
+-8<- "docs/blog/codes/2024/0009/aks/main.tf"
 ```
 
 ```hcl title="aks/outputs.tf"
--8<- "docs/codes/2024/0009/aks/outputs.tf"
+-8<- "docs/blog/codes/2024/0009/aks/outputs.tf"
 ```
 
 Having this TF code, we now need to apply it to our Azure account.
@@ -254,19 +254,19 @@ OpenID Connect is all about.
 Let's write the TF code to create the OIDC provider in the AWS.
 
 ```hcl title="aws-oidc/variables.tf"
--8<- "docs/codes/2024/0009/aws-oidc/variables.tf"
+-8<- "docs/blog/codes/2024/0009/aws-oidc/variables.tf"
 ```
 
 ```hcl title="aws-oidc/versions.tf"
--8<- "docs/codes/2024/0009/aws-oidc/versions.tf"
+-8<- "docs/blog/codes/2024/0009/aws-oidc/versions.tf"
 ```
 
 ```hcl title="aws-oidc/main.tf"
--8<- "docs/codes/2024/0009/aws-oidc/main.tf"
+-8<- "docs/blog/codes/2024/0009/aws-oidc/main.tf"
 ```
 
 ```hcl title="aws-oidc/outputs.tf"
--8<- "docs/codes/2024/0009/aws-oidc/outputs.tf"
+-8<- "docs/blog/codes/2024/0009/aws-oidc/outputs.tf"
 ```
 
 The code should be self-explanatory, especially at this point after covering
@@ -312,7 +312,7 @@ For your reference, this is the equivalent TF code when writing it in the JSON
 format:
 
 ```hcl title=""
--8<- "docs/codes/2024/0009/junk/iam-role/main.tf"
+-8<- "docs/blog/codes/2024/0009/junk/iam-role/main.tf"
 ```
 
 Pick what's best and more appealing to you and your team and stick with it.
@@ -326,23 +326,23 @@ However, my preferred way of Kubernetes deployments is through GitOps, and
 for that.
 
 ```yaml title="external-secrets/namespace.yml"
--8<- "docs/codes/2024/0009/external-secrets/namespace.yml"
+-8<- "docs/blog/codes/2024/0009/external-secrets/namespace.yml"
 ```
 
 ```yaml title="external-secrets/repository.yml"
--8<- "docs/codes/2024/0009/external-secrets/repository.yml"
+-8<- "docs/blog/codes/2024/0009/external-secrets/repository.yml"
 ```
 
 ```yaml title="external-secrets/release.yml" hl_lines="31"
--8<- "docs/codes/2024/0009/external-secrets/release.yml"
+-8<- "docs/blog/codes/2024/0009/external-secrets/release.yml"
 ```
 
 ```yaml title="external-secrets/kustomizeconfig.yml"
--8<- "docs/codes/2024/0009/external-secrets/kustomizeconfig.yml"
+-8<- "docs/blog/codes/2024/0009/external-secrets/kustomizeconfig.yml"
 ```
 
 ```yaml title="external-secrets/kustomization.yml" hl_lines="2"
--8<- "docs/codes/2024/0009/external-secrets/kustomization.yml"
+-8<- "docs/blog/codes/2024/0009/external-secrets/kustomization.yml"
 ```
 
 ???+ example "Helm Values File"
@@ -362,7 +362,7 @@ for that.
       And the content:
 
       ```yaml title="external-secrets/values.yml"
-      -8<- "docs/codes/2024/0009/external-secrets/values.yml"
+      -8<- "docs/blog/codes/2024/0009/external-secrets/values.yml"
       ```
 
 If you have set up your directory structure to be traversed in a recursive
@@ -372,11 +372,11 @@ will reconcile as specified.
 Otherwise, apply the following manifests to create the FluxCD Kustomization:
 
 ```yaml title="gitops/gitrepo.yml" hl_lines="4"
--8<- "docs/codes/2024/0009/gitops/gitrepo.yml"
+-8<- "docs/blog/codes/2024/0009/gitops/gitrepo.yml"
 ```
 
 ```yaml title="gitops/external-secrets.yml" hl_lines="18"
--8<- "docs/codes/2024/0009/gitops/external-secrets.yml"
+-8<- "docs/blog/codes/2024/0009/gitops/external-secrets.yml"
 ```
 
 ## Step 3: Create the Secret Store
@@ -394,15 +394,15 @@ Let us create a `ClusterSecretStore` that will be responsible for fetching
 or creating AWS SSM Parameters.
 
 ```hcl title="cluster-secret-store/variables.tf"
--8<- "docs/codes/2024/0009/cluster-secret-store/variables.tf"
+-8<- "docs/blog/codes/2024/0009/cluster-secret-store/variables.tf"
 ```
 
 ```hcl title="cluster-secret-store/versions.tf"
--8<- "docs/codes/2024/0009/cluster-secret-store/versions.tf"
+-8<- "docs/blog/codes/2024/0009/cluster-secret-store/versions.tf"
 ```
 
 ```hcl title="cluster-secret-store/main.tf" hl_lines="17-18"
--8<- "docs/codes/2024/0009/cluster-secret-store/main.tf"
+-8<- "docs/blog/codes/2024/0009/cluster-secret-store/main.tf"
 ```
 
 ### Service Account Annotations Hack
@@ -463,31 +463,31 @@ rest of this tutorial is a piece of cake compared to what we have done so far.
          employ in this tutorial.
 
 ```yaml title="mongodb/namespace.yml"
--8<- "docs/codes/2024/0009/mongodb/namespace.yml"
+-8<- "docs/blog/codes/2024/0009/mongodb/namespace.yml"
 ```
 
 ```ini title="mongodb/configs.env"
--8<- "docs/codes/2024/0009/mongodb/configs.env"
+-8<- "docs/blog/codes/2024/0009/mongodb/configs.env"
 ```
 
 ```yaml title="mongodb/password.yml"
--8<- "docs/codes/2024/0009/mongodb/password.yml"
+-8<- "docs/blog/codes/2024/0009/mongodb/password.yml"
 ```
 
 ```yaml title="mongodb/externalsecret.yml"
--8<- "docs/codes/2024/0009/mongodb/externalsecret.yml"
+-8<- "docs/blog/codes/2024/0009/mongodb/externalsecret.yml"
 ```
 
 ```yaml title="mongodb/service.yml"
--8<- "docs/codes/2024/0009/mongodb/service.yml"
+-8<- "docs/blog/codes/2024/0009/mongodb/service.yml"
 ```
 
 ```yaml title="mongodb/statefulset.yml"
--8<- "docs/codes/2024/0009/mongodb/statefulset.yml"
+-8<- "docs/blog/codes/2024/0009/mongodb/statefulset.yml"
 ```
 
 ```yaml title="mongodb/kustomization.yml"
--8<- "docs/codes/2024/0009/junk/mongo/kustomization.yml"
+-8<- "docs/blog/codes/2024/0009/junk/mongo/kustomization.yml"
 ```
 
 This Kustomization is valid and can be applied as is. I generally prefer
@@ -495,14 +495,14 @@ reconciling my Kubernetes resource using FluxCD and GitOps. Here's the
 `Kustomization` resource for FluxCD:
 
 ```yaml title="gitops/mongodb.yml"
--8<- "docs/codes/2024/0009/gitops/mongodb.yml"
+-8<- "docs/blog/codes/2024/0009/gitops/mongodb.yml"
 ```
 
 This stack will be deployed in whole and as is. Here's what the
 `Secret/mongodb-secrets` will look like.
 
 ```yaml title=""
--8<- "docs/codes/2024/0009/junk/mongo/mongodb-secrets.yml"
+-8<- "docs/blog/codes/2024/0009/junk/mongo/mongodb-secrets.yml"
 ```
 
 It's a bit out of scope for this guide, but notice that I am creating the
@@ -518,12 +518,12 @@ generator API. It is now time to store it in our secrets management system to
 later be used by other parts or applications.
 
 ```yaml title="mongodb/kustomization.yml" hl_lines="12"
--8<- "docs/codes/2024/0009/mongodb/kustomization.yml"
+-8<- "docs/blog/codes/2024/0009/mongodb/kustomization.yml"
 ```
 
 <div class="annotate" markdown>
 ```yaml title="mongodb/pushsecret.yml"
--8<- "docs/codes/2024/0009/mongodb/pushsecret.yml"
+-8<- "docs/blog/codes/2024/0009/mongodb/pushsecret.yml"
 ```
 </div>
 
@@ -566,25 +566,25 @@ Parameter Store, we can deploy an application that uses this password to
 connect to the database.
 
 ```yaml title="app/namespace.yml"
--8<- "docs/codes/2024/0009/app/namespace.yml"
+-8<- "docs/blog/codes/2024/0009/app/namespace.yml"
 ```
 
 ```yaml title="app/externalsecret.yml"
--8<- "docs/codes/2024/0009/app/externalsecret.yml"
+-8<- "docs/blog/codes/2024/0009/app/externalsecret.yml"
 ```
 
 ```yaml title="app/job.yml"
--8<- "docs/codes/2024/0009/app/job.yml"
+-8<- "docs/blog/codes/2024/0009/app/job.yml"
 ```
 
 ```yaml title="app/kustomization.yml"
--8<- "docs/codes/2024/0009/app/kustomization.yml"
+-8<- "docs/blog/codes/2024/0009/app/kustomization.yml"
 ```
 
 Again, you can apply this stack as is, or create is FluxCD Kustomization.
 
 ```yaml title="gitops/app.yml" hl_lines="7"
--8<- "docs/codes/2024/0009/gitops/app.yml"
+-8<- "docs/blog/codes/2024/0009/gitops/app.yml"
 ```
 
 We have intentionally enabled the `force` flag for this stack because
@@ -659,7 +659,7 @@ encryption out of the box. I wouldn't want to be charged extra money if I
 really don't have to.
 
 <!-- References -->
-[^1]: https://kubernetes.io/docs/concepts/configuration/secret/
+[^1]: https://kubernetes.io/docs/blog/concepts/configuration/secret/
 [^2]: https://external-secrets.io/v0.9.16/
 [^3]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
 [^4]: https://registry.terraform.io/modules/Azure/aks/azurerm/8.0.0
@@ -670,7 +670,7 @@ really don't have to.
 [^9]: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli
 [^10]: https://github.com/fluxcd/flux2/releases/tag/v2.2.3
 [^11]: https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs#authenticating-to-azure
-[^12]: https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/guides/azure_cli
+[^12]: https://registry.terraform.io/providers/hashicorp/azurerm/3.101.0/docs/blog/guides/azure_cli
 [^13]: https://learn.microsoft.com/en-us/azure/aks/control-kubeconfig-access
 [^14]: https://spacelift.io/blog/aws-iam-roles
 [^15]: https://docs.aws.amazon.com/cli/latest/reference/sts/assume-role-with-web-identity.html

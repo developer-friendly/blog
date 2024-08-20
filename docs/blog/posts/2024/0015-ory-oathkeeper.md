@@ -30,8 +30,8 @@ categories:
   - Kustomization
   - OpenTelemetry
 links:
-  - ./posts/2024/0012-ory-kratos.md
-  - ./posts/2024/0008-k8s-federated-oidc.md
+  - ./blog/posts/2024/0012-ory-kratos.md
+  - ./blog/posts/2024/0008-k8s-federated-oidc.md
   - Source Code: https://github.com/developer-friendly/oathkeeper-beginner-guide
 image: assets/images/social/2024/06/10/ory-oathkeeper-identity-and-access-proxy-server.png
 ---
@@ -207,7 +207,7 @@ and authorizers that are being used in this blog post. The rest and the
 complete reference can be found in the official documentation[^oathkeeper-configuration].
 
 ```yaml title="oathkeeper/oathkeeper-server-config.yml"
--8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml"
 ```
 
 There are a lot to unpack. We may not be able to cover all, but let's explain
@@ -220,7 +220,7 @@ and authorization. If you wish to use OAuth2 authentication, before using it
 in a Oathkeeper rule, you have to enable it in the configuration.
 
 ```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="5"
--8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:5:20"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:5:20"
 ```
 
 You can customize each method further with specific values. However, we will
@@ -239,7 +239,7 @@ That is possible through the same configuration over all the (currently) four
 products as below:
 
 ```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="52"
--8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:52:60"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:52:60"
 ```
 
 #### CORS Configuration
@@ -264,7 +264,7 @@ the Oathkeeper server and you will always get a `401 Unauthorized` response.
 That part that makes it possible is in these configuration lines:
 
 ```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="64"
--8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:64:68"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:64:68"
 ```
 
 ### Kubernetes Deployment Resources
@@ -302,49 +302,49 @@ However, this will require proper Kubernetes RBAC as you see below.
 :point_down:
 
 ```yaml title="oathkeeper/clusterrole.yml"
--8<- "docs/codes/2024/0015/oathkeeper/clusterrole.yml"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/clusterrole.yml"
 ```
 
 ```yaml title="oathkeeper/serviceaccount-maester.yml"
--8<- "docs/codes/2024/0015/oathkeeper/serviceaccount-maester.yml"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/serviceaccount-maester.yml"
 ```
 
 ```yaml title="oathkeeper/clusterrolebinding.yml"
--8<- "docs/codes/2024/0015/oathkeeper/clusterrolebinding.yml"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/clusterrolebinding.yml"
 ```
 
 The following two Deployment resources are the core of our Kustomization stack.
 
 ```yaml title="oathkeeper/deployment-oathkeeper-maester.yml"
--8<- "docs/codes/2024/0015/oathkeeper/deployment-oathkeeper-maester.yml"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/deployment-oathkeeper-maester.yml"
 ```
 
 ```yaml title="oathkeeper/deployment-oathkeeper.yml"
--8<- "docs/codes/2024/0015/oathkeeper/deployment-oathkeeper.yml"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/deployment-oathkeeper.yml"
 ```
 
 We won't need to expose Oathkeeper Maester, but we require the Oathkeeper to
 be accessible to the cluster. Hence the Services below.
 
 ```yaml title="oathkeeper/service-oathkeeper-api.yml"
--8<- "docs/codes/2024/0015/oathkeeper/service-oathkeeper-api.yml"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/service-oathkeeper-api.yml"
 ```
 
 ```yaml title="oathkeeper/service-oathkeeper-proxy.yml"
--8<- "docs/codes/2024/0015/oathkeeper/service-oathkeeper-proxy.yml"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/service-oathkeeper-proxy.yml"
 ```
 
 Now let's put this all together into a Kustomization file.
 
 ```yaml title="oathkeeper/kustomization.yml"
--8<- "docs/codes/2024/0015/oathkeeper/kustomization.yml"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/kustomization.yml"
 ```
 
 Notice the CRD installation in the Kustomization file. Without it, this stack
 won't be deployed properly.
 
 ```yaml title="oathkeeper/kustomization.yml" linenums="35"
--8<- "docs/codes/2024/0015/oathkeeper/kustomization.yml:35:36"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/kustomization.yml:35:36"
 ```
 
 ### FluxCD Deployment Kustomization
@@ -352,7 +352,7 @@ won't be deployed properly.
 To deploy the Oathkeeper, we need one last YAML file.
 
 ```yaml title="oathkeeper/kustomize.yml"
--8<- "docs/codes/2024/0015/oathkeeper/kustomize.yml"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/kustomize.yml"
 ```
 
 Now let's deploy this into our cluster.
@@ -408,7 +408,7 @@ To save space for the actual content, we will only provide the Deployment
 definition.
 
 ```yaml title="echo-server/deployment.yml"
--8<- "docs/codes/2024/0015/echo-server/deployment.yml"
+-8<- "docs/blog/codes/2024/0015/echo-server/deployment.yml"
 ```
 
 If you're interested to see the entire resources, click below. :point_down:
@@ -416,19 +416,19 @@ If you're interested to see the entire resources, click below. :point_down:
 ??? example "Click to expand"
 
     ```ini title="echo-server/configs.env"
-    -8<- "docs/codes/2024/0015/echo-server/configs.env"
+    -8<- "docs/blog/codes/2024/0015/echo-server/configs.env"
     ```
 
     ```yaml title="echo-server/service.yml"
-    -8<- "docs/codes/2024/0015/echo-server/service.yml"
+    -8<- "docs/blog/codes/2024/0015/echo-server/service.yml"
     ```
 
     ```yaml title="echo-server/kustomization.yml"
-    -8<- "docs/codes/2024/0015/echo-server/kustomization.yml"
+    -8<- "docs/blog/codes/2024/0015/echo-server/kustomization.yml"
     ```
 
     ```yaml title="echo-server/kustomize.yml"
-    -8<- "docs/codes/2024/0015/echo-server/kustomize.yml"
+    -8<- "docs/blog/codes/2024/0015/echo-server/kustomize.yml"
     ```
 
     ```bash title="" linenums="0"
@@ -470,17 +470,17 @@ even a single byte reaches the upstream server. That is the true power of
 Oathkeeper.
 
 ```yaml title="echo-server-rule/httproute.yml" hl_lines="7 15-18"
--8<- "docs/codes/2024/0015/echo-server-rule/httproute.yml"
+-8<- "docs/blog/codes/2024/0015/echo-server-rule/httproute.yml"
 ```
 
 Let's deploy this as a Kustomization stack.
 
 ```yaml title="echo-server-rule/kustomization.yml"
--8<- "docs/codes/2024/0015/junk/just-httproute-ks.yml"
+-8<- "docs/blog/codes/2024/0015/junk/just-httproute-ks.yml"
 ```
 
 ```yaml title="echo-server-rule/kustomize.yml"
--8<- "docs/codes/2024/0015/echo-server-rule/kustomize.yml"
+-8<- "docs/blog/codes/2024/0015/echo-server-rule/kustomize.yml"
 ```
 
 ```bash title="" linenums="0"
@@ -494,7 +494,7 @@ server. This is a common use-case where you want to allow everyone to access
 the server without any authentication.
 
 ```yaml title="echo-server-rule/rule.yml" hl_lines="7 25"
--8<- "docs/codes/2024/0015/junk/anon-rule.yml"
+-8<- "docs/blog/codes/2024/0015/junk/anon-rule.yml"
 ```
 
 The flow of the request is as follows[^oathkeeper-proxy-flow]:
@@ -502,26 +502,26 @@ The flow of the request is as follows[^oathkeeper-proxy-flow]:
 :one: Is the request authenticated? Yes, it is anonymous.
 
 ```yaml title="echo-server-rule/rule.yml" linenums="6"
--8<- "docs/codes/2024/0015/junk/anon-rule.yml:6:7"
+-8<- "docs/blog/codes/2024/0015/junk/anon-rule.yml:6:7"
 ```
 
 :two: Is it authorized? Yes, the rule allows access to everyone.
 
 ```yaml title="echo-server-rule/rule.yml" linenums="8"
--8<- "docs/codes/2024/0015/junk/anon-rule.yml:8:9"
+-8<- "docs/blog/codes/2024/0015/junk/anon-rule.yml:8:9"
 ```
 
 :three: Do we need to change anything in the request? Yes, add a single `x-user-id`
 header (`guest` for anonymous).
 
 ```yaml title="echo-server-rule/rule.yml" linenums="21"
--8<- "docs/codes/2024/0015/junk/anon-rule.yml:21:22"
+-8<- "docs/blog/codes/2024/0015/junk/anon-rule.yml:21:22"
 ```
 
 :four: What if error happens before reaching upstream? Return the error as JSON.
 
 ```yaml title="echo-server-rule/rule.yml" linenums="10"
--8<- "docs/codes/2024/0015/junk/anon-rule.yml:10:11"
+-8<- "docs/blog/codes/2024/0015/junk/anon-rule.yml:10:11"
 ```
 
 The flow you see above is the most important part of how Ory Oathkeeper works.
@@ -538,7 +538,7 @@ if you have `access_rules.matching_strategy: regexp` in your
 Let's apply this stack:
 
 ```yaml title="echo-server-rule/kustomization.yml" hl_lines="3"
--8<- "docs/codes/2024/0015/echo-server-rule/kustomization.yml"
+-8<- "docs/blog/codes/2024/0015/echo-server-rule/kustomization.yml"
 ```
 
 Let's send an anonymous request to verify it worked.
@@ -550,14 +550,14 @@ curl https://echo.developer-friendly.blog
 The response is as below.
 
 ```json title="" hl_lines="30"
--8<- "docs/codes/2024/0015/junk/anon-response.json"
+-8<- "docs/blog/codes/2024/0015/junk/anon-response.json"
 ```
 
 The user ID is coming from the following [Oathkeeper server configuration].
 :point_down:
 
 ```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="17" hl_lines="3"
--8<- "docs/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:17:20"
+-8<- "docs/blog/codes/2024/0015/oathkeeper/oathkeeper-server-config.yml:17:20"
 ```
 
 ### Play 2: Authenticated by Ory Kratos
@@ -569,7 +569,7 @@ Let's modify the same rule so that the authenticated users and the identities
 of Kratos can send their request to this upstream server[^kratos-whoami].
 
 ```yaml title="echo-server-rule/rule.yml" hl_lines="7-14"
--8<- "docs/codes/2024/0015/junk/kratos-rule.yml"
+-8<- "docs/blog/codes/2024/0015/junk/kratos-rule.yml"
 ```
 
 Note that this will only work for browser users of Kratos. For mobile native
@@ -580,7 +580,7 @@ If we authenticate to Kratos first and send an HTTP request to the echo-server,
 this is what we get.
 
 ```json title="" hl_lines="42"
--8<- "docs/codes/2024/0015/junk/kratos-response.json"
+-8<- "docs/blog/codes/2024/0015/junk/kratos-response.json"
 ```
 
 The `x-user-id` in this response is just the same as if we take the session
@@ -599,7 +599,7 @@ can send authenticated requests to the echo-server, while Oathkeeper verifies
 the authenticity of the request using the Azure AD JWKs endpoint.
 
 ```yaml title="echo-server-rule/rule.yml" hl_lines="15-20"
--8<- "docs/codes/2024/0015/echo-server-rule/rule.yml"
+-8<- "docs/blog/codes/2024/0015/echo-server-rule/rule.yml"
 ```
 
 #### Azure AD JWT Audience
@@ -639,7 +639,7 @@ The response will be as you see below. The `x-user-id` is the subject or the
 identity ID that the Identity Provider (Azure AD) knows the VM by.
 
 ```json title="" hl_lines="31"
--8<- "docs/codes/2024/0015/junk/azure-vm-response.json"
+-8<- "docs/blog/codes/2024/0015/junk/azure-vm-response.json"
 ```
 
 ## Other Types of Authenticators
@@ -655,7 +655,7 @@ As an example, if we remove the `anonymous` access from our rule, the request
 will be denied with a `401 Unauthorized` status code.
 
 ```json title=""
--8<- "docs/codes/2024/0015/junk/unauthorized-response.json"
+-8<- "docs/blog/codes/2024/0015/junk/unauthorized-response.json"
 ```
 
 That is to say, the order in which Oathkeeper processes the rules is important.
@@ -768,14 +768,14 @@ Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 [OpenID Connect]: /category/openid-connect/
 [Kratos]: /category/kratos/
 
-[^grpc-middleware]: https://www.ory.sh/docs/oathkeeper/grpc-middleware
-[^websocket-support]: https://www.ory.sh/docs/oathkeeper/guides/proxy-websockets
+[^grpc-middleware]: https://www.ory.sh/docs/blog/oathkeeper/grpc-middleware
+[^websocket-support]: https://www.ory.sh/docs/blog/oathkeeper/guides/proxy-websockets
 [^ory-slack]: https://slack.ory.sh/
-[^oathkeeper-intro]: https://www.ory.sh/docs/oathkeeper/
+[^oathkeeper-intro]: https://www.ory.sh/docs/blog/oathkeeper/
 [^decision-api]: https://github.com/ory/oathkeeper/blob/6d628fbcc6de9428491add8ab3862e9ed2ba5936/api/decision.go#L56:L121
-[^api-access-rules]: https://www.ory.sh/docs/oathkeeper/api-access-rules
-[^oathkeeper-configuration]: https://www.ory.sh/docs/oathkeeper/reference/configuration
-[^oathkeeper-installation]: https://www.ory.sh/docs/oathkeeper/install
+[^api-access-rules]: https://www.ory.sh/docs/blog/oathkeeper/api-access-rules
+[^oathkeeper-configuration]: https://www.ory.sh/docs/blog/oathkeeper/reference/configuration
+[^oathkeeper-installation]: https://www.ory.sh/docs/blog/oathkeeper/install
 [^oathkeeper-repository]: https://github.com/ory/oathkeeper/tree/v0.40.7
 [^ory-examples]: https://github.com/ory/examples/tree/a085b65d21d6d31c1cb728a6b8b28f281f074066
 [^maester-repo]: https://github.com/ory/oathkeeper-maester/tree/v0.1.10
@@ -783,8 +783,8 @@ Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 [^helm-installation]: https://artifacthub.io/packages/helm/ory/oathkeeper/0.43.1
 [^echo-server]: https://github.com/Ealenn/Echo-Server/tree/0.9.2
 [^httproute-doc]: https://gateway-api.sigs.k8s.io/api-types/httproute/
-[^oathkeeper-proxy-flow]: https://www.ory.sh/docs/oathkeeper/#reverse-proxy
-[^kratos-whoami]: https://www.ory.sh/docs/kratos/reference/api#tag/frontend/operation/listMySessions
+[^oathkeeper-proxy-flow]: https://www.ory.sh/docs/blog/oathkeeper/#reverse-proxy
+[^kratos-whoami]: https://www.ory.sh/docs/blog/kratos/reference/api#tag/frontend/operation/listMySessions
 [^azcli-vm-access-token]: https://learn.microsoft.com/en-us/cli/azure/account?view=azure-cli-latest#az-account-get-access-token
 [^az-vm-token]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-to-use-vm-token#get-a-token-using-curl
-[^api-access-rules-order]: https://www.ory.sh/docs/oathkeeper/api-access-rules#access-rule-format
+[^api-access-rules-order]: https://www.ory.sh/docs/blog/oathkeeper/api-access-rules#access-rule-format

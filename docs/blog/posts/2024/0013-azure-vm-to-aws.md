@@ -22,9 +22,9 @@ categories:
   - Security
   - Terraform
 links:
-  - ./posts/2024/0007-oidc-authentication.md
-  - ./posts/2024/0008-k8s-federated-oidc.md
-  - ./posts/2024/0009-external-secrets-aks-to-aws-ssm.md
+  - ./blog/posts/2024/0007-oidc-authentication.md
+  - ./blog/posts/2024/0008-k8s-federated-oidc.md
+  - ./blog/posts/2024/0009-external-secrets-aks-to-aws-ssm.md
   - Source Code: https://github.com/developer-friendly/aws-oidc-azure-vm
 social:
   cards_layout_options:
@@ -174,19 +174,19 @@ can verify if a given token is signed by Azure or not.
 Let's now get hands-on and create a trust relationship from Azure AD to AWS.
 
 ```hcl title="trust-relationship/versions.tf"
--8<- "docs/codes/2024/0013/trust-relationship/versions.tf"
+-8<- "docs/blog/codes/2024/0013/trust-relationship/versions.tf"
 ```
 
 ```hcl title="trust-relationship/variables.tf"
--8<- "docs/codes/2024/0013/trust-relationship/variables.tf"
+-8<- "docs/blog/codes/2024/0013/trust-relationship/variables.tf"
 ```
 
 ```hcl title="trust-relationship/main.tf"
--8<- "docs/codes/2024/0013/trust-relationship/main.tf"
+-8<- "docs/blog/codes/2024/0013/trust-relationship/main.tf"
 ```
 
 ```hcl title="trust-relationship/outputs.tf"
--8<- "docs/codes/2024/0013/trust-relationship/outputs.tf"
+-8<- "docs/blog/codes/2024/0013/trust-relationship/outputs.tf"
 ```
 
 !!! tip "OAuth2 Provider Trust Relationship"
@@ -225,7 +225,7 @@ see in the code above, with `sts.windows.net` in the hostname and the tenant ID
 in the http path.
 
 ```hcl title="trust-relationship/main.tf" linenums="3"
--8<- "docs/codes/2024/0013/trust-relationship/main.tf:3:3"
+-8<- "docs/blog/codes/2024/0013/trust-relationship/main.tf:3:3"
 ```
 
 Eventually, as per the OIDC compliance[^2], one is able to fetch the OIDC
@@ -242,7 +242,7 @@ of Azure AD as far as OIDC is concerned.
 ??? example "Click to expand"
 
     ```json title=""
-    -8<- "docs/codes/2024/0013/junk/azure-oidc-configuration.json"
+    -8<- "docs/blog/codes/2024/0013/junk/azure-oidc-configuration.json"
     ```
 
 ### Applying the Stack
@@ -275,19 +275,19 @@ The TF code below will create an Azure user assigned identity[^3] as well as an
 AWS IAM Role to trust such identity.
 
 ```hcl title="vm-identity/versions.tf"
--8<- "docs/codes/2024/0013/vm-identity/versions.tf"
+-8<- "docs/blog/codes/2024/0013/vm-identity/versions.tf"
 ```
 
 ```hcl title="vm-identity/variables.tf"
--8<- "docs/codes/2024/0013/vm-identity/variables.tf"
+-8<- "docs/blog/codes/2024/0013/vm-identity/variables.tf"
 ```
 
 ```hcl title="vm-identity/main.tf"
--8<- "docs/codes/2024/0013/vm-identity/main.tf"
+-8<- "docs/blog/codes/2024/0013/vm-identity/main.tf"
 ```
 
 ```hcl title="vm-identity/outputs.tf"
--8<- "docs/codes/2024/0013/vm-identity/outputs.tf"
+-8<- "docs/blog/codes/2024/0013/vm-identity/outputs.tf"
 ```
 
 This stack contains two main components, which we'll explain below.
@@ -301,7 +301,7 @@ guaranteed to be unique and persistent; that's the reason we can rely on its ID
 when placing the conditional on our IAM Role.
 
 ```hcl title="vm-identity/main.tf" linenums="19"
--8<- "docs/codes/2024/0013/vm-identity/main.tf:19:23"
+-8<- "docs/blog/codes/2024/0013/vm-identity/main.tf:19:23"
 ```
 
 If you're not an Azure user, one thing to keep in mind is that in Azure
@@ -317,7 +317,7 @@ on the `sub` claim of the JWT token coming to the AWS STS service, as you see
 below:
 
 ```hcl title="vm-identity/main.tf" linenums="35"
--8<- "docs/codes/2024/0013/vm-identity/main.tf:35:39"
+-8<- "docs/blog/codes/2024/0013/vm-identity/main.tf:35:39"
 ```
 
 This _principal ID_ is also interchangably called the _object id_; as if working
@@ -327,7 +327,7 @@ In the end, once this stack is also deployed just as the one before, we will
 have an IAM Role similar to what you see below:
 
 ```json title=""
--8<- "docs/codes/2024/0013/junk/iam-role.json"
+-8<- "docs/blog/codes/2024/0013/junk/iam-role.json"
 ```
 
 ## Azure Virtual Machine
@@ -358,26 +358,26 @@ Let's stop talking and actually create the VM. Although, bear in mind that this
 stack is quite heavy and need careful attention to the details.
 
 ```hcl title="azure-vm/versions.tf"
--8<- "docs/codes/2024/0013/azure-vm/versions.tf"
+-8<- "docs/blog/codes/2024/0013/azure-vm/versions.tf"
 ```
 
 Notice that we're, again, using the outputs from our earlier TF stack by
 querying the TF state file in this code. :point_down:
 
 ```hcl title="azure-vm/main.tf"
--8<- "docs/codes/2024/0013/azure-vm/main.tf"
+-8<- "docs/blog/codes/2024/0013/azure-vm/main.tf"
 ```
 
 ```hcl title="azure-vm/network.tf"
--8<- "docs/codes/2024/0013/azure-vm/network.tf"
+-8<- "docs/blog/codes/2024/0013/azure-vm/network.tf"
 ```
 
 ```hcl title="azure-vm/compute.tf"
--8<- "docs/codes/2024/0013/azure-vm/compute.tf"
+-8<- "docs/blog/codes/2024/0013/azure-vm/compute.tf"
 ```
 
 ```hcl title="azure-vm/outputs.tf"
--8<- "docs/codes/2024/0013/azure-vm/outputs.tf"
+-8<- "docs/blog/codes/2024/0013/azure-vm/outputs.tf"
 ```
 
 This stack deserves a good amount of explanation. Let's break down the
@@ -394,11 +394,11 @@ public IP address; which is the IP address of the control plan machine applying
 this TF stack.
 
 ```hcl title="azure-vm/network.tf"
--8<- "docs/codes/2024/0013/azure-vm/network.tf:1:3"
+-8<- "docs/blog/codes/2024/0013/azure-vm/network.tf:1:3"
 ```
 
 ```hcl title="" linenums="45"
--8<- "docs/codes/2024/0013/azure-vm/network.tf:45:57"
+-8<- "docs/blog/codes/2024/0013/azure-vm/network.tf:45:57"
 ```
 
 ### SSH Keys
@@ -416,7 +416,7 @@ You'd have to really struggle, and it took me some time to actually come up
 with the following Debian image that has ARM64 support[^8].
 
 ```hcl title="azure-vm/compute.tf" linenums="33"
--8<- "docs/codes/2024/0013/azure-vm/compute.tf:33:38"
+-8<- "docs/blog/codes/2024/0013/azure-vm/compute.tf:33:38"
 ```
 
 ### User Data
@@ -431,7 +431,7 @@ In a nutshell, in the following config we're installing Azure CLI, AWS CLI,
 `jq`, and lastly Python3.12 for our next Ansible playbook.
 
 ```hcl title="azure-vm/compute.tf" linenums="40"
--8<- "docs/codes/2024/0013/azure-vm/compute.tf:40:51"
+-8<- "docs/blog/codes/2024/0013/azure-vm/compute.tf:40:51"
 ```
 
 ### Applying the Stack
@@ -471,7 +471,7 @@ The idea is to:
 The Ansible playbook looks like blow.
 
 ```yaml title="playbook.yml"
--8<- "docs/codes/2024/0013/playbook.yml"
+-8<- "docs/blog/codes/2024/0013/playbook.yml"
 ```
 
 Let's explain this playbook a little bit.
@@ -491,7 +491,7 @@ You can see the screenshot below for the user assigned identity in Azure Portal.
 And this is the task that leverages on that.
 
 ```yaml title="playbook.yml" linenums="10"
--8<- "docs/codes/2024/0013/playbook.yml:10:11"
+-8<- "docs/blog/codes/2024/0013/playbook.yml:10:11"
 ```
 
 ### Fetch Access Token
@@ -500,7 +500,7 @@ At this stage, we can use the newly logged in identity to grab an access token
 to be used later on by AWS CLI.
 
 ```yaml title="playbook.yml" linenums="13" hl_lines="3 6 9"
--8<- "docs/codes/2024/0013/playbook.yml:13:23"
+-8<- "docs/blog/codes/2024/0013/playbook.yml:13:23"
 ```
 
 !!! tip "Access Token Expiry"
@@ -515,11 +515,11 @@ Remember earlier when in our TF code we saved the role ARN to later be used by
 Ansible. This is it.
 
 ```hcl title="vm-identity/main.tf" linenums="52"
--8<- "docs/codes/2024/0013/vm-identity/main.tf:52:56"
+-8<- "docs/blog/codes/2024/0013/vm-identity/main.tf:52:56"
 ```
 
 ```yaml title="playbook.yml" linenums="24"
--8<- "docs/codes/2024/0013/playbook.yml:24:27"
+-8<- "docs/blog/codes/2024/0013/playbook.yml:24:27"
 ```
 
 ### AWS Configuration
@@ -529,7 +529,7 @@ make an AWS call to list the S3 buckets. We just need to instruct it on where
 to pick up the token from[^12].
 
 ```yaml title="playbook.yml" linenums="34"
--8<- "docs/codes/2024/0013/playbook.yml:34:42"
+-8<- "docs/blog/codes/2024/0013/playbook.yml:34:42"
 ```
 
 No surprise here really, we are using the same `~/.azure/vm-identity-token` path
@@ -550,7 +550,7 @@ If you decode the access token given to the VM by Azure AD
 token[^13].
 
 ```json title=""
--8<- "docs/codes/2024/0013/junk/decoded-jwt-access-token.json"
+-8<- "docs/blog/codes/2024/0013/junk/decoded-jwt-access-token.json"
 ```
 
 ## Conclusion

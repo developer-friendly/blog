@@ -15,8 +15,8 @@ categories:
   - Authorization
   - Security
 links:
-  - ./posts/2024/0002-external-secret-immutable-target.md
-  - ./posts/2024/0004-github-actions-dynamic-matrix.md
+  - ./blog/posts/2024/0002-external-secret-immutable-target.md
+  - ./blog/posts/2024/0004-github-actions-dynamic-matrix.md
 social:
   cards_layout_options:
     description: >-
@@ -208,7 +208,7 @@ curl -s \
 ??? example "github-actions-oidc-endpoint.json"
 
     ```json title="" hl_lines="43"
-    -8<- "docs/codes/2024/0007/github-actions-oidc-endpoint.json"
+    -8<- "docs/blog/codes/2024/0007/github-actions-oidc-endpoint.json"
     ```
 
 ```shell title="" linenums="0"
@@ -220,7 +220,7 @@ curl -s \
 ??? example "github-actions-oidc-jwks.json"
 
     ```json title=""
-    -8<- "docs/codes/2024/0007/github-actions-oidc-jwks.json"
+    -8<- "docs/blog/codes/2024/0007/github-actions-oidc-jwks.json"
     ```
 
 This process can numb your brain if you're new to OIDC. But the idea is
@@ -295,11 +295,11 @@ account[^9].
 ```
 
 ```hcl title="versions.tf"
--8<- "docs/codes/2024/0007/previous-versions/versions.tf"
+-8<- "docs/blog/codes/2024/0007/previous-versions/versions.tf"
 ```
 
 ```hcl title="main.tf"
--8<- "docs/codes/2024/0007/main.tf"
+-8<- "docs/blog/codes/2024/0007/main.tf"
 ```
 
 Applying this TF code is quite simple:
@@ -346,11 +346,11 @@ To create the IAM role, we use the following TF code:
 ```
 
 ```hcl title="variables.tf"
--8<- "docs/codes/2024/0007/previous-versions/variables.tf"
+-8<- "docs/blog/codes/2024/0007/previous-versions/variables.tf"
 ```
 
 ```hcl title="iam.tf" hl_lines="14 18-19 24-25"
--8<- "docs/codes/2024/0007/iam.tf"
+-8<- "docs/blog/codes/2024/0007/iam.tf"
 ```
 
 Applying this code is as before. But let's explain the highlights of this TF
@@ -407,23 +407,23 @@ CI workflow definition later on.
 ```
 
 ```hcl title="versions.tf" hl_lines="13-16 20-22"
--8<- "docs/codes/2024/0007/versions.tf"
+-8<- "docs/blog/codes/2024/0007/versions.tf"
 ```
 
 ```hcl title="variables.tf" hl_lines="11-14"
--8<- "docs/codes/2024/0007/variables.tf"
+-8<- "docs/blog/codes/2024/0007/variables.tf"
 ```
 
 ```hcl title="providers.tf" hl_lines="13-16 20-22"
--8<- "docs/codes/2024/0007/providers.tf"
+-8<- "docs/blog/codes/2024/0007/providers.tf"
 ```
 
 ```hcl title="ssm.tf"
--8<- "docs/codes/2024/0007/ssm.tf"
+-8<- "docs/blog/codes/2024/0007/ssm.tf"
 ```
 
 ```hcl title="github.tf"
--8<- "docs/codes/2024/0007/github.tf"
+-8<- "docs/blog/codes/2024/0007/github.tf"
 ```
 
 Applying the above TF files will require you to have the GitHub CLI installed
@@ -513,7 +513,7 @@ response.
 ??? example "Click to expand"
 
       ```json title="" hl_lines="20-25 37-38"
-      -8<- "docs/codes/2024/0007/cloudtrail-ci-log.json"
+      -8<- "docs/blog/codes/2024/0007/cloudtrail-ci-log.json"
       ```
 
 Notice the principal ID and the assumed role ARN in the log is the same as what
@@ -570,4 +570,4 @@ Thanks for reading thus far, *ciao*, and till next time! :saluting_face:
 [^12]: https://cli.github.com/manual/gh_auth_login
 [^13]: https://registry.terraform.io/providers/integrations/github/6.2.0/docs#authentication
 [^14]: https://docs.aws.amazon.com/cli/latest/reference/sts/assume-role.html
-[^15]: https://registry.terraform.io/providers/hashicorp/aws/5.45.0/docs/resources/cloudtrail
+[^15]: https://registry.terraform.io/providers/hashicorp/aws/5.45.0/docs/blog/resources/cloudtrail

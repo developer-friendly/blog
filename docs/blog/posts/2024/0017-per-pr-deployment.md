@@ -39,9 +39,9 @@ categories:
   - TLS
   - Tutorial
 links:
-  - ./posts/2024/0014-github-actions-integration-testing.md
-  - ./posts/2024/0011-fluxcd-advanced-topics.md
-  - ./posts/2024/0004-github-actions-dynamic-matrix.md
+  - ./blog/posts/2024/0014-github-actions-integration-testing.md
+  - ./blog/posts/2024/0011-fluxcd-advanced-topics.md
+  - ./blog/posts/2024/0004-github-actions-dynamic-matrix.md
 image: assets/images/social/2024/06/24/how-to-set-up-preview-environments-for-pull-requests.png
 ---
 
@@ -270,44 +270,44 @@ written by us[^echo-server-github]. Though, the principle and the setup can be
 applied to any application you are working with.
 
 ```ini title="echo-server/base/configs.env"
--8<- "docs/codes/2024/0017/echo-server/base/configs.env"
+-8<- "docs/blog/codes/2024/0017/echo-server/base/configs.env"
 ```
 
 ```yaml title="echo-server/base/service.yml"
--8<- "docs/codes/2024/0017/echo-server/base/service.yml"
+-8<- "docs/blog/codes/2024/0017/echo-server/base/service.yml"
 ```
 
 ```yaml title="echo-server/base/deployment.yml"
--8<- "docs/codes/2024/0017/echo-server/base/deployment.yml"
+-8<- "docs/blog/codes/2024/0017/echo-server/base/deployment.yml"
 ```
 
 ```yaml title="echo-server/base/kustomization.yml"
--8<- "docs/codes/2024/0017/echo-server/base/kustomization.yml"
+-8<- "docs/blog/codes/2024/0017/echo-server/base/kustomization.yml"
 ```
 
 ## Overlay for Dev Deployment
 
 ```ini title="echo-server/overlays/dev/configs.env"
--8<- "docs/codes/2024/0017/echo-server/overlays/dev/configs.env"
+-8<- "docs/blog/codes/2024/0017/echo-server/overlays/dev/configs.env"
 ```
 
 ```yaml title="echo-server/overlays/dev/deployment.yml"
--8<- "docs/codes/2024/0017/echo-server/overlays/dev/deployment.yml"
+-8<- "docs/blog/codes/2024/0017/echo-server/overlays/dev/deployment.yml"
 ```
 
 ```yaml title="echo-server/overlays/dev/httproute.yml"
--8<- "docs/codes/2024/0017/echo-server/overlays/dev/httproute.yml"
+-8<- "docs/blog/codes/2024/0017/echo-server/overlays/dev/httproute.yml"
 ```
 
 ```yaml title="echo-server/overlays/dev/kustomization.yml"
--8<- "docs/codes/2024/0017/echo-server/overlays/dev/kustomization.yml"
+-8<- "docs/blog/codes/2024/0017/echo-server/overlays/dev/kustomization.yml"
 ```
 
 With our dev stack ready, we can simply deploy it to our cluster with the
 following [FluxCD] CRD resource:
 
 ```yaml title="kustomize/dev.yml"
--8<- "docs/codes/2024/0017/kustomize/dev.yml"
+-8<- "docs/blog/codes/2024/0017/kustomize/dev.yml"
 ```
 
 ```shell title="" linenums="0"
@@ -317,11 +317,11 @@ kubectl apply -f kustomize/dev.yml
 ## Overlay for Preview Deployment
 
 ```yaml title="echo-server/overlays/test/httproute.yml"
--8<- "docs/codes/2024/0017/echo-server/overlays/test/httproute.yml"
+-8<- "docs/blog/codes/2024/0017/echo-server/overlays/test/httproute.yml"
 ```
 
 ```yaml title="echo-server/overlays/test/kustomization.yml"
--8<- "docs/codes/2024/0017/echo-server/overlays/test/kustomization.yml"
+-8<- "docs/blog/codes/2024/0017/echo-server/overlays/test/kustomization.yml"
 ```
 
 Notice that on this stack, you see a couple of placeholders in the format of
@@ -344,7 +344,7 @@ Using that stack, we can create a wildcard [TLS] certificate with the following
 CRD resource:
 
 ```yaml title="cert-manager/certificate.yml"
--8<- "docs/codes/2024/0017/cert-manager/certificate.yml"
+-8<- "docs/blog/codes/2024/0017/cert-manager/certificate.yml"
 ```
 
 Having a wildcard TLS certificate is a crucial component of this set up.
@@ -376,7 +376,7 @@ ones and we won't be billed for the obsolete run that is no longer up to date
 with our latest changes of the application.
 
 ```yaml title=".github/workflows/ci.yml"
--8<- "docs/codes/2024/0017/workflow/ci.yml:1:5"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:1:5"
 ```
 
 ### Trigger on Pull Request
@@ -387,14 +387,14 @@ labeled and un-labeled, etc.. These will ensure that any push to the open pull
 request will trigger the run of our job.
 
 ```yaml title=".github/workflows/ci.yml" linenums="7"
--8<- "docs/codes/2024/0017/workflow/ci.yml:7:18"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:7:18"
 ```
 
 Consequently, the conditional of the job will check for a match on the event
 and its relevant attribute when being invoked.
 
 ```yaml title=".github/workflows/ci.yml" linenums="20"
--8<- "docs/codes/2024/0017/workflow/ci.yml:20:26"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:20:26"
 ```
 
 ### Build Image Job Permission
@@ -404,7 +404,7 @@ to the [GitHub Container Registry] also known as `ghcr.io`. This is where we
 will store and retrieve our Docker images.
 
 ```yaml title=".github/workflows/ci.yml" linenums="27"
--8<- "docs/codes/2024/0017/workflow/ci.yml:27:29"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:27:29"
 ```
 
 ### Build and Push Docker Image
@@ -414,7 +414,7 @@ These steps will build the [Docker] image as instructed by the repository's
 cluster when fetching the new image tag.
 
 ```yaml title=".github/workflows/ci.yml" linenums="30" hl_lines="32"
--8<- "docs/codes/2024/0017/workflow/ci.yml:30:61"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:30:61"
 ```
 
 Pay close attention to the image tag we are instructing the build step to use.
@@ -459,7 +459,7 @@ The following example uses the latter approach, using a self-hosted GitHub
 runner[^gh-self-hosted-runner].
 
 ```yaml title=".github/workflows/ci.yml" linenums="63"
--8<- "docs/codes/2024/0017/workflow/ci.yml:63:65"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:63:65"
 ```
 
 ### Set up the Environment Variables
@@ -472,7 +472,7 @@ These values are provided to the runner in its definition in the following
 manner:
 
 ```yaml title=".github/workflows/ci.yml" linenums="66"
--8<- "docs/codes/2024/0017/workflow/ci.yml:66:68"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:66:68"
 ```
 
 Eventually the above values will be something like the following:
@@ -490,7 +490,7 @@ out the internet-accessible URL of the preview environment.
 That is granted as below:
 
 ```yaml title=".github/workflows/ci.yml" linenums="69"
--8<- "docs/codes/2024/0017/workflow/ci.yml:69:70"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:69:70"
 ```
 
 ### Preview FluxCD Kustomization
@@ -502,13 +502,13 @@ earlier, yet some of the values will obviously differ.
 This is the Kustomization that'll be used inside the CI.
 
 ```yaml title=""
--8<- "docs/codes/2024/0017/kustomize/test.yml"
+-8<- "docs/blog/codes/2024/0017/kustomize/test.yml"
 ```
 
 Let's pass that YAML file as a string into the CI.
 
 ```yaml title=".github/workflows/ci.yml" linenums="71"
--8<- "docs/codes/2024/0017/workflow/ci.yml:71:78"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:71:78"
 ```
 
 !!! question "Complex?"
@@ -526,7 +526,7 @@ subscribers of the pull request to be notified that the new stack is ready and
 can be accessed.
 
 ```yaml title=".github/workflows/ci.yml" linenums="79"
--8<- "docs/codes/2024/0017/workflow/ci.yml:79:85"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:79:85"
 ```
 
 Successful run of this step will result in the following comment.
@@ -542,7 +542,7 @@ Successful run of this step will result in the following comment.
     access it from the browser.
 
     ```json title=""
-    -8<- "docs/codes/2024/0017/junk/pr7-response.json"
+    -8<- "docs/blog/codes/2024/0017/junk/pr7-response.json"
     ```
 
 ## Teardown the Preview Environment
@@ -556,7 +556,7 @@ The teardown of the preview environment is similar to what we had so far, only
 with a change of conditional.
 
 ```yaml title=".github/workflows/ci.yml" linenums="87"
--8<- "docs/codes/2024/0017/workflow/ci.yml:87:97"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:87:97"
 ```
 
 Notice how powerful it can be to customize the conditional of the job. Consider
@@ -566,7 +566,7 @@ a YAML can be achieved with `|` (pipe characters)[^yaml-multiline-string].
 We will also require the same permission and environment variables as before.
 
 ```yaml title=".github/workflows/ci.yml" linenums="98"
--8<- "docs/codes/2024/0017/workflow/ci.yml:98:101"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:98:101"
 ```
 
 ### Remove the Preview Stack from the Cluster
@@ -574,7 +574,7 @@ We will also require the same permission and environment variables as before.
 The removal of the [Kustomization] stack is a simple `kubectl` command.
 
 ```yaml title=".github/workflows/ci.yml" linenums="102"
--8<- "docs/codes/2024/0017/workflow/ci.yml:102:107"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:102:107"
 ```
 
 ### Remove the Comment from the Pull Request
@@ -584,7 +584,7 @@ The rationale is that we no longer need an inaccessible URL to be present in
 our pull request.
 
 ```yaml title=".github/workflows/ci.yml" linenums="108"
--8<- "docs/codes/2024/0017/workflow/ci.yml:108"
+-8<- "docs/blog/codes/2024/0017/workflow/ci.yml:108"
 ```
 
 The `title` of the comment ensures the uniqueness of the comment and must be
@@ -596,7 +596,7 @@ text.
     The full CI definition is as follows:
 
     ```yaml title=".github/workflows/ci.yml"
-    -8<- "docs/codes/2024/0017/workflow/ci.yml"
+    -8<- "docs/blog/codes/2024/0017/workflow/ci.yml"
     ```
 
 ## Considerations
@@ -764,8 +764,8 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [^gh-self-hosted-runner]: https://docs.github.com/en/actions/hosting-your-own-runners/managing-self-hosted-runners/about-self-hosted-runners
 [^comment-pr-marketplace]: https://github.com/marketplace/actions/github-comment-pr
 [^yaml-multiline-string]: https://yaml-multiline.info/
-[^limitrange]: https://kubernetes.io/docs/concepts/policy/limit-range/
-[^resourcequota]: https://kubernetes.io/docs/concepts/policy/resource-quotas/
+[^limitrange]: https://kubernetes.io/docs/blog/concepts/policy/limit-range/
+[^resourcequota]: https://kubernetes.io/docs/blog/concepts/policy/resource-quotas/
 [^pullpreview]: https://pullpreview.com/
 [^env0-guide]: https://www.env0.com/blog/why-per-pull-request-environments-and-how
 [^aws-cdk-guide]: https://github.com/jgoux/preview-environments-per-pull-request-using-aws-cdk-and-github-actions

@@ -24,8 +24,8 @@ categories:
   - Testing
   - Tutorial
 links:
-  - ./posts/2024/0004-github-actions-dynamic-matrix.md
-  - ./posts/2024/0007-oidc-authentication.md
+  - ./blog/posts/2024/0004-github-actions-dynamic-matrix.md
+  - ./blog/posts/2024/0007-oidc-authentication.md
   - Source Code: https://github.com/developer-friendly/full-stack-fastapi-template/
 image: assets/images/social/2024/06/03/integration-testing-with-github-actions.png
 ---

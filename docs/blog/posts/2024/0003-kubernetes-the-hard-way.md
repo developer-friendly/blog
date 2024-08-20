@@ -11,7 +11,7 @@ categories:
   - Vagrant
   - Cilium
 links:
-  - ./posts/2024/0005-install-k3s-on-ubuntu22.md
+  - ./blog/posts/2024/0005-install-k3s-on-ubuntu22.md
 social:
   cards_layout_options:
     description: >-
@@ -70,7 +70,7 @@ system before we start.
 All the tools mentioned below are the latest versions at the time of writing,
 February 2024.
 
-{{ read_csv('docs/codes/2024/0003-k8s-the-hard-way/prerequisites.csv') }}
+{{ read_csv('docs/blog/codes/2024/0003-k8s-the-hard-way/prerequisites.csv') }}
 
 Alright, with the tools installed, it's time to get our hands dirty and really
 get into it.
