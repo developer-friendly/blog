@@ -114,7 +114,7 @@ often involves compiling, testing, and packaging all applications in the
 repository, even if only a few of them have changed.
 
 <figure markdown="span">
-  ![Full focus at a coffee shop](/static/img/2024/0019/workhard.jpg "Click to zoom in"){ align=left loading=lazy }
+  ![Full focus at a coffee shop](/blog/static/img/2024/0019/workhard.jpg "Click to zoom in"){ align=left loading=lazy }
   <figcaption><a href="https://unsplash.com/photos/man-wearing-white-top-using-macbook-1K9T5YiZ2WU" target="_blank">Full focus at a coffee shop</a></figcaption>
 </figure>
 
@@ -512,7 +512,7 @@ expected, since the Redis server doesn't have any previous state to compare
 against.
 
 <figure markdown="span">
-  ![Build All Applications on First Run](/static/img/2024/0019/gh-dynamic-builds.png "Click to zoom in"){ align=left loading=lazy }
+  ![Build All Applications on First Run](/blog/static/img/2024/0019/gh-dynamic-builds.png "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Build All Applications on First Run</figcaption>
 </figure>
 
@@ -521,7 +521,7 @@ of the directories stored. This will allow the script to compare the current
 state against the previous state in the next run.
 
 <figure markdown="span">
-  ![Redis Stored Hashes](/static/img/2024/0019/upstash-keys.png "Click to zoom in"){ align=left loading=lazy }
+  ![Redis Stored Hashes](/blog/static/img/2024/0019/upstash-keys.png "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Redis Stored Hashes</figcaption>
 </figure>
 
@@ -530,7 +530,7 @@ build for that app only, instead of an expensive and unnecessary full rebuild
 of all the applications.
 
 <figure markdown="span">
-  ![Selective Build on Changes](/static/img/2024/0019/selective-build.png "Click to zoom in"){ align=left loading=lazy }
+  ![Selective Build on Changes](/blog/static/img/2024/0019/selective-build.png "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Selective Build on Changes</figcaption>
 </figure>
 

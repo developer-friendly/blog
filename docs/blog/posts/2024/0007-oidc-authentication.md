@@ -121,7 +121,7 @@ The following image is an over simplified diagram of the scenario we are trying
 to achieve:
 
 <figure markdown="span">
-  ![GitHub Actions OIDC](/static/img/2024/0007/oidc-scenario-diagram.svg "Click to zoom in"){ loading=lazy }
+  ![GitHub Actions OIDC](/blog/static/img/2024/0007/oidc-scenario-diagram.svg "Click to zoom in"){ loading=lazy }
   <figcaption>GitHub Actions runner talking to AWS Parameter Store</figcaption>
 </figure>
 
@@ -467,7 +467,7 @@ That is the true power of adopting OIDC as an authentication mechanism.
 The successful CI job run will look like this:
 
 <figure markdown="span">
-  ![Successful CI run](/static/img/2024/0007/successful-ci-run.webp "Click to zoom in"){ loading=lazy }
+  ![Successful CI run](/blog/static/img/2024/0007/successful-ci-run.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Successful GitHub Actions CI run</figcaption>
 </figure>
 

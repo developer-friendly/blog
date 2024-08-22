@@ -108,22 +108,22 @@ With that introduction, let's kick off the installation of cert-manager.
     <div class="grid cards" markdown>
 
     - <figure markdown="span">
-        ![Performance](/static/img/2024/0010/performance.webp "Click to zoom in"){ loading=lazy }
+        ![Performance](/blog/static/img/2024/0010/performance.webp "Click to zoom in"){ loading=lazy }
         <figcaption>Search Engine Perfomance</figcaption>
       </figure>
 
     - <figure markdown="span">
-        ![Views](/static/img/2024/0010/total-views.webp "Click to zoom in"){ loading=lazy }
+        ![Views](/blog/static/img/2024/0010/total-views.webp "Click to zoom in"){ loading=lazy }
         <figcaption>Total Views</figcaption>
       </figure>
 
     - <figure markdown="span">
-          ![Visitors](/static/img/2024/0010/visitors.webp "Click to zoom in"){ max-width="300" loading=lazy }
+          ![Visitors](/blog/static/img/2024/0010/visitors.webp "Click to zoom in"){ max-width="300" loading=lazy }
           <figcaption>Visitors (30 days)</figcaption>
       </figure>
 
     - <figure markdown="span">
-          ![Countries](/static/img/2024/0010/countries.webp "Click to zoom in"){ max-width="300" loading=lazy }
+          ![Countries](/blog/static/img/2024/0010/countries.webp "Click to zoom in"){ max-width="300" loading=lazy }
           <figcaption>Countries (30 days)</figcaption>
       </figure>
 
@@ -284,7 +284,7 @@ by a Route53 Hosted Zone. That way, we can instruct the cert-manager controller
 to talk to the Route53 API for record creation and domain verfication.
 
 <figure markdown="span">
-   ![Nameservers](/static/img/2024/0010/ns-providers.webp "Click to zoom in"){ loading=lazy }
+   ![Nameservers](/blog/static/img/2024/0010/ns-providers.webp "Click to zoom in"){ loading=lazy }
    <figcaption>Nameserver Diagrams</figcaption>
 </figure>
 
@@ -336,7 +336,7 @@ We should have our AWS Route53 Hosted Zone created as you see in the screenshot
 below.
 
 <figure markdown="span">
-   ![AWS Route53](/static/img/2024/0010/route53.webp "Click to zoom in"){ loading=lazy }
+   ![AWS Route53](/blog/static/img/2024/0010/route53.webp "Click to zoom in"){ loading=lazy }
    <figcaption>AWS Route53</figcaption>
 </figure>
 

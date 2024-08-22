@@ -216,7 +216,7 @@ kubectl api-resources | grep victoriametrics
 And the output:
 
 <figure markdown="span">
-  ![Victoria Metrics Operator CRDs](/static/img/2024/0016/vm-api-resources.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Victoria Metrics Operator CRDs](/blog/static/img/2024/0016/vm-api-resources.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Victoria Metrics Operator CRDs</figcaption>
 </figure>
 
@@ -254,7 +254,7 @@ Having the password we grabbed from the Secret, and the address from the
 the first visit to the address.
 
 <figure markdown="span">
-  ![VMAuth Authentication Proxy](/static/img/2024/0016/vmauth-basic-auth.webp "Click to zoom in"){ align=left loading=lazy }
+  ![VMAuth Authentication Proxy](/blog/static/img/2024/0016/vmauth-basic-auth.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>VMAuth Authentication Proxy</figcaption>
 </figure>
 
@@ -377,7 +377,7 @@ Opening the target address at `/vmui` endpoint, we will see the Victoria
 Metrics query dashboard as you see below.
 
 <figure markdown="span">
-  ![Victoria Metrics UI](/static/img/2024/0016/vm-cluster-ui.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Victoria Metrics UI](/blog/static/img/2024/0016/vm-cluster-ui.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Victoria Metrics UI</figcaption>
 </figure>
 
