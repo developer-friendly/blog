@@ -41,7 +41,7 @@ jobs:
 
 
           def discover() -> list[str]:
-              for changed in ${{ steps.changed-markdown-files.outputs.all_changed_files || '[]' }}:
+              for changed in ${{ steps.changed-files.outputs.all_changed_files || '[]' }}:
                   path = Path(changed)
                   if Path(path.parts[0]).is_dir():
                       yield path.parts[0]
