@@ -452,7 +452,7 @@ tofu output -raw ansible_inventory_yml > ../inventory.yml
 In the end, this is what it will look like in Azure Portal[^10].
 
 <figure markdown="span">
-  ![Azure Resource Group](/blog/static/img/2024/0013/azure-resource-group.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Azure Resource Group](../../static/img/2024/0013/azure-resource-group.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Azure Resource Group</figcaption>
 </figure>
 
@@ -484,7 +484,7 @@ an identity attached to the VM.
 You can see the screenshot below for the user assigned identity in Azure Portal.
 
 <figure markdown="span">
-  ![Azure VM User Assigned Identity](/blog/static/img/2024/0013/azure-user-assigned-vm-identity.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Azure VM User Assigned Identity](../../static/img/2024/0013/azure-user-assigned-vm-identity.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Azure VM User Assigned Identity</figcaption>
 </figure>
 

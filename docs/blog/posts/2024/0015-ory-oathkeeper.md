@@ -365,7 +365,7 @@ This will take a few moments to pull the images and prepare everything. In the
 end, you should have the stack ready as you see in the screenshot below.
 
 <figure markdown="span">
-  ![FluxCD VSCode Extension](/blog/static/img/2024/0015/fluxcd-vscode.webp "Click to zoom in"){ align=left loading=lazy }
+  ![FluxCD VSCode Extension](../../static/img/2024/0015/fluxcd-vscode.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>FluxCD VSCode Extension</figcaption>
 </figure>
 
@@ -587,7 +587,7 @@ The `x-user-id` in this response is just the same as if we take the session
 information from the Kratos itself.
 
 <figure markdown="span">
-  ![Kratos Session Information](/blog/static/img/2024/0015/kratos-whoami.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Kratos Session Information](../../static/img/2024/0015/kratos-whoami.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Kratos Session Information</figcaption>
 </figure>
 
@@ -685,7 +685,7 @@ When we engage both [Oathkeeper] and [Kratos] in one HTTP request, this is what
 we get in the Jaeger UI.
 
 <figure markdown="span">
-  ![Jaeger UI: Oathkeeper & Kratos](/blog/static/img/2024/0015/jaeger-oathkeeper-kratos.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Jaeger UI: Oathkeeper & Kratos](../../static/img/2024/0015/jaeger-oathkeeper-kratos.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Jaeger UI: Oathkeeper & Kratos</figcaption>
 </figure>
 

@@ -228,14 +228,14 @@ token[^10] and a Hetzner API token[^11].
 ??? example "Get Hetzner Cloud API Token"
 
       <figure markdown="span">
-        ![Get Hetzner Cloud API Token](/blog/static/img/2024/0008/hcloud-token.webp "Click to zoom in"){ loading=lazy }
+        ![Get Hetzner Cloud API Token](../../static/img/2024/0008/hcloud-token.webp "Click to zoom in"){ loading=lazy }
         <figcaption>Get Hetzner Cloud API Token</figcaption>
       </figure>
 
 ??? example "Get Cloudflare API Token"
 
       <figure markdown="span">
-        ![Get Cloudflare API Token](/blog/static/img/2024/0008/cf-token.webp "Click to zoom in"){ loading=lazy }
+        ![Get Cloudflare API Token](../../static/img/2024/0008/cf-token.webp "Click to zoom in"){ loading=lazy }
         <figcaption>Get Cloudflare API Token</figcaption>
       </figure>
 

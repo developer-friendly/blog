@@ -532,7 +532,7 @@ can be accessed.
 Successful run of this step will result in the following comment.
 
 <figure markdown="span">
-  ![Comment URL on the Pull Request](/blog/static/img/2024/0017/comment-pr.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Comment URL on the Pull Request](../../static/img/2024/0017/comment-pr.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Comment URL on the Pull Request</figcaption>
 </figure>
 

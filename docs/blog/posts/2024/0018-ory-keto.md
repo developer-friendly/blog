@@ -622,7 +622,7 @@ If you configure the tracing of [Ory] products, you will have a view in your
 Jaeger dashboard similar to what you see below.
 
 <figure markdown="span">
-  ![Jaeger Dashboard](/blog/static/img/2024/0018/ory-oathkeeper-kratos-keto-jaeger.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Jaeger Dashboard](../../static/img/2024/0018/ory-oathkeeper-kratos-keto-jaeger.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Jaeger Dashboard</figcaption>
 </figure>
 

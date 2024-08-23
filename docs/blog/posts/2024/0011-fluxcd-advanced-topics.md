@@ -221,7 +221,7 @@ gh auth login --web --scopes admin:gpg_key
 And the web browser page:
 
 <figure markdown="span">
-  ![GH CLI Auth](/blog/static/img/2024/0011/gh-cli-authentication.webp "Click to zoom in"){ loading=lazy }
+  ![GH CLI Auth](../../static/img/2024/0011/gh-cli-authentication.webp "Click to zoom in"){ loading=lazy }
   <figcaption>GitHub CLI Authentication</figcaption>
 </figure>
 
@@ -489,7 +489,7 @@ account to create the GitHub Deploy Key, which forces us to grant it the admin
 access as you see below.
 
 <figure markdown="span">
-  ![Repo Admin Access](/blog/static/img/2024/0011/dev-bot-admin-repo.webp "Click to zoom in"){ loading=lazy }
+  ![Repo Admin Access](../../static/img/2024/0011/dev-bot-admin-repo.webp "Click to zoom in"){ loading=lazy }
   <figcaption>GitHub Repository Admin Access</figcaption>
 </figure>
 
@@ -732,7 +732,7 @@ The following are the relevant screenshots of the resources we have created
 and deployed in our Kubernetes cluster.
 
 <figure markdown="span">
-  ![Alertmanager UI](/blog/static/img/2024/0011/alertmanager-triggered-info-and-alert.webp "Click to zoom in"){ loading=lazy }
+  ![Alertmanager UI](../../static/img/2024/0011/alertmanager-triggered-info-and-alert.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Alertmanager UI</figcaption>
 </figure>
 
@@ -740,19 +740,19 @@ The commits that the bot will make to the repository will be signed with the
 GPG Key we have created earlier. This is how it looks like in the GitHub UI:
 
 <figure markdown="span">
-  ![Dev Bot Commit](/blog/static/img/2024/0011/dev-bot-commit-to-repo.webp "Click to zoom in"){ loading=lazy }
+  ![Dev Bot Commit](../../static/img/2024/0011/dev-bot-commit-to-repo.webp "Click to zoom in"){ loading=lazy }
   <figcaption>GitHub Commit History</figcaption>
 </figure>
 
 You can see the alerts triggered as specified in their YAML manifest:
 
 <figure markdown="span">
-  ![Discord Notifs](/blog/static/img/2024/0011/discord-triggered-info.webp "Click to zoom in"){ loading=lazy }
+  ![Discord Notifs](../../static/img/2024/0011/discord-triggered-info.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Discord Triggered Info</figcaption>
 </figure>
 
 <figure markdown="span">
-  ![Slack Alerts](/blog/static/img/2024/0011/slack-triggered-alert.webp "Click to zoom in"){ loading=lazy }
+  ![Slack Alerts](../../static/img/2024/0011/slack-triggered-alert.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Slack Triggered Alerts</figcaption>
 </figure>
 

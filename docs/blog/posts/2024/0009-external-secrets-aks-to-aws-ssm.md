@@ -548,7 +548,7 @@ later be used by other parts or applications.
 This will result in the following parameter to be created in our AWS account.
 
 <figure markdown="span">
-   ![AWS SSM](/blog/static/img/2024/0009/ssm.webp "Click to zoom in"){ loading=lazy }
+   ![AWS SSM](../../static/img/2024/0009/ssm.webp "Click to zoom in"){ loading=lazy }
    <figcaption>AWS SSM Parameter Store</figcaption>
 </figure>
 

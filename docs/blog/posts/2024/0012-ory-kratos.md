@@ -117,7 +117,7 @@ the Ory Kratos side and as such, any user-related authentication flow will
 be solely handled by Ory Kratos.
 
 <figure markdown="span">
-  ![System Diagram](/blog/static/img/2024/0012/ory-kratos.webp "Click to zoom in"){ align=left loading=lazy }
+  ![System Diagram](../../static/img/2024/0012/ory-kratos.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>System Diagram</figcaption>
 </figure>
 
@@ -172,7 +172,7 @@ modify and customize it as you see fit. Below is the screenshot of how to do
 that.
 
 <figure markdown="span">
-  ![Kratos Configuration Reference](/blog/static/img/2024/0012/kratos-config-reference.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Kratos Configuration Reference](../../static/img/2024/0012/kratos-config-reference.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Kratos Configuration Reference</figcaption>
 </figure>
 
@@ -212,7 +212,7 @@ HTML form you see in the next screenshot.
 ```
 
 <figure markdown="span">
-  ![HTML Sign Up Form](/blog/static/img/2024/0012/ory-example-register-page.webp "Click to zoom in"){ align=left loading=lazy }
+  ![HTML Sign Up Form](../../static/img/2024/0012/ory-example-register-page.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>HTML Sign Up Form</figcaption>
 </figure>
 
@@ -373,7 +373,7 @@ But, before we jump into code, here's the diagram you should be aware of when
 it comes to Ory Kratos.
 
 <figure markdown="span">
-  ![Ory Kratos and Frontend Flow](/blog/static/img/2024/0012/frontend-and-kratos-flow.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Ory Kratos and Frontend Flow](../../static/img/2024/0012/frontend-and-kratos-flow.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Ory Kratos and Frontend Flow</figcaption>
 </figure>
 

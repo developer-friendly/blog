@@ -190,7 +190,7 @@ We will need a GitHub Personal Access Token[^7] with the `repo` scope.
 You can see token creation screenshot below:
 
 <figure markdown="span">
-  ![Generating GitHub PAT](/blog/static/img/2024/0006/pat-token.webp "Click to zoom in"){ loading=lazy }
+  ![Generating GitHub PAT](../../static/img/2024/0006/pat-token.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Generating GitHub Personal Access Token (PAT)</figcaption>
 </figure>
 
@@ -372,7 +372,7 @@ Sure enough, if we open <http://localhost:9093>, we will see the notification
 in the Alertmanager UI as seen in the screenshot below.
 
 <figure markdown="span">
-  ![Alertmanager UI info triggered](/blog/static/img/2024/0006/alertmanager-ui-info.webp "Click to zoom in"){ loading=lazy }
+  ![Alertmanager UI info triggered](../../static/img/2024/0006/alertmanager-ui-info.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Alertmanager UI info triggered</figcaption>
 </figure>
 
@@ -389,7 +389,7 @@ And lo and behold, the Alertmanager UI will now show the critical alert as seen
 below.
 
 <figure markdown="span">
-  ![Alertmanager UI error triggered](/blog/static/img/2024/0006/alertmanager-ui-error.webp "Click to zoom in"){ loading=lazy }
+  ![Alertmanager UI error triggered](../../static/img/2024/0006/alertmanager-ui-error.webp "Click to zoom in"){ loading=lazy }
   <figcaption>Alertmanager UI <strong>error</strong> triggered</figcaption>
 </figure>
 
