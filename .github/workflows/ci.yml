@@ -279,3 +279,17 @@ jobs:
           LOG_LEVEL: DEBUG
         name: Fetch GA reports into PostgreSQL
         run: ./internal/ga/main.py update
+
+  stale:
+    if: |
+      (
+        github.event_name == 'schedule' &&
+        github.repository == 'developer-friendly/blog'
+      )
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # only for delete-branch option
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@v9
