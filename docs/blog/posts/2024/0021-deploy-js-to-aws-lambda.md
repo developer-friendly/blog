@@ -562,8 +562,8 @@ bit, commit and push it to the repository and observe the new deployment.
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/8dd524c7d6513970a8b3d8173097c519dbb2a787/application/index.js"
 ```
 
-```js title="application/router.js"
--8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/8dd524c7d6513970a8b3d8173097c519dbb2a787/application/router.js"
+```js title="application/routes.js"
+-8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/8dd524c7d6513970a8b3d8173097c519dbb2a787/application/routes.js"
 ```
 
 Upon submitting our change to the `main` branch, we'll get the new deployment
