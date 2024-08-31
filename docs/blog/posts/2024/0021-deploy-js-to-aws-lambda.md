@@ -22,7 +22,8 @@ categories:
   - Terragrunt
   - OpenID Connect
   - OIDC
-# links:
+links:
+  - Source Code: https://github.com/developer-friendly/aws-lambda-opentofu-github-actions/
 # image: assets/images/social/2024/08/19/azure-bastion-host-secure-cloud-access-made-simple.png
 ---
 
@@ -70,10 +71,6 @@ Stick till the end to find out how.
 
 6. Setting Up GitHub Actions for CI/CD
 
-6.1 Creating a GitHub Actions Workflow
-6.2 Configuring AWS Credentials in GitHub Secrets
-6.3 Code Snippet: GitHub Actions Workflow YAML
-
 7. Deploying to AWS Lambda
 
 7.1 Automated Deployment Process
@@ -115,20 +112,32 @@ environment to deploy your application and [AWS] comes really strong with its
 full suite of services.
 
 As an SRE, I can assure you that I am yet to see a reliable and scalable
-platform as good as [AWS]. Financial wise, I believe that AWS is way too
-expensive and not a good choice for small startups and solopreneurs.
+platform as good as [AWS]. Financial wise, however, I believe that AWS is way
+too expensive and not a good choice for small startups and solopreneurs.
 
 However, when considering its serverless option, the [AWS Lambda], I think
 there are only a few providers out there that can compete with its offering.
 
-That's why in today's article, I aim to develop and deploy a JavaScript
+!!! tip "Which Serverless Provider to Choose?"
+
+    Among many available options, the best advice I can give as much as
+    [serverless] is concerned, is to write your application agnostic to the
+    interface and the platform it will be deployed on. You can always
+    create a thin wrapper for, e.g., [AWS Lambda], Google Cloud Functions,
+    [Azure] Functions, etc.
+
+    In essence, try to write your application as a function with inputs and
+    outputs. The added benefit is that your application is much more easier
+    to write automated tests for! :material-check-bold:
+
+All in all, in today's article, I aim to develop and deploy a [JavaScript]
 application and deploy it using the [NodeJS] runtime in [AWS Lambda].
 
 The agenda is straightforward:
 
 - [x] Create a JavaScript application that can handle HTTP requests coming from
       the API Gateway.
-- [x] Use [OpenTofu] to define the infrastructure as code for the Lambda
+- [x] Use [OpenTofu] to provision the infrastructure as code for the Lambda
       function.
 - [x] Implement GitOps principles to manage the continuous integration and
       continuous deployment pipeline within [GitHub Actions].
@@ -148,16 +157,18 @@ Here's a list of what you'll need:
 
 - [x] Bun[^bun-install] or NPM[^npm-install] installed on your machine. Either
   works, at least one is required and I'll be using [Bun] in this article.
-- [x] An AWS account with the necessary permissions to create and manage Lambda
-  functions and API Gateway resources.
+- [x] An [AWS] account with the necessary permissions to create and manage
+  Lambda functions and API Gateway resources.
 - [x] A [GitHub] account to create a new repository and set up the CI/CD pipeline
   using [GitHub Actions].
 - [x] [OpenTofu] v1.8 installed[^opentofu-install].
-- [x] [Terragrunt] v0.70 installed[^terragrunt-install].
+- [x] [Terragrunt] v0.67 installed[^terragrunt-install].
 
 ### Setting Up Your Development Environment
 
 The directory structure for this project is as follows:
+
+NOTE: This structure is truncated for brevity.
 
 ```plaintext title="" linenums="0"
 .
@@ -167,11 +178,19 @@ The directory structure for this project is as follows:
 ├── application/
 │   ├── index.js
 │   ├── package.json
-├── infra/
-│   ├── aws-github-oidc/
-│   ├── gateway/
-│   ├── lambda/
-│   └── repository/
+├── infra
+│   ├── aws-github-oidc
+│   │   ├── main.tf
+│   │   └── terragrunt.hcl
+│   ├── gateway
+│   │   ├── main.tf
+│   │   └── terragrunt.hcl
+│   ├── lambda
+│   │   ├── main.tf
+│   │   └── terragrunt.hcl
+│   └── repository
+│       ├── main.tf
+│       └── terragrunt.hcl
 └── terragrunt.hcl
 ```
 
@@ -182,11 +201,18 @@ backend that persists the creation of all our [OpenTofu] stacks.
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/8dd524c7d6513970a8b3d8173097c519dbb2a787/terragrunt.hcl"
 ```
 
+The `workspace_name` will result in values you see here:
+
+- `infra-aws-gateway-oidc`
+- `infra-gateway`
+- `infra-lambda`
+- `infra-repository`
+
 ## Building a NodeJS Application for AWS Lambda
 
 At this point, we're ready to start creating our main application. The target
-for this section is the `application/` directory, creating a [NodeJS] application
-in [JavaScript].
+for this section is the `application/` directory, creating a [NodeJS]
+application in the [JavaScript] programming language.
 
 ### Creating a Basic NodeJS Function
 
@@ -209,20 +235,22 @@ efficiently.
 Here are some tips to keep in mind:
 
 - [x] **Keep it small**: Lambda functions have a maximum size limit of 250MB,
-  so make sure your code is as small as possible.
+  so make sure your code is as small as possible[^aws-lambda-quotas].
 - [x] **Use async/await**: Use async/await instead of callbacks to handle
   asynchronous operations.
 - [x] **Minimize dependencies**: Only include the dependencies that you need
-  in your `package.json` file.
+  in your `package.json` file[^lambda-best-practices-medium].
 - [x] **Use environment variables**: Store sensitive informations like API keys
-  and database credentials in environment variables.
+  and database credentials in environment variables[^lambda-env-vars].
 - [x] **Handle errors**: Make sure to handle errors properly in your code to
-  prevent your Lambda function from crashing.
+  prevent your Lambda function from crashing[^lambda-best-practices-devto].
 
 ### Code Snippet: Example Lambda Function
 
 We will be using ECMAScript to develop our application, but you're welcome to
 try other alternatives.
+
+The logs you see in this code will be emitted to the [AWS] Cloudwatch logs.
 
 ```javascript title="application/index.js"
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/765285871571181ff3dc73b2707dacce9769af26/application/index.js"
@@ -233,8 +261,8 @@ are important to keep in mind because they will be used explicitly as the
 handler of our [AWS Lambda] Function as `index.handler`.
 
 The main idea in this code is to have something ready that will respond with
-200 on any request, regardless of the method or path. We'll extend this later
-when setting up the CI/CD pipeline.
+`HTTP OK 200` on any request, regardless of the method or path. We'll extend
+this later when setting up the CI/CD pipeline.
 
 ## Infrastructure as Code with OpenTofu
 
@@ -249,9 +277,9 @@ specific purpose and you will be guided on each one of them.
 ### Introduction to OpenTofu
 
 [OpenTofu] is a tool that allows you to define your infrastructure as code
-using a simple and easy-to-understand configuration file. It's built on top of
-[Terraform] and provides a more user-friendly interface for managing your
-infrastructure.
+using a simple and easy-to-understand configuration file. It's fork of
+[Terraform] (right after their change of license to BUSL[^hashicorp-busl]) and
+provides a more user-friendly interface for managing your infrastructure.
 
 The configurations in [OpenTofu] are written in the HCL language and stored in
 `.tf` files. These files define the resources that you want to create in your
@@ -261,7 +289,7 @@ infrastructure, such as EC2 instances, S3 buckets, and Lambda functions.
 
 To make sure we do not need to store any hardcoded credentials in our [GitHub]
 environment, we will establish a trust relationship between our [AWS] account
-and the GitHub repository that will deploy our code to that account.
+and the [GitHub] repository that will deploy our code to that account.
 
 This is powered by [OpenID Connect] (OIDC) protocol and will allow us to
 authenticate GitHub runners with AWS without the need to pass any access-key
@@ -282,6 +310,10 @@ The following conditions you see on the [AWS] IAM Role are ensuring that the
 JWT token provided to the AWS API has two of its claims defined exactly and
 explicitly as you see in this code.
 
+**NOTE**: The IAM Role permission you see here has a quite permissive policy.
+In a production setup, you should narrow down the permissions to the least
+privilege principle[^least-privilege-principle].
+
 ```terraform title="infra/aws-github-oidc/main.tf" hl_lines="20 26"
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/0b7f77849331dcde8d0411e851b490eef34711cb/infra/aws-github-oidc/main.tf"
 ```
@@ -298,8 +330,9 @@ as you see below.
 }
 ```
 
-Verifying the claims in the token is possible through the use of AWS Cloudtrail
-logs; a topic which is out of scope for this article! :confounded:
+Verifying the claims in the token is possible through grabbing the encoded
+value from the [AWS] Cloudtrail logs; a topic which is out of scope for this
+article! :confounded:
 
 ```terraform title="infra/aws-github-oidc/outputs.tf"
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/0b7f77849331dcde8d0411e851b490eef34711cb/infra/aws-github-oidc/outputs.tf"
@@ -328,21 +361,37 @@ proper environment.
 If you don't know much about [GitHub] Environments, you can read more about it
 in the official documentations[^github-envs].
 
-The gist of it is that Environment allows you to define specific policies on
-which runners and which branches are allowed to access and execute their
-pipeline on it and what kind of restrictions are in place, e.g., a certain
-checks being passed, a reviewer approving the deployment, etc.
+The gist of it is that GitHub Environment allows you to define specific
+policies to restrict which runners and which branches are allowed to access and
+execute their pipelines on it and what kind of restrictions are in place, e.g.,
+a certain checks being passed, a reviewer approving the deployment, etc.
 
 ```terraform title="infra/repository/versions.tf"
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/0b7f77849331dcde8d0411e851b490eef34711cb/infra/repository/versions.tf"
 ```
 
+To be able to send requests to the GitHub API, we need to be authenticated in
+our terminal. Read the docs if you need more info[^gh-cli-authentication].
+
 The following `terraform_cloud_token` will allow the GitHub runner to store the
-remote state in the [Terraform] cloud.
+remote state in the [Terraform] cloud[^tfc-token-docs].
 
 ```terraform title="infra/repository/variables.tf" hl_lines="11-16"
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/0b7f77849331dcde8d0411e851b490eef34711cb/infra/repository/variables.tf"
 ```
+
+To grab your TFC token, head over to the Tokens section of your [Terraform]
+cloud[^tfc-token-users].
+
+!!! example "Terraform Cloud Token Variable"
+
+    To pass the token to your TF `plan`, you can pass it as a CLI
+    variable[^tf-variable-docs], or provide the value in a git-ignored
+    `*.tfvars` file as below.
+
+    ```terraform title="infra/repository/terraform.tfvars"
+    terraform_cloud_token = "your-tfc-token"
+    ```
 
 The `AWS_ACCOUNT_ID` secret will ensure that your [AWS] account ID is redacted
 in the [GitHub] runner logs. You can see a proof of that in the logs of the
@@ -385,10 +434,10 @@ Lambda, that is, the API Gateway.
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/0b7f77849331dcde8d0411e851b490eef34711cb/infra/gateway/versions.tf"
 ```
 
-Notice the important `path_part` in our `aws_api_gateway_resource` creation.
-This will appear explicitly and exactly as you configure here in the final
-internet-facing HTTP endpoint. Whatever you place in this value, will be used
-in your HTTP requests.
+In the following code :point_down:, notice the important `path_part` in our
+`aws_api_gateway_resource` creation. This will appear explicitly and exactly as
+you configure here in the final internet-facing HTTP endpoint. Whatever you
+place in this value, will be used in your HTTP requests.
 
 ```terraform title="infra/gateway/main.tf" hl_lines="9"
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/0b7f77849331dcde8d0411e851b490eef34711cb/infra/gateway/main.tf"
@@ -410,11 +459,27 @@ That's all that we need as far as infrastructure goes.
 The next step will be the final stage where we deploy the [JavaScript]
 application code to the [AWS Lambda] function using [NodeJS] runtime.
 
+!!! question "Why separating API Gateway and Lambda stacks?"
+
+    While it may not be obvious and/or necessary, especially in a small setup,
+    separating your TF stacks into manageable chunks of code will allow for
+    better management and maintainability of your infrastructure as it grows.
+
+    Especially so, knowing that the next stack, the `lambda/` directory, will
+    be deployed inside the CI/CD pipeline by the [GitHub Actions] runner job;
+    the less you put in that stack, the less time your CI/CD will be billed and
+    the less dollar you have to pay to the GitHub! :moneybag:
+
+    As a concrete example, the current runner for this demo only takes ~40s to
+    deploy the new JavaScript code into the previously deployed [AWS Lambda].
+
+    Those numbers will add up when you do 100s of deployments per month.
+
 ### Defining AWS Lambda Resources
 
 In the `infra/lambda/` directory, you'll find the configuration file for the
-Lambda function. These files defines the resources that are required to deploy
-the function to AWS Lambda.
+Lambda function. These files define the resources that are required to deploy
+the function to [AWS Lambda].
 
 ```hcl title="infra/lambda/versions.tf"
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/0b7f77849331dcde8d0411e851b490eef34711cb/infra/lambda/versions.tf"
@@ -427,11 +492,12 @@ of [Terragrunt] dependency block[^tg-dependency].
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/0b7f77849331dcde8d0411e851b490eef34711cb/infra/lambda/variables.tf"
 ```
 
-Do you see the magic code that is archiving the application within the
-[OpenTofu] without the need for us to do it manually from the CLI!? That's what
-makes this setup extremely sexy; the GitHub CI/CD pipeline will only have to
-apply this TF stack to upgrade the newer version of our application and there
-will not be a need for an extra step to do a `zip` in the runner job.
+Do you see the magic code below :point_down: that is archiving the application
+within the [OpenTofu] without the need for us to do it manually from the CLI!?
+That's what makes this setup extremely sexy; the GitHub CI/CD pipeline will
+only have to apply this TF stack to upgrade the newer version of our
+application and there will not be a need for an extra step to do a `zip` in the
+runner job.
 
 ```hcl title="infra/lambda/main.tf" hl_lines="5-9 37 71 78-81"
 -8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/0b7f77849331dcde8d0411e851b490eef34711cb/infra/lambda/main.tf"
@@ -450,7 +516,7 @@ endpoint as part of the URI, as you will see shortly for yourself.
 
     However, creating it here will allow us to have control over its
     configuration, as well as its lifetime whenever we decide to terminate the
-    Lambda function and we want to remove all the relevant resources alongside,
+    Lambda Function and we want to remove all the relevant resources alongside,
     not leaving any orphan resource to bill our organization!
 
 ```hcl title="infra/lambda/outputs.tf"
@@ -475,11 +541,11 @@ https://<api-id>.execute-api.<region>.amazonaws.com/<stage>/<path_part>
 
 ## Implementing GitOps Principles
 
-Now that we've deployed our first version of the application, it's time to take
-this to the next step, creating a CI/CD pipeline in a way that will allow us to
-get [Continuous Integration] once there's a new push to the `main` branch and
-we deploy the new version of the app by updating the code of the [AWS Lambda]
-function.
+With our initial application deployment complete, it's time to take this to the
+next step. Let's set up a CI/CD pipeline that enables [continuous integration]
+and effortless updates. This pipeline will automatically trigger when changes
+are pushed to the `main` branch, deploying the latest version of our
+application by updating the [AWS Lambda] function's code.
 
 The CI/CD definition will take advantage of
 [the established trust relationship](#establishing-trust-relationship-between-aws--github)
@@ -499,7 +565,8 @@ Having all this setup, we are now empowered to commit our changes to the VCS
 and push it to the target [GitHub] repository.
 
 The idea is that once we push to the `main` branch, the deployment of our new
-code will be deployed as the latest version of the [AWS Lambda] function.
+code will automatically grab the latest changes and pushes them to the
+[AWS Lambda] function.
 
 ### Pull Request Workflow for Changes
 
@@ -508,12 +575,12 @@ should create a new branch from the `main` branch and make your changes there.
 
 We can take this one step further where any new pull request will result in a
 preview environment that has an internet-accessible endpoint for the reviewers
-and all the stakeholders involved to get a look'n feel on what the new change
-will bring to the table.
+and all the stakeholders involved to get a look'n feel of what the new change
+will be like.
 
 We have an in-depth guide for [setting up the preview environment] in a
 different setup, one that you can get inspiration from and build yours for the
-current setup, or for any of yours in the future.
+current or any other future setup.
 
 ## Setting Up GitHub Actions for CI/CD
 
@@ -575,19 +642,74 @@ providers[^tg-cache-providers].
   <figcaption>Rollout Release in Lambda Function</figcaption>
 </figure>
 
+### Verifying the Deployment
 
-[JavaScript]: /category/javascript/
-[AWS]: /category/aws/
-[GitHub]: /category/github/
-[GitHub Actions]: /category/github-actions/
-[OpenTofu]: /category/opentofu/
-[Bun]: /category/bun/
-[NodeJS]: /category/nodejs/
-[AWS Lambda]: /category/aws-lambda/
-[Terraform]: /category/terraform/
-[OpenID Connect]: /category/openid-connect/
-[Terragrunt]: /category/terragrunt/
-[Continuous Integration]: /category/continuous-integration/
+To test the current setup, from anywhere around the world, a simple `curl`
+command can verify our setup.
+
+```shell title="" linenums="0"
+curl -sSD - \
+  https://6pbygtzd81.execute-api.ap-southeast-1.amazonaws.com/prod/hello
+
+# output: Hello World!
+
+
+
+# or
+
+
+
+curl -sSD - \
+  -X POST \
+  -H content-type:application/json \
+  -d '{"name":"John Doe"}' \
+  https://6pbygtzd81.execute-api.ap-southeast-1.amazonaws.com/prod/hello
+
+# output: Hello John Doe!
+```
+
+The result will return `200 OK`, with some header information giving away that
+the response was returned by [AWS] Cloudfront[^lambda-edge-cloudfront].
+
+### Troubleshooting Common Deployment Issues
+
+While the deployment process is designed to be smooth, you may encounter
+issues.
+
+Common problems include incorrect IAM permissions, misconfigured OIDC trust
+relationships, or errors in your Lambda function code.
+
+If you face deployment failures, start by checking the GitHub Actions logs for
+specific error messages.
+
+Verify that your AWS credentials and permissions are correctly set up, and
+ensure that your Lambda function code is compatible with the runtime
+environment.
+
+Don't forget to review the CloudWatch logs for any runtime errors that might
+occur after deployment.
+
+Specifically, you might mistakenly create the API Gateway integration with
+HTTP method other than `POST`. That will result in `500 Internal Server Error`
+when sending HTTP requests to the target address.
+
+```hcl title="infra/lambda/main.tf" linenums="52" hl_lines="6"
+-8<- "https://raw.githubusercontent.com/developer-friendly/aws-lambda-opentofu-github-actions/0b7f77849331dcde8d0411e851b490eef34711cb/infra/lambda/main.tf:52:59"
+```
+
+[JavaScript]: ../../category/javascript.md
+[AWS]: ../../category/aws.md
+[GitHub]: ../../category/github.md
+[GitHub Actions]: ../../category/github-actions.md
+[OpenTofu]: ../../category/opentofu.md
+[Bun]: ../../category/bun.md
+[NodeJS]: ../../category/nodejs.md
+[AWS Lambda]: ../../category/aws-lambda.md
+[Terraform]: ../../category/terraform.md
+[OpenID Connect]: ../../category/openid-connect.md
+[Terragrunt]: ../../category/terragrunt.md
+[Serverless]: ../../category/serverless.md
+[Continuous Integration]: ../../category/continuous-integration.md
 
 [setting up the preview environment]: ./0017-per-pr-deployment.md
 
@@ -595,12 +717,23 @@ providers[^tg-cache-providers].
 [^npm-install]: https://docs.npmjs.com/cli/v10/commands/npm-install
 [^opentofu-install]: https://opentofu.org/docs/intro/install/
 [^terragrunt-install]: https://terragrunt.gruntwork.io/docs/getting-started/install/
+[^aws-lambda-quotas]:https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html
+[^lambda-best-practices-medium]: https://medium.com/platform-engineer/aws-lambda-performance-best-practices-50968e5bb075
+[^lambda-env-vars]: https://docs.aws.amazon.com/lambda/latest/dg/configuration-envvars.html
+[^lambda-best-practices-devto]: https://dev.to/aws-builders/aws-lambda-best-practices-4chn
+[^hashicorp-busl]: https://www.hashicorp.com/blog/hashicorp-adopts-business-source-license
 [^github-aws-oidc]: https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
 [^aws-sec-blog-oidc]: https://aws.amazon.com/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/
+[^least-privilege-principle]: https://en.wikipedia.org/wiki/Principle_of_least_privilege
 [^github-envs]: https://docs.github.com/en/actions/managing-workflow-runs-and-deployments/managing-deployments/managing-environments-for-deployment
+[^gh-cli-authentication]: https://registry.terraform.io/providers/integrations/github/6.2.3/docs
+[^tfc-token-docs]: https://developer.hashicorp.com/terraform/cloud-docs/users-teams-organizations/api-tokens
+[^tfc-token-users]: https://app.terraform.io/app/settings/tokens
+[^tf-variable-docs]: https://developer.hashicorp.com/terraform/language/values/variables
 [^lambda-deployment-logs]: https://github.com/developer-friendly/aws-lambda-opentofu-github-actions/actions/runs/10627337889/job/29460327863#step:7:178
 [^tg-dependency]: https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#dependency
 [^aws-web-identity-token]: https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRoleWithWebIdentity.html
 [^tg-foundation-iam-role]: https://docs.gruntwork.io/reference/modules/terraform-aws-security/github-actions-iam-role/
 [^ci-example-successful-run]: https://github.com/developer-friendly/aws-lambda-opentofu-github-actions/actions/runs/10627337889/job/29460327863
 [^tg-cache-providers]: https://terragrunt.gruntwork.io/docs/features/provider-cache/
+[^lambda-edge-cloudfront]: https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-generating-http-responses.html
