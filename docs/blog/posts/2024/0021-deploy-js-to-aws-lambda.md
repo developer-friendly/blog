@@ -711,13 +711,13 @@ the response was returned by [AWS] Cloudfront[^lambda-edge-cloudfront].
 While the deployment process is designed to be smooth, you may encounter
 issues.
 
-Common problems include incorrect IAM permissions, misconfigured OIDC trust
+Common problems include incorrect [IAM] permissions, misconfigured OIDC trust
 relationships, or errors in your Lambda function code.
 
-If you face deployment failures, start by checking the GitHub Actions logs for
-specific error messages.
+If you face deployment failures, start by checking the [GitHub Actions] logs
+for specific error messages.
 
-Verify that your AWS credentials and permissions are correctly set up, and
+Verify that your [AWS] credentials and permissions are correctly set up, and
 ensure that your Lambda function code is compatible with the runtime
 environment.
 

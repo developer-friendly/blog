@@ -20,6 +20,11 @@ def on_page_markdown(markdown, page, config, files):
         else:
             page.meta["rss"] = {"feed_description": excerpt}
 
+    if feed_description := page.meta.get("rss", {}).get("feed_description"):
+        page.meta["rss"]["feed_description"] = md_maker(
+            feed_description, output_format="html5"
+        )
+
     return markdown
 
 
