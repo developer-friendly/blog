@@ -191,7 +191,7 @@ that you have the necessary tools and technologies installed on your machine.
 Here's a list of what you'll need:
 
 - [x] Bun[^bun-install] or NPM[^npm-install] installed on your machine. Either
-  works, at least one is required and I'll be using [Bun] in this article.
+  works, at least one is required and I'll be using Bun in this article.
 - [x] An [AWS] account with the necessary permissions to create and manage
   Lambda functions and API Gateway resources.
 - [x] A [GitHub] account to create a new repository and set up the CI/CD pipeline
@@ -251,7 +251,7 @@ application in the [JavaScript] programming language.
 
 ### Creating a Basic NodeJS Function
 
-Since we're using [Bun] for our development, we'll need it in our `package.json`
+Since we're using Bun for our development, we'll need it in our `package.json`
 as you see below.
 
 To create the project and its initial config, `bun init` or `npm init` will
@@ -861,7 +861,6 @@ Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
 [GitHub]: ../../category/github.md
 [GitHub Actions]: ../../category/github-actions.md
 [OpenTofu]: ../../category/opentofu.md
-[Bun]: ../../category/bun.md
 [NodeJS]: ../../category/nodejs.md
 [AWS Lambda]: ../../category/aws-lambda.md
 [Terraform]: ../../category/terraform.md
