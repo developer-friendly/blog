@@ -33,3 +33,4 @@
 *[PaaS]: Platform as a Service
 *[RDP]: Remote Desktop Protocol
 *[TFC]: Terraform Cloud
+*[BUSL]: Business Source License
