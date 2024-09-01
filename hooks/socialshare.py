@@ -9,7 +9,7 @@ _fb_sharer = "https://www.facebook.com/sharer/sharer.php"
 lnkd_sharer = "https://www.linkedin.com/sharing/share-offsite/"
 reddit_sharer = "https://www.reddit.com/submit"
 hackernews = "https://news.ycombinator.com/submitlink"
-include = re.compile(r"[1-9].*")
+include = re.compile(r"blog/[1-9].*")
 
 
 def on_page_markdown(markdown, page, config, files, **kwargs):

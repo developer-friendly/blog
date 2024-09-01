@@ -77,56 +77,6 @@ Stick till the end to find out how.
 
 <!-- more -->
 
-<!--
-1. Introduction
-
-1.1 The Popularity of JavaScript in Software Engineering
-1.2 Overview of the Deployment Process
-
-2. Prerequisites
-
-2.1 Required Tools and Technologies
-2.2 Setting Up Your Development Environment
-
-3. Building a NodeJS Application for AWS Lambda
-
-3.1 Creating a Basic NodeJS Function
-3.2 Best Practices for Lambda-Compatible NodeJS Code
-3.3 Code Snippet: Example Lambda Function
-
-4. Infrastructure as Code with OpenTofu
-
-4.1 Introduction to OpenTofu
-4.2 Defining AWS Lambda Resources
-
-5. Implementing GitOps Principles
-
-5.1 Version Control for Infrastructure and Application Code
-5.2 Pull Request Workflow for Changes
-
-6. Setting Up GitHub Actions for CI/CD
-
-7. Deploying to AWS Lambda
-
-7.1 Automated Deployment Process
-7.2 Verifying the Deployment
-7.3 Troubleshooting Common Deployment Issues
-
-8. Performance Optimization and Monitoring
-
-8.1 Lambda Function Optimization Techniques
-8.2 Monitoring Tools and Best Practices
-
-9. Security Considerations
-
-9.1 IAM Roles and Permissions
-9.2 Securing Your Lambda Function
-
-10. Conclusion
-- 10.1 Recap of the Deployment Process
-- 10.2 Next Steps and Further Learning Resources
--->
-
 ## Introduction
 
 ### The Popularity of JavaScript in Software Engineering
@@ -181,6 +131,8 @@ If any of these stages look a bit scary, fret not! I'll guide you through each
 step and provide you with the necessary code snippets to provide a complete
 understanding of what is happening under the hood.
 
+<!-- subscribe -->
+
 ## Prerequisites
 
 ### Required Tools and Technologies
@@ -191,7 +143,7 @@ that you have the necessary tools and technologies installed on your machine.
 Here's a list of what you'll need:
 
 - [x] Bun[^bun-install] or NPM[^npm-install] installed on your machine. Either
-  works, at least one is required and I'll be using [Bun] in this article.
+  works, at least one is required and I'll be using Bun in this article.
 - [x] An [AWS] account with the necessary permissions to create and manage
   Lambda functions and API Gateway resources.
 - [x] A [GitHub] account to create a new repository and set up the CI/CD pipeline
@@ -251,7 +203,7 @@ application in the [JavaScript] programming language.
 
 ### Creating a Basic NodeJS Function
 
-Since we're using [Bun] for our development, we'll need it in our `package.json`
+Since we're using Bun for our development, we'll need it in our `package.json`
 as you see below.
 
 To create the project and its initial config, `bun init` or `npm init` will
@@ -711,13 +663,13 @@ the response was returned by [AWS] Cloudfront[^lambda-edge-cloudfront].
 While the deployment process is designed to be smooth, you may encounter
 issues.
 
-Common problems include incorrect IAM permissions, misconfigured OIDC trust
+Common problems include incorrect [IAM] permissions, misconfigured OIDC trust
 relationships, or errors in your Lambda function code.
 
-If you face deployment failures, start by checking the GitHub Actions logs for
-specific error messages.
+If you face deployment failures, start by checking the [GitHub Actions] logs
+for specific error messages.
 
-Verify that your AWS credentials and permissions are correctly set up, and
+Verify that your [AWS] credentials and permissions are correctly set up, and
 ensure that your Lambda function code is compatible with the runtime
 environment.
 
@@ -861,7 +813,6 @@ Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
 [GitHub]: ../../category/github.md
 [GitHub Actions]: ../../category/github-actions.md
 [OpenTofu]: ../../category/opentofu.md
-[Bun]: ../../category/bun.md
 [NodeJS]: ../../category/nodejs.md
 [AWS Lambda]: ../../category/aws-lambda.md
 [Terraform]: ../../category/terraform.md
