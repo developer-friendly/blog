@@ -13,7 +13,19 @@ exclude = [
   ".*overrides/%7B%7B%20author.url%20%7D%7D",
   ".*overrides/partials/%7B%7B%20category.url%20|%20url%20%7D%7D",
   ".*overrides/partials/%7B%7B%20post.url%20|%20url%20%7D%7D",
-  "https://developer-friendly.github.io/ory",
+]
+
+exclude_path = [
+  "venv",
+  "site",
+  ".ruff_cache",
+  "secrets",
 ]
 
 accept = [429, 200]
+
+cache = true
+
+max_cache_age = "7d"
+
+timeout = 10
