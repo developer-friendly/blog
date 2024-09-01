@@ -13,6 +13,7 @@ exclude = [
   ".*overrides/%7B%7B%20author.url%20%7D%7D",
   ".*overrides/partials/%7B%7B%20category.url%20|%20url%20%7D%7D",
   ".*overrides/partials/%7B%7B%20post.url%20|%20url%20%7D%7D",
+  "docs/blog/category/",
 ]
 
 exclude_path = [
