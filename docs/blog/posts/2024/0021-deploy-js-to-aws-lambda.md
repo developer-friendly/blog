@@ -1,8 +1,8 @@
 ---
 date: 2024-09-02
 description: >-
-  Learn to deploy NodeJS apps to AWS Lambda using OpenTofu for IaC and GitHub
-  Actions. A comprehensive guide for engineers implementing GitOps.
+  Learn to deploy JavaScript/NodeJS apps to AWS Lambda using OpenTofu and
+  GitHub Actions. A comprehensive guide for engineers implementing GitOps.
 social:
   cards_layout_options:
     title: How to Deploy NodeJS to AWS Lambda with OpenTofu & GitHub
