@@ -639,14 +639,14 @@ To test the current setup, from anywhere around the world, a simple `curl`
 command can verify our setup.
 
 ```shell title="" linenums="0"
-curl -sSD - \
+curl \
   https://6pbygtzd81.execute-api.ap-southeast-1.amazonaws.com/prod/hello
 
 # output: Hello World!
 
 # or
 
-curl -sSD - \
+curl \
   -X POST \
   -H content-type:application/json \
   -d '{"name":"John Doe"}' \
