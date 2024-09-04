@@ -658,16 +658,16 @@ I hope you have enjoyed this article as well as I did writing it.
 
 Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 
-[Ory]: /category/ory/
-[Keto]: /category/keto/
-[authorization]: /category/authorization/
-[authentication]: /category/authentication/
-[Kratos]: /category/kratos/
-[Linux]: /category/linux/
-[Oathkeeper]: /category/oathkeeper/
-[Kustomization]: /category/kustomization/
-[Kubernetes]: /category/kubernetes/
-[multi-tenant]: /category/multi-tenancy/
+[Ory]: ../../category/ory.md
+[Keto]: ../../category/keto.md
+[authorization]: ../../category/authorization.md
+[authentication]: ../../category/authentication.md
+[Kratos]: ../../category/kratos.md
+[Linux]: ../../category/linux.md
+[Oathkeeper]: ../../category/oathkeeper.md
+[Kustomization]: ../../category/kustomization.md
+[Kubernetes]: ../../category/kubernetes.md
+[multi-tenant]: ../../category/multi-tenancy.md
 [Ory Oathkeeper: Identity and Access Proxy Server]: ./0015-ory-oathkeeper.md
 [Ory Kratos: Headless Authentication, Identity and User Management]: ./0012-ory-kratos.md
 [oathkeeper-blog-config]: ./0015-ory-oathkeeper.md/#oathkeeper-server-configuration

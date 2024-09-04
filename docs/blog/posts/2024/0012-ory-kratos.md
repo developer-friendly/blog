@@ -137,8 +137,8 @@ to your own stack:
 - [x] The Kratos server has been installed as a Helm installation[^3] on a
       Kubernetes cluster. The Kratos public endpoints are exposed to the
       internet using the Gateway API[^4] and with the help of
-      Cilium. We have guides in our archive for [Kubernetes](/category/kubernetes/)
-      and [Cilium](/category/cilium/) installation if you need further help.
+      Cilium. We have guides in our archive for [Kubernetes](../../category/kubernetes.md)
+      and [Cilium](../../category/cilium.md) installation if you need further help.
 - [x] The source code for the frontend[^5] is written in pure Vanilla JavaScript,
       bundled with ViteJS[^6] and built with Bun[^7]. I am by no means a frontender
       as you shall see shortly for yourself, however, the code is
@@ -258,7 +258,7 @@ free version. Not having the same top-level root domain is a big no-no for
 Kratos and its UI and as such, we'll deploy the opensource version in our
 Kubernetes deployment.
 
-If you need assistance setting up a [Kubernetes](/category/kubernetes/) cluster,
+If you need assistance setting up a [Kubernetes](../../category/kubernetes.md) cluster,
 follow one of our earlier guides. The main requirement, however, is that the
 cluster needs to be internet-facing.
 
@@ -281,7 +281,7 @@ in the following ExternalSecret resource; remember all those values in our
 -8<- "docs/blog/codes/2024/0012/kratos/externalsecret.yml"
 ```
 
-The following [Kustomization](/category/kustomization/) patches applied to the
+The following [Kustomization](../../category/kustomization.md) patches applied to the
 HelmRelease are just because of the lack of flexibility in the Ory Kratos' Helm
 chart. We have to manually pass some of the otherwise missing values.
 
@@ -322,8 +322,8 @@ That is to say, if you're not a Kubernetes guy, don't worry. All you need from
 this step, is an internet-accessible Ory Kratos server hosted under the same
 top-level domain as your UI frontend.
 
-Moving forward, we will only work on [JavaScript](/category/javascript/),
-[HTML](/category/html/), and [CSS](/category/css/). :nerd:
+Moving forward, we will only work on [JavaScript](../../category/javascript.md),
+[HTML](../../category/html.md), and [CSS](../../category/css.md). :nerd:
 
 ## Frontend Code
 
@@ -524,8 +524,8 @@ bun run build
 ## CI Definition
 
 When our project is ready to be published, we will use
-[GitHub Actions](/category/github-actions/) to build and deploy the frontend to
-the [GitHub Pages](/category/github-pages/).
+[GitHub Actions](../../category/github-actions.md) to build and deploy the frontend to
+the [GitHub Pages](../../category/github-pages.md).
 
 ```yaml title=".github/workflows/ci.yml"
 -8<- "docs/blog/codes/2024/0012/junk/ci.yml"
@@ -599,7 +599,7 @@ The DNS record we want to create should be the following:
 {{ read_csv('docs/blog/codes/2024/0012/junk/dns.csv') }}
 
 And since the [developer-friendly.blog] domain is hosted on Cloudflare, here's
-how the [IaC](/category/iac/) will look like for such a change.
+how the [IaC](../../category/iac.md) will look like for such a change.
 
 ```hcl title="dns/variables.tf"
 -8<- "docs/blog/codes/2024/0012/dns/variables.tf"
@@ -613,7 +613,7 @@ how the [IaC](/category/iac/) will look like for such a change.
 -8<- "docs/blog/codes/2024/0012/dns/main.tf"
 ```
 
-Now, let's apply this stack using [OpenTofu](/category/opentofu/):
+Now, let's apply this stack using [OpenTofu](../../category/opentofu.md):
 
 ```shell title="" linenums="0"
 export TF_VAR_cloudflare_api_token="PLACEHOLDER"

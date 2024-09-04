@@ -94,13 +94,13 @@ article.
 First off, we'll
 [create an Azure AKS Kubernetes cluster](#step-0-setting-up-azure-managed-kubernetes-cluster)
 using the official
-[OpenTofu](/category/opentofu) module. The AKS cluster will have its OpenID
+[OpenTofu](../../category/opentofu.md) module. The AKS cluster will have its OpenID
 Connect endpoint exposed to the internet.
 
 We will use that OpenID Connect endpoint to
 [establish a trust relationship between the Kubernetes cluster and the AWS IAM](#step-1-establishing-azure-aks-trust-relationship-with-aws-iam)
 , leveraging
-[OpenID Connect](/category/openid-connect/). This trust relationship will
+[OpenID Connect](../../category/openid-connect.md). This trust relationship will
 allow the Kubernetes cluster's Service Accounts to assume an IAM Role with
 web identity to access AWS resources.
 
@@ -160,7 +160,7 @@ Before we start, you need to have the following prerequisites:
 - [x] Internet accessible endpoint to your Kubernetes API server (1). We have
       covered [how to expose your Kubernetes API server](./0008-k8s-federated-oidc.md)
       in last week's guide. Azure AKS, however, comes with a public
-      [OpenID Connect](/category/openid-connect/) endpoint by default[^7].
+      [OpenID Connect](../../category/openid-connect.md) endpoint by default[^7].
 - [x] An AWS account with the permissions to read and write SSM parameters and
       to create OIDC provider and IAM roles.
 - [x] OpenTofu v1.6[^8]
@@ -270,7 +270,7 @@ Let's write the TF code to create the OIDC provider in the AWS.
 ```
 
 The code should be self-explanatory, especially at this point after covering
-three blog posts on the topic of [OpenID Connect](/category/openid-connect/).
+three blog posts on the topic of [OpenID Connect](../../category/openid-connect.md).
 
 But, let's emphasize the highlighting points:
 
@@ -419,7 +419,7 @@ their GitHub repository's issue[^18].
 The gist of that discussion, if you're not feeling like reading my whole
 rambling, is that the External Secrets operator is not able to assume IAM Role
 with Web Identity outside the AWS EKS Kubernetes cluster; that is, you'll only
-get the benefit of [OpenID Connect](/category/openid-connect/) if
+get the benefit of [OpenID Connect](../../category/openid-connect.md) if
 only you're within AWS[^19] as far as External Secrets operator is concerned.
 
 That is something I consider to be a bug! It shouldn't be the case and they

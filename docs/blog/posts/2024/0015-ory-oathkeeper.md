@@ -746,27 +746,27 @@ Make your decisions wisely, and do the right things before doing things right.
 
 Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
 
-[Kubernetes]: /category/kubernetes/
-[FluxCD]: /category/fluxcd/
-[cert-manager]: /category/cert-manager/
-[ESO]: /category/external-secrets/
+[Kubernetes]: ../../category/kubernetes.md
+[FluxCD]: ../../category/fluxcd.md
+[cert-manager]: ../../category/cert-manager.md
+[ESO]: ../../category/external-secrets.md
 [How to Access AWS From Azure VM Using OpenID Connect]: ./0013-azure-vm-to-aws.md
-[Azure]: /category/azure/
-[Ory]: /category/ory/
-[Kustomization]: /category/kustomization/
-[Jaeger]: /category/jaeger/
+[Azure]: ../../category/azure.md
+[Ory]: ../../category/ory.md
+[Kustomization]: ../../category/kustomization.md
+[Jaeger]: ../../category/jaeger.md
 [Ory Kratos: Headless Authentication, Identity and User Management]: ./0012-ory-kratos.md
 [cert-manager: All-in-One Kubernetes TLS Certificate Manager]: ./0010-cert-manager.md
 [External Secrets Operator: Fetching AWS SSM Parameters into Azure AKS]: ./0009-external-secrets-aks-to-aws-ssm.md
 [GitOps Demystified: Introduction to FluxCD for Kubernetes]: ./0006-gettings-started-with-gitops-and-fluxcd.md
 [our previous _echo server_ example]: ./0010-cert-manager.md#step-4-https-application
 [previously deployed Ory Kratos server]: ./0012-ory-kratos.md#kratos-deployment
-[Gateway API]: /category/gateway-api/
+[Gateway API]: ../../category/gateway-api.md
 [GitOps Continuous Deployment: FluxCD Advanced CRDs]: ./0011-fluxcd-advanced-topics.md
 [Oathkeeper server configuration]: #oathkeeper-server-configuration
-[Oathkeeper]: /category/oathkeeper/
-[OpenID Connect]: /category/openid-connect/
-[Kratos]: /category/kratos/
+[Oathkeeper]: ../../category/oathkeeper.md
+[OpenID Connect]: ../../category/openid-connect.md
+[Kratos]: ../../category/kratos.md
 
 [^grpc-middleware]: https://www.ory.sh/docs/oathkeeper/grpc-middleware
 [^websocket-support]: https://www.ory.sh/docs/oathkeeper/guides/proxy-websockets

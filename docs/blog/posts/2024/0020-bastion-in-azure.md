@@ -601,12 +601,12 @@ Let's recap the essential takeaways:
 By leveraging Azure Bastion, organizations can significantly improve their
 cloud security posture while streamlining access management.
 
-[cloud computing]: /category/cloud-computing/
-[Azure]: /category/azure/
-[Infrastructure as Code]: /category/infrastructure-as-code/
-[OpenTofu]: /category/opentofu/
-[Terragrunt]: /category/terragrunt/
-[Azure Bastion]: /category/azure-bastion/
+[cloud computing]: ../../category/cloud-computing.md
+[Azure]: ../../category/azure.md
+[Infrastructure as Code]: ../../category/infrastructure-as-code.md
+[OpenTofu]: ../../category/opentofu.md
+[Terragrunt]: ../../category/terragrunt.md
+[Azure Bastion]: ../../category/azure-bastion.md
 
 [Terragrunt v0.66]: https://github.com/gruntwork-io/terragrunt/releases/tag/v0.66.8
 [OpenTofu v1.8]: https://github.com/opentofu/opentofu/releases/tag/v1.8.1

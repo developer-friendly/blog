@@ -42,7 +42,7 @@ The rationale is that those secrets can be compromised and put your account at
 risk. Even on non-extreme cases, you are advised to rotate your credentials and
 having to update every credential can be cumbersome when working at scale.
 
-That's where [OpenID Connect (OIDC)](/category/openid-connect/) comes in.
+That's where [OpenID Connect (OIDC)](../../category/openid-connect.md) comes in.
 
 <!-- subscribe -->
 
@@ -544,7 +544,7 @@ Thanks for reading thus far, *ciao*, and till next time! :saluting_face:
 !!! success "OIDC future blogs"
 
     There will be at least two more blog posts on the
-    [OIDC](/category/openid-connect/) topic. One will be
+    [OIDC](../../category/openid-connect.md) topic. One will be
     to authenticate Kubernetes in-cluster ServiceAccounts with the AWS so that
     the pods can access the AWS services.
 

@@ -616,9 +616,9 @@ discussed so far. It does the same thing, albeit in Python.
 
 Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 
-[JavaScript]: /category/javascript/
-[Redis]: /category/redis/
-[GitHub Actions]: /category/github-actions/
+[JavaScript]: ../../category/javascript.md
+[Redis]: ../../category/redis.md
+[GitHub Actions]: ../../category/github-actions.md
 [how to use dynamic matrix in GitHub Actions]: ./0004-github-actions-dynamic-matrix.md
 [GitHub Actions dynamic matrix]: ./0004-github-actions-dynamic-matrix.md
 

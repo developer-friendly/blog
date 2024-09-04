@@ -740,22 +740,22 @@ further questions and discussions, feel free to leave a comment or
 
 Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 
-[Kubernetes]: /category/kubernetes/
-[GitHub Actions]: /category/github-actions/
-[FluxCD]: /category/fluxcd/
-[cert-manager]: /category/cert-manager/
-[Kustomization]: /category/kustomization/
-[TLS]: /category/tls/
-[Docker]: /category/docker/
-[GitHub Container Registry]: /category/github-container-registry/
+[Kubernetes]: ../../category/kubernetes.md
+[GitHub Actions]: ../../category/github-actions.md
+[FluxCD]: ../../category/fluxcd.md
+[cert-manager]: ../../category/cert-manager.md
+[Kustomization]: ../../category/kustomization.md
+[TLS]: ../../category/tls.md
+[Docker]: ../../category/docker.md
+[GitHub Container Registry]: ../../category/github-container-registry.md
 [Kubernetes the Hard Way]: ./0003-kubernetes-the-hard-way.md
 [How to Install Lightweight Kubernetes on Ubuntu 22.04]: ./0005-install-k3s-on-ubuntu22.md
 [Setting up Azure Managed Kubernetes Cluster]: ./0009-external-secrets-aks-to-aws-ssm.md/#step-0-setting-up-azure-managed-kubernetes-cluster
 [cert-manager: All-in-One Kubernetes TLS Certificate Manager]: ./0010-cert-manager.md
 [join our Slack channel]: https://communityinviter.com/apps/developerfriendly/join-our-slack
-[Terraform]: /category/terraform/
-[External Secrets]: /category/external-secrets/
-[Infrastructure as Code]: /category/infrastructure-as-code/
+[Terraform]: ../../category/terraform.md
+[External Secrets]: ../../category/external-secrets.md
+[Infrastructure as Code]: ../../category/infrastructure-as-code.md
 [External Secrets Operator: Fetching AWS SSM Parameters into Azure AKS]: ./0009-external-secrets-aks-to-aws-ssm.md
 
 [^echo-server-github]: https://github.com/developer-friendly/echo-server/

@@ -125,7 +125,7 @@ the overhead and maintainability cost outweighed the benefits.
 
 ## Deploy Victoria Metrics
 
-For this guide, we wil use [Kubernetes](/category/kubernetes/) to deploy
+For this guide, we wil use [Kubernetes](../../category/kubernetes.md) to deploy
 Victoria Metrics. Feel free to pick an easy way to create your cluster, like
 Minikube, Kind, or K3s.
 
@@ -175,7 +175,7 @@ With the Victoria Metrics operator you get to decide the architecture of your
 Victoria Metrics using one or multiple CRD resources. It is more flexible in
 the long run.
 
-We are using [FluxCD](/category/fluxcd/) as our [GitOps](/category/gitops/)
+We are using [FluxCD](../../category/fluxcd.md) as our [GitOps](../../category/gitops.md)
 tool of choice, but feel free to use any other tool you are comfortable with.
 
 ```yaml title="victoria-metrics-operator/namespace.yml"
@@ -260,7 +260,7 @@ the first visit to the address.
 
 The best thing about this architecture is that any piece of it is replaceable
 by your preferred tooling. If you choose to use a different authentication
-proxy server such as [Ory Oathkeeper](/category/oathkeeper/) to take advantage
+proxy server such as [Ory Oathkeeper](../../category/oathkeeper.md) to take advantage
 of your current Identity Provider, you definitely can[^oathkeeper-access-rules].
 
 ## Migration From Kube Prometheus Stack
@@ -417,18 +417,18 @@ This agent will also, just like the last one, scrape all the  `VMServiceScrape`
 
 The difference is, however, that this agent will ship the metrics to the remote
 write URL of the Grafana Cloud and we won't have to manage any storage or
-[Grafana](/category/grafana/) instance of our own anymore.
+[Grafana](../../category/grafana.md) instance of our own anymore.
 
 ### Monitor Standalone Hosts with Victoria Metrics
 
 For addressing [the last objective](#scrape-targets-with-victoria-metrics), we
 aim to make things a bit more different in that we will scrape the target host
-from a single standalone machine (outside [Kubernetes](/category/kubernetes/))
+from a single standalone machine (outside [Kubernetes](../../category/kubernetes.md))
 and ship those to the in-cluster Victoria Metrics we will create with the
 `VMSingle` CRD resource.
 
 Since this is assumed to be a standalone machine, we will use our beloved tool
-[Ansible](/category/ansible/) :hugging:. This helps reproducibility as well as
+[Ansible](../../category/ansible.md) :hugging:. This helps reproducibility as well as
 documenting the steps for future reference.
 
 ```yaml title="standalone-host/victoria-metrics/vars/vars-aarch64.yml"
@@ -493,7 +493,7 @@ ansible-playbook standalone-host/main.yml
 ```
 
 All of these approaches are just a few of the many ways you can monitor your
-infrastructure with [Victoria Metrics](/category/victoriametrics/). We covered
+infrastructure with [Victoria Metrics](../../category/victoriametrics.md). We covered
 some of the most typical ways you would normally monitor a production setup.
 This should give you a good idea on how to get started with Victoria Metrics.
 

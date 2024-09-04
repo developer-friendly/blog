@@ -72,7 +72,7 @@ enough. :face_with_monocle:
 If you have never used OIDC ever before, or if you're still doubtful of its
 potential, then this blog post is for you. We have a full archive of posts
 discussing various implementations and integration guides when it comes to
-[OpenID Connect](/category/openid-connect/) should you choose to study this
+[OpenID Connect](../../category/openid-connect.md) should you choose to study this
 topic further.
 
 <!-- subscribe -->
@@ -136,10 +136,10 @@ If you think about it, the AWS doesn't even **need** to keep the identity
 information of such a VM, because it is not a resource managed by AWS after
 all.
 
-That's the whole idea of [OpenID Connect](/category/openid-connect/), and in
-this post, we will provide the [Infrastructure as Code](/category/iac/) to
-implement such a trust relationship between [Azure](/category/azure/) and
-[AWS](/category/aws/).
+That's the whole idea of [OpenID Connect](../../category/openid-connect.md), and in
+this post, we will provide the [Infrastructure as Code](../../category/iac.md) to
+implement such a trust relationship between [Azure](../../category/azure.md) and
+[AWS](../../category/aws.md).
 
 ## Directory Structure
 
@@ -266,7 +266,7 @@ At this point, we should head over to AWS to create a new IAM Role with the
 proper conditionals and trust relationship to Azure AD.
 
 The idea is that using the newly created
-[OpenID Connect](/category/openid-connect/) provider in the last
+[OpenID Connect](../../category/openid-connect.md) provider in the last
 step, we can now instruct the AWS IAM to grant access to ^^any identity coming
 from such a provider^^ and ^^has a specific subject claim^^ in its JWT token.
 
@@ -294,7 +294,7 @@ This stack contains two main components, which we'll explain below.
 
 ### 1. User Assigned Identity
 
-The first one includes creating an [Azure](/category/azure/) User Assigned
+The first one includes creating an [Azure](../../category/azure.md) User Assigned
 Identity. This will be the identity of our Virtual Machine in the next step. It
 is basically like a username assigned to the VM of our choice and it is
 guaranteed to be unique and persistent; that's the reason we can rely on its ID
@@ -334,7 +334,7 @@ have an IAM Role similar to what you see below:
 
 At this point all is ready from administration and managerial point of view.
 We only need to create the VM, let it know which IAM Role it should assume,
-and make a test API call to [AWS](/category/aws/) to list the S3 buckets.
+and make a test API call to [AWS](../../category/aws.md) to list the S3 buckets.
 
 If that works, all this has been successful.
 
@@ -342,7 +342,7 @@ Therefore, we have two main objectives:
 
 1. Create the Azure VM using TF code for the provisioning stage.
 2. Wait a bit for the VM to be ready and then run an
-   [Ansible](/category/ansible/) playbook to take care of the rest.
+   [Ansible](../../category/ansible.md) playbook to take care of the rest.
 
 In Azure, any VM with an identity attached can fetch an access token[^5]. You
 can grant such identity permissions in and outside Azure cloud. For us, this
@@ -424,7 +424,7 @@ with the following Debian image that has ARM64 support[^8].
 For the VM user data, we're leveraging the cloud-init[^9]. Do check them out if
 not already, but know that I personally find them very limited in terms of
 functionality. In more complex cases, I'd rather run
-[Ansible](/category/ansible/) playbooks and save the golden image for further
+[Ansible](../../category/ansible.md) playbooks and save the golden image for further
 use.
 
 In a nutshell, in the following config we're installing Azure CLI, AWS CLI,
@@ -556,7 +556,7 @@ token[^13].
 ## Conclusion
 
 This blog post should wash away all doubts you might have had about the
-potential of [OpenID Connect](/category/openid-connect/) and how it can improve
+potential of [OpenID Connect](../../category/openid-connect.md) and how it can improve
 the security posture of your platform.
 
 This is not the only use-case of OIDC, yet you can see the huge gain we've
