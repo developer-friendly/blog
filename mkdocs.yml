@@ -56,9 +56,9 @@ extra:
     cookies:
       analytics: Google Analytics
       github: GitHub
-      clarity:
+      logrocket:
         name: Session Recording
-        property: !ENV [CLARITY_PROPERTY, ""]
+        property: !ENV [LOGROCKET_PROPERTY, ""]
         checked: true
   convertkit:
     property: !ENV [CONVERTKIT_PROPERTY, ""]

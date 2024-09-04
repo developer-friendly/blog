@@ -42,15 +42,14 @@ not access the Website.
   Google Analytics JavaScript (ga.js, analytics.js, and dc.js) from sharing
   information with Google Analytics. You can learn more about Google Analytics'
   privacy practices here: https://policies.google.com/privacy.
-- Microsoft Clarity: We partner with Microsoft Clarity and Microsoft
-  Advertising to capture how you use and interact with our website through
-  behavioral metrics, heatmaps, and session replay to improve and market our
-  products/services. Website usage data is captured using first and third-party
-  cookies and other tracking technologies to determine the popularity of
-  products/services and online activity. Additionally, we use this information
-  for site optimization, fraud/security purposes, and advertising. For more
-  information about how Microsoft collects and uses your data, visit the
-  [Microsoft Privacy Statement].
+- LogRocket: We use LogRocket to understand how users interact with our
+  Website. LogRocket records sessions anonymously, including user actions,
+  JavaScript errors, and network requests. This helps us identify bugs and
+  improve the user experience. LogRocket does not track personal information or
+  sensitive data. You can learn more about Logrocket's privacy practices here:
+  https://logrocket.com/privacy/. You can opt out of LogRocket tracking by
+  customizing the cookies on your browser using the link at the bottom of all
+  our pages.
 
 ## Use of Information
 

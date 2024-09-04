@@ -1,0 +1,18 @@
+{% if config.extra.consent.cookies and config.extra.consent.cookies.logrocket %}
+  {% set logrocketProperty = config.extra.consent.cookies.logrocket.property | d("", true) %}
+{% endif %}
+
+{% if logrocketProperty %}
+<script src="https://cdn.logr-ingest.com/LogRocket.min.js" crossorigin="anonymous" async></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function logRocketListener() {
+    document$.subscribe(function enableLogRocket() {
+      var consent = __md_get("__consent");
+      if (consent && consent.logrocket) {
+        console.log("LogRocket enabled");
+        window.LogRocket && window.LogRocket.init("{{ logrocketProperty }}");
+      }
+    });
+  });
+</script>
+{% endif %}

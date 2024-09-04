@@ -22,6 +22,7 @@ env:
   PYTHON_VERSION: 3.x
   ADSENSE_PROPERTY: ${{ vars.ADSENSE_PROPERTY }}
   GA_PROPERTY: ${{ vars.GA_PROPERTY }}
+  LOGROCKET_PROPERTY: ${{ vars.LOGROCKET_PROPERTY }}
 
 jobs:
   preview:
