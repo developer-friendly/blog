@@ -32,17 +32,17 @@ sneak peek at how your profile and preferred link could appear:
     <div class="grid cards" markdown>
 
       - <figure markdown="span">
-          ![Your Name](/assets/logo-128x128.webp){ loading=lazy }
+          ![Your Name](assets/logo-128x128.webp){ loading=lazy }
           <figcaption>Your Name and/or title. [Profile Link](https://developer-friendly.blog)</figcaption>
         </figure>
 
       - <figure markdown="span">
-          ![Your Name](/assets/logo-128x128.webp){ loading=lazy }
+          ![Your Name](assets/logo-128x128.webp){ loading=lazy }
           <figcaption>Your Name and/or title. [Profile Link](https://developer-friendly.blog)</figcaption>
         </figure>
 
       - <figure markdown="span">
-          ![Your Name](/assets/logo-128x128.webp){ loading=lazy }
+          ![Your Name](assets/logo-128x128.webp){ loading=lazy }
           <figcaption>Your Name and/or title. [Profile Link](https://developer-friendly.blog)</figcaption>
         </figure>
     </div>

@@ -1,0 +1,53 @@
+<form
+  method="post"
+  action="https://newsletter.developer-friendly.blog/subscription/form"
+  class="md-typeset"
+>
+  <div class="md-grid">
+
+    <span class="md-grid__cell">
+      <strong>Subscribe to get the latest updates!</strong>
+      <span class="twemoji">
+        {% include ".icons/octicons/rocket-24.svg" %}
+      </span>
+    </span>
+    <input type="hidden" name="nonce" />
+
+    <span class="md-grid__cell">
+      <input
+        type="email"
+        name="email"
+        required
+        placeholder="E-mail"
+        class="md-input"
+      />
+    </span>
+
+    <span class="md-grid__cell">
+      <input
+        type="text"
+        name="name"
+        placeholder="Name (optional)"
+        class="md-input"
+      />
+    </span>
+
+    <span class="md-grid__cell">
+      <input
+        id="ea947"
+        type="hidden"
+        name="l"
+        value="ea947371-ce6e-46e5-ade0-736c1a72d55e"
+        class="md-checkbox"
+      />
+    </span>
+
+    <span class="md-grid__cell">
+      <input
+        type="submit"
+        value="Subscribe"
+        class="md-button md-button--primary"
+      />
+    </span>
+  </div>
+</form>

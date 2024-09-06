@@ -48,7 +48,7 @@ I have expertise and experience in the following areas:
 
 ## Outside of Work
 
-Beyond my work, I’m someone who .
+Beyond my work:
 
 - [x] I workout 4-5 times a week in the mornings :man_lifting_weights:.
 - [x] I've been practicing and learning piano since 2022 :musical_keyboard:.
