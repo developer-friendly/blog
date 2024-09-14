@@ -290,8 +290,9 @@ nav:
   - index.md
   - Blog:
       - blog/index.md
+  - Newsletter Subscription: https://newsletter.developer-friendly.blog/subscription/form
   - sponsors.md
-  - Status: https://developer-friendly.cronitorstatus.com/
+  - Uptime: https://developer-friendly.cronitorstatus.com/
   - terms.md
   - privacy.md
 watch:
