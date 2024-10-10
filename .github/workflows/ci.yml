@@ -301,20 +301,19 @@ jobs:
   mirror:
     if: contains(fromJson('["delete", "push"]'), github.event_name)
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - repo: git@gitlab.com:developer-friendly/blog.git
-            deploy-key: ${{ secrets.GITLAB_DEPLOY_KEY }}
-          - repo: git@github.com:developer-friendly/blog-insiders.git
-            deploy-key: ${{ secrets.INSIDERS_DEPLOY_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: pixta-dev/repository-mirroring-action@v1
+      - name: Mirror GitLab
+        uses: pixta-dev/repository-mirroring-action@v1
         with:
-          target_repo_url: ${{ matrix.repo }}
-          ssh_private_key: ${{ matrix.deploy-key }}
+          target_repo_url: git@gitlab.com:developer-friendly/blog.git
+          ssh_private_key: ${{ secrets.GITLAB_DEPLOY_KEY }}
+      - if: always()
+        name: Mirror Insiders
+        uses: pixta-dev/repository-mirroring-action@v1
+        with:
+          target_repo_url: git@github.com:developer-friendly/blog-insiders.git
+          ssh_private_key: ${{ secrets.INSIDERS_DEPLOY_KEY }}
