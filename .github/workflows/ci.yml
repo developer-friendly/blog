@@ -299,7 +299,9 @@ jobs:
       - uses: actions/stale@v9
 
   mirror:
-    if: contains(fromJson('["delete", "push"]'), github.event_name)
+    if: |
+      github.repository == 'developer-friendly/blog' &&
+      contains(fromJson('["delete", "push"]'), github.event_name)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
