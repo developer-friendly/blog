@@ -16,6 +16,7 @@ scan:
     - secrets
   skip-files:
     - docs/codes/0007/cloudtrail-ci-log.json
+    - docs/blog/codes/2024/0015/junk/azure-vm-response.json
 
 misconfiguration:
   terraform:

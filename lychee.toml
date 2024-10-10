@@ -14,6 +14,8 @@ exclude = [
   ".*overrides/partials/%7B%7B%20category.url%20|%20url%20%7D%7D",
   ".*overrides/partials/%7B%7B%20post.url%20|%20url%20%7D%7D",
   "docs/blog/category/",
+  # TODO: remove this when he takes back his account
+  "https://medium.com/@seifeddinerajhi/victoriametrics-a-comprehensive-guide-comparing-it-to-prometheus-and-implementing-kubernetes-03eb8feb0cc2",
 ]
 
 exclude_path = [
