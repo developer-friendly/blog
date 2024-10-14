@@ -173,7 +173,7 @@ jobs:
             lychee-
       - id: lychee
         name: Link Checker
-        uses: lycheeverse/lychee-action@v1
+        uses: lycheeverse/lychee-action@v2
         with:
           fail: ${{ github.ref == 'refs/heads/main' }}
 
