@@ -34,3 +34,5 @@
 *[RDP]: Remote Desktop Protocol
 *[TFC]: Terraform Cloud
 *[BUSL]: Business Source License
+*[authn]: authentication
+*[authz]: authorization
