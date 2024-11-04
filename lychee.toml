@@ -23,6 +23,7 @@ exclude_path = [
   "site",
   ".ruff_cache",
   "secrets",
+  "internal/newsletter/index.html",
 ]
 
 accept = [429, 200]
