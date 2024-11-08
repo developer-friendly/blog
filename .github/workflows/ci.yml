@@ -197,6 +197,7 @@ jobs:
           scan-ref: .
           scan-type: ${{ matrix.scan-type }}
           trivy-config: trivy.yaml
+          token-setup-trivy: ${{ secrets.GH_TOKEN }}
 
   sponsors:
     runs-on: ubuntu-latest
