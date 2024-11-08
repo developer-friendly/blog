@@ -1,0 +1,9 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+servers: 1
+agents: 0
+image: rancher/k3s:v1.31.2-k3s1
+ports:
+  - port: 8080:80
+    nodeFilters:
+      - loadbalancer
