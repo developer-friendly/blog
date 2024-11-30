@@ -59,7 +59,7 @@ jobs:
           path: site
       - id: netlify
         name: Deploy to Netlify
-        uses: jsmrcaga/action-netlify-deploy@v2.3.0
+        uses: jsmrcaga/action-netlify-deploy@v2.4.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_DEPLOY_TO_PROD: ${{ env.NETLIFY_DEPLOY_TO_PROD }}
@@ -145,7 +145,7 @@ jobs:
       - if: ${{ github.repository == 'developer-friendly/blog' }}
         id: netlify
         name: Deploy to Netlify
-        uses: jsmrcaga/action-netlify-deploy@v2.3.0
+        uses: jsmrcaga/action-netlify-deploy@v2.4.0
         with:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_DEPLOY_TO_PROD: ${{ env.NETLIFY_DEPLOY_TO_PROD }}
