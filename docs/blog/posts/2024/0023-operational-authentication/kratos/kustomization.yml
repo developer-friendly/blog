@@ -1,0 +1,10 @@
+configMapGenerator:
+  - name: kratos-config
+    files:
+      - config.yml=kratos-server-config.yml
+    behavior: replace
+
+resources:
+  - https://github.com/meysam81/kustomizations//kratos/overlays/default/?ref=v1.7.2
+
+namespace: default

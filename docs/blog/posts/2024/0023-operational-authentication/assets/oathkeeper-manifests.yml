@@ -1,0 +1,288 @@
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: oathkeeper
+    app.kubernetes.io/instance: oathkeeper
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: oathkeeper
+    app.kubernetes.io/part-of: oathkeeper
+    app.kubernetes.io/version: v1.0.0
+  name: oathkeeper
+  namespace: default
+---
+apiVersion: v1
+data:
+  config.yml: |
+    access_rules:
+      matching_strategy: regexp
+      repositories:
+        - file:///etc/rules/access-rules.json
+    authenticators:
+      anonymous:
+        config:
+          subject: guest
+        enabled: true
+      cookie_session:
+        config:
+          check_session_url: http://kratos-public/sessions/whoami
+          extra_from: "@this"
+          force_method: GET
+          only:
+            - ory_kratos_session
+          preserve_path: true
+          preserve_query: true
+          subject_from: identity.id
+        enabled: true
+    errors:
+      fallback:
+        - redirect
+      handlers:
+        redirect:
+          config:
+            return_to_query_param: return_to
+            to: http://auth.localhost:8080/login
+          enabled: true
+    mutators:
+      header:
+        config:
+          headers:
+            x-user-id: "{{ print .Subject }}"
+        enabled: true
+    serve:
+      api:
+        port: 4456
+      prometheus:
+        port: 9000
+      proxy:
+        port: 4455
+        timeout:
+          read: 60m
+          idle: 60m
+          write: 60m
+        cors:
+          enabled: true
+          allowed_headers:
+            - accept
+            - content-type
+          allowed_methods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - PATCH
+          allowed_origins:
+            - http://*.localhost
+          allow_credentials: true
+          debug: false
+kind: ConfigMap
+metadata:
+  name: oathkeeper-config-7h44kkmb49
+  namespace: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: oathkeeper
+    app.kubernetes.io/instance: oathkeeper
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: oathkeeper
+    app.kubernetes.io/part-of: oathkeeper
+    app.kubernetes.io/version: v1.0.0
+  name: oathkeeper-api
+  namespace: default
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http-api
+  selector:
+    app.kubernetes.io/component: oathkeeper
+    app.kubernetes.io/instance: oathkeeper
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: oathkeeper
+    app.kubernetes.io/part-of: oathkeeper
+    app.kubernetes.io/version: v1.0.0
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: oathkeeper
+    app.kubernetes.io/instance: oathkeeper
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: oathkeeper
+    app.kubernetes.io/part-of: oathkeeper
+    app.kubernetes.io/version: v1.0.0
+    prometheus.io/instance: oathkeeper-metrics
+  name: oathkeeper-metrics
+  namespace: default
+spec:
+  ports:
+  - name: http-metrics
+    port: 80
+    protocol: TCP
+    targetPort: http-metrics
+  selector:
+    app.kubernetes.io/component: oathkeeper
+    app.kubernetes.io/instance: oathkeeper
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: oathkeeper
+    app.kubernetes.io/part-of: oathkeeper
+    app.kubernetes.io/version: v1.0.0
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: oathkeeper
+    app.kubernetes.io/instance: oathkeeper
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: oathkeeper
+    app.kubernetes.io/part-of: oathkeeper
+    app.kubernetes.io/version: v1.0.0
+  name: oathkeeper-proxy
+  namespace: default
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http-proxy
+  selector:
+    app.kubernetes.io/component: oathkeeper
+    app.kubernetes.io/instance: oathkeeper
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: oathkeeper
+    app.kubernetes.io/part-of: oathkeeper
+    app.kubernetes.io/version: v1.0.0
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: oathkeeper
+    app.kubernetes.io/instance: oathkeeper
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: oathkeeper
+    app.kubernetes.io/part-of: oathkeeper
+    app.kubernetes.io/version: v1.0.0
+  name: oathkeeper
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: oathkeeper
+      app.kubernetes.io/instance: oathkeeper
+      app.kubernetes.io/managed-by: Kustomize
+      app.kubernetes.io/name: oathkeeper
+      app.kubernetes.io/part-of: oathkeeper
+      app.kubernetes.io/version: v1.0.0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: oathkeeper
+        app.kubernetes.io/instance: oathkeeper
+        app.kubernetes.io/managed-by: Kustomize
+        app.kubernetes.io/name: oathkeeper
+        app.kubernetes.io/part-of: oathkeeper
+        app.kubernetes.io/version: v1.0.0
+    spec:
+      containers:
+      - args:
+        - serve
+        - --config=/etc/oathkeeper/config.yml
+        command:
+        - oathkeeper
+        image: oryd/oathkeeper:v0.40.8-distroless
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            httpHeaders:
+            - name: Host
+              value: 127.0.0.1
+            path: /health/alive
+            port: http-api
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: oathkeeper
+        ports:
+        - containerPort: 4456
+          name: http-api
+          protocol: TCP
+        - containerPort: 4455
+          name: http-proxy
+          protocol: TCP
+        - containerPort: 9000
+          name: http-metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health/alive
+            port: http-api
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /etc/oathkeeper/config.yml
+          name: oathkeeper-config
+          readOnly: true
+          subPath: config.yml
+        - mountPath: /etc/rules
+          name: oathkeeper-rules
+          readOnly: true
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: Always
+      serviceAccountName: oathkeeper
+      terminationGracePeriodSeconds: 300
+      volumes:
+      - configMap:
+          defaultMode: 292
+          items:
+          - key: config.yml
+            path: config.yml
+          name: oathkeeper-config-7h44kkmb49
+        name: oathkeeper-config
+      - configMap:
+          defaultMode: 256
+          items:
+          - key: access-rules.json
+            path: access-rules.json
+          name: oathkeeper-rules
+        name: oathkeeper-rules

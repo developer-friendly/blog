@@ -1,0 +1,447 @@
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/instance: kratos
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/part-of: kratos
+    app.kubernetes.io/version: v1.0.0
+  name: kratos
+  namespace: default
+---
+apiVersion: v1
+data:
+  config.yml: |
+    cookies:
+      domain: .localhost
+    courier:
+      smtp:
+        connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true
+        from_address: kratos@developer-friendly.blog
+        from_name: Developer Friendly Blog
+    dsn: postgres://kratos:kratos@postgresql:5432/kratos?sslmode=disable
+    identity:
+      default_schema_id: admin
+      schemas:
+        - id: admin
+          url: https://gist.githubusercontent.com/meysam81/8bb993daa8ebfeb244ccc7008a1a8586/raw/dbf96f1b7d2780c417329af9e53b3fadcb449bb1/admin.schema.json
+    selfservice:
+      allowed_return_urls:
+        - http://*.localhost/
+      default_browser_return_url: https://auth.localhost:8080
+      flows:
+        error:
+          ui_url: https://auth.localhost:8080/error
+        login:
+          after:
+            default_browser_return_url: https://auth.localhost:8080/sessions
+            hooks:
+              - hook: revoke_active_sessions
+              - hook: require_verified_address
+          ui_url: https://auth.localhost:8080/login
+        logout:
+          after:
+            default_browser_return_url: https://auth.localhost:8080
+        recovery:
+          after:
+            default_browser_return_url: https://auth.localhost:8080/login
+            hooks:
+              - hook: revoke_active_sessions
+          enabled: true
+          ui_url: https://auth.localhost:8080/recovery
+          use: link
+        registration:
+          enabled: false
+        settings:
+          privileged_session_max_age: 15m
+          required_aal: highest_available
+          ui_url: https://auth.localhost:8080/settings
+        verification:
+          after:
+            default_browser_return_url: https://auth.localhost:8080/login
+          enabled: true
+          ui_url: https://auth.localhost:8080/verification
+          use: link
+      methods:
+        link:
+          config:
+            lifespan: 1h
+          enabled: true
+        oidc:
+          config:
+            providers:
+              - id: google
+                provider: google
+                client_id: OVERRIDDEN_BY_ENVS
+                client_secret: OVERRIDDEN_BY_ENVS
+                mapper_url: https://gist.githubusercontent.com/meysam81/8bb993daa8ebfeb244ccc7008a1a8586/raw/2fb54e409e808bf901d06f10b51329f46a7e22af/google.jsonnet
+                scope:
+                  - email
+                  - profile
+                requested_claims:
+                  id_token:
+                    email:
+                      essential: true
+                    email_verified:
+                      essential: true
+          enabled: true
+        profile:
+          enabled: true
+        password:
+          enabled: false
+        webauthn:
+          config:
+            rp:
+              id: localhost
+              display_name: Developer Friendly Blog
+              origins:
+                - https://auth.localhost:8080
+            passwordless: true
+          enabled: true
+        passkey:
+          config:
+            rp:
+              display_name: Developer Friendly Blog
+              id: localhost
+              origins:
+                - https://auth.localhost:8080
+          enabled: true
+        totp:
+          enabled: true
+    serve:
+      admin:
+        port: 4434
+      public:
+        base_url: https://auth-server.localhost:8080/
+        cors:
+          allow_credentials: true
+          allowed_headers:
+            - Content-Type
+          allowed_origins:
+            - https://*.localhost
+          debug: false
+          enabled: true
+        port: 4433
+    session:
+      lifespan: 24h
+      whoami:
+        required_aal: highest_available
+kind: ConfigMap
+metadata:
+  name: kratos-config-57k2b7bctm
+  namespace: default
+---
+apiVersion: v1
+data:
+  KRATOS_ADMIN_URL: http://localhost:4434
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/instance: kratos
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/part-of: kratos
+    app.kubernetes.io/version: v1.0.0
+  name: kratos-envs-f5b9tfdm77
+  namespace: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/instance: kratos
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/part-of: kratos
+    app.kubernetes.io/version: v1.0.0
+    component: kratos-admin
+  name: kratos-admin
+  namespace: default
+spec:
+  ports:
+  - name: http-admin
+    port: 80
+    protocol: TCP
+    targetPort: http-admin
+  selector:
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/instance: kratos
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/part-of: kratos
+    app.kubernetes.io/version: v1.0.0
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/instance: kratos
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/part-of: kratos
+    app.kubernetes.io/version: v1.0.0
+    component: kratos-courier
+  name: kratos-courier
+  namespace: default
+spec:
+  ports:
+  - name: http-courier
+    port: 80
+    protocol: TCP
+    targetPort: http-courier
+  selector:
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/instance: kratos
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/part-of: kratos
+    app.kubernetes.io/version: v1.0.0
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/instance: kratos
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/part-of: kratos
+    app.kubernetes.io/version: v1.0.0
+  name: kratos-public
+  namespace: default
+spec:
+  ports:
+  - name: http-public
+    port: 80
+    protocol: TCP
+    targetPort: http-public
+  selector:
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/instance: kratos
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/part-of: kratos
+    app.kubernetes.io/version: v1.0.0
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: kratos
+    app.kubernetes.io/instance: kratos
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos
+    app.kubernetes.io/part-of: kratos
+    app.kubernetes.io/version: v1.0.0
+  name: kratos
+  namespace: default
+spec:
+  progressDeadlineSeconds: 3600
+  replicas: 1
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kratos
+      app.kubernetes.io/instance: kratos
+      app.kubernetes.io/managed-by: Kustomize
+      app.kubernetes.io/name: kratos
+      app.kubernetes.io/part-of: kratos
+      app.kubernetes.io/version: v1.0.0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: kratos
+        app.kubernetes.io/instance: kratos
+        app.kubernetes.io/managed-by: Kustomize
+        app.kubernetes.io/name: kratos
+        app.kubernetes.io/part-of: kratos
+        app.kubernetes.io/version: v1.0.0
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - args:
+        - serve
+        - all
+        - --config=/etc/kratos/config.yml
+        command:
+        - kratos
+        envFrom:
+        - configMapRef:
+            name: kratos-envs-f5b9tfdm77
+        image: oryd/kratos:v1.3.1-distroless
+        lifecycle: {}
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            httpHeaders:
+            - name: Host
+              value: 127.0.0.1
+            path: /health/ready
+            port: http-admin
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: kratos
+        ports:
+        - containerPort: 4434
+          name: http-admin
+          protocol: TCP
+        - containerPort: 4433
+          name: http-public
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            httpHeaders:
+            - name: Host
+              value: 127.0.0.1
+            path: /health/ready
+            port: http-admin
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /etc/kratos/config.yml
+          name: kratos-config
+          readOnly: true
+          subPath: config.yml
+      - args:
+        - courier
+        - watch
+        - --expose-metrics-port=4435
+        - --config=/etc/kratos/config.yml
+        command:
+        - kratos
+        envFrom:
+        - configMapRef:
+            name: kratos-envs-f5b9tfdm77
+        image: oryd/kratos:v1.3.1-distroless
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            httpHeaders:
+            - name: Host
+              value: 127.0.0.1
+            path: /metrics/prometheus
+            port: http-courier
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: kratos-courier
+        ports:
+        - containerPort: 4435
+          name: http-courier
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            httpHeaders:
+            - name: Host
+              value: 127.0.0.1
+            path: /metrics/prometheus
+            port: http-courier
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+        volumeMounts:
+        - mountPath: /etc/kratos/config.yml
+          name: kratos-config
+          readOnly: true
+          subPath: config.yml
+      dnsPolicy: ClusterFirst
+      initContainers:
+      - args:
+        - migrate
+        - sql
+        - -e
+        - --yes
+        - --config=/etc/kratos/config.yml
+        command:
+        - kratos
+        envFrom:
+        - configMapRef:
+            name: kratos-envs-f5b9tfdm77
+        image: oryd/kratos:v1.3.1-distroless
+        name: kratos-automigrate
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+        volumeMounts:
+        - mountPath: /etc/kratos/config.yml
+          name: kratos-config
+          readOnly: true
+          subPath: config.yml
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: kratos
+      terminationGracePeriodSeconds: 300
+      volumes:
+      - configMap:
+          defaultMode: 292
+          items:
+          - key: config.yml
+            path: config.yml
+          name: kratos-config-57k2b7bctm
+        name: kratos-config

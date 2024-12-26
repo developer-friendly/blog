@@ -1,0 +1,114 @@
+cookies:
+  domain: .localhost
+courier:
+  smtp:
+    connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true
+    from_address: kratos@developer-friendly.blog
+    from_name: Developer Friendly Blog
+dsn: postgres://kratos:kratos@postgresql:5432/kratos?sslmode=disable
+identity:
+  default_schema_id: admin
+  schemas:
+    - id: admin
+      url: https://gist.githubusercontent.com/meysam81/8bb993daa8ebfeb244ccc7008a1a8586/raw/dbf96f1b7d2780c417329af9e53b3fadcb449bb1/admin.schema.json
+selfservice:
+  allowed_return_urls:
+    - http://*.localhost/
+  default_browser_return_url: https://auth.localhost:8080
+  flows:
+    error:
+      ui_url: https://auth.localhost:8080/error
+    login:
+      after:
+        default_browser_return_url: https://auth.localhost:8080/sessions
+        hooks:
+          - hook: revoke_active_sessions
+          - hook: require_verified_address
+      ui_url: https://auth.localhost:8080/login
+    logout:
+      after:
+        default_browser_return_url: https://auth.localhost:8080
+    recovery:
+      after:
+        default_browser_return_url: https://auth.localhost:8080/login
+        hooks:
+          - hook: revoke_active_sessions
+      enabled: true
+      ui_url: https://auth.localhost:8080/recovery
+      use: link
+    registration:
+      enabled: false
+    settings:
+      privileged_session_max_age: 15m
+      required_aal: highest_available
+      ui_url: https://auth.localhost:8080/settings
+    verification:
+      after:
+        default_browser_return_url: https://auth.localhost:8080/login
+      enabled: true
+      ui_url: https://auth.localhost:8080/verification
+      use: link
+  methods:
+    link:
+      config:
+        lifespan: 1h
+      enabled: true
+    oidc:
+      config:
+        providers:
+          - id: google
+            provider: google
+            client_id: OVERRIDDEN_BY_ENVS
+            client_secret: OVERRIDDEN_BY_ENVS
+            mapper_url: https://gist.githubusercontent.com/meysam81/8bb993daa8ebfeb244ccc7008a1a8586/raw/2fb54e409e808bf901d06f10b51329f46a7e22af/google.jsonnet
+            scope:
+              - email
+              - profile
+            requested_claims:
+              id_token:
+                email:
+                  essential: true
+                email_verified:
+                  essential: true
+      enabled: true
+    profile:
+      enabled: true
+    password:
+      enabled: false
+    webauthn:
+      config:
+        rp:
+          id: localhost
+          display_name: Developer Friendly Blog
+          origins:
+            - https://auth.localhost:8080
+        passwordless: true
+      enabled: true
+    passkey:
+      config:
+        rp:
+          display_name: Developer Friendly Blog
+          id: localhost
+          origins:
+            - https://auth.localhost:8080
+      enabled: true
+    totp:
+      enabled: true
+serve:
+  admin:
+    port: 4434
+  public:
+    base_url: https://auth-server.localhost:8080/
+    cors:
+      allow_credentials: true
+      allowed_headers:
+        - Content-Type
+      allowed_origins:
+        - http://*.localhost
+      debug: false
+      enabled: true
+    port: 4433
+session:
+  lifespan: 24h
+  whoami:
+    required_aal: highest_available

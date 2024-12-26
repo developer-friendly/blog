@@ -1,0 +1,31 @@
+configMapGenerator:
+  - behavior: replace
+    files:
+      - config.yml=oathkeeper-server-config.yml
+    name: oathkeeper-config
+
+resources:
+  - https://github.com/meysam81/kustomizations//oathkeeper/overlays/default?ref=v1.7.2
+
+patches:
+  - patch: |
+      - op: add
+        path: /spec/template/spec/containers/0/volumeMounts/-
+        value:
+          name: oathkeeper-rules
+          mountPath: /etc/rules
+          readOnly: true
+      - op: add
+        path: /spec/template/spec/volumes/-
+        value:
+          name: oathkeeper-rules
+          configMap:
+            defaultMode: 0400
+            items:
+              - key: access-rules.json
+                path: access-rules.json
+            name: oathkeeper-rules
+    target:
+      kind: Deployment
+
+namespace: default
