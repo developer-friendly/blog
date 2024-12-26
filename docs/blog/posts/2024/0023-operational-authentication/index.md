@@ -33,8 +33,8 @@ These services are usually valuable assets and solutions to the current
 problems of the organization/platform. Having them exposed and accessible over
 the internet would benefit the employees and administrators a lot.
 
-However, the downside is that not having built-in authentication is a security
-risk. One that cannot and should not be overlooked.
+However, the downside is that not having a built-in authentication is a
+security risk. One that cannot and should not be overlooked.
 
 As such, in the following article, I will share my method of protecting those
 critical and administrative level services to the public internet in a way that
@@ -51,6 +51,9 @@ Ory [Oathkeeper] and Ory [Kratos].
 Getting to know those services and their inner workings is crucial for a better
 understanding of this blog post.
 
+If you find yourself in need of a practical guide, you will find links at the
+bottom of this blog post useful.
+
 ## Setting up the Environment
 
 I will be deploying a K3d Kubernetes cluster on my machine, however, the ideas
@@ -64,7 +67,7 @@ This will be a locally accessible [Kubernetes] cluster. Notice the
 port-forwarding flag which will allow us to send load balanced requests to the
 cluster.
 
-When this is ready, the following should Ingress Class is availble:
+When this is ready, the following should Ingress Class is available:
 
 ```shell title="" linenums="0"
 $ kubectl get ingressclass
@@ -110,6 +113,9 @@ This is where the fun begins. :sunglasses:
 I aim to deploy [Kratos] with as minimal overhead as possible. I maintain my
 own [Kustomization] files for deploying some of the services, including
 Kratos[^kustomizations].
+
+You will see shortly how easy it is to deploy Kratos, with only a custom
+Kratos configuration file!
 
 ### Kratos Server Configuration
 
@@ -479,12 +485,14 @@ If you liked this piece, you may find the following blog posts to your liking:
 - [Ory Kratos: Headless Authentication, Identity and User Management]
 - [What is OpenID Connect Authentication? A Practical Guide]
 
-[Kubernetes]: ../../category/kubernetes.md
-[Ory]: ../../category/ory.md
-[Kratos]: ../../category/kratos.md
-[Oathkeeper]: ../../category/oathkeeper.md
-[VictoriaMetrics]: ../../category/victoriametrics.md
-[Kustomization]: ../../category/kustomization.md
+Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
+
+[Kubernetes]: /category/kubernetes.md
+[Ory]: /category/ory.md
+[Kratos]: /category/kratos.md
+[Oathkeeper]: /category/oathkeeper.md
+[VictoriaMetrics]: /category/victoriametrics.md
+[Kustomization]: /category/kustomization.md
 
 [Ory Oathkeeper: Identity and Access Proxy Server]: ../0015-ory-oathkeeper.md
 [Ory Kratos: Headless Authentication, Identity and User Management]: ../0012-ory-kratos.md
