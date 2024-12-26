@@ -1,6 +1,5 @@
 # Developer Friendly Blog
 
-[![Developer Friendly Blog](https://cronitor.io/badges/WLQGkJ/production/tWmlOMK91mMryxSCNy674dvZgTI.svg)](https://developer-friendly.cronitorstatus.com/)
 [![ci](https://cronitor.io/badges/Pf30fO/production/Rw6iQhb0A8NIcmujqE6dkK4e8GI.svg)](https://developer-friendly.cronitorstatus.com/)
 [![GitHub repo size](https://img.shields.io/github/repo-size/developer-friendly/blog)](https://github.com/developer-friendly/blog)
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/developer-friendly/blog)](https://github.com/developer-friendly/blog/commits/main/)

@@ -26,7 +26,7 @@ exclude_path = [
   "internal/newsletter/index.html",
 ]
 
-accept = [429, 200]
+accept = [429, 403, 200]
 
 cache = true
 
@@ -34,4 +34,4 @@ max_cache_age = "7d"
 
 timeout = 10
 
-user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:132.0) Gecko/20100101 Firefox/132.0"
+user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:133.0) Gecko/20100101 Firefox/133.0"
