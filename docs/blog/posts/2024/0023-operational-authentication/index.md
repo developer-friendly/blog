@@ -124,6 +124,33 @@ Compose, bare CLI, Kubernetes, etc.
     -8<- "docs/blog/posts/2024/0023-operational-authentication/kratos/kratos-server-config.yml"
     ```
 
+!!! tip "Browser Cookie Domain"
+
+    You might look at this configuration file, and the ones about to come, and
+    wonder, "*what's with the `localhost.com` domain?*".
+
+    There is a discussion in a relevant Stackoverflow thread[^localhost-cookie]
+    that covers the why and the how.
+
+    The short answer is that the modern browsers, for your own security
+    perhaps, will not allow subdomain cookies from `abc.localhost` to
+    `xyz.localhost`.
+
+    Since Ory Kratos heavily relies on Cookie based authentication for any
+    browser based application, that will break our setup and we will not make
+    it through very long, sadly! :disappointed:
+
+As a result of the browser security measures, we will use `localhost.com` as
+the base domain for all our services.
+
+That requires us to add the followings to our `/etc/hosts` file:
+
+```plaintext title="" linenums="0"
+127.0.0.1 auth-server.localhost.com
+127.0.0.1 auth.localhost.com
+127.0.0.1 vmagent.localhost.com
+```
+
 ### Kratos Kustomization
 
 You are more than welcome to pick Helm from the officially supported Helm chart
@@ -197,7 +224,7 @@ the success of our efforts:
 Now, let's try if it's working:
 
 ```shell title="" linenums="0"
-$ curl -i http://auth-server.localhost:8080/health/ready
+$ curl -i http://auth-server.localhost.com:8080/health/ready
 HTTP/1.1 200 OK
 Content-Length: 16
 Content-Type: application/json; charset=utf-8
@@ -317,12 +344,151 @@ kubectl apply -k ./kratos-selfservice-ui-node
 Let's go ahead and create a couple of Rule and Ingress resources to make sure
 our setup is solid. :muscle:
 
+```yaml title="protected-endpoints/vmagent.yml"
+-8<- "docs/blog/posts/2024/0023-operational-authentication/protected-endpoints/vmagent.yml"
+```
+
+Applying this resource, and we'll be able to verify our setup.
+
+```shell title="" linenums="0"
+kubectl apply -f ./protected-endpoints/
+```
+
+It takes a while for [Ory] Oathkeeper to notify the change in the Access Rule,
+but eventually, the following logs should be visible in `deploy/oathkeeper`:
+
+??? example "kubectl logs deploy/oathkeeper -c oathkeeper"
+
+    ```plaintext title="" linenums="0"
+    time=2024-12-26T12:31:19Z level=info msg=Detected access rule repository change, processing updates. audience=application repos=[file:///etc/rules/access-rules.json] service_name=ORY Oathkeeper service_version=v0.40.8
+    time=2024-12-26T12:31:19Z level=info msg=Detected file change for access rules. Triggering a reload. audience=application event=fsnotify file=/etc/rules/access-rules.json service_name=ORY Oathkeeper service_version=v0.40.8
+    ```
+
+Let's open our browser and navigate to the newly created address to see if we
+hit the expected authentication layer.
+
+<http://vmagent.localhost.com:8080>
+
+And, the result is unsurprisingly a 302 redirect to the Kratos Self-Service UI,
+after which we need to login and be able to access the upstream service.
+
+If we try to register a new account, the result is, as expected not allowed
+operation:
+
+```json title=""
+{
+  "id": "c9d90e17-c1cd-4164-b75b-b1f9a4e070d2",
+  "error": {
+    "id": "self_service_flow_disabled",
+    "code": 400,
+    "reason": "Registration is not allowed because it was disabled.",
+    "status": "Bad Request",
+    "message": "registration flow disabled"
+  },
+  "created_at": "2024-12-26T13:14:02.646882Z",
+  "updated_at": "2024-12-26T13:14:02.646882Z"
+}
+```
+
+That concludes the main objective of this post. :tada: :dancer:
+
+<figure markdown="span">
+  ![Login Page](./assets/images/kratos-ui.png){ loading=lazy }
+  <figcaption>Login Page</figcaption>
+</figure>
+
+## Google Social Sign-In
+
+Before we close this off, there is one last **bonus** topic I find suiting to
+discuss here.
+
+You have seen the Kratos server configuration holding a `oidc.config.providers`
+with an entry for `google`.
+
+That requires you to create a Google OAuth2.0 Client ID and Secret, and provide
+them to the Kratos server.
+
+Below, you will find the screenshots on how to do that.
+
+First, head over to the Google Cloud Console at
+<https://console.cloud.google.com>.
+
+<figure markdown="span">
+  ![Google Cloud Console New Project](./assets/images/google-cloud-new-project.png){ loading=lazy }
+  <figcaption>Google Cloud Console New Project</figcaption>
+</figure>
+
+Create a new project and name it as you see fit.
+
+<figure markdown="span">
+  ![Project Name](./assets/images/google-cloud-project-name.png){ loading=lazy }
+  <figcaption>Project Name</figcaption>
+</figure>
+
+Confusingly enough, just creating the project doesn't select it for you, unless
+it's your first project. So, make sure to pick the project from the top-left.
+
+Once you do, head over to the `APIs & Services` section and then `Credentials`.
+I always search for "*cred*" at the top search bar and get to it in an instant.
+
+<figure markdown="span">
+  ![Project Name](./assets/images/google-console-search.png){ loading=lazy }
+  <figcaption>Project Name</figcaption>
+</figure>
+
+<figure markdown="span">
+  ![Credentials Page](./assets/images/credentials-page.png){ loading=lazy }
+  <figcaption>Credentials Page</figcaption>
+</figure>
+
+You will first have to "Configure Consent Screen" to provide the necessary
+information about your application.
+
+After that, you can create a new OAuth 2.0 Client ID.
+
+!!! note "Google Workspace Account"
+
+    Bear in mind that the setup provided in this guide works only for Google
+    Workspace accounts and restricting the users to the domain is only
+    applicable to those accounts.
+
+    For personal accounts, you will have to either manually add "*test users*"
+    to your trusted list or open it to the public; this beats the whole purpose
+    of gating your services behind authentication! :confounded:
+
+Once you created the Oauth 2.0 credentials, provide them to the cluster with
+any secret management setup of your choice.
+
+```shell title="" linenums="0"
+kubectl create secret generic kratos-google-oauth2-credentials \
+  --from-literal=client_id=YOUR_CLIENT_ID \
+  --from-literal=client_secret=YOUR_CLIENT
+
+kubectl patch deploy/kratos --type=json -p='[{"op": "add", "path": "/spec/template/spec/containers/0/envFrom/-", "value": {"secretRef": {"name": "kratos-google-oauth2-credentials"}}}]'
+```
+
+Believe me, it's done, we're done, you're done.
+
+Thank you for sticking around till the end.
+
+## Further Reading
+
+If you liked this piece, you may find the following blog posts to your liking:
+
+- [Ory Oathkeeper: Identity and Access Proxy Server]
+- [Ory Kratos: Headless Authentication, Identity and User Management]
+- [What is OpenID Connect Authentication? A Practical Guide]
+
 [Kubernetes]: ../../category/kubernetes.md
 [Ory]: ../../category/ory.md
 [Kratos]: ../../category/kratos.md
 [Oathkeeper]: ../../category/oathkeeper.md
 [VictoriaMetrics]: ../../category/victoriametrics.md
 [Kustomization]: ../../category/kustomization.md
+
+[Ory Oathkeeper: Identity and Access Proxy Server]: ../0015-ory-oathkeeper.md
+[Ory Kratos: Headless Authentication, Identity and User Management]: ../0012-ory-kratos.md
+[What is OpenID Connect Authentication? A Practical Guide]: ../0007-oidc-authentication.md
 
 [^vmlogs]: https://docs.victoriametrics.com/victorialogs/
 [^kustomizations]: https://github.com/meysam81/kustomizations
