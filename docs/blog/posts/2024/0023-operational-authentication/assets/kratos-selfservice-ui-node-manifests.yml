@@ -1,0 +1,158 @@
+apiVersion: v1
+automountServiceAccountToken: false
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/component: kratos-selfservice-ui-node
+    app.kubernetes.io/instance: kratos-selfservice-ui-node
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos-selfservice-ui-node
+    app.kubernetes.io/part-of: kratos-selfservice-ui-node
+    app.kubernetes.io/version: v1.0.0
+  name: kratos-selfservice-ui-node
+  namespace: auth
+---
+apiVersion: v1
+data:
+  CSRF_COOKIE_NAME: ory_kratos_session
+  KRATOS_ADMIN_URL: http://kratos-admin
+  KRATOS_BROWSER_URL: http://auth-server.localhost:8080
+  KRATOS_PUBLIC_URL: http://kratos-public
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: kratos-selfservice-ui-node
+    app.kubernetes.io/instance: kratos-selfservice-ui-node
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos-selfservice-ui-node
+    app.kubernetes.io/part-of: kratos-selfservice-ui-node
+    app.kubernetes.io/version: v1.0.0
+  name: kratos-selfservice-ui-node-envs-kt5t65c299
+  namespace: auth
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: kratos-selfservice-ui-node
+    app.kubernetes.io/instance: kratos-selfservice-ui-node
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos-selfservice-ui-node
+    app.kubernetes.io/part-of: kratos-selfservice-ui-node
+    app.kubernetes.io/version: v1.0.0
+  name: kratos-selfservice-ui-node
+  namespace: auth
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    app.kubernetes.io/component: kratos-selfservice-ui-node
+    app.kubernetes.io/instance: kratos-selfservice-ui-node
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos-selfservice-ui-node
+    app.kubernetes.io/part-of: kratos-selfservice-ui-node
+    app.kubernetes.io/version: v1.0.0
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: kratos-selfservice-ui-node
+    app.kubernetes.io/instance: kratos-selfservice-ui-node
+    app.kubernetes.io/managed-by: Kustomize
+    app.kubernetes.io/name: kratos-selfservice-ui-node
+    app.kubernetes.io/part-of: kratos-selfservice-ui-node
+    app.kubernetes.io/version: v1.0.0
+  name: kratos-selfservice-ui-node
+  namespace: auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: kratos-selfservice-ui-node
+      app.kubernetes.io/instance: kratos-selfservice-ui-node
+      app.kubernetes.io/managed-by: Kustomize
+      app.kubernetes.io/name: kratos-selfservice-ui-node
+      app.kubernetes.io/part-of: kratos-selfservice-ui-node
+      app.kubernetes.io/version: v1.0.0
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: kratos-selfservice-ui-node
+        app.kubernetes.io/instance: kratos-selfservice-ui-node
+        app.kubernetes.io/managed-by: Kustomize
+        app.kubernetes.io/name: kratos-selfservice-ui-node
+        app.kubernetes.io/part-of: kratos-selfservice-ui-node
+        app.kubernetes.io/version: v1.0.0
+    spec:
+      containers:
+      - envFrom:
+        - configMapRef:
+            name: kratos-selfservice-ui-node-envs-kt5t65c299
+        image: oryd/kratos-selfservice-ui-node:v1.3.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health/alive
+            port: http
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: kratos-selfservice-ui-node
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health/ready
+            port: http
+          initialDelaySeconds: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+          seLinuxOptions:
+            level: s0:c123,c456
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /home/ory
+          name: tmp
+        - mountPath: /.npm
+          name: tmp
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+        runAsGroup: 65534
+        runAsNonRoot: true
+        runAsUser: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: kratos-selfservice-ui-node
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - emptyDir: {}
+        name: tmp

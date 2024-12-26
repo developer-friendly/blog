@@ -121,7 +121,7 @@ data:
           allowed_headers:
             - Content-Type
           allowed_origins:
-            - https://*.localhost
+            - http://*.localhost
           debug: false
           enabled: true
         port: 4433
@@ -131,7 +131,7 @@ data:
         required_aal: highest_available
 kind: ConfigMap
 metadata:
-  name: kratos-config-57k2b7bctm
+  name: kratos-config-d986k2bd76
   namespace: default
 ---
 apiVersion: v1
@@ -443,5 +443,23 @@ spec:
           items:
           - key: config.yml
             path: config.yml
-          name: kratos-config-57k2b7bctm
+          name: kratos-config-d986k2bd76
         name: kratos-config
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kratos
+  namespace: default
+spec:
+  rules:
+  - host: auth-server.localhost
+    http:
+      paths:
+      - backend:
+          service:
+            name: kratos-public
+            port:
+              number: 80
+        path: /
+        pathType: Prefix

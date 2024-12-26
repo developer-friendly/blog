@@ -1,5 +1,16 @@
 ---
 date: 2024-12-30
+description: >-
+  How to use Ory Oathkeeper and Ory Kratos to protect upstream services behind
+  internet-accessible authentication.
+categories:
+  - Kubernetes
+  - Ory
+  - Kratos
+  - Oathkeeper
+  - VictoriaMetrics
+  - Kustomization
+image: assets/images/social/2024/12/30/how-to-protect-any-upstream-service-with-operational-authentication.png
 ---
 
 # How to Protect ANY Upstream Service with Operational Authentication
@@ -124,6 +135,10 @@ That's the main reason I maintain my own security hardened [Kustomization]
 stack[^kustomizations] that is almost always one patch[^kustomize-patch] away
 from being exactly what you need it to be.
 
+```yaml title="kratos/ingress.yml"
+-8<- "docs/blog/posts/2024/0023-operational-authentication/kratos/ingress.yml"
+```
+
 ```yaml title="kratos/kustomization.yml"
 -8<- "docs/blog/posts/2024/0023-operational-authentication/kratos/kustomization.yml"
 ```
@@ -178,15 +193,6 @@ the success of our efforts:
     time=2024-12-26T11:10:05Z level=info msg=Starting the admin httpd on: 0.0.0.0:4434 audience=application service_name=Ory Kratos service_version=v1.3.1
     time=2024-12-26T11:10:05Z level=info msg=Starting the public httpd on: 0.0.0.0:4433 audience=application service_name=Ory Kratos service_version=v1.3.1
     ```
-
-### Kratos Ingress
-
-We are now ready to expose our Kratos server to the localhost machine, being
-able to send HTTP requests from the terminal of our host machine.
-
-```shell title="" linenums="0"
-kubectl create ing kratos --rule=auth-server.localhost/*=kratos-public:80
-```
 
 Now, let's try if it's working:
 
@@ -275,6 +281,42 @@ upstream services.
 Imagine having to add your custom-built authantication to the [VictoriaMetrics]
 codebase. Good luck with that! :sweat_smile:
 
+## Kratos Self-Service UI Node
+
+Oh, I forgot to mention. :face_with_hand_over_mouth:
+
+You seen that redirect URL in the Oathkeeper server configuration? That also
+needs to be deployed; a frontend that can authenticate the user from the
+browser.
+
+What other better fit for the task than the UI created by the [Ory] team
+itself, officially maintained and provided as an opensource product.
+
+And yes, I also support the [Kustomization] for that sucker too. :wink:
+
+```yaml title="kratos-selfservice-ui-node/ingress.yml"
+-8<- "docs/blog/posts/2024/0023-operational-authentication/kratos-selfservice-ui-node/ingress.yml"
+```
+
+```yaml title="kratos-selfservice-ui-node/kustomization.yml"
+-8<- "docs/blog/posts/2024/0023-operational-authentication/kratos-selfservice-ui-node/kustomization.yml"
+```
+
+```shell title="" linenums="0"
+kubectl apply -k ./kratos-selfservice-ui-node
+```
+
+??? example "kustomize build ./kratos-selfservice-ui-node"
+
+    ```yaml title=""
+    -8<- "docs/blog/posts/2024/0023-operational-authentication/assets/kratos-selfservice-ui-node-manifests.yml"
+    ```
+
+## Protecting Unauthenticated Services
+
+Let's go ahead and create a couple of Rule and Ingress resources to make sure
+our setup is solid. :muscle:
+
 [Kubernetes]: ../../category/kubernetes.md
 [Ory]: ../../category/ory.md
 [Kratos]: ../../category/kratos.md
@@ -287,3 +329,4 @@ codebase. Good luck with that! :sweat_smile:
 [^ory-charts]: https://github.com/ory/k8s
 [^kustomize-patch]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patches/
 [^bitnami-postgres]: https://artifacthub.io/packages/helm/bitnami/postgresql
+[^localhost-cookie]: https://stackoverflow.com/a/74554894/8282345

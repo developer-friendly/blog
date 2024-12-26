@@ -1,0 +1,16 @@
+configMapGenerator:
+  - literals:
+      - COOKIE_SECRET=ABCDEFGHIJKLMNOPQRSTUVWXYZ123456
+      - CSRF_COOKIE_NAME=ory_kratos_session
+      - CSRF_COOKIE_SECRET=ABCDEFGHIJKLMNOPQRSTUVWXYZ123456
+      - KRATOS_ADMIN_URL=http://kratos-admin
+      - KRATOS_BROWSER_URL=http://auth-server.localhost.com:8080
+      - KRATOS_PUBLIC_URL=http://kratos-public
+    name: kratos-selfservice-ui-node-envs
+    behavior: replace
+
+resources:
+  - github.com/meysam81/kustomizations//kratos-selfservice-ui-node/overlays/default?ref=v1.7.2
+  - ingress.yml
+
+namespace: default

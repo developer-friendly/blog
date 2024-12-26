@@ -3,10 +3,6 @@ access_rules:
   repositories:
     - file:///etc/rules/access-rules.json
 authenticators:
-  anonymous:
-    config:
-      subject: guest
-    enabled: true
   cookie_session:
     config:
       check_session_url: http://kratos-public/sessions/whoami
@@ -18,6 +14,9 @@ authenticators:
       preserve_query: true
       subject_from: identity.id
     enabled: true
+authorizers:
+  allow:
+    enabled: true
 errors:
   fallback:
     - redirect
@@ -25,7 +24,7 @@ errors:
     redirect:
       config:
         return_to_query_param: return_to
-        to: http://auth.localhost:8080/login
+        to: http://auth.localhost.com:8080/login
       enabled: true
 mutators:
   header:
@@ -56,6 +55,6 @@ serve:
         - DELETE
         - PATCH
       allowed_origins:
-        - http://*.localhost
+        - http://*.localhost.com
       allow_credentials: true
       debug: false
