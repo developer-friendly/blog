@@ -56,8 +56,8 @@ bottom of this blog post useful.
 
 ## Setting up the Environment
 
-I will be deploying a K3d Kubernetes cluster on my machine, however, the ideas
-described here are applicable AND used in production (by myself).
+I will be deploying a K3d[^k3d] Kubernetes cluster on my machine, however, the
+ideas described here are applicable AND used in production (by myself).
 
 ```shell title="" linenums="0"
 k3d cluster create -p "8080:80@loadbalancer" --agents 0 --servers 1
@@ -142,7 +142,7 @@ Compose, bare CLI, Kubernetes, etc.
     perhaps, will not allow subdomain cookies from `abc.localhost` to
     `xyz.localhost`.
 
-    Since Ory Kratos heavily relies on Cookie based authentication for any
+    Since Ory Kratos heavily relies on Cookie authentication for any
     browser based application, that will break our setup and we will not make
     it through very long, sadly! :disappointed:
 
@@ -159,14 +159,16 @@ That requires us to add the followings to our `/etc/hosts` file:
 
 ### Kratos Kustomization
 
-You are more than welcome to pick Helm from the officially supported Helm chart
+You are more than welcome to pick [Helm] from the officially supported Helm chart
 [^ory-charts], however, I have found their Helm charts inflexible and very
-hard to maintain and customize! Examples include mounting secrets from External
-Secrets Operator, mounting a specific volume for configuration files, etc.
+hard to maintain and customize! Examples include mounting secrets from
+[External Secrets] Operator, mounting a specific volume, etc.
 
 That's the main reason I maintain my own security hardened [Kustomization]
 stack[^kustomizations] that is almost always one patch[^kustomize-patch] away
 from being exactly what you need it to be.
+
+Let's create our Kratos Kustomization files.
 
 ```yaml title="kratos/ingress.yml"
 -8<- "docs/blog/posts/2024/0023-operational-authentication/kratos/ingress.yml"
@@ -179,8 +181,8 @@ from being exactly what you need it to be.
 ### Kratos SQL Database
 
 There are a number of ways you can provide a SQL-backed database to the [Ory]
-[Kratos] server. In this blog post, I choose to deploy a in-cluster PostgreSQL
-using the Bitnami Helm Chart[^bitnami-postgres].
+[Kratos] Kratos server. In this blog post, I choose to deploy an in-cluster
+PostgreSQL using the Bitnami Helm Chart[^bitnami-postgres].
 
 ```shell title="" linenums="0"
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -489,18 +491,21 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 
 [Kubernetes]: /category/kubernetes.md
 [Ory]: /category/ory.md
+[Helm]: /category/helm.md
 [Kratos]: /category/kratos.md
 [Oathkeeper]: /category/oathkeeper.md
 [VictoriaMetrics]: /category/victoriametrics.md
 [Kustomization]: /category/kustomization.md
+[External Secrets]: /category/externalsecrets.md
 
 [Ory Oathkeeper: Identity and Access Proxy Server]: ../0015-ory-oathkeeper.md
 [Ory Kratos: Headless Authentication, Identity and User Management]: ../0012-ory-kratos.md
 [What is OpenID Connect Authentication? A Practical Guide]: ../0007-oidc-authentication.md
 
+[^k3d]: https://k3d.io
 [^vmlogs]: https://docs.victoriametrics.com/victorialogs/
 [^kustomizations]: https://github.com/meysam81/kustomizations
+[^localhost-cookie]: https://stackoverflow.com/a/74554894/8282345
 [^ory-charts]: https://github.com/ory/k8s
 [^kustomize-patch]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patches/
 [^bitnami-postgres]: https://artifacthub.io/packages/helm/bitnami/postgresql
-[^localhost-cookie]: https://stackoverflow.com/a/74554894/8282345
