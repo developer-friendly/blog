@@ -31,6 +31,23 @@ social:
   cards_layout_options:
     title: How to Protect ANY Upstream Service with Kratos & Oathkeeper
 image: assets/images/social/blog/2024/12/30/how-to-protect-any-upstream-service-with-operational-authentication/index.png
+rss:
+  feed_description: >-
+    Over the years of administering and maintaining production-grade systems at
+    different companies, I have found myself in the situations where I needed to
+    deploy internet-accessible services that may or may not provide built-in
+    authentication.
+
+    These services are usually valuable assets and solutions to the current
+    problems of the organization/platform. Having them exposed and accessible over
+    the internet would benefit the employees and administrators a lot.
+
+    However, the downside is that not having a built-in authentication is a
+    security risk. One that cannot and should not be overlooked.
+
+    As such, in the following article, I will share my method of protecting those
+    critical and administrative level services to the public internet in a way that
+    is only visible to the trusted eyes.
 ---
 
 # How to Protect ANY Upstream Service with Operational Authentication
