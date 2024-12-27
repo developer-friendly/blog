@@ -1,8 +1,8 @@
 ---
 date: 2024-12-30
 description: >-
-  How to use Ory Oathkeeper and Ory Kratos to protect upstream services behind
-  internet-accessible authentication.
+  How to gate internet-accessible endpoints behind an authentication layer
+  using Ory Oathkeeper and Ory Kratos with configuration and admin skills.
 categories:
   - Authentication
   - Authorization
@@ -27,7 +27,10 @@ links:
   - blog/posts/2024/0012-ory-kratos.md
   - blog/posts/2024/0016-victoria-metrics.md
   - blog/posts/2024/0007-oidc-authentication.md
-image: assets/images/social/2024/12/30/how-to-protect-any-upstream-service-with-operational-authentication.png
+social:
+  cards_layout_options:
+    title: How to Protect ANY Upstream Service with Kratos & Oathkeeper
+image: assets/images/social/blog/2024/12/30/how-to-protect-any-upstream-service-with-operational-authentication/index.png
 ---
 
 # How to Protect ANY Upstream Service with Operational Authentication
