@@ -23,9 +23,9 @@ extra:
     - icon: simple/stackoverflow
       link: https://stackoverflow.com/users/8282345/meysam
       name: Follow us on Stack Overflow!
-    - icon: fontawesome/brands/slack
-      link: https://communityinviter.com/apps/developerfriendly/join-our-slack
-      name: Join our Slack community!
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/zFCUkaJM
+      name: Join our community!
     - icon: fontawesome/solid/square-rss
       link: /feed_rss_created.xml
       name: Subscribe to our RSS feed!
