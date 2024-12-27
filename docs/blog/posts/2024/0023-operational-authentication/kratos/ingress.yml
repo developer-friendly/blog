@@ -12,12 +12,5 @@ spec:
                 name: kratos-public
                 port:
                   number: 80
-            path: /self-service
-            pathType: Prefix
-          - backend:
-              service:
-                name: kratos-public
-                port:
-                  number: 80
-            path: /sessions
+            path: /
             pathType: Prefix

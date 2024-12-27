@@ -14,6 +14,7 @@
 *[VCS]: Version Control System
 *[ARN]: Amazon Resource Name
 *[CRD]: Custom Resource Definition
+*[CRDs]: Custom Resource Definitions
 *[AKA]: Also Known As
 *[PAT]: Personal Access Token
 *[CI]: Continuous Integration

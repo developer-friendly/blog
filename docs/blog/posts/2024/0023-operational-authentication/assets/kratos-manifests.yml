@@ -16,7 +16,9 @@ apiVersion: v1
 data:
   config.yml: |
     cookies:
-      domain: .localhost
+      domain: localhost.com
+      path: /
+      same_site: None
     courier:
       smtp:
         connection_uri: smtps://test:test@mailslurper:1025/?skip_ssl_verify=true
@@ -30,40 +32,40 @@ data:
           url: https://gist.githubusercontent.com/meysam81/8bb993daa8ebfeb244ccc7008a1a8586/raw/dbf96f1b7d2780c417329af9e53b3fadcb449bb1/admin.schema.json
     selfservice:
       allowed_return_urls:
-        - http://*.localhost/
-      default_browser_return_url: https://auth.localhost:8080
+        - http://*.localhost.com:8080
+      default_browser_return_url: http://auth.localhost.com:8080
       flows:
         error:
-          ui_url: https://auth.localhost:8080/error
+          ui_url: http://auth.localhost.com:8080/error
         login:
           after:
-            default_browser_return_url: https://auth.localhost:8080/sessions
+            default_browser_return_url: http://auth.localhost.com:8080/sessions
             hooks:
               - hook: revoke_active_sessions
               - hook: require_verified_address
-          ui_url: https://auth.localhost:8080/login
+          ui_url: http://auth.localhost.com:8080/login
         logout:
           after:
-            default_browser_return_url: https://auth.localhost:8080
+            default_browser_return_url: http://auth.localhost.com:8080
         recovery:
           after:
-            default_browser_return_url: https://auth.localhost:8080/login
+            default_browser_return_url: http://auth.localhost.com:8080/login
             hooks:
               - hook: revoke_active_sessions
           enabled: true
-          ui_url: https://auth.localhost:8080/recovery
+          ui_url: http://auth.localhost.com:8080/recovery
           use: link
         registration:
           enabled: false
         settings:
           privileged_session_max_age: 15m
           required_aal: highest_available
-          ui_url: https://auth.localhost:8080/settings
+          ui_url: http://auth.localhost.com:8080/settings
         verification:
           after:
-            default_browser_return_url: https://auth.localhost:8080/login
+            default_browser_return_url: http://auth.localhost.com:8080/login
           enabled: true
-          ui_url: https://auth.localhost:8080/verification
+          ui_url: http://auth.localhost.com:8080/verification
           use: link
       methods:
         link:
@@ -73,20 +75,21 @@ data:
         oidc:
           config:
             providers:
-              - id: google
-                provider: google
-                client_id: OVERRIDDEN_BY_ENVS
-                client_secret: OVERRIDDEN_BY_ENVS
+              - client_id: SELFSERVICE_METHODS_OIDC_CONFIG_PROVIDERS_0_CLIENT_ID
+                client_secret: SELFSERVICE_METHODS_OIDC_CONFIG_PROVIDERS_0_CLIENT_SECRET
+                id: google
+                label: Google
                 mapper_url: https://gist.githubusercontent.com/meysam81/8bb993daa8ebfeb244ccc7008a1a8586/raw/2fb54e409e808bf901d06f10b51329f46a7e22af/google.jsonnet
-                scope:
-                  - email
-                  - profile
+                provider: google
                 requested_claims:
                   id_token:
                     email:
                       essential: true
                     email_verified:
                       essential: true
+                scope:
+                  - email
+                  - profile
           enabled: true
         profile:
           enabled: true
@@ -95,19 +98,19 @@ data:
         webauthn:
           config:
             rp:
-              id: localhost
+              id: localhost.com
               display_name: Developer Friendly Blog
               origins:
-                - https://auth.localhost:8080
+                - http://auth.localhost.com:8080
             passwordless: true
           enabled: true
         passkey:
           config:
             rp:
               display_name: Developer Friendly Blog
-              id: localhost
+              id: localhost.com
               origins:
-                - https://auth.localhost:8080
+                - http://auth.localhost.com:8080
           enabled: true
         totp:
           enabled: true
@@ -115,13 +118,13 @@ data:
       admin:
         port: 4434
       public:
-        base_url: https://auth-server.localhost:8080/
+        base_url: http://auth-server.localhost.com:8080/
         cors:
           allow_credentials: true
           allowed_headers:
             - Content-Type
           allowed_origins:
-            - http://*.localhost
+            - http://*.localhost.com
           debug: false
           enabled: true
         port: 4433
@@ -131,7 +134,7 @@ data:
         required_aal: highest_available
 kind: ConfigMap
 metadata:
-  name: kratos-config-d986k2bd76
+  name: kratos-config-479k464thm
   namespace: default
 ---
 apiVersion: v1
@@ -277,6 +280,7 @@ spec:
         - serve
         - all
         - --config=/etc/kratos/config.yml
+        - --dev
         command:
         - kratos
         envFrom:
@@ -443,7 +447,7 @@ spec:
           items:
           - key: config.yml
             path: config.yml
-          name: kratos-config-d986k2bd76
+          name: kratos-config-479k464thm
         name: kratos-config
 ---
 apiVersion: networking.k8s.io/v1
@@ -453,7 +457,7 @@ metadata:
   namespace: default
 spec:
   rules:
-  - host: auth-server.localhost
+  - host: auth-server.localhost.com
     http:
       paths:
       - backend:

@@ -10,13 +10,15 @@ metadata:
     app.kubernetes.io/part-of: kratos-selfservice-ui-node
     app.kubernetes.io/version: v1.0.0
   name: kratos-selfservice-ui-node
-  namespace: auth
+  namespace: default
 ---
 apiVersion: v1
 data:
+  COOKIE_SECRET: ABCDEFGHIJKLMNOPQRSTUVWXYZ123456
   CSRF_COOKIE_NAME: ory_kratos_session
+  CSRF_COOKIE_SECRET: ABCDEFGHIJKLMNOPQRSTUVWXYZ123456
   KRATOS_ADMIN_URL: http://kratos-admin
-  KRATOS_BROWSER_URL: http://auth-server.localhost:8080
+  KRATOS_BROWSER_URL: http://auth-server.localhost.com:8080
   KRATOS_PUBLIC_URL: http://kratos-public
 kind: ConfigMap
 metadata:
@@ -27,8 +29,8 @@ metadata:
     app.kubernetes.io/name: kratos-selfservice-ui-node
     app.kubernetes.io/part-of: kratos-selfservice-ui-node
     app.kubernetes.io/version: v1.0.0
-  name: kratos-selfservice-ui-node-envs-kt5t65c299
-  namespace: auth
+  name: kratos-selfservice-ui-node-envs-884fh65k6h
+  namespace: default
 ---
 apiVersion: v1
 kind: Service
@@ -41,7 +43,7 @@ metadata:
     app.kubernetes.io/part-of: kratos-selfservice-ui-node
     app.kubernetes.io/version: v1.0.0
   name: kratos-selfservice-ui-node
-  namespace: auth
+  namespace: default
 spec:
   ports:
   - name: http
@@ -68,7 +70,7 @@ metadata:
     app.kubernetes.io/part-of: kratos-selfservice-ui-node
     app.kubernetes.io/version: v1.0.0
   name: kratos-selfservice-ui-node
-  namespace: auth
+  namespace: default
 spec:
   replicas: 1
   selector:
@@ -97,7 +99,7 @@ spec:
       containers:
       - envFrom:
         - configMapRef:
-            name: kratos-selfservice-ui-node-envs-kt5t65c299
+            name: kratos-selfservice-ui-node-envs-884fh65k6h
         image: oryd/kratos-selfservice-ui-node:v1.3.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -156,3 +158,21 @@ spec:
       volumes:
       - emptyDir: {}
         name: tmp
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kratos-selfservice-ui-node
+  namespace: default
+spec:
+  rules:
+  - host: auth.localhost.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: kratos-selfservice-ui-node
+            port:
+              name: http
+        path: /
+        pathType: Prefix
