@@ -4,12 +4,29 @@ description: >-
   How to use Ory Oathkeeper and Ory Kratos to protect upstream services behind
   internet-accessible authentication.
 categories:
-  - Kubernetes
-  - Ory
+  - Authentication
+  - Authorization
+  - DevOps
+  - Helm
+  - IaC
+  - Identity and Access Management
+  - Identity Management
+  - Infrastructure as Code
   - Kratos
-  - Oathkeeper
-  - VictoriaMetrics
+  - Kubernetes
   - Kustomization
+  - Microservices
+  - Oathkeeper
+  - OAuth2
+  - OIDC
+  - OpenID Connect
+  - Ory
+  - Security
+  - VictoriaMetrics
+links:
+  - blog/posts/2024/0012-ory-kratos.md
+  - blog/posts/2024/0016-victoria-metrics.md
+  - blog/posts/2024/0007-oidc-authentication.md
 image: assets/images/social/2024/12/30/how-to-protect-any-upstream-service-with-operational-authentication.png
 ---
 
@@ -60,14 +77,18 @@ I will be deploying a K3d[^k3d] Kubernetes cluster on my machine, however, the
 ideas described here are applicable AND used in production (by myself).
 
 ```shell title="" linenums="0"
-k3d cluster create -p "8080:80@loadbalancer" --agents 0 --servers 1
+k3d cluster create \
+  --image rancher/k3s:v1.31.4-k3s1 \
+  -p "8080:80@loadbalancer" \
+  --agents 0 \
+  --servers 1
 ```
 
 This will be a locally accessible [Kubernetes] cluster. Notice the
 port-forwarding flag which will allow us to send load balanced requests to the
 cluster.
 
-When this is ready, the following should Ingress Class is available:
+When this is ready, the following Ingress Class is available:
 
 ```shell title="" linenums="0"
 $ kubectl get ingressclass
@@ -90,7 +111,7 @@ helm install victoria-metrics-k8s-stack vm/victoria-metrics-k8s-stack --version=
 ```
 
 Now, checking on the deployed apps, I will see the followings [Kubernetes]
-Service resources
+Service resources.
 
 ```shell title="" linenums="0"
 $ kubectl get svc
@@ -130,6 +151,16 @@ Compose, bare CLI, Kubernetes, etc.
     -8<- "docs/blog/posts/2024/0023-operational-authentication/kratos/kratos-server-config.yml"
     ```
 
+Notice that we intentionally disabled the registration because we are only
+going to allow Google Workspace email addresses to access our Kratos server
+using the SSO integration with Kratos server.
+
+Consequently, one can enable Azure AD integration and only allow organization
+email addresses to access the Kratos server.
+
+This is the crucial part of this blog post, where we restrict access to
+critical admin services to only the trusted users of our company.
+
 !!! tip "Browser Cookie Domain"
 
     You might look at this configuration file, and the ones about to come, and
@@ -159,8 +190,8 @@ That requires us to add the followings to our `/etc/hosts` file:
 
 ### Kratos Kustomization
 
-You are more than welcome to pick [Helm] from the officially supported Helm chart
-[^ory-charts], however, I have found their Helm charts inflexible and very
+You are more than welcome to pick [Helm] from the officially supported Helm
+chart[^ory-charts], however, I have found their Helm charts inflexible and very
 hard to maintain and customize! Examples include mounting secrets from
 [External Secrets] Operator, mounting a specific volume, etc.
 
@@ -248,8 +279,8 @@ We are half way there guys, hang in there. :hugging:
 
 Deploying Oathkeeper is a two-step process when it comes to [Kubernetes].
 
-We first need to deploy Oathkeeper Maester, the Operator that converts
-Kubernetes CRDs to Access Rules for the Oathkeeper server.
+We first need to deploy Oathkeeper Maester[^maester], the Operator that
+converts Kubernetes CRDs to Access Rules[^access-rules] for the Oathkeeper server.
 
 ### Deploy Oathkeeper Maester
 
@@ -288,6 +319,22 @@ deployment.
     -8<- "docs/blog/posts/2024/0023-operational-authentication/oathkeeper/oathkeeper-server-config.yml"
     ```
 
+Notice the `cookie_session` configuration. There is where we instruct our
+[Oathkeeper] instance to query the [Kratos] server for availble authentication
+and session information.
+
+That will result in either a 200 OK, as in the user is already logged in, or
+a 401 Unauthorized, as in the user needs to login and no available session is
+found.
+
+Additionally, the `allowed_origin` is a crucial part of this configuration.
+Without it, your browser requests will be blocked due to the CORS policy.
+
+In short, the server should respond with a list of allowed "origins", as in,
+the host domains that are allowed to access the server. Consequently, the
+browser will only send the requets to those server that have explicitly
+allowed the origin[^allowed-origins].
+
 ### Oathkeeper Kustomization
 
 We have the most important part ready, it's time to deploy this bad boy!
@@ -320,12 +367,25 @@ codebase. Good luck with that! :sweat_smile:
 
 Oh, I forgot to mention. :face_with_hand_over_mouth:
 
-You seen that redirect URL in the Oathkeeper server configuration? That also
-needs to be deployed; a frontend that can authenticate the user from the
-browser.
+You seen that redirect URL in the Oathkeeper server configuration?
+
+```yaml title="oathkeeper/oathkeeper-server-config.yml" linenums="20" hl_lines="8"
+-8<- "docs/blog/posts/2024/0023-operational-authentication/oathkeeper/oathkeeper-server-config.yml:20:28"
+```
+
+How about a similar configuration in the Kratos server configuration?
+
+```yaml title="kratos/kratos-server-config.yml" linenums="23" hl_lines="7"
+-8<- "docs/blog/posts/2024/0023-operational-authentication/kratos/kratos-server-config.yml:23:29"
+```
+
+That also needs to be deployed; a frontend that can authenticate the user from
+the browser. Whatever the frontend may be, it needs to be able to talk to the
+Kratos public API and authenticate the user[^kratos-custom-ui].
 
 What other better fit for the task than the UI created by the [Ory] team
-itself, officially maintained and provided as an opensource product.
+itself, officially maintained and provided as an opensource
+project[^selfservice-ui].
 
 And yes, I also support the [Kustomization] for that sucker too. :wink:
 
@@ -349,12 +409,17 @@ kubectl apply -k ./kratos-selfservice-ui-node
 
 ## Protecting Unauthenticated Services
 
-Let's go ahead and create a couple of Rule and Ingress resources to make sure
-our setup is solid. :muscle:
+Let's go ahead and create a Rule and Ingress resource to make sure our setup is
+solid. :muscle:
 
-```yaml title="protected-endpoints/vmagent.yml"
+```yaml title="protected-endpoints/vmagent.yml" hl_lines="27-28"
 -8<- "docs/blog/posts/2024/0023-operational-authentication/protected-endpoints/vmagent.yml"
 ```
+
+Notice that by specifying the `authenticator` to be the `cookie_session`, and
+by not customizing and overriding the configuration values in our `Rule`
+resource, we are using the default configuration as specified in the
+[Oathkeeper server configuration](#oathkeeper-configuration) section above.
 
 Applying this resource, and we'll be able to verify our setup.
 
@@ -362,8 +427,9 @@ Applying this resource, and we'll be able to verify our setup.
 kubectl apply -f ./protected-endpoints/
 ```
 
-It takes a while for [Ory] Oathkeeper to notify the change in the Access Rule,
-but eventually, the following logs should be visible in `deploy/oathkeeper`:
+It takes a while for [Ory] Oathkeeper to get notified about the changes to the
+Access Rule, but eventually, the following logs should be visible in
+`deploy/oathkeeper`:
 
 ??? example "kubectl logs deploy/oathkeeper -c oathkeeper"
 
@@ -380,8 +446,12 @@ hit the expected authentication layer.
 And, the result is unsurprisingly a 302 redirect to the Kratos Self-Service UI,
 after which we need to login and be able to access the upstream service.
 
-If we try to register a new account, the result is, as expected not allowed
-operation:
+<figure markdown="span">
+  ![Login Page](./assets/images/kratos-ui.png){ loading=lazy }
+  <figcaption>Login Page</figcaption>
+</figure>
+
+If we try to register a new account, the result is, as expected, not allowed:
 
 ```json title=""
 {
@@ -400,23 +470,25 @@ operation:
 
 That concludes the main objective of this post. :tada: :dancer:
 
-<figure markdown="span">
-  ![Login Page](./assets/images/kratos-ui.png){ loading=lazy }
-  <figcaption>Login Page</figcaption>
-</figure>
-
 ## Google Social Sign-In
 
 Before we close this off, there is one last **bonus** topic I find suiting to
 discuss here.
 
-You have seen the Kratos server configuration holding a `oidc.config.providers`
-with an entry for `google`.
+You have seen the [Kratos] server configuration holding a
+`oidc.config.providers` with an entry for `google`.
 
-That requires you to create a Google OAuth2.0 Client ID and Secret, and provide
-them to the Kratos server.
+```yaml title="kratos/kratos-server-config.yml" linenums="58" hl_lines="4-5"
+-8<- "docs/blog/posts/2024/0023-operational-authentication/kratos/kratos-server-config.yml:58:76"
+```
 
-Below, you will find the screenshots on how to do that.
+
+That requires you to create a Google OAuth2.0 Client ID and
+Secret[^google-oauth2], and provide them to the [Kratos] server, either as
+environment variables (e.g. using [External Secrets] Operator), or by passing
+them to the configuration file (not recommended)[^kratos-env-vars].
+
+Below, you will find the screenshots on how to create a OAuth2.0 Client.
 
 First, head over to the Google Cloud Console at
 <https://console.cloud.google.com>.
@@ -440,8 +512,8 @@ Once you do, head over to the `APIs & Services` section and then `Credentials`.
 I always search for "*cred*" at the top search bar and get to it in an instant.
 
 <figure markdown="span">
-  ![Project Name](./assets/images/google-console-search.png){ loading=lazy }
-  <figcaption>Project Name</figcaption>
+  ![Console Search Bar](./assets/images/google-console-search.png){ loading=lazy }
+  <figcaption>Console Search Bar</figcaption>
 </figure>
 
 <figure markdown="span">
@@ -469,15 +541,24 @@ any secret management setup of your choice.
 
 ```shell title="" linenums="0"
 kubectl create secret generic kratos-google-oauth2-credentials \
-  --from-literal=client_id=YOUR_CLIENT_ID \
-  --from-literal=client_secret=YOUR_CLIENT
+  --from-literal=SELFSERVICE_METHODS_OIDC_CONFIG_PROVIDERS_0_CLIENT_ID=YOUR_CLIENT_ID \
+  --from-literal=SELFSERVICE_METHODS_OIDC_CONFIG_PROVIDERS_0_CLIENT_SECRET=YOUR_CLIENT_SECRET
 
-kubectl patch deploy/kratos --type=json -p='[{"op": "add", "path": "/spec/template/spec/containers/0/envFrom/-", "value": {"secretRef": {"name": "kratos-google-oauth2-credentials"}}}]'
+kubectl patch deploy/kratos --type=json \
+  -p='[{
+    "op": "add",
+    "path": "/spec/template/spec/containers/0/envFrom/-",
+    "value": {
+      "secretRef": {
+        "name": "kratos-google-oauth2-credentials"
+      }
+    }
+  }]'
 ```
 
-Believe me, it's done, we're done, you're done.
+Believe me, it's done, we're done, you're done. :clap:
 
-Thank you for sticking around till the end.
+Thank you for sticking around till the end. :rose:
 
 ## Further Reading
 
@@ -489,14 +570,14 @@ If you liked this piece, you may find the following blog posts to your liking:
 
 Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 
-[Kubernetes]: /category/kubernetes.md
-[Ory]: /category/ory.md
-[Helm]: /category/helm.md
-[Kratos]: /category/kratos.md
-[Oathkeeper]: /category/oathkeeper.md
-[VictoriaMetrics]: /category/victoriametrics.md
-[Kustomization]: /category/kustomization.md
-[External Secrets]: /category/externalsecrets.md
+[Kubernetes]: /blog/category/kubernetes
+[Ory]: /blog/category/ory
+[Helm]: /blog/category/helm
+[Kratos]: /blog/category/kratos
+[Oathkeeper]: /blog/category/oathkeeper
+[VictoriaMetrics]: /blog/category/victoriametrics
+[Kustomization]: /blog/category/kustomization
+[External Secrets]: /blog/category/external-secrets
 
 [Ory Oathkeeper: Identity and Access Proxy Server]: ../0015-ory-oathkeeper.md
 [Ory Kratos: Headless Authentication, Identity and User Management]: ../0012-ory-kratos.md
@@ -509,3 +590,10 @@ Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 [^ory-charts]: https://github.com/ory/k8s
 [^kustomize-patch]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patches/
 [^bitnami-postgres]: https://artifacthub.io/packages/helm/bitnami/postgresql
+[^maester]: https://github.com/ory/oathkeeper-maester/
+[^access-rules]: https://www.ory.sh/docs/oathkeeper/api-access-rules
+[^allowed-origins]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Origin
+[^kratos-custom-ui]: https://www.ory.sh/docs/kratos/self-service
+[^selfservice-ui]: https://github.com/ory/kratos-selfservice-ui-node
+[^google-oauth2]: https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow
+[^kratos-env-vars]: https://www.ory.sh/docs/kratos/configuring

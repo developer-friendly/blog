@@ -41,7 +41,7 @@ data:
         redirect:
           config:
             return_to_query_param: return_to
-            to: http://auth.localhost:8080/login
+            to: http://auth.localhost.com:8080/login
           enabled: true
     mutators:
       header:
@@ -72,12 +72,12 @@ data:
             - DELETE
             - PATCH
           allowed_origins:
-            - http://*.localhost
+            - http://*.localhost.com
           allow_credentials: true
           debug: false
 kind: ConfigMap
 metadata:
-  name: oathkeeper-config-tm52fb5cg9
+  name: oathkeeper-config-7k7mfkh66h
   namespace: default
 ---
 apiVersion: v1
@@ -94,10 +94,10 @@ metadata:
   namespace: default
 spec:
   ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: http-api
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http-api
   selector:
     app.kubernetes.io/component: oathkeeper
     app.kubernetes.io/instance: oathkeeper
@@ -122,10 +122,10 @@ metadata:
   namespace: default
 spec:
   ports:
-    - name: http-metrics
-      port: 80
-      protocol: TCP
-      targetPort: http-metrics
+  - name: http-metrics
+    port: 80
+    protocol: TCP
+    targetPort: http-metrics
   selector:
     app.kubernetes.io/component: oathkeeper
     app.kubernetes.io/instance: oathkeeper
@@ -149,10 +149,10 @@ metadata:
   namespace: default
 spec:
   ports:
-    - name: http
-      port: 80
-      protocol: TCP
-      targetPort: http-proxy
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: http-proxy
   selector:
     app.kubernetes.io/component: oathkeeper
     app.kubernetes.io/instance: oathkeeper
@@ -199,89 +199,89 @@ spec:
         app.kubernetes.io/version: v1.0.0
     spec:
       containers:
-        - args:
-            - serve
-            - --config=/etc/oathkeeper/config.yml
-          command:
-            - oathkeeper
-          image: oryd/oathkeeper:v0.40.8-distroless
-          livenessProbe:
-            failureThreshold: 5
-            httpGet:
-              httpHeaders:
-                - name: Host
-                  value: 127.0.0.1
-              path: /health/alive
-              port: http-api
-              scheme: HTTP
-            initialDelaySeconds: 1
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
-          name: oathkeeper
-          ports:
-            - containerPort: 4456
-              name: http-api
-              protocol: TCP
-            - containerPort: 4455
-              name: http-proxy
-              protocol: TCP
-            - containerPort: 9000
-              name: http-metrics
-              protocol: TCP
-          readinessProbe:
-            failureThreshold: 3
-            httpGet:
-              path: /health/alive
-              port: http-api
-              scheme: HTTP
-            initialDelaySeconds: 1
-            periodSeconds: 10
-            successThreshold: 1
-            timeoutSeconds: 1
-          resources:
-            limits:
-              cpu: 100m
-              memory: 128Mi
-            requests:
-              cpu: 100m
-              memory: 128Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop:
-                - ALL
-            readOnlyRootFilesystem: true
-            runAsGroup: 65534
-            runAsNonRoot: true
-            runAsUser: 65534
-            seccompProfile:
-              type: RuntimeDefault
-          volumeMounts:
-            - mountPath: /etc/oathkeeper/config.yml
-              name: oathkeeper-config
-              readOnly: true
-              subPath: config.yml
-            - mountPath: /etc/rules
-              name: oathkeeper-rules
-              readOnly: true
+      - args:
+        - serve
+        - --config=/etc/oathkeeper/config.yml
+        command:
+        - oathkeeper
+        image: oryd/oathkeeper:v0.40.8-distroless
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            httpHeaders:
+            - name: Host
+              value: 127.0.0.1
+            path: /health/alive
+            port: http-api
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        name: oathkeeper
+        ports:
+        - containerPort: 4456
+          name: http-api
+          protocol: TCP
+        - containerPort: 4455
+          name: http-proxy
+          protocol: TCP
+        - containerPort: 9000
+          name: http-metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health/alive
+            port: http-api
+            scheme: HTTP
+          initialDelaySeconds: 1
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 65534
+          runAsNonRoot: true
+          runAsUser: 65534
+          seccompProfile:
+            type: RuntimeDefault
+        volumeMounts:
+        - mountPath: /etc/oathkeeper/config.yml
+          name: oathkeeper-config
+          readOnly: true
+          subPath: config.yml
+        - mountPath: /etc/rules
+          name: oathkeeper-rules
+          readOnly: true
       securityContext:
         fsGroup: 65534
         fsGroupChangePolicy: Always
       serviceAccountName: oathkeeper
       terminationGracePeriodSeconds: 300
       volumes:
-        - configMap:
-            defaultMode: 292
-            items:
-              - key: config.yml
-                path: config.yml
-            name: oathkeeper-config-tm52fb5cg9
-          name: oathkeeper-config
-        - configMap:
-            defaultMode: 256
-            items:
-              - key: access-rules.json
-                path: access-rules.json
-            name: oathkeeper-rules
+      - configMap:
+          defaultMode: 292
+          items:
+          - key: config.yml
+            path: config.yml
+          name: oathkeeper-config-7k7mfkh66h
+        name: oathkeeper-config
+      - configMap:
+          defaultMode: 256
+          items:
+          - key: access-rules.json
+            path: access-rules.json
           name: oathkeeper-rules
+        name: oathkeeper-rules
