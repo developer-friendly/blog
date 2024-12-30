@@ -10,7 +10,7 @@ configMapGenerator:
     behavior: replace
 
 resources:
-  - github.com/meysam81/kustomizations//kratos-selfservice-ui-node/overlays/default?ref=v1.7.2
+  - github.com/meysam81/kustomizations//kratos-selfservice-ui-node/overlays/default?ref=v1.8.0
   - ingress.yml
 
 namespace: default

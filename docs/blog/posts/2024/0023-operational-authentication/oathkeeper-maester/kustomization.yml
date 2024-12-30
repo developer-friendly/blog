@@ -1,5 +1,5 @@
 resources:
-  - https://github.com/meysam81/kustomizations//oathkeeper-maester/overlays/default/?ref=v1.7.2
+  - https://github.com/meysam81/kustomizations//oathkeeper-maester/overlays/default/?ref=v1.8.0
 
 replacements:
   - source:
