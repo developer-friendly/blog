@@ -5,6 +5,7 @@ exclude = [
   "https://dash.cloudflare.com/profile/api-tokens",
   "https://console.ory.sh/",
   "https://username.github.io/REPOSITORY",
+  "http://vmagent.localhost.com:8080/",
   ".*internal/rss-to-email-py/templates/%7B%7B%20UnsubscribeURL%20%7D%7D$",
   ".*internal/rss-to-email-py/templates/%7B%7B%20\\.Tx\\.Data\\..*%20%7D%7D",
   "https://(www\\.)?linkedin.com/in/meysamazad",
