@@ -4,7 +4,11 @@ description: >-
   How to gate internet-accessible endpoints behind an authentication layer
   using Ory Oathkeeper and Ory Kratos with configuration and admin skills.
 categories:
+  - Kratos
+  - Oathkeeper
+  - Ory
   - Authentication
+  - OpenID Connect
   - Authorization
   - DevOps
   - Helm
@@ -12,15 +16,11 @@ categories:
   - Identity and Access Management
   - Identity Management
   - Infrastructure as Code
-  - Kratos
   - Kubernetes
   - Kustomization
   - Microservices
-  - Oathkeeper
   - OAuth2
   - OIDC
-  - OpenID Connect
-  - Ory
   - Security
   - VictoriaMetrics
 links:
