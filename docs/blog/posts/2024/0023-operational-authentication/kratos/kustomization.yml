@@ -5,7 +5,7 @@ configMapGenerator:
     behavior: replace
 
 resources:
-  - https://github.com/meysam81/kustomizations//kratos/overlays/default/?ref=v1.7.2
+  - https://github.com/meysam81/kustomizations//kratos/overlays/default/?ref=v1.8.0
   - ingress.yml
 
 patches:
