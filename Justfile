@@ -1,4 +1,4 @@
-check:
+lint:
   pre-commit run -a
 
 reqs:
@@ -33,3 +33,10 @@ output *args:
 fmt:
   tofu fmt -recursive
   terragrunt run-all hclfmt --terragrunt-non-interactive
+
+checkov:
+  checkov --config-file .checkov_config.yaml -d .
+
+[no-cd]
+checkov-here:
+  checkov -d .
