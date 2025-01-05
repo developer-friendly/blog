@@ -43,3 +43,10 @@ document$.subscribe(function prepareSubForm() {
   subscribeButton.addEventListener("click", subscribeButtonClick);
   subscriptionForm.addEventListener("submit", subscribeButtonSubmit);
 });
+
+document$.subscribe(function initializeCaptcha() {
+  hcaptcha.render("h-captcha-0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e", {
+    theme: "dark",
+    sitekey: "0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e",
+  });
+});
