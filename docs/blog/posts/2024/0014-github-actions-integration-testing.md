@@ -171,7 +171,7 @@ Two of the tests are failing at this point, but that is not our concern really!
 :shrug:
 
 <figure markdown="span">
-  ![Pytest Local Result](/static/img/2024/0014/full-stack-fastapi-template-pytest.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Pytest Local Result](../../static/img/2024/0014/full-stack-fastapi-template-pytest.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Pytest Local Result</figcaption>
 </figure>
 
@@ -214,14 +214,14 @@ Let's see how we can achieve this in GitHub Actions.
 First, we need to start the database before the app.
 
 ```yaml title=".github/workflows/ci.yml" linenums="48"
--8<- "docs/codes/2024/0014/junk/service.yml:48:56"
+-8<- "docs/blog/codes/2024/0014/junk/service.yml:48:56"
 ```
 
 If you notice the syntax is very similar to what you see in a `docker-compose.yml`
 file. Example from the same target repository below[^4]. :point_down:
 
 ```yaml title="docker-compose.yml"
--8<- "docs/codes/2024/0014/docker-compose.yml:1:13"
+-8<- "docs/blog/codes/2024/0014/docker-compose.yml:1:13"
 ```
 
 These so called **services** in GitHub Actions are spun up before the actual
@@ -232,7 +232,7 @@ The services defined here will run as soon as possible during the execution
 of our job, as you see below.
 
 <figure markdown="span">
-  ![CI Runner Initializes Containers](/static/img/2024/0014/full-stack-ci-init-containers.webp "Click to zoom in"){ align=left loading=lazy }
+  ![CI Runner Initializes Containers](../../static/img/2024/0014/full-stack-ci-init-containers.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>CI Runner Initializes Containers</figcaption>
 </figure>
 
@@ -240,7 +240,7 @@ And if you dig deeper, you will find the exact environment variables passed
 to the container as specified earlier.
 
 <figure markdown="span">
-  ![CI Service Container Flags](/static/img/2024/0014/full-stack-postgres-env-vars.webp "Click to zoom in"){ align=left loading=lazy }
+  ![CI Service Container Flags](../../static/img/2024/0014/full-stack-postgres-env-vars.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>CI Service Container Flags</figcaption>
 </figure>
 
@@ -250,7 +250,7 @@ As before, we will require the installed libraries of our application, as well
 as the database migration for every new Postgres instance.
 
 ```yaml title=".github/workflows/ci.yml" linenums="68"
--8<- "docs/codes/2024/0014/ci.yml:68:74"
+-8<- "docs/blog/codes/2024/0014/ci.yml:68:74"
 ```
 
 ### Running the Tests
@@ -258,7 +258,7 @@ as the database migration for every new Postgres instance.
 Finally, we will run the tests.
 
 ```yaml title=".github/workflows/ci.yml" linenums="75"
--8<- "docs/codes/2024/0014/ci.yml:75:79"
+-8<- "docs/blog/codes/2024/0014/ci.yml:75:79"
 ```
 
 ### Optionally: Upload Coverage to GitHub Pages
@@ -276,13 +276,13 @@ even free of charge if you are using a public repository.
 Let's upload the coverage from our last step into GitHub Pages.
 
 ```yaml title=".github/workflows/ci.yml" linenums="80" hl_lines="4 9"
--8<- "docs/codes/2024/0014/junk/pages.yml:80:88"
+-8<- "docs/blog/codes/2024/0014/junk/pages.yml:80:88"
 ```
 
 The resulting CI run will have an artifact in its summary page just as below.
 
 <figure markdown="span">
-  ![CI Summary](/static/img/2024/0014/full-stack-ci-run-summary.webp "Click to zoom in"){ align=left loading=lazy }
+  ![CI Summary](../../static/img/2024/0014/full-stack-ci-run-summary.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>CI Summary</figcaption>
 </figure>
 
@@ -290,7 +290,7 @@ And if you view the deployed GitHub Pages, you will see the coverage report
 as shown below, which you can sort based on your custom column.
 
 <figure markdown="span">
-  ![Coverage HTML Report](/static/img/2024/0014/full-stack-coverage-html.webp "Click to zoom in"){ align=left loading=lazy }
+  ![Coverage HTML Report](../../static/img/2024/0014/full-stack-coverage-html.webp "Click to zoom in"){ align=left loading=lazy }
   <figcaption>Coverage HTML Report</figcaption>
 </figure>
 
@@ -302,7 +302,7 @@ workflow you would see elsewhere.
 Here is the full workflow for your reference.
 
 ```yaml title=".github/workflows/ci.yml"
--8<- "docs/codes/2024/0014/ci.yml"
+-8<- "docs/blog/codes/2024/0014/ci.yml"
 ```
 
 ## Conclusion
