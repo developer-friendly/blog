@@ -80,8 +80,8 @@ portable, to a certain extent!
   will need accounts in the [AWS] cloud provider.
 - Although provisioning of the remote hosts are not the main aim of this
   article, I use [OpenTofu] v1.8[^opentofu] to create those instances.
-- Lastly, I prefer to use [Terragrunt] `v0.x` as a nice wrapper around
-  TF[^tg-gh]. This gives me the flexibility to define dependency and use
+- Lastly, I prefer to use [Terragrunt] `v0.x`[^tg-gh] as a nice wrapper around
+  TF. This gives me the flexibility to define dependency and use
   outputs from other stacks.
 
 The directory structure for this mini-project looks like the following:
@@ -130,7 +130,7 @@ Although not required, I will also create a custom AWS VPC[^vpc].
 
 Additionally I will configure the [AWS] Security Group[^nsg] to allow SSH
 access to **only** the hosts within the VPC, giving me the peace of mind that
-secure access is gated behind private network.
+secure access is gated behind private network[^vpn].
 
 For an additional layer of security, one might want to consider deploying
 AWS VPN!
@@ -442,6 +442,7 @@ Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
 [^cloudinit]: https://cloudinit.readthedocs.io/en/latest/
 [^vpc]: https://docs.aws.amazon.com/vpc/latest/userguide/what-is-amazon-vpc.html
 [^nsg]: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-security-groups.html
+[^vpn]: https://docs.aws.amazon.com/vpc/latest/userguide/vpn-connections.html
 [^tgdoc]: https://terragrunt.gruntwork.io/docs/
 [^ec2]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/concepts.html
 [^tg-deps]: https://terragrunt.gruntwork.io/docs/reference/config-blocks-and-attributes/#dependency
