@@ -3,7 +3,7 @@ import re
 
 from markdown import markdown as md_maker
 
-include = re.compile(r"[1-9].*")
+include = re.compile(r"blog/[1-9].*")
 
 
 def on_page_markdown(markdown, page, config, files):
