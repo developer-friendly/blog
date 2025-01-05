@@ -46,7 +46,7 @@
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 250px;
+  max-width: fit-content;
   display: flex;
   flex-direction: column;
 }
@@ -73,14 +73,7 @@
 }
 
 #subscribe-form-9b27c56e button {
-  /* padding: 10px; */
-  /* background-color: #007bff; */
-  /* color: var(--md-primary-bg-color); */
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
-
-#subscribe-form-9b27c56e button:hover {
-  /* background-color: #0056b3; */
 }
