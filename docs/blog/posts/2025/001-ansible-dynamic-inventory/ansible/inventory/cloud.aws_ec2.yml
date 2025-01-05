@@ -1,0 +1,11 @@
+plugin: amazon.aws.aws_ec2
+
+keyed_groups:
+  - key: tags.inventory
+    prefix: aws
+  - key: tags.cloud
+    prefix: provider
+
+compose:
+  # literal value, as opposed to the otherwise jinja variable
+  ansible_user: "'ec2-user'"

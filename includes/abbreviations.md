@@ -37,3 +37,6 @@
 *[BUSL]: Business Source License
 *[authn]: authentication
 *[authz]: authorization
+*[VPC]: Virtual Private Cloud
+*[VPN]: Virtual Private Network
+*[ASG]: AutoScaling Group
