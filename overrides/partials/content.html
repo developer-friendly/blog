@@ -1,0 +1,70 @@
+<!-- Tags -->
+{% if "material/tags" in config.plugins and tags %}
+  {% include "partials/tags.html" %}
+{% endif %}
+
+<!-- Actions -->
+{% include "partials/actions.html" %}
+
+<!--
+  Hack: check whether the content contains a h1 headline. If it doesn't, the
+  page title (or respectively site name) is used as the main headline.
+-->
+{% if "\x3ch1" not in page.content %}
+  <h1>{{ page.title | d(config.site_name, true)}}</h1>
+{% endif %}
+
+<div id="sbuscribe-container-82087868">
+  <button id="subscribe-button-ea4577c9">
+    <i class="icon-paper-plane-abdcf51b"></i>
+  </button>
+  <div id="subscribe-form-9b27c56e" class="hidden">
+    <h3>Subscribe to Newsletter</h3>
+    <div class="hidden" id="subscribe-submit-info-345a25b9"></div>
+    <form
+      id="subscription-form-b8eb1947"
+      method="post"
+      action="https://newsletter.developer-friendly.blog/subscription/form"
+    >
+      <input type="hidden" name="nonce" />
+      <input
+        type="text"
+        id="name"
+        name="name"
+        placeholder="First Name"
+        required
+      />
+      <input
+        type="email"
+        id="email"
+        name="email"
+        placeholder="Email Address"
+        required
+      />
+      <input
+        id="ea947"
+        type="hidden"
+        name="l"
+        checked
+        value="ea947371-ce6e-46e5-ade0-736c1a72d55e"
+      />
+      <div
+        class="h-captcha"
+        data-sitekey="0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e"
+      ></div>
+      <button class="md-button md-button--primary" type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+
+<!-- Page content -->
+{{ page.content }}
+
+<!-- Source file information -->
+{% include "partials/source-file.html" %}
+
+<!-- Was this page helpful? -->
+{% include "partials/feedback.html" %}
+
+<!-- Comment system -->
+{% include "partials/comments.html" %}
