@@ -1,6 +1,4 @@
 document$.subscribe(function prepareSubForm() {
-  console.debug("Preparing subscription form...")
-
   var formParentDiv = document.getElementById("subscribe-form-9b27c56e");
   var subscriptionForm = document.getElementById("subscription-form-b8eb1947");
   var subscribeButton = document.getElementById("subscribe-button-ea4577c9");
