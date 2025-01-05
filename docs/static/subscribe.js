@@ -4,6 +4,13 @@ document$.subscribe(function prepareSubForm() {
   var subscribeButton = document.getElementById("subscribe-button-ea4577c9");
   var submitInfo = document.getElementById("subscribe-submit-info-345a25b9");
 
+  function initializeCaptcha() {
+    hcaptcha.render("h-captcha-0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e", {
+      theme: "dark",
+      sitekey: "0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e",
+    });
+  }
+
   function resetSubscriptionForm() {
     formParentDiv.classList.add("hidden");
     subscriptionForm.reset();
@@ -40,13 +47,7 @@ document$.subscribe(function prepareSubForm() {
   }
 
   resetSubscriptionForm();
+  initializeCaptcha();
   subscribeButton.addEventListener("click", subscribeButtonClick);
   subscriptionForm.addEventListener("submit", subscribeButtonSubmit);
-});
-
-document$.subscribe(function initializeCaptcha() {
-  hcaptcha.render("h-captcha-0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e", {
-    theme: "dark",
-    sitekey: "0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e",
-  });
 });
