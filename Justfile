@@ -18,12 +18,16 @@ init:
   terragrunt init -upgrade
 
 [no-cd]
-plan:
-  terragrunt plan -out tfplan
+plan *args:
+  terragrunt plan -out tfplan {{args}}
 
 [no-cd]
 apply:
   terragrunt apply tfplan
+
+[no-cd]
+output *args:
+  terragrunt output {{args}}
 
 [no-cd]
 fmt:
