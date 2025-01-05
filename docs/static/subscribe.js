@@ -16,13 +16,6 @@ document$.subscribe(function prepareSubForm() {
     formParentDiv.classList.toggle("hidden");
   }
 
-  function initializeCaptcha() {
-    hcaptcha.reset();
-    hcaptcha.render(captchaElement, {
-      sitekey: "0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e",
-    });
-  }
-
   function subscribeButtonSubmit(event) {
     event.preventDefault();
 
@@ -49,7 +42,6 @@ document$.subscribe(function prepareSubForm() {
     event.target.reset();
   }
 
-  initializeCaptcha();
   resetSubscriptionForm();
   subscribeButton.addEventListener("click", subscribeButtonClick);
   subscriptionForm.addEventListener("submit", subscribeButtonSubmit);
