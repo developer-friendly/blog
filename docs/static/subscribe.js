@@ -3,9 +3,6 @@ document$.subscribe(function prepareSubForm() {
   var subscriptionForm = document.getElementById("subscription-form-b8eb1947");
   var subscribeButton = document.getElementById("subscribe-button-ea4577c9");
   var submitInfo = document.getElementById("subscribe-submit-info-345a25b9");
-  var captchaElement = document.getElementById(
-    "h-captcha-0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e"
-  );
 
   function resetSubscriptionForm() {
     formParentDiv.classList.add("hidden");
