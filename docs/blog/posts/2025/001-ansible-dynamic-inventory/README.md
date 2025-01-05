@@ -130,10 +130,10 @@ Although not required, I will also create a custom AWS VPC[^vpc].
 
 Additionally I will configure the [AWS] Security Group[^nsg] to allow SSH
 access to **only** the hosts within the VPC, giving me the peace of mind that
-secure access is gated behind private network[^vpn].
+secure access is gated behind private network.
 
 For an additional layer of security, one might want to consider deploying
-AWS VPN!
+AWS VPN[^vpn]!
 
 With that said, let's roll up our sleeves & get our hands dirty. :nerd:
 
