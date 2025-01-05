@@ -35,6 +35,7 @@ resource "aws_instance" "this" {
 
   vpc_security_group_ids = [
     aws_security_group.this.id,
+    var.bastion_nsg_id,
   ]
 
   tags = var.tags

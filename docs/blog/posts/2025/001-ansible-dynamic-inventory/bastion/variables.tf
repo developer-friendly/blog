@@ -22,3 +22,8 @@ variable "public_subnets" {
   type     = list(string)
   nullable = false
 }
+
+variable "bastion_nsg_id" {
+  type     = string
+  nullable = false
+}
