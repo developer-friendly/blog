@@ -1,47 +1,46 @@
-document.addEventListener(
-  "DOMContentLoaded",
-  function subscribeButtonHandler() {
-    var subscriptionForm = document.getElementById(
-      "subscription-form-b8eb1947"
-    );
+document$.subscribe(function prepareSubForm() {
+  console.debug("Preparing subscription form...")
 
-    var subscribeButton = document.getElementById("subscribe-button-ea4577c9");
-    var subscribeForm = document.getElementById("subscribe-form-9b27c56e");
-    var submitInfo = document.getElementById("subscribe-submit-info-345a25b9");
+  var subscriptionForm = document.getElementById("subscription-form-b8eb1947");
+  var subscribeButton = document.getElementById("subscribe-button-ea4577c9");
+  var subscribeForm = document.getElementById("subscribe-form-9b27c56e");
+  var submitInfo = document.getElementById("subscribe-submit-info-345a25b9");
 
+  function resetSubscriptionForm() {
     subscriptionForm.reset();
+  }
 
-    subscribeButton.addEventListener("click", function subscribeButtonClick() {
-      subscribeForm.classList.toggle("hidden");
+  function subscribeButtonClick() {
+    subscribeForm.classList.toggle("hidden");
+  }
+
+  function subscribeButtonSubmit(event) {
+    event.preventDefault();
+
+    var firstName = document.getElementById("name").value;
+    var email = document.getElementById("email").value;
+
+    console.debug({
+      firstName,
+      email,
     });
 
-    subscriptionForm.addEventListener(
-      "submit",
-      function subscribeButtonSubmit(event) {
-        event.preventDefault();
+    if (hcaptcha.getResponse().length == 0) {
+      submitInfo.innerHTML = "Please complete the captcha!";
+      submitInfo.classList.remove("hidden");
+      submitInfo.classList.add("md-banner--warning");
+      return;
+    }
 
-        var firstName = document.getElementById("name").value;
-        var email = document.getElementById("email").value;
+    event.target.submit();
 
-        console.debug({
-          firstName,
-          email,
-        });
+    submitInfo.innerHTML = "Thank you for subscribing!";
+    submitInfo.classList.remove("hidden");
 
-        if (hcaptcha.getResponse().length == 0) {
-          submitInfo.innerHTML = "Please complete the captcha!";
-          submitInfo.classList.remove("hidden");
-          submitInfo.classList.add("md-banner--warning");
-          return;
-        }
-
-        event.target.submit();
-
-        submitInfo.innerHTML = "Thank you for subscribing!";
-        submitInfo.classList.remove("hidden");
-
-        event.target.reset();
-      }
-    );
+    event.target.reset();
   }
-);
+
+  resetSubscriptionForm();
+  subscribeButton.addEventListener("click", subscribeButtonClick);
+  subscriptionForm.addEventListener("submit", subscribeButtonSubmit);
+})
