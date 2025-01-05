@@ -1,3 +1,5 @@
+{% include "partials/subscription-form.html" ignore missing %}
+
 <!-- Post excerpt -->
 <article class="md-post md-post--excerpt">
   <header class="md-post__header">
@@ -78,9 +80,6 @@
 
   <!-- Post content -->
   <div class="md-post__content md-typeset">
-
-    {% include "partials/subscription-form.html" ignore missing %}
-
     {{ post.content }}
 
     <!-- Continue reading link -->
