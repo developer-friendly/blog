@@ -8,7 +8,10 @@
   {% include "blog-refactor-compatibility.html" ignore missing %}
 {% endblock %}
 
-{% block announce %}{% include "partials/announce.html" ignore missing %}{% endblock %}
+{% block announce %}
+  {% include "partials/announce.html" ignore missing %}
+  {% include "partials/subscription-form.html" ignore missing %}
+{% endblock %}
 
 {% block scripts %}
   {{ super() }}
