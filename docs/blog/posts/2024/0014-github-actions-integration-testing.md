@@ -80,10 +80,10 @@ accomplish the following tasks:
       caching, etc.) during its runtime operation. The requirement is that the
       app has to be useless without these dependencies. This is a required
       objective as we aim to provide a solution to this very common problem.
-- [x] Have a bunch of integrations [tests](/category/testing/) actually talking
+- [x] Have a bunch of integrations [tests](../../category/testing.md) actually talking
       to those dependencies and verifying that the application is working as
       expected.
-- [x] Write a [GitHub Actions](/category/github-actions/) workflow that spins
+- [x] Write a [GitHub Actions](../../category/github-actions.md) workflow that spins
       up the dependencies before the app, and then runs the integration tests
       against the app with the correct set of configurations so that the app
       knows how to talk to its dependencies.
@@ -102,7 +102,7 @@ the creator of FastAPI[^3]. The app is called Full-Stack FastAPI Template[^4].
 It has both frontend and backend. However, the focus of this blog post will
 be mainly on the backend part of the application.
 
-The backend needs a [PostgreSQL](/category/postgresql/) database to run and
+The backend needs a [PostgreSQL](../../category/postgresql.md) database to run and
 operate and the same goes for its integration tests.
 
 The framework of the test and other aspects of writing tests is not in the scope
@@ -113,7 +113,7 @@ for this blog post. We are mainly interested in:
 
 Since running the tests in the CI means having the database up and running,
 it's a great example to show how you can run your integration tests in
-[GitHub Actions](/category/github-actions/), having GitHub taking care of the
+[GitHub Actions](../../category/github-actions.md), having GitHub taking care of the
 dependencies for you.
 
 ## Run Tests Locally
@@ -197,7 +197,7 @@ running the tests.
     I would only invite you to read this article to see if the proposed solution
     is something that you would like to try out.
 
-[GitHub Actions](/category/github-actions/) provide a way to run services
+[GitHub Actions](../../category/github-actions.md) provide a way to run services
 before the actual job starts. These are great for running dependencies like
 databases, caches, etc. in the CI environment.
 
@@ -269,7 +269,7 @@ your codebase, whether or not you have a dead code anywhere, etc.
 These are usually static HTML files that can be viewed in a browser for a
 good overall visual on the coverage and the places where you need to improve.
 
-Additionally, [GitHub Pages](/category/github-pages/), is an excellent
+Additionally, [GitHub Pages](../../category/github-pages.md), is an excellent
 choice for serving such static files right inside your GitHub repository; it's
 even free of charge if you are using a public repository.
 

@@ -590,14 +590,14 @@ If you liked this piece, you may find the following blog posts to your liking:
 
 Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 
-[Kubernetes]: /blog/category/kubernetes
-[Ory]: /blog/category/ory
-[Helm]: /blog/category/helm
-[Kratos]: /blog/category/kratos
-[Oathkeeper]: /blog/category/oathkeeper
-[VictoriaMetrics]: /blog/category/victoriametrics
-[Kustomization]: /blog/category/kustomization
-[External Secrets]: /blog/category/external-secrets
+[Kubernetes]: ../../../category/kubernetes.md
+[Ory]: ../../../category/ory.md
+[Helm]: ../../../category/helm.md
+[Kratos]: ../../../category/kratos.md
+[Oathkeeper]: ../../../category/oathkeeper.md
+[VictoriaMetrics]: ../../../category/victoriametrics.md
+[Kustomization]: ../../../category/kustomization.md
+[External Secrets]: ../../../category/external-secrets.md
 
 [Ory Oathkeeper: Identity and Access Proxy Server]: ../0015-ory-oathkeeper.md
 [Ory Kratos: Headless Authentication, Identity and User Management]: ../0012-ory-kratos.md
