@@ -65,11 +65,27 @@
   font-size: 0.9rem;
 }
 
-#subscribe-form-9b27c56e input {
+#subscribe-form-9b27c56e input:not([type="submit"]) {
   margin-bottom: 10px;
   padding: 10px;
   border: 1px solid var(--mg-primary-bg-color);
   border-radius: 4px;
+}
+
+#subscribe-form-9b27c56e input[type="submit"] {
+  background-color: var(--md-primary-fg-color);
+  color: var(--md-default-bg-color);
+  padding: 10px;
+  margin: auto;
+  border-radius: 4px;
+  cursor: pointer;
+  border-color: var(--md-accent-fg-color);
+}
+
+#subscribe-form-9b27c56e input[type="submit"]:hover {
+  background-color: var(--md-accent-fg-color);
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-bg-color);
 }
 
 #subscribe-form-9b27c56e button {
