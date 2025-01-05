@@ -4,8 +4,8 @@
   {{ super() }}
   {% include "partials/pirsch.html" ignore missing %}
   {% include "partials/logrocket.html" ignore missing %}
+  {% include "partials/subscription-header.html" ignore missing %}
   {% include "blog-refactor-compatibility.html" ignore missing %}
-  <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
 {% endblock %}
 
 {% block announce %}{% include "partials/announce.html" ignore missing %}{% endblock %}
