@@ -24,6 +24,9 @@
 
 #subscribe-button-ea4577c9:hover {
   transform: scale(1.1);
+  background-color: var(--md-accent-fg-color);
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-bg-color);
 }
 
 /* Paper Airplane Icon */
@@ -57,6 +60,7 @@
 
 #subscribe-submit-info-345a25b9 {
   font-size: 0.7rem;
+  padding-bottom: 10px;
 }
 
 #subscribe-form-9b27c56e h3 {
@@ -70,6 +74,7 @@
   padding: 10px;
   border: 1px solid var(--mg-primary-bg-color);
   border-radius: 4px;
+  font-size: 16px;
 }
 
 #subscribe-form-9b27c56e input[type="submit"] {

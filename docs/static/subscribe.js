@@ -4,30 +4,23 @@ document$.subscribe(function prepareSubForm() {
   var subscribeButton = document.getElementById("subscribe-button-ea4577c9");
   var submitInfo = document.getElementById("subscribe-submit-info-345a25b9");
 
-  function initializeCaptcha() {
-    hcaptcha.render("h-captcha-0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e", {
-      theme: "dark",
-      sitekey: "0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e",
-    });
-  }
-
-  function resetSubscriptionForm() {
-    formParentDiv.classList.add("hidden");
-    subscriptionForm.reset();
-  }
-
   function subscribeButtonClick() {
+    isHidden = formParentDiv.classList.contains("hidden");
+    if (!isHidden) {
+      subscriptionForm.reset();
+      submitInfo.innerHTML = "";
+    }
     formParentDiv.classList.toggle("hidden");
   }
 
   function subscribeButtonSubmit(event) {
     event.preventDefault();
 
-    var firstName = document.getElementById("name").value;
+    var name = document.getElementById("name").value;
     var email = document.getElementById("email").value;
 
     console.debug({
-      firstName,
+      name,
       email,
     });
 
@@ -38,16 +31,26 @@ document$.subscribe(function prepareSubForm() {
       return;
     }
 
-    event.target.submit();
+    var formData = new FormData(subscriptionForm);
 
-    submitInfo.innerHTML = "Thank you for subscribing!";
+    var xhr = new XMLHttpRequest();
+    xhr.open(subscriptionForm.method, subscriptionForm.action, true);
+    xhr.onload = function onloadHandler() {
+      if (xhr.status == 200) {
+        submitInfo.classList.remove("md-banner--warning");
+        submitInfo.innerHTML = "Subscription successful!";
+      } else {
+        submitInfo.classList.add("md-banner--warning");
+        submitInfo.innerHTML = "Subscription failed. Please try again.";
+      }
+    };
+    xhr.send(formData);
+
     submitInfo.classList.remove("hidden");
 
-    event.target.reset();
+    subscriptionForm.reset();
   }
 
-  resetSubscriptionForm();
-  initializeCaptcha();
   subscribeButton.addEventListener("click", subscribeButtonClick);
   subscriptionForm.addEventListener("submit", subscribeButtonSubmit);
 });
