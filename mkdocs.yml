@@ -68,9 +68,10 @@ extra:
     new: Recently added
 extra_javascript:
   - static/subscribe.js
+  - static/copyright.js
 extra_css:
   - static/subscribe.css
-copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
+copyright: Copyright &copy; <span id="current-year-9b1a4d19"></span><a href="https://github.com/meysam81">Meysam Azad</a>
 hooks:
   - hooks/socialshare.py
   - hooks/totalviews.py
