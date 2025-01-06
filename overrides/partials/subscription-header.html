@@ -1,12 +1,15 @@
 <script type="text/javascript">
   console.log("Subscription form loaded");
 
-  document$.subscribe(function initializeHcaptcha() {
-    console.log("initializeHcaptcha");
-    hcaptcha.render("0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e", {
-      theme: "dark",
+  function initializeHcaptcha() {
+    document$.subscribe(function handler() {
+      console.log("initializeHcaptcha");
+      hcaptcha.render("h-captcha-0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e", {
+        theme: "dark",
+        sitekey: "0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e",
+      });
     });
-  });
+  }
 </script>
 <script
   src="https://js.hcaptcha.com/1/api.js?render=explicit&onload=initializeHcaptcha"

@@ -24,6 +24,9 @@
 
 #subscribe-button-ea4577c9:hover {
   transform: scale(1.1);
+  background-color: var(--md-accent-fg-color);
+  border-color: var(--md-accent-fg-color);
+  color: var(--md-accent-bg-color);
 }
 
 /* Paper Airplane Icon */
