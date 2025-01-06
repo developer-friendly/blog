@@ -57,6 +57,7 @@ document$.subscribe(function prepareSubForm() {
         submitInfo.innerHTML = "Subscription failed. Please try again.";
         hcaptcha.reset(captchaWidget);
         document.getElementById(hcaptchaDivId).innerHTML = "";
+        renderCaptcha();
       }
     };
     xhr.send(formData);
