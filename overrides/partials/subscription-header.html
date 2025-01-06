@@ -1,12 +1,12 @@
 <script type="text/javascript">
   console.log("Subscription form loaded");
 
-  function initializeHcaptcha() {
+  document$.subscribe(function initializeHcaptcha() {
     console.log("initializeHcaptcha");
     hcaptcha.render("0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e", {
       theme: "dark",
     });
-  }
+  });
 </script>
 <script
   src="https://js.hcaptcha.com/1/api.js?render=explicit&onload=initializeHcaptcha"
