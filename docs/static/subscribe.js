@@ -51,17 +51,17 @@ document$.subscribe(function prepareSubForm() {
       if (xhr.status == 200) {
         submitInfo.classList.remove("md-banner--warning");
         submitInfo.innerHTML = "Subscription successful!";
+        subscriptionForm.reset();
       } else {
         submitInfo.classList.add("md-banner--warning");
         submitInfo.innerHTML = "Subscription failed. Please try again.";
         hcaptcha.reset(captchaWidget);
+        document.getElementById(hcaptchaDivId).innerHTML = "";
       }
     };
     xhr.send(formData);
 
     submitInfo.classList.remove("hidden");
-
-    subscriptionForm.reset();
   }
 
   subscribeButton.addEventListener("click", subscribeButtonClick);
