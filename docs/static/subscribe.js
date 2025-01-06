@@ -5,7 +5,7 @@ document$.subscribe(function prepareSubForm() {
   var submitInfo = document.getElementById("subscribe-submit-info-345a25b9");
   const hcaptchaDivId = "h-captcha-0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e";
   const hcaptchaSiteKey = "0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e";
-  window.captchaWidget = null;
+  window.captchaWidget = window.captchaWidget || null;
 
   function subscribeButtonClick() {
     isHidden = formParentDiv.classList.contains("hidden");
@@ -46,8 +46,8 @@ document$.subscribe(function prepareSubForm() {
       } else {
         submitInfo.classList.add("md-banner--warning");
         submitInfo.innerHTML = "Subscription failed. Please try again.";
-        document.getElementById(hcaptchaDivId).innerHTML = "";
         hcaptcha.reset(captchaWidget);
+        document.getElementById(hcaptchaDivId).innerHTML = "";
       }
     };
     xhr.send(formData);
