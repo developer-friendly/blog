@@ -47,7 +47,7 @@ document$.subscribe(function prepareSubForm() {
   }
 
   resetSubscriptionForm();
-  initializeCaptcha();
+  // initializeCaptcha();
   subscribeButton.addEventListener("click", subscribeButtonClick);
   subscriptionForm.addEventListener("submit", subscribeButtonSubmit);
 });
