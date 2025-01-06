@@ -16,6 +16,12 @@ document$.subscribe(function prepareSubForm() {
     formParentDiv.classList.toggle("hidden");
   }
 
+  function renderCaptcha() {
+    captchaWidget = hcaptcha.render(hcaptchaDivId, {
+      sitekey: hcaptchaSiteKey,
+    });
+  }
+
   function subscribeButtonSubmit(event) {
     event.preventDefault();
 
@@ -28,9 +34,11 @@ document$.subscribe(function prepareSubForm() {
     });
 
     if (hcaptcha.getRespKey().length == 0) {
-      captchaWidget = hcaptcha.render(hcaptchaDivId, {
-        sitekey: hcaptchaSiteKey,
-      });
+      renderCaptcha();
+      return;
+    }
+
+    if (hcaptcha.getResponse().length == 0) {
       hcaptcha.execute(captchaWidget);
       return;
     }
@@ -47,7 +55,6 @@ document$.subscribe(function prepareSubForm() {
         submitInfo.classList.add("md-banner--warning");
         submitInfo.innerHTML = "Subscription failed. Please try again.";
         hcaptcha.reset(captchaWidget);
-        document.getElementById(hcaptchaDivId).innerHTML = "";
       }
     };
     xhr.send(formData);
