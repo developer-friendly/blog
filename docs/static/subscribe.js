@@ -24,10 +24,11 @@ document$.subscribe(function prepareSubForm() {
       email,
     });
 
-    if (hcaptcha.getResponse().length == 0) {
-      submitInfo.innerHTML = "Please complete the captcha!";
-      submitInfo.classList.remove("hidden");
-      submitInfo.classList.add("md-banner--warning");
+    if (hcaptcha.getRespKey().length == 0) {
+      hcaptcha.render("h-captcha-0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e", {
+        sitekey: "0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e",
+      })
+      hcaptcha.execute()
       return;
     }
 
