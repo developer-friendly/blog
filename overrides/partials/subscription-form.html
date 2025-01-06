@@ -1,3 +1,16 @@
+<script type="text/javascript">
+  async function hcaptchaError(err) {
+    console.error(err)
+    await fetch("https://echo.developer-friendly.blog/subscription/error", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ error: err }),
+    })
+  }
+</script>
+
 <div id="subscribe-container-82087868">
   <button id="subscribe-button-ea4577c9">
     <i class="icon-paper-plane-abdcf51b"></i>
@@ -37,6 +50,7 @@
         class="h-captcha"
         data-theme="dark"
         data-sitekey="0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e"
+        data-error-callback="hcaptchaError"
       ></div>
       <input
         type="submit"

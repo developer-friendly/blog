@@ -73,6 +73,7 @@
   padding: 10px;
   border: 1px solid var(--mg-primary-bg-color);
   border-radius: 4px;
+  font-size: 16px;
 }
 
 #subscribe-form-9b27c56e input[type="submit"] {
