@@ -3,6 +3,9 @@ document$.subscribe(function prepareSubForm() {
   var subscriptionForm = document.getElementById("subscription-form-b8eb1947");
   var subscribeButton = document.getElementById("subscribe-button-ea4577c9");
   var submitInfo = document.getElementById("subscribe-submit-info-345a25b9");
+  const hcaptchaDivId = "h-captcha-0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e";
+  const hcaptchaSiteKey = "0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e";
+  window.captchaWidget = null;
 
   function subscribeButtonClick() {
     isHidden = formParentDiv.classList.contains("hidden");
@@ -25,10 +28,10 @@ document$.subscribe(function prepareSubForm() {
     });
 
     if (hcaptcha.getRespKey().length == 0) {
-      hcaptcha.render("h-captcha-0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e", {
-        sitekey: "0de6fb2e-eb24-454a-8dfe-4f6c9670ab7e",
-      })
-      hcaptcha.execute()
+      captchaWidget = hcaptcha.render(hcaptchaDivId, {
+        sitekey: hcaptchaSiteKey,
+      });
+      hcaptcha.execute(captchaWidget);
       return;
     }
 
@@ -43,6 +46,8 @@ document$.subscribe(function prepareSubForm() {
       } else {
         submitInfo.classList.add("md-banner--warning");
         submitInfo.innerHTML = "Subscription failed. Please try again.";
+        document.getElementById(hcaptchaDivId).innerHTML = "";
+        hcaptcha.reset(captchaWidget);
       }
     };
     xhr.send(formData);
