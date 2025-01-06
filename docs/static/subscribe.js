@@ -8,6 +8,7 @@ document$.subscribe(function prepareSubForm() {
     isHidden = formParentDiv.classList.contains("hidden");
     if (!isHidden) {
       subscriptionForm.reset();
+      submitInfo.innerHTML = "";
     }
     formParentDiv.classList.toggle("hidden");
   }
@@ -36,15 +37,16 @@ document$.subscribe(function prepareSubForm() {
     xhr.open(subscriptionForm.method, subscriptionForm.action, true);
     xhr.onload = function onloadHandler() {
       if (xhr.status == 200) {
+        submitInfo.classList.remove("md-banner--warning");
         submitInfo.innerHTML = "Subscription successful!";
       } else {
+        submitInfo.classList.add("md-banner--warning");
         submitInfo.innerHTML = "Subscription failed. Please try again.";
       }
     };
     xhr.send(formData);
 
     submitInfo.classList.remove("hidden");
-    submitInfo.classList.add("md-banner--success");
 
     subscriptionForm.reset();
   }
