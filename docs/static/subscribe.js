@@ -30,12 +30,23 @@ document$.subscribe(function prepareSubForm() {
       return;
     }
 
-    event.target.submit();
+    var formData = new FormData(subscriptionForm);
 
-    submitInfo.innerHTML = "Thank you for subscribing!";
+    var xhr = new XMLHttpRequest();
+    xhr.open(subscriptionForm.method, subscriptionForm.action, true);
+    xhr.onload = function onloadHandler() {
+      if (xhr.status == 200) {
+        submitInfo.innerHTML = "Subscription successful!";
+      } else {
+        submitInfo.innerHTML = "Subscription failed. Please try again.";
+      }
+    };
+    xhr.send(formData);
+
     submitInfo.classList.remove("hidden");
+    submitInfo.classList.add("md-banner--success");
 
-    event.target.reset();
+    subscriptionForm.reset();
   }
 
   subscribeButton.addEventListener("click", subscribeButtonClick);
