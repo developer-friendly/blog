@@ -60,7 +60,25 @@
 
 #subscribe-submit-info-345a25b9 {
   font-size: 0.7rem;
-  padding-bottom: 10px;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.flash-warning-dc1f9602 {
+  background-color: #ff0000 !important;
+  animation: flash 0.5s;
+}
+
+@keyframes flash {
+  0% {
+    background-color: #ff0000;
+  }
+  50% {
+    background-color: #ffc0c0;
+  }
+  100% {
+    background-color: #ff0000;
+  }
 }
 
 #subscribe-form-9b27c56e h3 {
