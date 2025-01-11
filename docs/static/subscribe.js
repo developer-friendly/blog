@@ -1,4 +1,4 @@
-document$.subscribe(function prepareSubForm() {
+document$.subscribe(async function prepareSubForm() {
   var formParentDiv = document.getElementById("subscribe-form-9b27c56e");
   var subscriptionForm = document.getElementById("subscription-form-b8eb1947");
   var subscribeButton = document.getElementById("subscribe-button-ea4577c9");
@@ -81,6 +81,18 @@ document$.subscribe(function prepareSubForm() {
     submitInfo.classList.remove("hidden");
   }
 
+  async function renderSubscriptionForm() {
+    console.log("Fetching newsletter subscription form...");
+
+    var response = await fetch("https://newsletter.developer-friendly.blog");
+    if (response.status == 200) {
+      document
+        .getElementById("subscribe-container-82087868")
+        .classList.remove("hidden");
+    }
+  }
+
   subscribeButton.addEventListener("click", subscribeButtonClick);
   subscriptionForm.addEventListener("submit", subscribeButtonSubmit);
+  await renderSubscriptionForm();
 });
