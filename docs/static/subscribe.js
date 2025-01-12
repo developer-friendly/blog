@@ -82,8 +82,6 @@ document$.subscribe(async function prepareSubForm() {
   }
 
   async function renderSubscriptionForm() {
-    console.log("Fetching newsletter subscription form...");
-
     var response = await fetch("https://newsletter.developer-friendly.blog");
     if (response.status == 200) {
       document
