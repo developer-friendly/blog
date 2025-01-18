@@ -1,15 +1,34 @@
 ---
 date: 2025-01-20
-draft: true
+description: >-
+  Step-by-step guide to building a NixOS 24 snapshot on Hetzner Cloud using
+  Packer, with complete configuration files and OpenTofu deployment examples.
 categories:
   - Packer
   - NixOS
   - Hetzner
   - Linux
+  - DevOps
+  - Automation
+  - Cloud Computing
+  - Cloud Providers
+  - Configuration Management
+  - Development Tools
   - Go
-  - OpenTofu
-  - Terraform
+  - Image Building
   - Infrastructure as Code
+  - OpenTofu
+  - Server Deployment
+  - Server Provisioning
+  - System Administration
+  - Terraform
+  - Tutorials
+  - Virtual Machines
+links:
+  - blog/posts/2024/0001-azure-shared-image-gallery.md
+  - blog/posts/2024/0005-install-k3s-on-ubuntu22.md
+  - blog/posts/2024/0013-azure-vm-to-aws.md
+image: assets/images/social/blog/2025/01/20/packer-how-to-build-nixos-24-snapshot-on-hetzner-cloud/index.png
 ---
 
 # Packer: How to Build NixOS 24 Snapshot on Hetzner Cloud
