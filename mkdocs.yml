@@ -1,5 +1,6 @@
 site_name: Developer Friendly Blog
 edit_uri: blob/main/docs/
+dev_addr: 127.0.0.1:3942
 extra:
   social:
     - icon: octicons/heart-fill-16
@@ -296,6 +297,7 @@ nav:
   - Blog:
       - blog/index.md
   - Subscribe: https://newsletter.developer-friendly.blog/subscription/form
+  - Analytics: https://developer-friendly.pirsch.io/?domain=developer-friendly.blog&interval=7d&scale=day&compare=previous
   - Uptime: https://developer-friendly.cronitorstatus.com/
   - sponsors.md
   - terms.md
