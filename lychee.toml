@@ -27,7 +27,7 @@ exclude_path = [
   "internal/newsletter/index.html",
 ]
 
-accept = [429, 403, 200]
+accept = [500, 429, 403, 200]
 
 cache = true
 
