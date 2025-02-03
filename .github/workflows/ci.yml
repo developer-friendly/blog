@@ -106,15 +106,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-      - name: Calculate cache id
-        run: echo "cache_id=$(date --utc '+%dT%H')" >> $GITHUB_ENV
-      - name: Cache mkdocs-material
-        uses: actions/cache@v4
-        with:
-          key: mkdocs-material-${{ env.cache_id }}
-          path: .cache
-          restore-keys: |
-            mkdocs-material-
       - env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         name: Install dependencies
