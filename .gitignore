@@ -19,3 +19,6 @@ internal/concrete
 .env
 .lycheecache
 todo.lst
+provider*.tf
+tfplan
+backend.tf
