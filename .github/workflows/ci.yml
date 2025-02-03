@@ -107,7 +107,7 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: Calculate cache id
-        run: echo "cache_id=$(date --utc '+%j')" >> $GITHUB_ENV
+        run: echo "cache_id=$(date --utc '+%dT%H')" >> $GITHUB_ENV
       - name: Cache mkdocs-material
         uses: actions/cache@v4
         with:
