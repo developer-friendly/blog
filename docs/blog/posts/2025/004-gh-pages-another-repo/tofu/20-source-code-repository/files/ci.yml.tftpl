@@ -1,0 +1,78 @@
+name: ci
+
+concurrency:
+  cancel-in-progress: true
+  group: ci-$${{ github.ref_name }}-$${{ github.event_name }}
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the source repository
+        uses: actions/checkout@v4
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: $${{ runner.os }}-bun-$${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            $${{ runner.os }}-bun-
+      - name: Install dependencies
+        run: bun install
+      - name: Build
+        run: bun run build
+      - name: Persist built statics in ephemeral filesystem
+        id: site-dir
+        run: |
+          tempdir="$(mktemp -d)"
+          echo "site-dir=$tempdir" >> "$GITHUB_OUTPUT"
+          rsync -azuvb dist/ "$tempdir/"
+      - name: Upload artifact
+        id: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-$${{ github.ref_name }}
+          path: dist
+      - name: Clone the Pages repository
+        uses: actions/checkout@v4
+        with:
+          repository: ${repository_full_name}
+          ssh-key: $${{ secrets.GH_PAGES_SSH_PRIVATE_KEY }}
+      - name: Setup target repository ssh private key
+        run: |
+          mkdir -p ~/.ssh
+          cat <<'EOF' > ~/.ssh/github-deploy-key
+          $${{ secrets.GH_PAGES_SSH_PRIVATE_KEY }}
+          EOF
+          chmod 600 ~/.ssh/github-deploy-key
+      - name: Setup git config
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "$${{ github.run_id }}+github-actions[bot]@users.noreply.github.com"
+          cat <<'EOF' > ~/.ssh/config
+          Host github.com
+            HostName github.com
+            User git
+            IdentityFile ~/.ssh/github-deploy-key
+          EOF
+      - name: Push statics to Pages repository
+        run: |
+          git ls-files | grep -v -e "^CNAME$" -e "^.github/" | xargs git rm -rf
+          rsync -azuvb $${{ steps.site-dir.outputs.site-dir }}/ .
+          git add .
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: deploy $${{ github.sha }}"
+            git push origin "$(git branch --show-current)"
+          fi
