@@ -20,7 +20,7 @@ links:
   - blog/posts/2024/0009-external-secrets-aks-to-aws-ssm.md
   - blog/posts/2024/0005-install-k3s-on-ubuntu22.md
   - blog/posts/2024/0003-kubernetes-the-hard-way.md
-image: assets/images/social/blog/2025/02/03/how-to-provision-a-production-ready-autopilot-gke-cluster/index.png
+image: assets/images/social/blog/2025/02/10/how-to-publish-to-github-pages-from-another-repository/index.png
 ---
 
 # How to Publish to GitHub Pages From Another Repository

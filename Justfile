@@ -40,3 +40,16 @@ checkov:
 [no-cd]
 checkov-here:
   checkov -d .
+
+[no-cd]
+create-tofu-stack dirname:
+  #!/usr/bin/env bash
+
+  mkdir -p {{dirname}}
+  touch {{dirname}}/{main,versions,variables,outputs}.tf
+  touch {{dirname}}/terragrunt.hcl
+
+  cat <<'EOF' > {{dirname}}/terragrunt.hcl
+  inputs = {
+  }
+  EOF
