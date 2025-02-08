@@ -169,6 +169,7 @@ plugins:
   - exclude:
       glob:
         - "**/.terra*"
+        - "**/*tfstate*"
 remote_branch: gh-pages
 remote_name: origin
 repo_name: GitHub
@@ -297,7 +298,6 @@ nav:
   - Blog:
       - blog/index.md
   - Subscribe: https://newsletter.developer-friendly.blog/subscription/form
-  - Analytics: https://developer-friendly.pirsch.io/?domain=developer-friendly.blog&interval=7d&scale=day&compare=previous
   - Uptime: https://developer-friendly.cronitorstatus.com/
   - sponsors.md
   - terms.md
