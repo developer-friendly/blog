@@ -4,6 +4,8 @@ resource "github_repository" "this" {
 
   auto_init = true
 
+  homepage_url = "https://developer-friendly.github.io/deploy-pages-target"
+
   pages {
     build_type = "workflow"
     source {
@@ -39,6 +41,12 @@ resource "github_repository_file" "index_html" {
   commit_author       = "opentofu[bot]"
   commit_email        = "opentofu[bot]@users.noreply.github.com"
   overwrite_on_create = true
+
+  lifecycle {
+    ignore_changes = [
+      content,
+    ]
+  }
 
   depends_on = [
     github_repository_file.ci,
