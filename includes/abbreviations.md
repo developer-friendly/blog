@@ -41,3 +41,4 @@
 *[VPN]: Virtual Private Network
 *[ASG]: AutoScaling Group
 *[EC2]: Elastic Compute Cloud
+*[CDN]: Content Delivery Network
