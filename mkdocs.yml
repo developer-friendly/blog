@@ -47,6 +47,20 @@ extra:
           note: >-
             Thanks for your feedback! Help us improve this page by
             using our <a href="https://github.com/orgs/developer-friendly/discussions/new?category=general&title=[Feedback]+{title}+-+{url}" target="_blank" rel="noopener">feedback form</a>.
+  consent:
+    actions:
+      - accept
+      - manage
+      - reject
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
+    cookies:
+      analytics: Google Analytics
+      github: GitHub
   ga4:
     property: !ENV [GA4_PROPERTY, ""]
 extra_javascript:

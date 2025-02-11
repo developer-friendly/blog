@@ -73,7 +73,7 @@ Book a call or drop me an email to get started.
 
 [Book a call :material-video:][book-call]{ .md-button .md-button--primary }
 [Email :material-email:][email-me]{ .md-button }
-[LinkedIn :simple-linkedin:][linkedin]{ .md-button }
+[LinkedIn :fontawesome-brands-linkedin:][linkedin]{ .md-button }
 [Twitter :simple-x:][twitter]{ .md-button }
 
 [book-call]: https://cal.com/meysam
