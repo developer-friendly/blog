@@ -2,78 +2,59 @@
 date: 2024-03-24
 comments: false
 description: >-
-  This Privacy Policy explains how Developer Friendly Blog collects, uses,
-  discloses, and safeguards your information when you visit our website.
+  Learn how Developer Friendly Blog protects your privacy. We use zero cookies,
+  no personal data collection, and only anonymous analytics for basic site
+  metrics.
 hide:
   - navigation
 ---
 
 # Privacy Policy
 
-## Introduction
+## Overview
 
-This Privacy Policy explains how Developer Friendly Blog ("we," "us," or "our")
-collects, uses, discloses, and safeguards your information when you visit our
-website [developer-friendly.blog](./index.md), including any other media form,
-media channel, mobile website, or mobile application related or connected
-thereto (collectively, the "Website"). Please read this Privacy Policy
-carefully. If you do not agree with the terms of this Privacy Policy, please do
-not access the Website.
+Developer Friendly Blog is committed to protecting your privacy.
 
-## Information We Collect
+We operate with a privacy-first approach and minimize data collection to only
+what's absolutely necessary for basic website functionality.
 
-- Cookies: We use cookies and similar tracking technologies to track the
-  activity on our Website and hold certain information. Cookies are files with
-  small amounts of data may include an anonymous unique identifier. You can
-  instruct your browser to refuse all cookies or to indicate when a cookie is
-  being sent. However, if you do not accept cookies, you may not be able to use
-  some portions of our Website. Customize how we store cookies on your browser
-  using the link at the bottom of all our pages. Learn more about cookies in
-  Mozilla docs, https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies, or
-  from this link: https://www.allaboutcookies.org/.
-- Google Analytics: We use Google Analytics to analyze the use of our Website.
-  Google Analytics is a web analytics service offered by Google that tracks and
-  reports website traffic. Google uses the data collected to track and monitor
-  the use of our Website. This data is shared with other Google services.
-  Google may use the collected data to contextualize and personalize the ads of
-  its advertising network. You can opt out of having made your activity on the
-  Website available to Google Analytics by either adjusting the Cookies or by
-  installing the Google Analytics opt-out browser add-on. The add-on prevents
-  Google Analytics JavaScript (ga.js, analytics.js, and dc.js) from sharing
-  information with Google Analytics. You can learn more about Google Analytics'
-  privacy practices here: https://policies.google.com/privacy.
+## Data Collection
 
-## Use of Information
+We **do NOT**:
 
-We use the information we collect to:
+- Store or process any personal information
+- Use cookies or tracking technologies
+- Collect IP addresses
+- Sell or share any visitor data with third parties
+- Use Google Analytics or similar invasive tracking tools
 
-- Operate and improve the Website
-- Analyze how users interact with the Website
-- To detect, prevent, and address technical issues
-- To improve the user experience
+## Analytics
 
-### Sharing Your Information
+We **DO** use Plausible Analytics, a privacy-focused analytics platform, solely
+to understand:
 
-We may share your information with third-party service providers to perform
-services on our behalf, such as hosting, analytics, and customer support. These
-service providers are prohibited from using your personal information for any
-other purpose.
+- Page view counts
+- Country-level visit statistics
+
+This data is:
+
+- Completely anonymous
+- Not linked to any personal identifiers
+- Used only for understanding content reach and improving our blog content
 
 ## Data Security
 
-We take reasonable steps to protect the information you provide to us from
-loss, misuse, unauthorized access, disclosure, alteration, and destruction.
-However, _no internet transmission or electronic storage is ever 100% secure_.
+While we collect minimal data, we maintain industry-standard security practices
+to protect our website and its visitors.
 
-## Changes to this Privacy Policy
+However, please note that no internet transmission is 100% secure.
 
-We reserve the right to make changes to this Privacy Policy at any time and for
-any reason. We will alert you about any changes by updating the
-"Effective Date" of this Privacy Policy.
+## Changes to This Policy
 
-## Contact Us
+We may update this privacy policy as needed. Any changes will be reflected in
+the ":material-update: Last update" date below.
 
-If you have any questions about this Privacy Policy, please contact us at
-<privacy@developer-friendly.blog>.
+## Contact
 
-[Microsoft Privacy Statement]: https://privacy.microsoft.com/privacystatement
+For questions about this privacy policy, please contact us at:
+<privacy@developer-friendly.blog>

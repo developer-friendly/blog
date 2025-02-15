@@ -1,3 +1,4 @@
+httpx<1
 mkdocs-exclude<2
 mkdocs-git-authors-plugin<1
 mkdocs-git-committers-plugin-2<3

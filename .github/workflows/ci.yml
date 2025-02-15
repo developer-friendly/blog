@@ -48,7 +48,7 @@ jobs:
           sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
       - env:
           DRAFT: ${{ github.event_name == 'pull_request' }}
-          GA_REPORTS_DSN: ${{ secrets.GA_REPORTS_DSN }}
+          PLAUSIBLE_BEARER_TOKEN: ${{ secrets.PLAUSIBLE_BEARER_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # git-committers plugin
         name: Build the site
         run: mkdocs build
@@ -112,14 +112,8 @@ jobs:
         run: |
           pip install -U pip -r requirements.txt
           sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
-      - name: Set up google service account
-        run: |
-          cat << 'EOF' > /tmp/credentials.json
-          ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_FILE }}
-          EOF
-          echo GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json >> $GITHUB_ENV
       - env:
-          GA_REPORTS_DSN: ${{ secrets.GA_REPORTS_DSN }}
+          PLAUSIBLE_BEARER_TOKEN: ${{ secrets.PLAUSIBLE_BEARER_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         name: Build the site
         run: mkdocs build
@@ -242,39 +236,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr create --fill -H $(git branch --show-current)
-
-  ga-reports:
-    runs-on: ubuntu-latest
-    if: |
-      (
-        github.event_name == 'schedule' &&
-        github.repository == 'developer-friendly/blog'
-      )
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-      - name: Install requirements
-        run: pip install -U pip -r ./internal/ga/requirements.txt
-      - name: Set the GA report starting date to last month
-        run: |
-          GA4_START_DATE=$(date -d "$(date +%Y-%m-01) -1 month" +%Y-%m-01)
-          echo GA4_START_DATE=$GA4_START_DATE >> $GITHUB_ENV
-      - name: Set up google service account
-        run: |
-          cat << 'EOF' > /tmp/credentials.json
-          ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_FILE }}
-          EOF
-          echo GOOGLE_APPLICATION_CREDENTIALS=/tmp/credentials.json >> $GITHUB_ENV
-      - env:
-          GA_REPORTS_DSN: ${{ secrets.GA_REPORTS_DSN }}
-          GA4_PROPERTY: ${{ vars.GA4_PROPERTY }}
-          LOG_LEVEL: DEBUG
-        name: Fetch GA reports into PostgreSQL
-        run: ./internal/ga/main.py update
 
   stale:
     if: |
