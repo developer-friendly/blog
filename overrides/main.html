@@ -3,6 +3,7 @@
 {% block extrahead %}
   {{ super() }}
   {% include "partials/subscription-header.html" ignore missing %}
+  {% include "partials/plausible.html" ignore missing %}
   {% include "blog-refactor-compatibility.html" ignore missing %}
 {% endblock %}
 
