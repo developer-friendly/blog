@@ -52,7 +52,7 @@ However, please note that no internet transmission is 100% secure.
 ## Changes to This Policy
 
 We may update this privacy policy as needed. Any changes will be reflected in
-the "Last Updated" date below.
+the ":material-update: Last update" date below.
 
 ## Contact
 
