@@ -1,0 +1,16 @@
+{
+  "devDependencies": {
+    "@types/bun": "latest",
+    "vite": "^6.1.0",
+    "vite-plugin-minify": "^2.1.0"
+  },
+  "module": "index.js",
+  "name": "frontend-in-gcp-bucket",
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "build": "vite build"
+  },
+  "type": "module"
+}
