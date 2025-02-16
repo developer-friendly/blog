@@ -292,14 +292,6 @@ showcase the demo we're providing here.
 In the CI file, having the `id-token: write` is a required attribute for the
 whole setup to work properly.
 
-??? example "Templated CI workflow file"
-
-    Once we apply this stack, this is what the final file will look like.
-
-    ```yaml title=".github/workflows/ci.yml"
-    -8<- "https://raw.githubusercontent.com/developer-friendly/frontend-in-gcp-bucket/2b5685231f87e2742be6ae6dddeb1a724983ea96/.github/workflows/ci.yml"
-    ```
-
 ```hcl title="60-github-frontend-repository/files/index.tml"
 -8<- "docs/blog/posts/2025/005-gcp-cdn/tofu/60-github-frontend-repository/files/index.html"
 ```
