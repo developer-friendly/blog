@@ -1,0 +1,55 @@
+name: ci
+
+concurrency:
+  cancel-in-progress: true
+  group: ci-$${{ github.ref_name }}-$${{ github.event_name }}
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: $${{ runner.os }}-bun-$${{ hashFiles('**/bun.lockb') }}
+          restore-keys: |
+            $${{ runner.os }}-bun-
+      - name: Install dependencies
+        run: bun install
+      - name: Build statics
+        run: bun run build
+      - name: Upload artifact
+        id: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-$${{ github.ref_name }}-$${{ github.run_id }}
+          path: dist
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          service_account: ${google_service_account_email}
+          workload_identity_provider: ${workload_identity_pool_provider_id}
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+      - name: GCP Whoami
+        run: gcloud auth list
+      - name: Upload to GCS
+        run: gsutil -m rsync -r ./dist/ gs://${google_storage_bucket}/

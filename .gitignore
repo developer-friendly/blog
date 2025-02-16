@@ -22,3 +22,5 @@ todo.lst
 provider*.tf
 tfplan
 backend.tf
+**/node_modules
+docs/blog/posts/2025/005-gcp-cdn/tofu/60-github-frontend-repository/files/bun.lock
