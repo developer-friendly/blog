@@ -124,6 +124,16 @@ Here's what you will see in the rest of this post (truncated for brevity):
 └── github.hcl
 ```
 
+The top two files that will be used occasionally are as follows:
+
+```hcl title="gcp.hcl"
+-8<- "docs/blog/posts/2025/005-gcp-cdn/tofu/gcp.hcl"
+```
+
+```hcl title="github.hcl"
+-8<- "docs/blog/posts/2025/005-gcp-cdn/tofu/github.hcl"
+```
+
 ## Google Storage Bucket
 
 The first step is to create a bucket and enable CDN on it.

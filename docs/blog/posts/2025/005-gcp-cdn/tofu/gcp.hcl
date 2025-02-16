@@ -3,7 +3,7 @@ generate "gcp" {
   if_exists = "overwrite_terragrunt"
   contents  = <<-EOF
     provider "google" {
-      project = "ethereal-tract-447314-n9"
+      project = "developer-friendly"
       region  = "europe-west4"
     }
   EOF
