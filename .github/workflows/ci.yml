@@ -184,59 +184,6 @@ jobs:
           trivy-config: trivy.yaml
           token-setup-trivy: ${{ secrets.GH_TOKEN }}
 
-  sponsors:
-    runs-on: ubuntu-latest
-    if: |
-      github.repository == 'developer-friendly/blog' &&
-      github.ref == 'refs/heads/main' &&
-      contains(fromJson('["schedule", "pull_request", "push"]'), github.event_name)
-    permissions:
-      contents: write
-      pull-requests: write
-    env:
-      FALLBACK_MESSAGE: |
-        No sponsors yet. Become the first sponsor! 💝
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Generate Sponsors - readme
-        uses: JamesIves/github-sponsors-readme-action@v1
-        with:
-          token: ${{ secrets.PAT_SPONSORS }}
-          file: README.md
-          fallback: ${{ env.FALLBACK_MESSAGE }}
-      # - name: Generate Sponsors - sponsors
-      #   uses: JamesIves/github-sponsors-readme-action@v1
-      #   with:
-      #     token: ${{ secrets.PAT_SPONSORS }}
-      #     file: docs/sponsors.md
-      #     fallback: ${{ env.FALLBACK_MESSAGE }}
-      - name: Verify changed
-        id: changed
-        run: |
-          changed=$(git status --porcelain)
-          if [ -n "$changed" ]; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-      - name: Configure git
-        if: steps.changed.outputs.changed == 'true'
-        run: |
-          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --global user.name "${{ github.actor }}"
-      - name: Commit changes
-        if: steps.changed.outputs.changed == 'true'
-        run: |
-          git add .
-          git checkout -b ${{ github.actor }}/chore/update-sponsors/${{ github.run_id }}
-          git commit -m "chore: update sponsors"
-          git push origin $(git branch --show-current)
-      - name: Create PR
-        if: steps.changed.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh pr create --fill -H $(git branch --show-current)
-
   stale:
     if: |
       (
