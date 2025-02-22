@@ -1,9 +1,8 @@
 ---
 date: 2025-02-24
 description: >-
-  Detailed guide on self-hosting Ente (Google Photos alternative) using
-  Kubernetes, with deployment and CI/CD setup via GitHub Actions for enhanced
-  privacy.
+  Tutorial on self-hosting Ente (Google Photos alternative) using Kubernetes,
+  with deployment and CI/CD setup via GitHub Actions for enhanced privacy.
 categories:
   - Kubernetes
   - GitHub Actions
