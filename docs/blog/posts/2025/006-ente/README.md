@@ -171,10 +171,10 @@ In the (semi-official) Docker image we will manually build shortly from the
 original source code, the order of precedence is as follows (from lowest to
 highest)[^config-parsing]:
 
-1. Environment variables starting with `ENTE_` and all caps.
-2. `/configurations/{{environment}}.yaml`; environment is `local` by default.
-3. CLI flag of `--credentials-file` or `/credentials.yaml` by default.
-4. Lastly, the `/museum.yaml` file.
+1. `/configurations/{{environment}}.yaml`; environment is `local` by default.
+2. CLI flag of `--credentials-file` or `/credentials.yaml` by default.
+3. Lastly, the `/museum.yaml` file.
+4. Environment variables starting with `ENTE_` and all caps.
 
 After these steps, if a config is not yet valued, an error will be raised and
 ente server will not start.
@@ -326,7 +326,7 @@ Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
 [GitHub Container Registry]: ../../../category/github-container-registry.md
 [GitHub Pages]: ../../../category/github-pages.md
 [GitHub]: ../../../category/github.md
-[Golang]: ../../../category/golang.md
+[Golang]: ../../../category/go.md
 [Kubernetes]: ../../../category/kubernetes.md
 [OpenTofu]: ../../../category/opentofu.md
 [Privacy]: ../../../category/privacy.md
