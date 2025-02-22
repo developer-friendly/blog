@@ -1,0 +1,36 @@
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: postgres
+spec:
+  bootstrap:
+    initdb:
+      database: ente
+      owner: ente
+      secret:
+        name: postgres-user
+  enableSuperuserAccess: true
+  failoverDelay: 120
+  instances: 1
+  monitoring:
+    enablePodMonitor: true
+  postgresql:
+    parameters:
+      checkpoint_completion_target: "0.9"
+      default_statistics_target: "100"
+      effective_cache_size: 3GB
+      effective_io_concurrency: "200"
+      huge_pages: off
+      maintenance_work_mem: 256MB
+      max_connections: "100"
+      max_wal_size: 4GB
+      min_wal_size: 1GB
+      random_page_cost: "1.1"
+      shared_buffers: 1GB
+      wal_buffers: 16MB
+      work_mem: 5242kB
+  storage:
+    size: 10Gi
+  superuserSecret:
+    name: postgres-superuser

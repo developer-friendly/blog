@@ -1,0 +1,71 @@
+name: ci
+
+concurrency:
+  cancel-in-progress: true
+  group: ci-$${{ github.ref_name }}-$${{ github.event_name }}
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: $${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: ente-io/ente
+          ref: main
+          token: $${{ github.token }}
+          submodules: recursive
+      - name: Set Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: latest
+      - name: Cache dependencies
+        uses: actions/cache@v4
+        with:
+          path: web/node_modules
+          key: $${{ runner.os }}-node-$${{ hashFiles('**/package.json') }}
+          restore-keys: |
+            $${{ runner.os }}-node-
+      - name: Enable corepack
+        run: corepack enable
+      - name: Yarn clean cache
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: cache clean
+          dir: web
+      - name: Yarn install
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: install
+          dir: web
+      - name: Yarn build
+        uses: borales/actions-yarn@v5
+        with:
+          cmd: build:${build_target}
+          dir: web
+        env:
+          NEXT_PUBLIC_ENTE_ENDPOINT: https://ente.developer-friendly.blog
+          NEXT_PUBLIC_ENTE_ALBUMS_ENDPOINT: https://photos.developer-friendly.blog
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - id: upload-artifact
+        name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/apps/${build_target}/out
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

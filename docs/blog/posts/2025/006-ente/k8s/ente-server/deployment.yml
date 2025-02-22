@@ -1,0 +1,84 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ente-server
+spec:
+  progressDeadlineSeconds: 120
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    spec:
+      containers:
+        - image: ghcr.io/ente-io/server
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          name: ente-server
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 2112
+              name: metrics
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /ping
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 2
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsGroup: 65534
+            runAsNonRoot: true
+            runAsUser: 65534
+          volumeMounts:
+            - name: ente-server-credentials
+              mountPath: /credentials.yaml
+              readOnly: true
+              subPath: credentials.yaml
+            - name: ente-server-museum
+              mountPath: /museum.yaml
+              readOnly: true
+              subPath: museum.yaml
+            - name: tmp
+              mountPath: /tmp
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: Always
+        seccompProfile:
+          type: RuntimeDefault
+        supplementalGroups: []
+        sysctls: []
+      serviceAccountName: ente-server
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: ente-server-credentials
+          secret:
+            defaultMode: 0400
+            secretName: ente-server-credentials
+            optional: false
+        - name: ente-server-museum
+          configMap:
+            defaultMode: 0400
+            name: ente-server-museum
+            optional: false
+        - name: tmp
+          emptyDir: {}

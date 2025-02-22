@@ -1,0 +1,28 @@
+configMapGenerator:
+  - name: ente-server-museum
+    files:
+      - files/museum.yaml
+
+resources:
+  - deployment.yml
+  - externalsecret.yml
+  - httproute.yml
+  - service.yml
+  - serviceaccount.yml
+
+images:
+  - name: ghcr.io/ente-io/server
+    newName: ghcr.io/developer-friendly/ente-docker/ente-server
+    newTag: 20250222-arm64
+
+labels:
+  - includeSelectors: true
+    pairs:
+      app.kubernetes.io/component: ente-server
+      app.kubernetes.io/instance: ente-server
+      app.kubernetes.io/managed-by: Kustomize
+      app.kubernetes.io/name: ente-server
+      app.kubernetes.io/part-of: ente-server
+      app.kubernetes.io/version: v1.0.0
+
+namespace: ente

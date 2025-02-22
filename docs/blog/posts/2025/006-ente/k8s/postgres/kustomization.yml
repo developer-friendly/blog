@@ -1,0 +1,6 @@
+resources:
+  - cluster.yml
+  - externalsecret-superuser.yml
+  - externalsecret-user.yml
+
+namespace: ente

@@ -1,0 +1,43 @@
+---
+db:
+  host: postgres-rw.ente
+  port: 5432
+  name: ente
+  sslmode: disable
+s3:
+  are_local_buckets: false
+  # wasabi
+  b2-eu-cen:
+    bucket: ente-photos-eu-cen
+    endpoint: https://s3.eu-central-2.wasabisys.com:443
+    region: eu-central-2
+  use_path_style_urls: true
+  hot_storage:
+    primary: b2-eu-cen
+smtp:
+  email: ente@mailing.developer-friendly.blog
+  host: smtp.postmarkapp.com
+  port: 587
+  sender-name: Developer Friendly
+webauthn:
+  rpid: developer-friendly.blog
+  rporigins:
+    - https://accounts.developer-friendly.blog
+internal:
+  silent: false
+  # TODO: Add your own user ID here after the first registration
+  # admins:
+  #   - 1234567812345678
+  disable-registration: false
+jobs:
+  cron:
+    skip: false
+  remove-unreported-objects:
+    worker-count: 4
+  clear-orphan-objects:
+    enabled: true
+apps:
+  public-albums: https://photos.developer-friendly.blog
+  cast: https://cast.developer-friendly.blog
+  accounts: https://accounts.developer-friendly.blog
+  family: https://auth.developer-friendly.blog

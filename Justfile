@@ -53,3 +53,6 @@ create-tofu-stack dirname:
   inputs = {
   }
   EOF
+
+delete-old-md-files:
+  find docs/ -mindepth 3 -maxdepth 6 -name '*.md' -mtime +1 -delete

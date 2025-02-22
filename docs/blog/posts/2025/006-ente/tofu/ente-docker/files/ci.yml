@@ -1,0 +1,49 @@
+name: ci
+
+concurrency:
+  cancel-in-progress: true
+  group: ci-${{ github.ref_name }}-${{ github.event_name }}
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: read
+  packages: write
+  security-events: write
+  id-token: write
+
+jobs:
+  build-server:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            arch: amd64
+            platform: linux/amd64
+          - runner: ubuntu-24.04-arm
+            arch: arm64
+            platform: linux/arm64
+    steps:
+      - name: Prepare image repository
+        id: image-repo
+        run: |
+          echo "today=$(date +%Y%m%d)" >> $GITHUB_OUTPUT
+      - name: Build docker
+        uses: meysam81/build-docker@main
+        with:
+          context: ./server
+          cosign: true
+          image-extra-tags: |
+            ghcr.io/${{ github.repository }}/ente-server:${{ steps.image-repo.outputs.today }}-${{ matrix.arch }}
+          image-name: ghcr.io/${{ github.repository }}/ente-server
+          kubescape: true
+          kubescape-upload-sarif: true
+          platforms: ${{ matrix.platform }}
+          repository: ente-io/ente
