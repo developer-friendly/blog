@@ -1,0 +1,17 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sleep
+spec:
+  template:
+    spec:
+      containers:
+        - args:
+            - sh
+            - -c
+            - |
+              sleep 10
+          image: busybox:1
+          name: sleep
+      restartPolicy: OnFailure

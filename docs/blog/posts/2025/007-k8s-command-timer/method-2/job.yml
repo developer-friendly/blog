@@ -1,0 +1,38 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: sleep
+spec:
+  template:
+    spec:
+      containers:
+        - command:
+            - prometheus-command-timer
+            - --pushgateway-url=http://pushgateway.monitoring.svc.cluster.local:9091
+            - --job-name=sleep
+            - --
+          args:
+            - sh
+            - -c
+            - |
+              sleep 10
+          image: busybox:1
+          name: sleep
+          volumeMounts:
+            - mountPath: /usr/local/bin/prometheus-command-timer
+              name: shared
+              subPath: prometheus-command-timer
+      initContainers:
+        - args:
+            - --directory
+            - /shared
+          image: ghcr.io/meysam81/prometheus-command-timer:v1
+          name: install-prometheus-command-timer
+          volumeMounts:
+            - mountPath: /shared
+              name: shared
+      restartPolicy: OnFailure
+      volumes:
+        - emptyDir: {}
+          name: shared
