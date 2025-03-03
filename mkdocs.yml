@@ -255,7 +255,7 @@ nav:
   - index.md
   - Blog:
       - blog/index.md
-  - Subscribe: https://newsletter.developer-friendly.blog/subscription/form
+  - Newsletter: https://newsletter.developer-friendly.blog/archive
   - Analytics: https://analytics.developer-friendly.blog/developer-friendly.blog/
   - Uptime: https://developer-friendly.cronitorstatus.com/
   - terms.md
