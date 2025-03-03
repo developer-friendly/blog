@@ -403,11 +403,6 @@ customize it further but it is solid.
 
 That's all I had to say. Thanks for sticking around. :hugging:
 
-If you enjoyed this piece and read all the way down here, you might wanna
-subscribe to [the newsletter] or the [rss feed]. :wink:
-
-Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
-
 [OpenID Connect]: ../../../category/openid-connect.md
 [GCP]: ../../../category/gcp.md
 [OpenTofu]: ../../../category/opentofu.md
@@ -418,9 +413,6 @@ Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
 [AWS]: ../../../category/aws.md
 [Infrastructure as Code]: ../../../category/infrastructure-as-code.md
 [Cloudflare]: ../../../category/cloudflare.md
-
-[the newsletter]: https://newsletter.developer-friendly.blog/subscription/form
-[rss feed]: /feed_rss_created.xml
 
 [^opentofu]: https://github.com/opentofu/opentofu/releases/tag/v1.9.0
 [^terragrunt]:https://github.com/gruntwork-io/terragrunt/releases/tag/v0.73.5

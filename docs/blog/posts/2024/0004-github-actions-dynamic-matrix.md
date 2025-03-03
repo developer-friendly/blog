@@ -281,8 +281,6 @@ your cost efficiency and reduce your bill at the end of the month.
 I hope you found this post useful. If you have any questions or comments, feel
 free to reach out to me.
 
-Until next time, _ciao_, and happy hacking!
-
 ## Source Code
 
 To access the source code for this post, head over to the corresponding

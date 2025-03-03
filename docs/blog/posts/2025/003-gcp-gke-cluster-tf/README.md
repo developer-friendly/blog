@@ -317,8 +317,6 @@ cluster itself, you'd have the opportunity to focus on your core business logic
 and improve the user experience of your application, instead of chasing and
 troubleshooting a cumbersome Kubernetes bug.
 
-Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
-
 ## FAQ
 
 ### Why Terragrunt as an additional wrapper for an added complexity?

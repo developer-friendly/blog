@@ -295,8 +295,6 @@ As for you, if you've learned and enjoyed this piece, that's fanstastic. And if
 you know how to do this process better than me, please leave a comment down
 below so that I can learn from you.
 
-Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
-
 [Packer]: ../../../category/packer.md
 [Hetzner]: ../../../category/hetzner.md
 [NixOS]: ../../../category/nixos.md

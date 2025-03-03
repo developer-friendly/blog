@@ -26,7 +26,7 @@ categories:
   - Ory
   - Oathkeeper
   - Security
-  - Tutorial
+  - Tutorials
 # links:
 #   - Source Code: https://github.com/developer-friendly/aws-lambda-opentofu-github-actions/
 #   - ./blog/posts/2024/0007-oidc-authentication.md

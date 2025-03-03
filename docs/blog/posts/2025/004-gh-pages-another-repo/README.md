@@ -289,19 +289,11 @@ your frontend applications if you're on a budget.
 Additionally, you might just use this method for your preview deployments or
 as a auxiliary deployment strategy.
 
-If you enjoyed this piece and read all the way down here, you might wanna
-subscribe to [the newsletter] or the [rss feed]. :wink:
-
-Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
-
 [GitHub]: ../../../category/github.md
 [GitHub Pages]: ../../../category/github-pages.md
 [OpenTofu]: ../../../category/opentofu.md
 [Infrastructure as Code]: ../../../category/infrastructure-as-code.md
 [Terragrunt]: ../../../category/terragrunt.md
-
-[the newsletter]: https://newsletter.developer-friendly.blog/subscription/form
-[rss feed]: /feed_rss_created.xml
 
 [^gh-pricing]: https://github.com/pricing#compare-features
 [^pages-discussion]: https://github.com/orgs/community/discussions/42772

@@ -40,7 +40,7 @@ categories:
   - Security
   - Terraform
   - Terragrunt
-  - Tutorial
+  - Tutorials
 links:
   - Source Code: https://github.com/developer-friendly/aws-lambda-opentofu-github-actions/
   - ./blog/posts/2024/0007-oidc-authentication.md
@@ -805,8 +805,6 @@ and success in the world of serverless development mean the world to me.
 If you have any questions, hit me up in the comments.
 
 Now go forth and deploy those Lambda functions like a pro! 🚀
-
-Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
 
 [JavaScript]: ../../category/javascript.md
 [AWS]: ../../category/aws.md

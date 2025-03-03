@@ -622,8 +622,6 @@ I hope you have enjoyed reading this article as much as I have enjoyed writing
 it. Feel free to reach out through the links provided at the bottom of this
 article if you have any questions or feedback.
 
-Until next time, *ciao* :cowboy: & happy coding! :crab: :penguin:
-
 ## FAQ
 
 ### Why not use the SOPS?

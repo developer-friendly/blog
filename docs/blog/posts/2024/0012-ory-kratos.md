@@ -658,9 +658,6 @@ teaches. That is to say that I have no regret not using arrow functions,
 avoiding the overloaded use of `const` keyword, and not using triple equals
 `===` everywhere. :wink:
 
-Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
- :crab:
-
 [^1]: https://www.ory.sh/docs/kratos/ory-kratos-intro
 [^2]: https://www.ory.sh/docs/oathkeeper/
 [^3]: https://artifacthub.io/packages/helm/ory/kratos/0.42.0

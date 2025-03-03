@@ -35,7 +35,7 @@ categories:
   - PostgreSQL
   - RBAC
   - Security
-  - Tutorial
+  - Tutorials
   - User Management
 links:
   - ./blog/posts/2024/0012-ory-kratos.md
@@ -655,8 +655,6 @@ You may be surprised how comprehensive their suite of products are and how they
 can help you build your app faster and worry about nonsensical aspects less.
 
 I hope you have enjoyed this article as well as I did writing it.
-
-Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 
 [Ory]: ../../category/ory.md
 [Keto]: ../../category/keto.md
