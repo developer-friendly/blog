@@ -11,7 +11,6 @@ on:
   push:
     branches:
       - main
-  delete:
   schedule:
     - cron: "0 3 * * *" # Everyday, 10 WIB: building the site
 permissions:
