@@ -727,9 +727,6 @@ grant the relevant access to your services as needed.
 Hope you've enjoyed reading the post as much as I've enjoyed writing it. I wish
 you have learned something new and useful from it.
 
-Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
-
-
 [^1]: https://docs.k3s.io/
 [^2]: https://learn.microsoft.com/en-us/azure/aks/
 [^3]: https://ngrok.com/

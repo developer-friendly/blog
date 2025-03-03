@@ -521,8 +521,6 @@ monitoring solution, Victoria Metrics is definitely worth considering.
 
 Give it a try today and see how it can transform your monitoring experience!
 
-Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
-
 [^vm-landing-page]: https://victoriametrics.com/
 [^last9-prometheus-comparison]: https://last9.io/blog/prometheus-vs-victoriametrics/
 [^seifeddinerajhi-medium]: https://medium.com/@seifeddinerajhi/victoriametrics-a-comprehensive-guide-comparing-it-to-prometheus-and-implementing-kubernetes-03eb8feb0cc2

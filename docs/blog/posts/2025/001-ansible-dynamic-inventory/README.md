@@ -25,7 +25,7 @@ categories:
   - SSH Security
   - Terraform
   - Terragrunt
-  - Tutorial
+  - Tutorials
 links:
   - blog/posts/2024/0020-bastion-in-azure.md
   - blog/posts/2024/0003-kubernetes-the-hard-way.md
@@ -424,8 +424,6 @@ even if the remote host has been re-imaged or replaced with a new set of
 variables and facts.
 
 I can definitly see myself coming back to this article in a future. :wink:
-
-Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
 
 [Ansible]: ../../../category/ansible.md
 [Infrastructure as Code]: ../../../category/infrastructure-as-code.md

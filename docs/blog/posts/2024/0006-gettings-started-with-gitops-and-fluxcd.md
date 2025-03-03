@@ -420,8 +420,6 @@ Another topic we didn't cover here was `Receiver` resource. That will require
 internet access to your cluster, which we'll cover at a later post when
 discussing the Kubernetes Gateway API[^11].
 
-Until next time, *ciao* :penguin: :crab: & happy coding! :nerd:
-
 ## Source Code
 
 The full repository is publicly available on GitHub[^12] under the

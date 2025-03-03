@@ -21,7 +21,7 @@ categories:
   - Compliance
   - DevOps
   - IAM
-  - Identity and Access Management (IAM)
+  - Identity and Access Management
   - Identity Management
   - Infrastructure as Code
   - Jump Server
@@ -37,7 +37,7 @@ categories:
   - SSH Security
   - Terraform
   - Terragrunt
-  - Tutorial
+  - Tutorials
   - User Management
   - Virtual Networks
 social:

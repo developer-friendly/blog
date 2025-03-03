@@ -588,8 +588,6 @@ If you liked this piece, you may find the following blog posts to your liking:
 - [Ory Kratos: Headless Authentication, Identity and User Management]
 - [What is OpenID Connect Authentication? A Practical Guide]
 
-Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
-
 [Kubernetes]: ../../../category/kubernetes.md
 [Ory]: ../../../category/ory.md
 [Helm]: ../../../category/helm.md

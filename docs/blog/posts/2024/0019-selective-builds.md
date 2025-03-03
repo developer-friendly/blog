@@ -33,7 +33,7 @@ categories:
   - Scalability
   - Software Development
   - Software Development Workflow
-  - Tutorial
+  - Tutorials
   - Upstash
   - Version Control
 links:
@@ -613,8 +613,6 @@ discussed so far. It does the same thing, albeit in Python.
 ```python title="main.py"
 -8<- "docs/blog/codes/2024/0019/main.py"
 ```
-
-Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 
 [JavaScript]: ../../category/javascript.md
 [Redis]: ../../category/redis.md

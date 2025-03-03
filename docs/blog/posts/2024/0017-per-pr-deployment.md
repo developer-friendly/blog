@@ -37,7 +37,7 @@ categories:
   - Software Development
   - Testing
   - TLS
-  - Tutorial
+  - Tutorials
 links:
   - ./blog/posts/2024/0014-github-actions-integration-testing.md
   - ./blog/posts/2024/0011-fluxcd-advanced-topics.md
@@ -737,8 +737,6 @@ make it work in your environment.
 I hope you have enjoyed reading this article as much as I did writing it. For
 further questions and discussions, feel free to leave a comment or
 [join our Slack channel].
-
-Happy hacking and until next time :saluting_face:, *ciao*. :penguin: :crab:
 
 [Kubernetes]: ../../category/kubernetes.md
 [GitHub Actions]: ../../category/github-actions.md

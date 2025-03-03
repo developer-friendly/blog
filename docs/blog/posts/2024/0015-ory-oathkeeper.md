@@ -744,8 +744,6 @@ the industry before going all in on a custom solution.
 
 Make your decisions wisely, and do the right things before doing things right.
 
-Happy hacking and until next time :saluting_face:, _ciao_. :penguin: :crab:
-
 [Kubernetes]: ../../category/kubernetes.md
 [FluxCD]: ../../category/fluxcd.md
 [cert-manager]: ../../category/cert-manager.md

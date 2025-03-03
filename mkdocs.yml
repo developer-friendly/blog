@@ -30,12 +30,7 @@ extra:
     - icon: fontawesome/solid/square-rss
       link: /feed_rss_created.xml
       name: Subscribe to our RSS feed!
-extra_javascript:
-  - static/subscribe.js
-  - static/copyright.js
-extra_css:
-  - static/subscribe.css
-copyright: Copyright &copy; <span id="current-year-9b1a4d19"></span><a href="https://github.com/meysam81">Meysam Azad</a>
+copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
 hooks:
   - hooks/socialshare.py
   - hooks/totalviews.py
@@ -260,7 +255,7 @@ nav:
   - index.md
   - Blog:
       - blog/index.md
-  - Subscribe: https://newsletter.developer-friendly.blog/subscription/form
+  - Newsletter: https://newsletter.developer-friendly.blog/archive
   - Analytics: https://analytics.developer-friendly.blog/developer-friendly.blog/
   - Uptime: https://developer-friendly.cronitorstatus.com/
   - terms.md

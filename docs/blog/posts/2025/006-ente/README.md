@@ -317,8 +317,6 @@ That's all I had to say. Thanks for sticking around. :hugging:
 If you enjoyed this piece and read all the way down here, you might wanna
 subscribe to [the newsletter] or the [rss feed]. :wink:
 
-Until next time, *ciao* :cowboy: & happy coding! :penguin: :crab:
-
 [AWS]: ../../../category/aws.md
 [External Secrets]: ../../../category/external-secrets.md
 [GitHub Actions]: ../../../category/github-actions.md

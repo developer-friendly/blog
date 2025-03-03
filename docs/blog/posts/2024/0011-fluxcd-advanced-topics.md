@@ -778,9 +778,6 @@ At this point, we have covered all the advanced topics of FluxCD.
 Should you have any questions or need further clarification, feel free to
 reach out from the links at the bottom of the page.
 
-Until next time :saluting_face:, _ciao_ :cowboy: and happy hacking! :penguin:
-:crab:
-
 [^1]: https://fluxcd.io/flux/components/image/
 [^2]: https://fluxcd.io/flux/components/notification/
 [^3]: https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/
