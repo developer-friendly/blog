@@ -7,7 +7,7 @@ extra:
       link: https://github.com/sponsors/meysam81/
       name: Sponsor the author!
     - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/company/developer-friendly
+      link: https://www.linkedin.com/in/meysamazad
       name: Follow us on LinkedIn!
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/@developer-friendly
@@ -21,12 +21,8 @@ extra:
     - icon: fontawesome/brands/hacker-news
       link: https://news.ycombinator.com/submitted?id=meysamazad
       name: Follow us on Hacker News!
-    - icon: simple/stackoverflow
-      link: https://stackoverflow.com/users/8282345/meysam
-      name: Follow us on Stack Overflow!
-    - icon: fontawesome/brands/discord
-      link: https://discord.gg/RRA6KHbgcA
-      name: Join our community!
+    - icon: fontawesome/brands/mastodon
+      link: https://fosstodon.org/@meysam81
     - icon: fontawesome/solid/square-rss
       link: /feed_rss_created.xml
       name: Subscribe to our RSS feed!
