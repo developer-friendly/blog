@@ -72,11 +72,11 @@ Let's discuss how my experience can benefit your team.
 Book a call or drop me an email to get started.
 
 [Book a call :material-video:][book-call]{ .md-button .md-button--primary }
+[Mastodon :simple-mastodon:][mastodon]{ .md-button }
 [Email :material-email:][email-me]{ .md-button }
 [LinkedIn :fontawesome-brands-linkedin:][linkedin]{ .md-button }
-[Twitter :simple-x:][twitter]{ .md-button }
 
 [book-call]: https://cal.com/meysam
+[mastodon]: https://mastodon.social/@meysam81
 [email-me]: mailto:meysam@developer-friendly.blog
 [linkedin]: https://linkedin.com/in/meysamazad
-[twitter]: https://x.com/meysamazing
