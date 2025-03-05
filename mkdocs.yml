@@ -6,6 +6,12 @@ extra:
     - icon: octicons/heart-fill-16
       link: https://github.com/sponsors/meysam81/
       name: Sponsor the author!
+    - icon: fontawesome/brands/mastodon
+      link: https://mastodon.social/@meysam81
+      name: Follow us on Mastodon!
+    - icon: fontawesome/brands/bluesky
+      link: https://bsky.app/profile/meysamazing.bsky.social
+      name: Follow us on BlueSky!
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/meysamazad
       name: Follow us on LinkedIn!
@@ -21,8 +27,6 @@ extra:
     - icon: fontawesome/brands/hacker-news
       link: https://news.ycombinator.com/submitted?id=meysamazad
       name: Follow us on Hacker News!
-    - icon: fontawesome/brands/mastodon
-      link: https://mastodon.social/@meysam81
     - icon: fontawesome/solid/square-rss
       link: /feed_rss_created.xml
       name: Subscribe to our RSS feed!

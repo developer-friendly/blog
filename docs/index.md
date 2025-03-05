@@ -73,10 +73,10 @@ Book a call or drop me an email to get started.
 
 [Book a call :material-video:][book-call]{ .md-button .md-button--primary }
 [Mastodon :simple-mastodon:][mastodon]{ .md-button }
+[Bluesky :fontawesome-brands-bluesky:][bluesky]{ .md-button }
 [Email :material-email:][email-me]{ .md-button }
-[LinkedIn :fontawesome-brands-linkedin:][linkedin]{ .md-button }
 
 [book-call]: https://cal.com/meysam
 [mastodon]: https://mastodon.social/@meysam81
+[bluesky]: https://bsky.app/profile/meysamazing.bsky.social
 [email-me]: mailto:meysam@developer-friendly.blog
-[linkedin]: https://linkedin.com/in/meysamazad
