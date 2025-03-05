@@ -22,7 +22,7 @@ extra:
       link: https://news.ycombinator.com/submitted?id=meysamazad
       name: Follow us on Hacker News!
     - icon: fontawesome/brands/mastodon
-      link: https://fosstodon.org/@meysam81
+      link: https://mastodon.social/@meysam81
     - icon: fontawesome/solid/square-rss
       link: /feed_rss_created.xml
       name: Subscribe to our RSS feed!
