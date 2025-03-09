@@ -4,19 +4,19 @@ description: >-
   Set up GitOps-driven preview environments in Kubernetes using FluxCD.
   Automatically deploy and comment URLs on GitHub pull requests.
 categories:
+  - FluxCD
+  - Kubernetes
+  - GitOps
+  - Go
+  - Platform Engineering
   - CI/CD
   - Container Orchestration
   - DevOps
-  - FluxCD
   - Git
   - GitHub
-  - GitOps
-  - Go
   - Infrastructure as Code
-  - Kubernetes
   - Kustomize
   - Microservices
-  - Platform Engineering
   - Software Deployment
   - Tutorials
 links:
