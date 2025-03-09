@@ -1,0 +1,130 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: fluxy-dummy
+  namespace: staging
+  annotations:
+    fluxcd.controlplane.io/reconcile: "enabled"
+    fluxcd.controlplane.io/reconcileEvery: "10s"
+    fluxcd.controlplane.io/reconcileTimeout: "1m"
+spec:
+  serviceAccountName: flux
+  inputsFrom:
+    - apiVersion: fluxcd.controlplane.io/v1
+      kind: ResourceSetInputProvider
+      name: preview-deployments
+  resources:
+    - apiVersion: source.toolkit.fluxcd.io/v1
+      kind: GitRepository
+      metadata:
+        name: fluxy-dummy-pr<< inputs.id >>
+        namespace: staging
+      spec:
+        interval: 10s
+        provider: generic
+        ref:
+          commit: << inputs.sha >>
+        url: https://github.com/developer-friendly/fluxy-dummy
+    - apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: fluxy-dummy-pr<< inputs.id >>
+        namespace: staging
+      spec:
+        force: false
+        images:
+          - name: ghcr.io/developer-friendly/fluxy-dummy
+            newTag: << inputs.sha >>
+        interval: 5s
+        nameSuffix: -pr<< inputs.id >>
+        patches:
+          - patch: |
+              - op: add
+                path: /spec/template/spec/initContainers/-
+                value:
+                  args:
+                    - developer-friendly/fluxy-dummy
+                  env:
+                    - name: USER_LOGIN
+                      valueFrom:
+                        secretKeyRef:
+                          key: username
+                          name: github-auth
+                          optional: false
+                    - name: GITHUB_TOKEN
+                      valueFrom:
+                        secretKeyRef:
+                          key: password
+                          name: github-auth
+                          optional: false
+                    - name: COMMIT_SHA
+                      value: << inputs.sha >>
+                    - name: PR_NUMBER
+                      value: "<< inputs.id >>"
+                    - name: URL
+                      value: https://pr<< inputs.id >>.developer-friendly.blog
+                  image: ghcr.io/meysam81/preview-bot:v1.0.13
+                  name: preview-bot
+                  resources:
+                    limits:
+                      cpu: 10m
+                      memory: 10Mi
+                    requests:
+                      cpu: 10m
+                      memory: 10Mi
+                  securityContext:
+                    allowPrivilegeEscalation: false
+                    capabilities:
+                      drop:
+                        - ALL
+                    readOnlyRootFilesystem: true
+                    runAsGroup: 65534
+                    runAsNonRoot: true
+                    runAsUser: 65534
+                  terminationMessagePolicy: FallbackToLogsOnError
+            target:
+              kind: Deployment
+              name: fluxy-dummy
+        path: kustomize/overlays/preview
+        postBuild:
+          substitute:
+            PR_NUMBER: pr<< inputs.id >>
+        prune: true
+        sourceRef:
+          kind: GitRepository
+          name: fluxy-dummy-pr<< inputs.id >>
+          namespace: staging
+        suspend: false
+        targetNamespace: staging
+        timeout: 10s
+        wait: true
+    - apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      metadata:
+        name: fluxy-dummy-pr<< inputs.id >>
+        namespace: staging
+      spec:
+        hostnames:
+          - pr<< inputs.id >>.developer-friendly.blog
+        parentRefs:
+          - group: gateway.networking.k8s.io
+            kind: Gateway
+            name: cilium
+            namespace: cert-manager
+            sectionName: https
+        rules:
+          - backendRefs:
+              - kind: Service
+                name: fluxy-dummy-pr<< inputs.id >>
+                port: 80
+            filters:
+              - responseHeaderModifier:
+                  set:
+                    - name: Strict-Transport-Security
+                      value: max-age=31536000; includeSubDomains; preload
+                type: ResponseHeaderModifier
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /

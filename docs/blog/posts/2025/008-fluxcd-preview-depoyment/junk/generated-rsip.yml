@@ -1,0 +1,43 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSetInputProvider
+metadata:
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: 10s
+  creationTimestamp: "2025-03-08T07:12:24Z"
+  finalizers:
+    - fluxcd.controlplane.io/finalizer
+  generation: 2
+  name: preview-deployments
+  namespace: staging
+  resourceVersion: "14958793"
+  uid: cd84d004-c37d-4eda-883f-ce6ff0900710
+spec:
+  filter:
+    labels:
+      - preview
+  secretRef:
+    name: github-auth
+  type: GitHubPullRequest
+  url: https://github.com/developer-friendly/fluxy-dummy
+status:
+  conditions:
+    - lastTransitionTime: "2025-03-08T08:34:40Z"
+      message: Reconciliation finished in 261ms
+      observedGeneration: 2
+      reason: ReconciliationSucceeded
+      status: "True"
+      type: Ready
+  exportedInputs:
+    - author: meysam81
+      branch: meysam/feat/another-route
+      id: "4"
+      sha: 5a39668b2b7394a76a7ccbdf3364919ef12506a0
+      title: "feat: add another route"
+    - author: meysam81
+      branch: meysam/feat/index-route
+      id: "3"
+      sha: b449283e4736a271788b7a4e7689fd7a49c279ff
+      title: "feat: add index route"
+  lastExportedRevision: sha256:d013751ec78662d8c89c0bb398f9715c4ae8309631e43808c37663eacd8fefb8
+  lastHandledReconcileAt: "1741421676"
