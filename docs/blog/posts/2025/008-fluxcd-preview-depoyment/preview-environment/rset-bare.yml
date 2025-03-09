@@ -1,0 +1,82 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSet
+metadata:
+  name: fluxy-dummy
+  namespace: staging
+  annotations:
+    fluxcd.controlplane.io/reconcile: "enabled"
+    fluxcd.controlplane.io/reconcileEvery: "10s"
+    fluxcd.controlplane.io/reconcileTimeout: "1m"
+spec:
+  serviceAccountName: flux
+  inputsFrom:
+    - apiVersion: fluxcd.controlplane.io/v1
+      kind: ResourceSetInputProvider
+      name: preview-deployments
+  resources:
+    - apiVersion: source.toolkit.fluxcd.io/v1
+      kind: GitRepository
+      metadata:
+        name: fluxy-dummy-pr<< inputs.id >>
+        namespace: staging
+      spec:
+        interval: 10s
+        provider: generic
+        ref:
+          commit: << inputs.sha >>
+        url: https://github.com/developer-friendly/fluxy-dummy
+    - apiVersion: kustomize.toolkit.fluxcd.io/v1
+      kind: Kustomization
+      metadata:
+        name: fluxy-dummy-pr<< inputs.id >>
+        namespace: staging
+      spec:
+        force: false
+        images:
+          - name: ghcr.io/developer-friendly/fluxy-dummy
+            newTag: << inputs.sha >>
+        interval: 5s
+        nameSuffix: -pr<< inputs.id >>
+        path: kustomize/overlays/preview
+        postBuild:
+          substitute:
+            PR_NUMBER: pr<< inputs.id >>
+        prune: true
+        sourceRef:
+          kind: GitRepository
+          name: fluxy-dummy-pr<< inputs.id >>
+          namespace: staging
+        suspend: false
+        targetNamespace: staging
+        timeout: 10s
+        wait: true
+    - apiVersion: gateway.networking.k8s.io/v1
+      kind: HTTPRoute
+      metadata:
+        name: fluxy-dummy-pr<< inputs.id >>
+        namespace: staging
+      spec:
+        hostnames:
+          - pr<< inputs.id >>.developer-friendly.blog
+        parentRefs:
+          - group: gateway.networking.k8s.io
+            kind: Gateway
+            name: cilium
+            namespace: cert-manager
+            sectionName: https
+        rules:
+          - backendRefs:
+              - kind: Service
+                name: fluxy-dummy-pr<< inputs.id >>
+                port: 80
+            filters:
+              - responseHeaderModifier:
+                  set:
+                    - name: Strict-Transport-Security
+                      value: max-age=31536000; includeSubDomains; preload
+                type: ResponseHeaderModifier
+            matches:
+              - path:
+                  type: PathPrefix
+                  value: /

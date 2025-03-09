@@ -1,0 +1,16 @@
+---
+apiVersion: fluxcd.controlplane.io/v1
+kind: ResourceSetInputProvider
+metadata:
+  annotations:
+    fluxcd.controlplane.io/reconcileEvery: 10s
+  name: preview-deployments
+  namespace: staging
+spec:
+  filter:
+    labels:
+      - preview
+  secretRef:
+    name: github-auth
+  type: GitHubPullRequest
+  url: https://github.com/developer-friendly/fluxy-dummy

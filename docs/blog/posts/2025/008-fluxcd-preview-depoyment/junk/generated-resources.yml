@@ -1,0 +1,167 @@
+---
+apiVersion: v1
+kind: List
+items:
+  - apiVersion: source.toolkit.fluxcd.io/v1
+    kind: GitRepository
+    metadata:
+      creationTimestamp: "2025-03-09T04:50:38Z"
+      finalizers:
+        - finalizers.fluxcd.io
+      generation: 1
+      labels:
+        resourceset.fluxcd.controlplane.io/name: fluxy-dummy
+        resourceset.fluxcd.controlplane.io/namespace: staging
+      name: fluxy-dummy-pr3
+      namespace: staging
+      resourceVersion: "15283523"
+      uid: 0ee1ed82-091a-4e90-b7a3-f56bb3e6b8e5
+    spec:
+      interval: 10s
+      provider: generic
+      ref:
+        commit: 59cac9a9b1537f1dc7f4d2a30e26f07379ef7b5e
+      timeout: 60s
+      url: https://github.com/developer-friendly/fluxy-dummy
+    status:
+      artifact:
+        digest: sha256:2ef812f74564d4e9617e20d0cb098d172f38423342458b47b15b13406d4cfb43
+        lastUpdateTime: "2025-03-09T04:50:48Z"
+        path: gitrepository/staging/fluxy-dummy-pr3/59cac9a9b1537f1dc7f4d2a30e26f07379ef7b5e.tar.gz
+        revision: sha1:59cac9a9b1537f1dc7f4d2a30e26f07379ef7b5e
+        size: 5805562
+        url: http://source-controller.flux-system.svc.cluster.local./gitrepository/staging/fluxy-dummy-pr3/59cac9a9b1537f1dc7f4d2a30e26f07379ef7b5e.tar.gz
+      conditions:
+        - lastTransitionTime: "2025-03-09T04:50:48Z"
+          message: stored artifact for revision 'sha1:59cac9a9b1537f1dc7f4d2a30e26f07379ef7b5e'
+          observedGeneration: 1
+          reason: Succeeded
+          status: "True"
+          type: Ready
+        - lastTransitionTime: "2025-03-09T04:50:48Z"
+          message: stored artifact for revision 'sha1:59cac9a9b1537f1dc7f4d2a30e26f07379ef7b5e'
+          observedGeneration: 1
+          reason: Succeeded
+          status: "True"
+          type: ArtifactInStorage
+      observedGeneration: 1
+  - apiVersion: kustomize.toolkit.fluxcd.io/v1
+    kind: Kustomization
+    metadata:
+      creationTimestamp: "2025-03-09T04:50:38Z"
+      finalizers:
+        - finalizers.fluxcd.io
+      generation: 11
+      labels:
+        resourceset.fluxcd.controlplane.io/name: fluxy-dummy
+        resourceset.fluxcd.controlplane.io/namespace: staging
+      name: fluxy-dummy-pr3
+      namespace: staging
+      resourceVersion: "15342430"
+      uid: e10da022-5c17-40c3-b06b-b6a2612e93a4
+    spec:
+      force: false
+      images:
+        - name: ghcr.io/developer-friendly/fluxy-dummy
+          newTag: 59cac9a9b1537f1dc7f4d2a30e26f07379ef7b5e
+      interval: 5s
+      nameSuffix: -pr3
+      path: kustomize/overlays/preview
+      postBuild:
+        substitute:
+          PR_NUMBER: pr3
+      prune: true
+      sourceRef:
+        kind: GitRepository
+        name: fluxy-dummy-pr3
+        namespace: staging
+      suspend: false
+      targetNamespace: staging
+      timeout: 10s
+      wait: true
+    status:
+      conditions:
+        - lastTransitionTime: "2025-03-09T07:23:49Z"
+          message: "Applied revision: sha1:59cac9a9b1537f1dc7f4d2a30e26f07379ef7b5e"
+          observedGeneration: 11
+          reason: ReconciliationSucceeded
+          status: "True"
+          type: Ready
+        - lastTransitionTime: "2025-03-09T07:23:49Z"
+          message: Health check passed in 130.960449ms
+          observedGeneration: 11
+          reason: Succeeded
+          status: "True"
+          type: Healthy
+      inventory:
+        entries:
+          - id: staging_fluxy-dummy-pr3__ServiceAccount
+            v: v1
+          - id: staging_fluxy-dummy-pr3__Service
+            v: v1
+          - id: staging_fluxy-dummy-pr3_apps_Deployment
+            v: v1
+      lastAppliedRevision: sha1:59cac9a9b1537f1dc7f4d2a30e26f07379ef7b5e
+      lastAttemptedRevision: sha1:59cac9a9b1537f1dc7f4d2a30e26f07379ef7b5e
+      lastHandledReconcileAt: "1741502463"
+      observedGeneration: 11
+  - apiVersion: gateway.networking.k8s.io/v1
+    kind: HTTPRoute
+    metadata:
+      creationTimestamp: "2025-03-09T04:50:38Z"
+      generation: 1
+      labels:
+        resourceset.fluxcd.controlplane.io/name: fluxy-dummy
+        resourceset.fluxcd.controlplane.io/namespace: staging
+      name: fluxy-dummy-pr3
+      namespace: staging
+      resourceVersion: "15338897"
+      uid: a602bd3c-6e40-44c6-b658-933fe80f8852
+    spec:
+      hostnames:
+        - pr3.developer-friendly.blog
+      parentRefs:
+        - group: gateway.networking.k8s.io
+          kind: Gateway
+          name: cilium
+          namespace: cert-manager
+          sectionName: https
+      rules:
+        - backendRefs:
+            - group: ""
+              kind: Service
+              name: fluxy-dummy-pr3
+              port: 80
+              weight: 1
+          filters:
+            - responseHeaderModifier:
+                set:
+                  - name: Strict-Transport-Security
+                    value: max-age=31536000; includeSubDomains; preload
+              type: ResponseHeaderModifier
+          matches:
+            - path:
+                type: PathPrefix
+                value: /
+    status:
+      parents:
+        - conditions:
+            - lastTransitionTime: "2025-03-09T07:15:19Z"
+              message: Accepted HTTPRoute
+              observedGeneration: 1
+              reason: Accepted
+              status: "True"
+              type: Accepted
+            - lastTransitionTime: "2025-03-09T04:50:49Z"
+              message: Service reference is valid
+              observedGeneration: 1
+              reason: ResolvedRefs
+              status: "True"
+              type: ResolvedRefs
+          controllerName: io.cilium/gateway-controller
+          parentRef:
+            group: gateway.networking.k8s.io
+            kind: Gateway
+            name: cilium
+            namespace: cert-manager
+            sectionName: https
