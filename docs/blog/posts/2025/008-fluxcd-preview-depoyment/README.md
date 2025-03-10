@@ -14,6 +14,7 @@ categories:
   - DevOps
   - Git
   - GitHub
+  - Helm
   - Infrastructure as Code
   - Kustomize
   - Microservices
@@ -136,20 +137,38 @@ blog post into multiple. :sweat_smile:
 - A [Kubernetes] cluster. We're working with v1.32.
 - [FluxCD] installed on the cluster[^flux-install]. Currently v2.5.1.
 - [GitHub] repository for the application.
+- [Helm] CLI installed[^helm-cli]. Currently v3.17.1.
+
+## Directory Structure
+
+As per the tradition of our blog posts, here is the directory structure we'll
+be working on.
+
+```plaintext title="" linenums="0"
+.
+├── 10-app/
+│   └── kustomize/
+│       ├── base/
+│       └── overlays/
+│           └── preview/
+└── 20-infra/
+    ├── 30-flux-rbac/
+    └── 40-preview-environment/
+```
 
 ## A Minimal Golang Application
 
 Let's create our initial boilerplate:
 
 ```shell title="" linenums="0"
+cd 10-app/
 go mod init fluxy_dummy
-cd fluxy_dummy
 go get -u github.com/gin-gonic/gin
 ```
 
 And the only file we need:
 
-```go title="main.go"
+```go title="10-app/main.go"
 -8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/b23e040e97812214a449c73f3818d470ae3dbe69/main.go"
 ```
 
@@ -175,21 +194,35 @@ we're ready to create a base [Kustomization] stack for its deployment.
 We will now create the YAML manifets that will be used by the [FluxCD]
 Kustomization to deploy our application.
 
-```yaml title="serviceaccount.yml"
--8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/0d92274d85f427cc8aeb8ffef5ac1ce6f815ebef/kustomize/serviceaccount.yml"
+```yaml title="10-app/kustomize/base/serviceaccount.yml"
+-8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/4316f53ad1f99520e5350bd9134d6ea7f71e6397/kustomize/base/serviceaccount.yml"
 ```
 
-```yaml title="deployment.yml"
--8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/0d92274d85f427cc8aeb8ffef5ac1ce6f815ebef/kustomize/deployment.yml"
+```yaml title="10-app/kustomize/base/deployment.yml"
+-8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/4316f53ad1f99520e5350bd9134d6ea7f71e6397/kustomize/base/deployment.yml"
 ```
 
-```yaml title="service.yml"
--8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/0d92274d85f427cc8aeb8ffef5ac1ce6f815ebef/kustomize/service.yml"
+```yaml title="10-app/kustomize/base/service.yml"
+-8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/4316f53ad1f99520e5350bd9134d6ea7f71e6397/kustomize/base/service.yml"
 ```
 
-```yaml title="kustomization.yml"
--8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/0d92274d85f427cc8aeb8ffef5ac1ce6f815ebef/kustomize/kustomization.yml"
+```yaml title="10-app/kustomize/base/kustomization.yml"
+-8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/4316f53ad1f99520e5350bd9134d6ea7f71e6397/kustomize/base/kustomization.yml"
 ```
+
+And its overlay:
+
+```yaml title="10-app/kustomize/overlays/preview/kustomization.yml"
+-8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/4316f53ad1f99520e5350bd9134d6ea7f71e6397/kustomize/overlays/preview/kustomization.yml"
+```
+
+Notice the `${PR_NUMBER}` we use in the overlay. This will be populated by the
+[FluxCD] `postBuild` configuration[^postbuild].
+
+This will be crucial when creating multiple [Kubernetes] Services with the same
+set of labels in the same namespace; the `includeSelectors` will ensure that
+the Service created for each stack is pointing to its corresponding
+Pod[^k8s-svc].
 
 ## FluxCD Operator
 
@@ -215,15 +248,15 @@ As per the official documentation[^fluxcd-prereq], we better create a dedicated
 namespace and a role binding to make sure no elevated permissions are given to
 the operator when deploying the preview environments.
 
-```yaml title="prereqs/namespace.yml"
+```yaml title="20-infra/30-flux-rbac/namespace.yml"
 -8<- "docs/blog/posts/2025/008-fluxcd-preview-depoyment/prereqs/namespace.yml"
 ```
 
-```yaml title="prereqs/serviceaccount.yml"
+```yaml title="20-infra/30-flux-rbac/serviceaccount.yml"
 -8<- "docs/blog/posts/2025/008-fluxcd-preview-depoyment/prereqs/serviceaccount.yml"
 ```
 
-```yaml title="prereqs/rolebinding.yml"
+```yaml title="20-infra/30-flux-rbac/rolebinding.yml"
 -8<- "docs/blog/posts/2025/008-fluxcd-preview-depoyment/prereqs/rolebinding.yml"
 ```
 
@@ -232,7 +265,7 @@ the operator when deploying the preview environments.
 We're ready to leverage all our existing setup and create a preview environment
 for each of our pull requests.
 
-```yaml title="preview-environment/rsip.yml"
+```yaml title="20-infra/40-preview-environment/rsip.yml"
 -8<- "docs/blog/posts/2025/008-fluxcd-preview-depoyment/preview-environment/rsip.yml"
 ```
 
@@ -241,10 +274,7 @@ provides native support for [GitHub] Deploy Keys[^deploy-key], we're left with n
 other option but the infamous GitHub PAT.
 
 ```shell title="" linenums="0"
-flux -n staging create secret git github-auth \
-  --url=https://github.com/developer-friendly/fluxy-dummy \
-  --username=meysam81 \
-  --password=${GITHUB_TOKEN}
+-8<- "docs/blog/posts/2025/008-fluxcd-preview-depoyment/scripts/create-github-auth-secret.sh"
 ```
 
 Beware that we set the `fluxcd.controlplane.io/reconcileEvery` to `10s` just
@@ -256,7 +286,7 @@ The following CRD is our main resource. It takes care of receiving the [GitHub]
 pull requests from the parent `ResourceSetInputProvider` and creating the
 specified resources.
 
-```yaml title="preview-environment/rset.yml"
+```yaml title="20-infra/40-preview-environment/rset.yml"
 -8<- "docs/blog/posts/2025/008-fluxcd-preview-depoyment/preview-environment/rset-bare.yml"
 ```
 
@@ -273,7 +303,6 @@ generate something like the following:
     -8<- "docs/blog/posts/2025/008-fluxcd-preview-depoyment/junk/generated-resources.yml"
     ```
 
-
 ## Making a Change and Create Pull Request
 
 Everything is ready. Let's create a pull request and verify the setup.
@@ -283,13 +312,13 @@ application.
 
 First pull request (pr3):
 
-```go title="main.go" hl_lines="12-17"
+```go title="10-app/main.go" hl_lines="12-17"
 -8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/b449283e4736a271788b7a4e7689fd7a49c279ff/main.go"
 ```
 
 Second pull request (pr4):
 
-```go title="main.go" hl_lines="18-23"
+```go title="10-app/main.go" hl_lines="18-23"
 -8<- "https://raw.githubusercontent.com/developer-friendly/fluxy-dummy/5a39668b2b7394a76a7ccbdf3364919ef12506a0/main.go"
 ```
 
@@ -335,13 +364,15 @@ There are more than one way to achive this, but the objective for us is to use
 an `initContainer` in our application that will run right before our main
 container starts.
 
-```yaml title="preview-environment/rset.yml" hl_lines="41-88"
+```yaml title="20-infra/40-preview-environment/rset.yml" hl_lines="41-88"
 -8<- "docs/blog/posts/2025/008-fluxcd-preview-depoyment/preview-environment/rset-preview-bot.yml"
 ```
 
 An improvement to this decision would possibly be to run it as a
 `lifecycle.postStart` in the pod spec[^poststart], but that means adding
 another binary to our main application!
+
+Here's what the message looks like[^pr-comment]:
 
 <figure markdown="span">
   ![Preivew Bot Comment](assets/preview-bot-comment.png "Click to zoom in"){ loading=lazy }
@@ -375,6 +406,7 @@ simple, decoupled, and will always be my first [GitOps] tool of choice.
 [GitHub]: ../../../category/github.md
 [GitOps]: ../../../category/gitops.md
 [Golang]: ../../../category/go.md
+[Helm]: ../../../category/helm.md
 [JavaScript]: ../../../category/javascript.md
 [Kubernetes]: ../../../category/kubernetes.md
 [Kustomization]: ../../../category/kustomization.md
@@ -388,7 +420,11 @@ simple, decoupled, and will always be my first [GitOps] tool of choice.
 [^gitpod-k8s]: https://www.gitpod.io/blog/we-are-leaving-kubernetes
 [^flux-receiver]: https://fluxcd.io/flux/components/notification/receivers/
 [^flux-install]: https://fluxcd.io/flux/installation/
+[^helm-cli]: https://github.com/helm/helm/releases/tag/v3.17.1
+[^postbuild]: https://fluxcd.io/flux/components/kustomize/kustomizations/#post-build-variable-substitution
+[^k8s-svc]: https://kubernetes.io/docs/concepts/services-networking/service/
 [^fluxcd-prereq]: https://fluxcd.control-plane.io/operator/resourcesets/github-pull-requests/#preview-namespace
 [^deploy-key]: https://docs.github.com/en/authentication/connecting-to-github-with-ssh/managing-deploy-keys
 [^flux-operator-receiver]: https://fluxcd.control-plane.io/operator/resourcesets/github-pull-requests/#github-webhook
 [^poststart]: https://kubernetes.io/docs/reference/kubernetes-api/workload-resources/pod-v1/#lifecycle-1
+[^pr-comment]: https://github.com/developer-friendly/fluxy-dummy/pull/3#issuecomment-2708701125

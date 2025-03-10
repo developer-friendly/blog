@@ -4,6 +4,7 @@ import os
 import re
 from collections import defaultdict
 from functools import lru_cache
+from urllib.error import HTTPError
 
 import httpx
 
@@ -43,20 +44,24 @@ def query_page_views():
             "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:135.0) Gecko/20100101 Firefox/135.0",
         },
     ) as client:
-        response = client.post(
-            "/api/v2/query",
-            json={
-                "site_id": "developer-friendly.blog",
-                "metrics": ["pageviews"],
-                "date_range": "all",
-                "dimensions": ["event:page"],
-                "include": {"imports": True},
-            },
-        )
-        for row in response.json()["results"]:
-            if not (row["metrics"] and row["dimensions"]):
-                logger.warning(f"Invalid row: {row}")
-                continue
-            page_view[row["dimensions"][0]] += row["metrics"][0]
+        try:
+            response = client.post(
+                "/api/v2/query",
+                json={
+                    "site_id": "developer-friendly.blog",
+                    "metrics": ["pageviews"],
+                    "date_range": "all",
+                    "dimensions": ["event:page"],
+                    "include": {"imports": True},
+                },
+            )
+            for row in response.json()["results"]:
+                if not (row["metrics"] and row["dimensions"]):
+                    logger.warning(f"Invalid row: {row}")
+                    continue
+                page_view[row["dimensions"][0]] += row["metrics"][0]
+
+        except HTTPError as e:
+            logger.info(f"Failed to query page views: {e}")
 
         return page_view
