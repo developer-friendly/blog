@@ -8,7 +8,7 @@ x_id = "@devfriendly_"
 _fb_sharer = "https://www.facebook.com/sharer/sharer.php"
 lnkd_sharer = "https://www.linkedin.com/sharing/share-offsite/"
 reddit_sharer = "https://www.reddit.com/submit"
-hackernews = "https://news.ycombinator.com/submitlink"
+mastodon = "https://mastodon.social/share"
 include = re.compile(r"blog/[1-9].*")
 
 
@@ -18,7 +18,9 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
 
     page_url = config.site_url + page.url
     page_title = urllib.parse.quote(page.title + "\n")
-    page_title_x = urllib.parse.quote(f"{x_id}\n{page.title}\n")
+    page_title_x = urllib.parse.quote(f"{x_id}\n{page.title}")
+
+    url_and_title = urllib.parse.quote_plus(f"{page.title}\n\n{page_url}")
 
     return markdown + dedent(
         f"""
@@ -27,9 +29,9 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
     [Subscribe to Newsletter :material-email-newsletter:](https://newsletter.developer-friendly.blog/subscription/form){{ .md-button .md-button--primary }}
     [Subscribe to RSS Feed :simple-rss:](/feed_rss_created.xml){{ .md-button .md-button--primary }}
 
-    [Share on :fontawesome-brands-hacker-news:]({hackernews}?u={page_url}&t={page_title}){{ .md-button .md-button--primary }}
-    [Share on :fontawesome-brands-linkedin:]({lnkd_sharer}?url={page_url}){{ .md-button .md-button--primary }}
+    [Share on :simple-mastodon:]({mastodon}?text={url_and_title}){{ .md-button .md-button--primary }}
     [Share on :simple-reddit:]({reddit_sharer}?url={page_url}&title={page_title}){{ .md-button .md-button--primary }}
     [Share on :simple-x:]({x_intent}?text={page_title_x}&url={page_url}){{ .md-button .md-button--primary }}
+    [Share on :fontawesome-brands-linkedin:]({lnkd_sharer}?url={page_url}){{ .md-button .md-button--primary }}
     """
     )
