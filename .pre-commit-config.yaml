@@ -1,3 +1,14 @@
+ci:
+    autofix_commit_msg: |
+        [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+        for more information, see https://pre-commit.ci
+
+        [skip ci]
+    autofix_prs: true
+    autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+    autoupdate_schedule: weekly
+    submodules: false
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
@@ -50,13 +61,13 @@ repos:
           - --autofix
         exclude: .*docs/blog/codes/2024/0012/junk/registration-flow-response.json
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
-    rev: v9.21.0
+    rev: v9.22.0
     hooks:
       - id: commitlint
         stages: [commit-msg]
         additional_dependencies: ["@commitlint/config-conventional"]
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.9.9
+    rev: v0.10.0
     hooks:
       - id: ruff
         types_or:
