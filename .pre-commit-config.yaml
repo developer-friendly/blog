@@ -1,14 +1,16 @@
 ci:
-    autofix_commit_msg: |
-        [pre-commit.ci] auto fixes from pre-commit.com hooks
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
 
-        for more information, see https://pre-commit.ci
+    [skip ci]
+  autofix_prs: true
+  autoupdate_commit_msg: |
+    [pre-commit.ci] pre-commit autoupdate
 
-        [skip ci]
-    autofix_prs: true
-    autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
-    autoupdate_schedule: weekly
-    submodules: false
+    [skip ci]
+  autoupdate_schedule: weekly
+  submodules: false
+
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
