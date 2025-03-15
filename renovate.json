@@ -13,6 +13,9 @@
       "versioningTemplate": "{{#if (equals datasource 'docker')}}docker{{else if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ],
+  "excludeCommitPaths": [
+    "docs/blog/**"
+  ],
   "extends": [
     "config:recommended",
     ":dependencyDashboard",
