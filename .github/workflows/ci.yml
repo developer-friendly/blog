@@ -1,7 +1,7 @@
 name: ci
 
 concurrency:
-  cancel-in-progress: ${{ ! startsWith(github.ref, 'refs/tags/v') }}
+  cancel-in-progress: false
   group: ci-${{ github.ref_name }}-${{ github.event_name }}
 
 on:
