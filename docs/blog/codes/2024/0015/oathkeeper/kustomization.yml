@@ -5,7 +5,7 @@ configMapGenerator:
 
 images:
   - name: oryd/oathkeeper
-    newTag: v0.40.7
+    newTag: v0.40.9
   - name: oryd/oathkeeper-maester
     newTag: v0.1.10-arm64
 
