@@ -33,7 +33,7 @@ replacements:
           create: true
 
 resources:
-  - https://github.com/ory/oathkeeper-maester//config/crd?timeout=30s&ref=v0.1.10
+  - https://github.com/ory/oathkeeper-maester//config/crd?timeout=30s&ref=v0.1.11
   - clusterrole.yml
   - clusterrolebinding.yml
   - service-oathkeeper-api.yml
