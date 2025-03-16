@@ -196,19 +196,3 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/stale@v9
-
-  mirror:
-    if: |
-      github.repository == 'developer-friendly/blog' &&
-      contains(fromJson('["delete", "push"]'), github.event_name)
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Mirror GitLab
-        uses: pixta-dev/repository-mirroring-action@v1
-        with:
-          target_repo_url: git@gitlab.com:developer-friendly/blog.git
-          ssh_private_key: ${{ secrets.GITLAB_DEPLOY_KEY }}
