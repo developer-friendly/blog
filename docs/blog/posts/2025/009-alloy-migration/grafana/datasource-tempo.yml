@@ -1,0 +1,29 @@
+apiVersion: grafana.integreatly.org/v1beta1
+kind: GrafanaDatasource
+metadata:
+  name: tempo
+spec:
+  allowCrossNamespaceImport: true
+  datasource:
+    access: proxy
+    basicAuth: false
+    database: ""
+    editable: false
+    isDefault: false
+    name: Tempo
+    orgId: 1
+    jsonData:
+      httpMethod: GET
+      tracesToMetrics:
+        datasourceUid: victoriametrics
+      serviceMap:
+        datasourceUid: victoriametrics
+    secureJsonData: {}
+    type: tempo
+    uid: tempo
+    url: http://tempo.monitoring:3100
+    user: ""
+  instanceSelector:
+    matchLabels:
+      dashboards: grafana
+  resyncPeriod: 10m
