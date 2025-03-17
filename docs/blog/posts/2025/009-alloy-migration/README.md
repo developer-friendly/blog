@@ -229,6 +229,17 @@ chart[^alloy-chart].
 -8<- "docs/blog/posts/2025/009-alloy-migration/alloy/helm-values.yml"
 ```
 
+To install Alloy with this configuration, here's the [Helm] command:
+
+```shell title="" linenums="0"
+helm install alloy grafana/alloy \
+  --version 0.12.x \
+  --namespace monitoring \
+  --create-namespace \
+  --set-file alloy.configMap.content=alloy.hcl \
+  -f alloy/helm-values.yml
+```
+
 Now onwards to mention a few words about each block in the configuration above
 and why they are present in my config file.
 
