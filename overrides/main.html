@@ -2,8 +2,7 @@
 
 {% block extrahead %}
   {{ super() }}
-  {% include "partials/plausible.html" ignore missing %}
-  {% include "partials/mastodon.html" ignore missing %}
+  {% include "extrahead.html" ignore missing %}
   {% include "blog-refactor-compatibility.html" ignore missing %}
 {% endblock %}
 
