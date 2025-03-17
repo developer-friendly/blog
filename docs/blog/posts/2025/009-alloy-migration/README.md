@@ -4,19 +4,20 @@ description: >-
   Learn why and how to migrate from Promtail to Grafana Alloy for your logging
   infrastructure, with step-by-step configuration examples and best practices.
 categories:
-  - DevOps
   - Grafana
-  - Helm
-  - Infrastructure as Code
   - Monitoring
   - Kubernetes
+  - Observability
+  - DevOps
+  - Helm
+  - Infrastructure as Code
   - Kustomize
   - Microservices
-  - Observability
   - OpenTelemetry
   - Software Deployment
   - Tutorials
   - VictoriaLogs
+  - VictoriaMetrics
 links:
   - blog/posts/2024/0016-victoria-metrics.md
   - blog/posts/2024/0013-azure-vm-to-aws.md
