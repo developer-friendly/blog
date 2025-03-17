@@ -735,8 +735,7 @@ goal. Make sure you understand the pieces involved and the requirement to
 make it work in your environment.
 
 I hope you have enjoyed reading this article as much as I did writing it. For
-further questions and discussions, feel free to leave a comment or
-[join our Slack channel].
+further questions and discussions, feel free to leave a comment.
 
 [Kubernetes]: ../../category/kubernetes.md
 [GitHub Actions]: ../../category/github-actions.md
@@ -750,7 +749,6 @@ further questions and discussions, feel free to leave a comment or
 [How to Install Lightweight Kubernetes on Ubuntu 22.04]: ./0005-install-k3s-on-ubuntu22.md
 [Setting up Azure Managed Kubernetes Cluster]: ./0009-external-secrets-aks-to-aws-ssm.md/#step-0-setting-up-azure-managed-kubernetes-cluster
 [cert-manager: All-in-One Kubernetes TLS Certificate Manager]: ./0010-cert-manager.md
-[join our Slack channel]: https://communityinviter.com/apps/developerfriendly/join-our-slack
 [Terraform]: ../../category/terraform.md
 [External Secrets]: ../../category/external-secrets.md
 [Infrastructure as Code]: ../../category/infrastructure-as-code.md

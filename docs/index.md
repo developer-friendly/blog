@@ -50,7 +50,7 @@ I have expertise and experience in the following areas:
 
 Beyond my work:
 
-- [x] I workout 4-5 times a week in the mornings :man_lifting_weights:.
+- [x] I workout 4-5 times a week :man_lifting_weights:.
 - [x] I've been practicing and learning piano since 2022 :musical_keyboard:.
 - [x] I enjoy reading non-fictions :books:.
 - [x] I love riding motorcycles :motorcycle:.
