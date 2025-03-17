@@ -207,6 +207,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Mirror to GitLab
         run: |
+          mkdir -p ~/.ssh
+
           cat <<'EOF' > ~/.ssh/config
           Host gitlab.com
             HostName gitlab.com
