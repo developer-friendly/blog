@@ -205,10 +205,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Mirror GitLab
-        uses: pixta-dev/repository-mirroring-action@v1
-        with:
-          target_repo_url: git@gitlab.com:developer-friendly/blog.git
-          ssh_private_key: ${{ secrets.GITLAB_DEPLOY_KEY }}
+      - name: Mirror to GitLab
+        run: |
+          cat <<'EOF' > ~/.ssh/config
+          Host gitlab.com
+            HostName gitlab.com
+            User git
+            IdentityFile ~/.ssh/id_rsa
+          EOF
+
+          cat <<'EOF' > ~/.ssh/id_rsa
+          ${{ secrets.GITLAB_DEPLOY_KEY }}
+          EOF
+          chmod 600 ~/.ssh/id_rsa
+
+          ssh-keyscan gitlab.com >> ~/.ssh/known_hosts
+          git remote add gitlab git@gitlab.com:developer-friendly/blog.git
+          git push gitlab main
