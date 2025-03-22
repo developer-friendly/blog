@@ -1,0 +1,18 @@
+{
+  "Statement": [
+    {
+      "Action": "sts:AssumeRoleWithWebIdentity",
+      "Condition": {
+        "StringEquals": {
+          "OIDC_PROVIDER_ID:aud": "sts.amazonaws.com",
+          "OIDC_PROVIDER_ID:sub": "system:serviceaccount:external-secrets:external-secrets"
+        }
+      },
+      "Effect": "Allow",
+      "Principal": {
+        "Federated": "arn:aws:iam::ACCOUNT_ID:oidc-provider/OIDC_PROVIDER_ID"
+      }
+    }
+  ],
+  "Version": "2012-10-17"
+}
