@@ -1,5 +1,6 @@
+---
 installCRDs: true
 serviceAccount:
-  create: false
   annotations:
     eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/external-secrets
+  create: false

@@ -1,0 +1,9 @@
+---
+id_token_signing_alg_values_supported:
+  - RS256
+issuer: https://example.com
+jwks_uri: https://example.com/openid/v1/jwks
+response_types_supported:
+  - id_token
+subject_types_supported:
+  - public

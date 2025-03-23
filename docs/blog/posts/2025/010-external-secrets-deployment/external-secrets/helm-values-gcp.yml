@@ -1,0 +1,4 @@
+---
+installCRDs: true
+serviceAccount:
+  automount: true
