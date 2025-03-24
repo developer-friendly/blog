@@ -30,7 +30,7 @@ extra:
     - icon: fontawesome/solid/square-rss
       link: /feed_rss_created.xml
       name: Subscribe to our RSS feed!
-copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a>
+copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a> | Opinions are my own.
 hooks:
   - hooks/socialshare.py
   - hooks/totalviews.py
