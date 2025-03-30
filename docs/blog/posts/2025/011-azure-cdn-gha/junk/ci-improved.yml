@@ -1,0 +1,7 @@
+- name: Upload static files to Azure Storage
+  uses: azure/cli@v2
+  with:
+    inlineScript: |
+      az account show
+      az storage blob sync --account-name ${{ secrets.STORAGE_ACCOUNT_NAME }} --auth-mode login -c '$web' -s dist --delete-destination true
+      az cdn endpoint purge --content-paths  "/*" --profile-name ${{ secrets.CDN_PROFILE_NAME }} --name ${{ secrets.CDN_ENDPOINT }} --resource-group ${{ secrets.CDN_RESOURCE_GROUP }}

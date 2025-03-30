@@ -40,7 +40,7 @@ donation out of love :hugging:, here are various ways you can do so:
 
 You are by no means required to do so.
 
-The contents of this blog are free to read and distribute as per
+The contents of this blog are free to use, even commercially as per
 [the license][license] it is distributed with.
 
 If you so choose to donate anything, it's only because you wanted, and that's

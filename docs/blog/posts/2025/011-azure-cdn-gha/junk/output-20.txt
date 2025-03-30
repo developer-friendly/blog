@@ -1,0 +1,6 @@
+cdn_endpoint = "cleanly-quiet-doberman"
+cdn_profile_name = "truly-dear-quagga"
+resource_group_name = "deploy-static-site-to-az"
+storage_account_name = "initiallydistincttarpon"
+subscription_id = "00000000-0000-0000-0000-000000000000"
+url = "https://cleanly-quiet-doberman.azureedge.net"
