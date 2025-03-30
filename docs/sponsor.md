@@ -19,17 +19,22 @@ In addition, it thrills me to see people reading and commenting on various
 covered topics, whether on the site, or when promoting it on social media
 platforms, e.g. Reddit, Hackernews, Mastodon, Bluesky, etc.
 
+Furthermore, I learn by doing, and even more so by reading comments from people
+sharing how they have approached the same problem from a different angle!
+:handshake:
+
 Regardless, if you are interested in providing financial support, or just a
 donation out of love :hugging:, here are various ways you can do so:
 
-- GitHub Sponsorship: <https://github.com/sponsors/meysam81>
-- Bitcoin Address: `bc1qfn42dnpdderesp5a5fwjx9y70dut4m0p9emx27`
-- Paypal: <https://paypal.me/meysamazad>
-- Buy me a coffee: <https://buymeacoffee.com/meysam>
-- Proton Mail Referral (a free month of Mail Plus): <https://pr.tn/ref/NS19KFG8SQBG>
-- Hetzner Referral (get €20 credit): <https://hetzner.cloud/?ref=ai5E5vaX1J71>
-- Patreon: <https://patreon.com/meysam81>
-- Wise: <https://wise.com/pay/business/developerfriendlyou>
+- :simple-githubsponsors: GitHub Sponsorship: <https://github.com/sponsors/meysam81>
+- :simple-bitcoin: Bitcoin Address: `bc1qfn42dnpdderesp5a5fwjx9y70dut4m0p9emx27`
+- :simple-paypal: Paypal: <https://paypal.me/meysamazad>
+- :simple-buymeacoffee: Buy me a coffee: <https://buymeacoffee.com/meysam>
+- :simple-protonmail: Proton Mail Referral (a free month of Mail Plus): <https://pr.tn/ref/NS19KFG8SQBG>
+- :simple-hetzner: Hetzner Referral (get €20 credit): <https://hetzner.cloud/?ref=ai5E5vaX1J71>
+- :simple-patreon: Patreon: <https://patreon.com/meysam81>
+- :simple-wise: Wise: <https://wise.com/pay/business/developerfriendlyou>
+- :simple-digitalocean: DigitalOcean (get $200): <https://m.do.co/c/7de094ea6f0d>
 
 ## Should you sponsor?
 
