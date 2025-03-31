@@ -15,6 +15,9 @@ extra:
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/meysamazad
       name: Follow us on LinkedIn!
+    - icon: fontawesome/brands/slack
+      link: https://communityinviter.com/apps/developerfriendly/join-our-slack
+      name: Join our Slack community!
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/@developer-friendly
       name: Subscribe to our YouTube channel!
