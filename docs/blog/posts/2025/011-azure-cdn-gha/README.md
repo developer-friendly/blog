@@ -29,7 +29,7 @@ image: assets/images/social/blog/2025/03/31/deploy-static-sites-to-azure-cdn-wit
 
 # Deploy Static Sites to Azure CDN with GitHub Actions OIDC
 
-In this blog post you will see how to authenticate and deploy your frontend
+In this blog post you will learn how to authenticate and deploy your frontend
 code to Azure CDN, backed by Azure Blob Storage to deliver low-latency static
 website to your users.
 
@@ -42,19 +42,19 @@ Service Provider (Azure).
 ## Introduction
 
 Among many different technologies and tools in 2025, one of the most
-interesting innovation of our time is the [OpenID Connect].
+interesting innovation of our time is the [OpenID Connect][^ms-what-is-oidc].
 
-It opens a lot of doors to the administrator of the system, enabling
+It opens a lot of doors to the administrator(s) of the system, enabling
 secret-less authentication between different providers, promoting the
 principle of least privilege, and removing the need for rotating hard-coded
 credentials.
 
 While it does so, it makes sure that adversaries and untrusted parties will
-never gain access to the target resource, closing the doors that never ought to
+never gain access to our infrastructure, closing the doors that never ought to
 be!
 
-If you've already read [the article from last week], you have a good idea of
-what I'm talking about.
+If you've already read [the article from last week][k8s-oidc-eso], you have a
+good idea of what I'm talking about.
 
 I will spare you the details and give you the gist.
 
@@ -63,6 +63,8 @@ The idea is pretty simple actually.
 You establish a trust relationship between two providers, and then grant the
 required permission & RBAC to let the identities of one system to perform API
 calls to the other.
+
+This is the diagram we'll cover this week. :point_down:
 
 ```mermaid
 sequenceDiagram
@@ -88,11 +90,11 @@ exactly what we aim to achive.
 
 This is the highlight of our mission here:
 
-1. Build the static sites using our frontend code in [GitHub Actions]
+1. Build the static sites from the frontend code in [GitHub Actions]
 2. Publish the static sites to [Azure] Blob Storage.
 3. Configure Azure CDN to deliver those assets over low-latency global network
 
-The following is the directory structure of code:
+The following is the directory structure of our [Infrastructure as Code]:
 
 ```plaintext title="" linenums="0"
 .
@@ -152,6 +154,14 @@ credentials, all thanks to the power of [OpenID Connect].
 -8<- "docs/blog/posts/2025/011-azure-cdn-gha/10-azure-github-trust/main.tf"
 ```
 
+You will realize that we're using [Azure] Service Principal to authenticate
+[GitHub] runner jobs[^az-sp-from-github].
+
+If you don't have enough permission to configure [Azure] Entra ID, then your
+second best bet will be to use Azure User-Assigned Managed Identity[^az-mi].
+We have a concrete example in
+[the blog post from last week][k8s-oidc-eso-azure].
+
 ```terraform title="10-azure-github-trust/outputs.tf"
 -8<- "docs/blog/posts/2025/011-azure-cdn-gha/10-azure-github-trust/outputs.tf"
 ```
@@ -178,7 +188,23 @@ And the output will be similar to the following:
 -8<- "docs/blog/posts/2025/011-azure-cdn-gha/junk/output-10.txt"
 ```
 
+!!! tip "Authenticate GitHub Runners to Azure"
+
+    There are generally three types of available from [GitHub] Actions to
+    [Azure] cloud[^github-to-azure-auth-methods].
+
+    1. Service Principal. :white_check_mark:
+    2. User-Assigned Managed Identity. :white_check_mark:
+    3. Service Principal and Secret. :x:
+
+    The last one is not recommended because it requires passing hard-coded
+    credentials, the very first thing this blog post is aiming to
+    avoid! :man_bowing:
+
 ## Provisioning Azure Blob Storage and CDN
+
+We will heavily rely on the official documentation for creating [Azure] CDN
+using [OpenTofu] code[^az-cdn-terraform].
 
 ```terraform title="20-azure-cdn-blob/versions.tf"
 -8<- "docs/blog/posts/2025/011-azure-cdn-gha/20-azure-cdn-blob/versions.tf"
@@ -191,6 +217,9 @@ And the output will be similar to the following:
 ```terraform title="20-azure-cdn-blob/main.tf"
 -8<- "docs/blog/posts/2025/011-azure-cdn-gha/20-azure-cdn-blob/main.tf"
 ```
+
+We can add custom domain to the [Azure] CDN[^az-cdn-custom-endpoint]. But for
+the sake of simplicity and brevity, we'll skip that part.
 
 ```terraform title="20-azure-cdn-blob/outputs.tf"
 -8<- "docs/blog/posts/2025/011-azure-cdn-gha/20-azure-cdn-blob/outputs.tf"
@@ -219,9 +248,17 @@ And this will be the output:
 -8<- "docs/blog/posts/2025/011-azure-cdn-gha/30-github-repository/variables.tf"
 ```
 
+Again, we lean on the official docs for creating our CI/CD
+workflow[^github-oidc-azure], with a few modifications and customizations.
+There are also official docs in [Azure] for the same
+requirement[^azure-oidc-from-github].
+
 ```yaml title="30-github-repository/files/ci.yml"
 -8<- "docs/blog/posts/2025/011-azure-cdn-gha/30-github-repository/files/ci.yml"
 ```
+
+For a comprehensive list of all the availble inputs to `Azure/login` [GitHub]
+Action, refer to the upstream repository[^az-login-action].
 
 ```terraform title="30-github-repository/main.tf"
 -8<- "docs/blog/posts/2025/011-azure-cdn-gha/30-github-repository/main.tf"
@@ -240,6 +277,11 @@ We have everything ready to test out if things are working correctly.
 ```
 
 Here are the screenshots for this experiment:
+
+<figure markdown="span">
+  ![Azure Resource Group](assets/azure-resource-group.png "Click to zoom in"){ loading=lazy }
+  <figcaption>Azure Resource Group</figcaption>
+</figure>
 
 <figure markdown="span">
   ![Azure Blob Storage IAM](assets/azure-blob-iam.png "Click to zoom in"){ loading=lazy }
@@ -262,7 +304,7 @@ You can improve this work further by pruning all the files in the destination
 that are not present in the source, for example because they have been removed.
 
 This can be achieve with this command instead, which is using `azcopy` under
-the hood:
+the hood[^az-blob-storage-sync]:
 
 ```yaml title="30-github-repository/files/ci.yml" linenums="45" hl_lines="6"
 -8<- "docs/blog/posts/2025/011-azure-cdn-gha/junk/ci-improved.yml"
@@ -283,8 +325,9 @@ That is obviously out of scope for this blog post. :nerd:
     one resource: the Resource Group[^az-rg].
 
     Unlike [AWS] and other cloud providers, I don't have to hunt down the
-    resources I've provisioned, or use external third-party tools such as
-    cloudnuke[^cloudnuke].
+    resources I've provisioned in different tabs, services and regions.
+
+    Nor do I need to use external third-party tools such as cloudnuke[^cloudnuke].
 
     In [Azure], only removing the Resource Group will remove all the child
     resources! :muscle:
@@ -313,9 +356,8 @@ credentials.
 I will continue to employ [OpenID Connect] now and forever, in any system that
 is OIDC-compliant.
 
-I hope, one day, to get rid of [GitHub] PATs once the good folks there finally
-support OIDC authentication!
-
+I hope, one day, to get rid of [GitHub] PATs[^gh-pat] once the good folks there
+finally start supporting OIDC authentication!
 
 [Ansible]: ../../../category/ansible.md
 [Azure]: ../../../category/azure.md
@@ -332,6 +374,7 @@ support OIDC authentication!
 [Golang]: ../../../category/go.md
 [Grafana]: ../../../category/grafana.md
 [Helm]: ../../../category/helm.md
+[Infrastructure as Code]: ../../../category/infrastructure-as-code.md
 [JavaScript]: ../../../category/javascript.md
 [Kubernetes]: ../../../category/kubernetes.md
 [Kustomization]: ../../../category/kustomization.md
@@ -347,25 +390,25 @@ support OIDC authentication!
 [VictoriaMetrics]: ../../../category/victoriametrics.md
 [VictoriaLogs]: ../../../category/victorialogs.md
 
-[the article from last week]: ../010-external-secrets-deployment/README.md
+[k8s-oidc-eso]: ../010-external-secrets-deployment/README.md
+[k8s-oidc-eso-azure]: ../010-external-secrets-deployment/README.md#microsoft-azure-cloud
 
+[^ms-what-is-oidc]: https://www.microsoft.com/en-us/security/business/security-101/what-is-openid-connect-oidc
 [^tg-release]: https://github.com/gruntwork-io/terragrunt/releases/tag/v0.77.1
 [^tofu-release]: https://github.com/opentofu/opentofu/releases/tag/v1.9.0
 [^az-cli]: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli
 [^az-federated]: https://learn.microsoft.com/en-us/graph/api/resources/federatedidentitycredentials-overview?view=graph-rest-1.0
+[^az-sp-from-github]: https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure-openid-connect
+[^az-mi]: https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities#create-a-user-assigned-managed-identity
 [^az-cli-login]: https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/guides/azure_cli
+[^github-to-azure-auth-methods]: https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure
+[^az-cdn-terraform]: https://learn.microsoft.com/en-us/azure/cdn/create-profile-endpoint-terraform?tabs=azure-cli
+[^az-cdn-custom-endpoint]: https://registry.terraform.io/providers/hashicorp/azurerm/4.24.0/docs/resources/cdn_endpoint_custom_domain
 [^dep-tg]: https://terragrunt.gruntwork.io/docs/features/stacks/#passing-outputs-between-units
-[az-rg]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal
+[^github-oidc-azure]: https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-azure
+[^azure-oidc-from-github]: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-static-site-github-actions?tabs=openid
+[^az-login-action]: https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
+[^az-blob-storage-sync]: https://learn.microsoft.com/en-us/cli/azure/storage/blob?view=azure-cli-latest#az-storage-blob-sync
+[^az-rg]: https://learn.microsoft.com/en-us/azure/azure-resource-manager/management/manage-resource-groups-portal
 [^cloudnuke]: https://github.com/gruntwork-io/cloud-nuke/releases/tag/v0.40.0
-
-<!--
-
-https://registry.terraform.io/providers/hashicorp/azurerm/4.24.0/docs/resources/cdn_endpoint_custom_domain
-
-https://learn.microsoft.com/en-us/azure/cdn/create-profile-endpoint-terraform?tabs=azure-cli
-https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure-openid-connect
-https://docs.github.com/en/actions/security-for-github-actions/security-hardening-your-deployments/configuring-openid-connect-in-azure
-https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-static-site-github-actions?tabs=openid
-https://github.com/Azure/login?tab=readme-ov-file#login-with-openid-connect-oidc-recommended
-https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure
--->
+[^gh-pat]: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
