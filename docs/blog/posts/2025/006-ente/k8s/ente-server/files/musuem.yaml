@@ -35,7 +35,7 @@ jobs:
   remove-unreported-objects:
     worker-count: 4
   clear-orphan-objects:
-    enabled: true
+    enabled: false
 apps:
   public-albums: https://photos.developer-friendly.blog
   cast: https://cast.developer-friendly.blog
