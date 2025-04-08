@@ -33,7 +33,6 @@ donation out of love :hugging:, here are various ways you can do so:
 - :simple-protonmail: Proton Mail Referral (a free month of Mail Plus): <https://pr.tn/ref/NS19KFG8SQBG>
 - :simple-hetzner: Hetzner Referral (get €20 credit): <https://hetzner.cloud/?ref=ai5E5vaX1J71>
 - :simple-patreon: Patreon: <https://patreon.com/meysam81>
-- :simple-wise: Wise: <https://wise.com/pay/business/developerfriendlyou>
 - :simple-digitalocean: DigitalOcean (get $200): <https://m.do.co/c/7de094ea6f0d>
 - :mailbox_with_mail: Maileroo (SMTP/Marketing/Verification): <https://maileroo.com/?r=developerfriendly>
 
