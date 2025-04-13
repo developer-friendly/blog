@@ -31,4 +31,5 @@
     group: consul
     mode: "0600"
     backup: true
-  when: tf_state_backend_token.token is defined and tf_state_backend_token.token.SecretID is defined
+  when: tf_state_backend_token.token is defined and
+    tf_state_backend_token.token.SecretID is defined

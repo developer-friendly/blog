@@ -117,9 +117,12 @@ resource "azurerm_linux_virtual_machine" "this" {
   name                = "tf-state-backend"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
-  size                = "Standard_B4pls_v2"
-  computer_name       = "tf-state-backend"
-  admin_username      = "devblog"
+
+  # ARM, 4 vCPUs, 8 GiB RAM, $86/month
+  size = "Standard_B4pls_v2"
+
+  computer_name  = "tf-state-backend"
+  admin_username = "devblog"
   network_interface_ids = [
     azurerm_network_interface.this.id,
   ]
@@ -154,6 +157,59 @@ resource "azurerm_linux_virtual_machine" "this" {
   }
 
   custom_data = base64encode(file("${path.module}/cloud-init.yml"))
+
+  lifecycle {
+    ignore_changes = [
+      custom_data,
+    ]
+  }
+}
+
+##########################################################
+# Backup
+##########################################################
+resource "azurerm_recovery_services_vault" "this" {
+  name                = "tf-state-backend-rsv"
+  location            = azurerm_resource_group.this.location
+  resource_group_name = azurerm_resource_group.this.name
+  sku                 = "Standard"
+
+  soft_delete_enabled = true
+}
+
+resource "azurerm_backup_policy_vm" "this" {
+  name                = "tf-state-backend-backup-policy"
+  resource_group_name = azurerm_resource_group.this.name
+  recovery_vault_name = azurerm_recovery_services_vault.this.name
+
+  timezone = "UTC"
+
+  backup {
+    frequency = "Daily"
+    time      = "23:00"
+  }
+
+  retention_daily {
+    count = 14
+  }
+
+  retention_weekly {
+    count    = 4
+    weekdays = ["Sunday"]
+  }
+
+  retention_monthly {
+    count    = 6
+    weekdays = ["Sunday"]
+    weeks    = ["First"]
+  }
+}
+
+resource "azurerm_backup_protected_vm" "this" {
+  resource_group_name = azurerm_resource_group.this.name
+  recovery_vault_name = azurerm_recovery_services_vault.this.name
+  source_vm_id        = azurerm_linux_virtual_machine.this.id
+  backup_policy_id    = azurerm_backup_policy_vm.this.id
 }
 
 ##########################################################
@@ -168,7 +224,7 @@ data "cloudflare_zone" "this" {
 resource "cloudflare_dns_record" "this" {
   zone_id = data.cloudflare_zone.this.zone_id
   content = azurerm_public_ip.this.ip_address
-  name    = "tofu"
+  name    = "tofu.developer-friendly.blog"
   proxied = false
   ttl     = 60
   type    = "A"

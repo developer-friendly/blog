@@ -4,6 +4,7 @@ packages:
   - curl
   - fail2ban
   - file
+  - haproxy
   - jq
   - python3
   - python3-pip

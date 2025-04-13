@@ -30,11 +30,15 @@
       -d tofu.developer-friendly.blog
       --non-interactive
       --agree-tos
-      --email meysam@developer-friendly.blog
+      --email admin@developer-friendly.blog
   changed_when: false
+- name: Prepare the script to renew haproxy certs
+  ansible.builtin.copy:
+    src: prepare-haproxy-cert.sh
+    dest: /etc/cron.weekly/prepare-haproxy-cert.sh
+    owner: root
+    group: root
+    mode: "0755"
 - name: Prepare the tls certificate for haproxy
-  ansible.builtin.shell: >-
-    cat /etc/letsencrypt/live/tofu.developer-friendly.blog/fullchain.pem
-      /etc/letsencrypt/live/tofu.developer-friendly.blog/privkey.pem
-      > /etc/haproxy/certs/tofu.developer-friendly.blog
+  ansible.builtin.command: /etc/cron.weekly/prepare-haproxy-cert.sh
   changed_when: false
