@@ -1,7 +1,7 @@
 ---
 auth_source: auto
 conditional_groups:
-  consul: true
+  consul: computer_name == 'tf-state-backend'
 exclude_host_filters:
   - powerstate != 'running'
 include_vm_resource_groups:
