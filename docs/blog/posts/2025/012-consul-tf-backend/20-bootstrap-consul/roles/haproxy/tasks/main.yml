@@ -1,0 +1,52 @@
+---
+- name: Create a self-signed tls private key
+  community.crypto.openssl_privatekey:
+    path: /var/lib/haproxy/haproxy.key
+    type: Ed25519
+- name: Create a self-signed csr
+  community.crypto.openssl_csr:
+    path: /var/lib/haproxy/haproxy.csr
+    privatekey_path: /var/lib/haproxy/haproxy.key
+    common_name: haproxy
+- name: Create a self-signed tls certificate
+  community.crypto.x509_certificate:
+    path: /var/lib/haproxy/haproxy.crt
+    csr_path: /var/lib/haproxy/haproxy.csr
+    privatekey_path: /var/lib/haproxy/haproxy.key
+    provider: selfsigned
+- name: Prepare the self-signed tls for haproxy
+  ansible.builtin.shell: >-
+    cat /var/lib/haproxy/haproxy.crt
+      /var/lib/haproxy/haproxy.key
+      > /etc/haproxy/certs/haproxy.pem
+  changed_when: false
+- name: Install haproxy
+  ansible.builtin.dnf:
+    name: haproxy
+    state: present
+- name: Create the certs dir
+  ansible.builtin.file:
+    path: /etc/haproxy/certs
+    state: directory
+    owner: haproxy
+    group: haproxy
+    mode: "0755"
+- name: Configure the haproxy
+  ansible.builtin.copy:
+    src: haproxy.cfg
+    dest: /etc/haproxy/haproxy.cfg
+    owner: haproxy
+    group: haproxy
+    mode: "0644"
+    backup: true
+- name: Allow HAProxy to connect to any port
+  ansible.posix.seboolean:
+    name: haproxy_connect_any
+    state: true
+    persistent: true
+- name: Start the haproxy service
+  ansible.builtin.systemd:
+    name: haproxy
+    state: started
+    enabled: true
+    daemon_reload: true

@@ -1,0 +1,30 @@
+- name: Bootstrap ACL
+  ansible.builtin.command: consul acl bootstrap -format json
+  register: bootstrap_acl
+  failed_when: false
+  no_log: true
+- name: Persist the ACL token
+  ansible.builtin.copy:
+    content: "{{ bootstrap_acl.stdout }}"
+    dest: /root/consul-bootstrap.json
+    owner: consul
+    group: consul
+    mode: "0600"
+    backup: true
+  when: bootstrap_acl.rc == 0
+- name: Extract the token from bootstrap json
+  ansible.builtin.set_fact:
+    bootstrap_token: "{{ bootstrap_acl.stdout | from_json | json_query('SecretID') }}"
+  no_log: true
+  when: bootstrap_acl.rc == 0
+- name: Read consul bootstrap json
+  ansible.builtin.slurp:
+    src: /root/consul-bootstrap.json
+  register: bootstrap_token_file
+  failed_when: false
+  when: bootstrap_acl.rc != 0
+- name: Extract the token from bootstrap json
+  ansible.builtin.set_fact:
+    bootstrap_token: "{{ bootstrap_token_file['content'] | b64decode | from_json | json_query('SecretID') }}"
+  no_log: true
+  when: bootstrap_acl.rc != 0

@@ -1,0 +1,9 @@
+---
+auth_source: auto
+conditional_groups:
+  consul: true
+exclude_host_filters:
+  - powerstate != 'running'
+include_vm_resource_groups:
+  - rg-tf-state-backend
+plugin: azure.azcollection.azure_rm

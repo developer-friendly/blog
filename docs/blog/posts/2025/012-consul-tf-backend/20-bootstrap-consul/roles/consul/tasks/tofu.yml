@@ -1,0 +1,34 @@
+- name: Create ACL for tf state backend
+  community.general.consul_policy:
+    name: tf-state-backend
+    token: "{{ bootstrap_token }}"
+    rules: "{{ lookup('ansible.builtin.file', 'tofu-policy.hcl') }}"
+    state: present
+- name: Create tf state backend role
+  community.general.consul_role:
+    name: tf-state-backend
+    token: "{{ bootstrap_token }}"
+    policies:
+      - name: tf-state-backend
+- name: Create tf state backend token
+  community.general.consul_token:
+    token: "{{ bootstrap_token }}"
+    state: present
+    roles:
+      - name: tf-state-backend
+  register: tf_state_backend_token
+  no_log: true
+- name: Create tempfile
+  ansible.builtin.tempfile:
+    state: file
+    prefix: .tf_token_
+  register: tempfile
+- name: Persist the tf state backend token
+  ansible.builtin.copy:
+    content: "{{ tf_state_backend_token.token.SecretID }}"
+    dest: "{{ tempfile.path }}"
+    owner: consul
+    group: consul
+    mode: "0600"
+    backup: true
+  when: tf_state_backend_token.token is defined and tf_state_backend_token.token.SecretID is defined

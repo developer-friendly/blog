@@ -1,0 +1,22 @@
+- name: Create Consul Config
+  ansible.builtin.copy:
+    src: consul.hcl
+    dest: /etc/consul.d/consul.hcl
+    owner: consul
+    group: consul
+    mode: "0640"
+    backup: true
+- name: Create Consul data dir
+  ansible.builtin.file:
+    path: /var/lib/consul
+    state: directory
+    owner: consul
+    group: consul
+    mode: "0755"
+- name: Start the Consul service
+  ansible.builtin.systemd:
+    name: consul
+    state: started
+    enabled: true
+    daemon_reload: true
+  failed_when: false

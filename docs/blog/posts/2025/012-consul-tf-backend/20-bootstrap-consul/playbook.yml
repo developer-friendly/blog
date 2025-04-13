@@ -1,0 +1,9 @@
+- name: Bootstrap Consul
+  hosts: consul
+  gather_facts: false
+  become: true
+  roles:
+    - firewall
+    - consul
+    - haproxy
+    - acme

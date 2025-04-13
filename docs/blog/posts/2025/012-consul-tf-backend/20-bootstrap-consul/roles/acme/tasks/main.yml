@@ -1,0 +1,40 @@
+---
+- name: Install acme-backend.service
+  ansible.builtin.copy:
+    src: acme-backend.service
+    dest: /etc/systemd/system/acme-backend.service
+    owner: root
+    group: root
+    mode: "0644"
+- name: Start acme-backend.service
+  ansible.builtin.systemd:
+    name: acme-backend
+    state: started
+    enabled: true
+    daemon_reload: true
+- name: Install certbot
+  ansible.builtin.dnf:
+    name: certbot
+    state: present
+- name: Ensure webroot dir exists
+  ansible.builtin.file:
+    path: /var/www/html
+    state: directory
+    owner: root
+    group: root
+    mode: "0755"
+- name: Fetch tls certificate with webroot
+  ansible.builtin.command: >-
+    certbot certonly
+      --webroot -w /var/www/html
+      -d tofu.developer-friendly.blog
+      --non-interactive
+      --agree-tos
+      --email meysam@developer-friendly.blog
+  changed_when: false
+- name: Prepare the tls certificate for haproxy
+  ansible.builtin.shell: >-
+    cat /etc/letsencrypt/live/tofu.developer-friendly.blog/fullchain.pem
+      /etc/letsencrypt/live/tofu.developer-friendly.blog/privkey.pem
+      > /etc/haproxy/certs/tofu.developer-friendly.blog
+  changed_when: false

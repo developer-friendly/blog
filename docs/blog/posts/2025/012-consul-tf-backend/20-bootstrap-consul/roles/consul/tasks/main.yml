@@ -1,0 +1,5 @@
+---
+- ansible.builtin.import_tasks: service.yml
+- ansible.builtin.import_tasks: acl.yml
+- ansible.builtin.import_tasks: agent.yml
+- ansible.builtin.import_tasks: tofu.yml

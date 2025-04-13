@@ -1,0 +1,35 @@
+- name: Create consul ACL policy for agent with node write permission
+  community.general.consul_policy:
+    name: agent-node
+    token: "{{ bootstrap_token }}"
+    rules: "{{ lookup('ansible.builtin.file', 'agent-policy.hcl') }}"
+    state: present
+- name: Create agent role
+  community.general.consul_role:
+    name: agent
+    token: "{{ bootstrap_token }}"
+    policies:
+      - name: agent-node
+- name: Create agent token
+  community.general.consul_token:
+    token: "{{ bootstrap_token }}"
+    state: present
+    roles:
+      - name: agent
+  register: agent_token
+  no_log: true
+- name: Persist the agent token configuration
+  ansible.builtin.copy:
+    content: |
+      acl {
+        tokens {
+          agent = "{{ agent_token.token.SecretID }}"
+        }
+      }
+    dest: /etc/consul.d/agent-token.hcl
+    owner: consul
+    group: consul
+    mode: "0600"
+    backup: true
+  no_log: true
+  when: agent_token.token is defined and agent_token.token.SecretID is defined

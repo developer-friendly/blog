@@ -1,0 +1,11 @@
+[Unit]
+Description=ACME backend
+After=network.target
+
+[Service]
+Type=simple
+ExecStartPre=/bin/mkdir -p /var/www/html
+ExecStart=/usr/bin/python3 -m http.server 9000 -d /var/www/html
+
+[Install]
+WantedBy=multi-user.target
