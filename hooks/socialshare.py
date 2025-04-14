@@ -27,6 +27,8 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
         f"""
     Until next time :saluting_face:, *ciao* :cowboy: & happy coding! :penguin:
 
+    _See any typos? [This blog is opensource](https://github.com/developer-friendly/blog). Consider [opening a PR]({page.edit_url})._ :heart_hands: :rose:
+
     [Subscribe to Newsletter :material-email-newsletter:](https://newsletter.developer-friendly.blog/subscription/form){{ .md-button .md-button--primary }}
     [Subscribe to RSS Feed :simple-rss:](/feed_rss_created.xml){{ .md-button .md-button--primary }}
 

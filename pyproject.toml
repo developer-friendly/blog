@@ -1,0 +1,22 @@
+[project]
+name = "developer-friendly-blog"
+version = "0.1.0"
+readme = "README.md"
+requires-python = "~=3.13"
+dependencies = [
+    "httpx<1",
+    "mkdocs-exclude<2",
+    "mkdocs-git-authors-plugin<1",
+    "mkdocs-git-committers-plugin-2<3",
+    "mkdocs-git-revision-date-localized-plugin<2",
+    "mkdocs-glightbox<1",
+    "mkdocs-material[imaging]",
+    "mkdocs-minify-plugin<1",
+    "mkdocs-rss-plugin<2",
+    "mkdocs-table-reader-plugin<4",
+    "psycopg2-binary<3",
+    "pymdown-extensions<11",
+]
+
+[tool.uv.sources]
+mkdocs-material = { git = "https://github.com/developer-friendly/mkdocs-material-insiders.git", rev = "master" }

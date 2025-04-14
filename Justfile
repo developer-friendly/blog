@@ -5,7 +5,7 @@ reqs:
   pip install -U pip -r requirements.txt
 
 serve:
-  mkdocs serve --no-strict
+  uv run mkdocs serve --no-strict
 
 prod-build:
   CI=true mkdocs build
