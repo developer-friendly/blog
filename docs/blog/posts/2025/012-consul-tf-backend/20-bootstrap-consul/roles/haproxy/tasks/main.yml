@@ -14,12 +14,18 @@
     csr_path: /var/lib/haproxy/haproxy.csr
     privatekey_path: /var/lib/haproxy/haproxy.key
     provider: selfsigned
+- name: Check for any existing TLS certificate
+  ansible.builtin.find:
+    paths: /etc/haproxy/certs
+    file_type: file
+  register: haproxy_certs
 - name: Prepare the self-signed tls for haproxy
   ansible.builtin.shell: >-
     cat /var/lib/haproxy/haproxy.crt
       /var/lib/haproxy/haproxy.key
       > /etc/haproxy/certs/haproxy.pem
   changed_when: false
+  when: haproxy_certs.matched == 0
 - name: Install haproxy
   ansible.builtin.dnf:
     name: haproxy

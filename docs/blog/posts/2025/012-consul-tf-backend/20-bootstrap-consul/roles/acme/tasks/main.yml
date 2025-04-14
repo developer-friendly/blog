@@ -42,3 +42,7 @@
 - name: Prepare the tls certificate for haproxy
   ansible.builtin.command: /etc/cron.weekly/prepare-haproxy-cert.sh
   changed_when: false
+- name: Remove the self-signed dummy TLS certificate
+  ansible.builtin.file:
+    path: /etc/haproxy/certs/haproxy.pem
+    state: absent

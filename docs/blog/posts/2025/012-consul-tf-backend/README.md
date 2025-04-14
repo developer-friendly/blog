@@ -1,33 +1,37 @@
 ---
 date: 2025-04-14
 description: >-
-  todo
+  Step-by-step guide to configure Consul as an OpenTofu state backend with TLS
+  encryption, ACL policies, and Ansible automation on Azure infrastructure.
 categories:
   - Consul
-  - Azure
-  - CI/CD
-  - OpenID Connect
   - OpenTofu
-  - GitHub Actions
-  - Cloud Security
-  - DevOps
-  - Frontend
-  - GitHub
-  - GitHub Workflows
-  - IAM
   - Infrastructure as Code
-  - OIDC
+  - Ansible
+  - Azure
+  - Automation
+  - CI/CD
+  - Cloud Computing
+  - Cloud Infrastructure
+  - Cloud Security
+  - Configuration Management
+  - DevOps
+  - Fedora
+  - HAProxy
+  - Linux
   - Security
+  - System Administration
   - Terraform
   - Terragrunt
+  - Virtual Machines
 links:
-  - blog/posts/2025/005-gcp-cdn/README.md
-  - blog/posts/2025/004-gh-pages-another-repo/README.md
-  - blog/posts/2024/0007-oidc-authentication.md
-image: assets/images/social/blog/2025/03/31/deploy-static-sites-to-azure-cdn-with-github-actions-oidc/index.png
+  - blog/posts/2025/001-ansible-dynamic-inventory/README.md
+  - blog/posts/2024/0013-azure-vm-to-aws.md
+  - blog/posts/2024/0021-deploy-js-to-aws-lambda.md
+image: assets/images/social/blog/2025/04/14/deploy-consul-as-opentofu-backend-with-azure--ansible/index.png
 ---
 
-# How to Set Up Hashicorp Consul as Tofu State Backend
+# Deploy Consul as OpenTofu Backend with Azure & Ansible
 
 In this blog post, we provide the necessary steps to setup a single-node
 standalone Consul server to be used as TF state backend.
@@ -45,7 +49,7 @@ Having a remote [OpenTofu] state backend is crucial for any
 administrator's machine, but also provides team collaboration, state locking,
 and many other cool features that are required for a production setup.
 
-The objective of this blog post is to setup the Hashicorp [Consul] on a single
+The objective of this blog post is to set up the Hashicorp [Consul] on a single
 [Azure] virtual machine[^consul].
 
 While this setup is not redundant, nor high available or resilient, it's still
@@ -66,7 +70,7 @@ cover:
   in-transit.
 - :floppy_disk: The server running [Consul] must have backups enabled to allow
   for fast recovery in case of crash.
-- :key: The disk of the node must be encrypted; we don't care of the key is
+- :key: The disk of the node must be encrypted; we don't care if the key is
   platform-managed!
 - :rocket: The entire configuration should be idempotent, allowing
   reproducibility as well as team collaboration.
@@ -98,7 +102,6 @@ Here's the directory structure that will be covered in here.
 │   ├── inventory
 │   │   └── azure_rm.yml
 │   ├── playbook.yml
-│   ├── requirements.txt
 │   ├── requirements.yml
 │   └── roles/
 │       ├── acme/
@@ -114,10 +117,11 @@ Here's the directory structure that will be covered in here.
 
 ## Prerequisites
 
-The following are the tools used in the local machine:
+The following are the tools used on the local machine:
 
 - [Terragrunt] v0.77[^tg]
 - [OpenTofu] v1.9[^tofu]
+- [Ansible] v2.18[^ansible]
 
 ## Creating an Azure Virtual Machine
 
@@ -126,18 +130,20 @@ The following are the tools used in the local machine:
 The following [OpenTofu] stack is the minimal [Infrastructure as Code] that
 will boot up a VM in the [Azure] cloud.
 
-Although some may prefer using ready-made and off-the-shelf module, I for one,
-prefer writing my own resources for one very important reason.
+Although some may prefer using ready-made and off-the-shelf TF modules, I for
+one, prefer writing my own resources for one very important reason.
 
-> Although using TF modules can speed up the development initially, the
-  maintenance cost of upgrades and compatibility outweighs the benefit.
+> :material-check-all: Although using TF modules can speed up the development
+  initially, the maintenance cost of upgrades and compatibility outweighs the
+  benefit.
 
-I eventually stopped upgrading them because they keep introducing changes in
-backward incompatible ways, making it an absolute nightmare just to keep the
-lights running!
+I eventually stopped upgrading my TF modules because they keep introducing
+changes in backward incompatible ways, making it an absolute nightmare just to
+keep the lights running!
 
 So, here's my own simple code, and it'll work for infinity so long as the
-upstream provider doesn't fuck it up!
+upstream provider doesn't mess up their API! Even when the provider is pinned
+to major version.
 
 ```terraform title="10-vm/versions.tf"
 -8<- "docs/blog/posts/2025/012-consul-tf-backend/10-vm/versions.tf"
@@ -182,8 +188,9 @@ chmod 600 /tmp/key
 We are now ready to run a bunch of [Ansible] playbook tasks to configure our
 server.
 
-Note that this is a Fedora machine and we will mostly use `dnf` for package
-installation. We care little to none about portability, e.g., to use `package`!
+Note that this is a Fedora machine and we will mostly use
+`ansible.builtin.package` for package installation. We care little to none
+about portability, e.g., to use `ansible.builtin.package`!
 
 While working for the codes for this blog post, I slowly fell in love with how
 Fedora works with packages. :heart_eyes:
@@ -192,12 +199,12 @@ It makes it so easy to grab the latest available version of each package;
 whatever you need is always one `dnf` away from you!
 
 Coming from Ubuntu background and using Ubuntu-based desktop all my life, I
-have never had such a great sysadmin experience before in my life. Fedora is
+have never had such a great [sysadmin] experience before in my life. Fedora is
 awesome. :heart_hands:
 
 ### Disable Fedora's Firewall
 
-Now let's start with the bare essentials, we first need to disable the firewall
+Now let's start with the bare essentials. We first need to disable the firewall
 of the host, since [Azure] cloud already has a Security Group configured in
 front of it.
 
@@ -209,8 +216,8 @@ front of it.
 
 This step is the most important part of this blog post.
 
-If you don't need any other part of this blog post, then this is the only one
-you should care about.
+If you skipped all the other sections, then this is the only one you should
+care about. :ok_hand:
 
 #### consul.hcl
 
@@ -229,6 +236,13 @@ you should care about.
 ```
 
 #### Agent Policy
+
+The [Consul] agent running behind systemd service needs to have `node:write`
+permission to register itself to the cluster. This ACL policy will grant that
+access[^acl-policy].
+
+We'd then create and provide a token from such a policy in the config
+directory[^cfg-dir].
 
 ```hcl title="20-bootstrap-consul/roles/consul/files/agent-policy.hcl"
 -8<- "docs/blog/posts/2025/012-consul-tf-backend/20-bootstrap-consul/roles/consul/files/agent-policy.hcl"
@@ -270,7 +284,8 @@ token[^consul-backend].
 ## Configure Load Balancer and TLS Certificate
 
 We are using HAProxy with Certbot for the task. You may pick something simpler
-that has native TLS certificate retrieval, like Caddy or Traefik.
+that has native TLS certificate retrieval, like Caddy[^caddy] or
+Traefik[^traefik].
 
 ```ini title="20-bootstrap-consul/roles/haproxy/files/haproxy.cfg"
 -8<- "docs/blog/posts/2025/012-consul-tf-backend/20-bootstrap-consul/roles/haproxy/files/haproxy.cfg"
@@ -316,10 +331,6 @@ To wire these all up, we need three important pieces:
 
 And for reproducibility, here are the requirements:
 
-```plaintext title=""
--8<- "docs/blog/posts/2025/012-consul-tf-backend/20-bootstrap-consul/requirements.txt"
-```
-
 ```yaml title="20-bootstrap-consul/requirements.yml"
 -8<- "docs/blog/posts/2025/012-consul-tf-backend/20-bootstrap-consul/requirements.yml"
 ```
@@ -328,8 +339,8 @@ To run this playbook, we need to be authenticated to [Azure] API. We are using
 `az login` for that[^az-login].
 
 ```shell title="" linenums="0"
-export ARM_SUBSCRIPTION_ID=00000000-0000-0000-0000-000000000000
-export ARM_TENANT_ID=00000000-0000-0000-0000-000000000000
+export ARM_SUBSCRIPTION_ID="00000000-0000-0000-0000-000000000000"
+export ARM_TENANT_ID="00000000-0000-0000-0000-000000000000"
 ansible-playbook playbook.yml
 ```
 
@@ -421,6 +432,7 @@ lunch a minimal setup with no glitch. :wave:
 [Privacy]: ../../../category/privacy.md
 [Prometheus]: ../../../category/prometheus.md
 [Python]: ../../../category/python.md
+[sysadmin]: ../../../category/system-administration.md
 [Terragrunt]: ../../../category/terragrunt.md
 [Terraform]: ../../../category/terraform.md
 [VictoriaMetrics]: ../../../category/victoriametrics.md
@@ -429,7 +441,12 @@ lunch a minimal setup with no glitch. :wave:
 [^consul]: https://developer.hashicorp.com/consul/tutorials
 [^tg]: https://github.com/gruntwork-io/terragrunt/releases/tag/v0.77.14
 [^tofu]: https://github.com/opentofu/opentofu/releases/tag/v1.9.0
+[^ansible]: https://github.com/ansible/ansible/releases/tag/v2.18.4
 [^az-vm-image]: https://az-vm-image.info/
+[^acl-policy]: https://developer.hashicorp.com/consul/docs/security/acl/acl-policies
+[^cfg-dir]: https://developer.hashicorp.com/consul/docs/agent/config/cli-flags#_config_dir
 [^consul-backend]: https://developer.hashicorp.com/vault/docs/configuration/storage/consul
+[^caddy]: https://caddyserver.com/docs/automatic-https
+[^traefik]: https://doc.traefik.io/traefik/https/tls/
 [^ansible-azure]: https://docs.ansible.com/ansible/latest/collections/azure/azcollection/azure_rm_inventory.html
 [^az-login]: https://learn.microsoft.com/en-us/cli/azure/authenticate-azure-cli

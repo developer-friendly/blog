@@ -4,14 +4,12 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "< 5"
     }
-    bitwarden = {
-      source  = "maxlaverse/bitwarden"
-      version = "< 1"
-    }
+    # DNS provider
     cloudflare = {
       source  = "cloudflare/cloudflare"
       version = "< 6"
     }
+    # SSH private key generation
     tls = {
       source  = "hashicorp/tls"
       version = "< 5"
