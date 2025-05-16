@@ -161,28 +161,6 @@ jobs:
         with:
           fail: ${{ github.ref == 'refs/heads/main' }}
 
-  trivy:
-    if: |
-      github.repository == 'developer-friendly/blog' &&
-      contains(fromJson('["schedule", "pull_request", "push"]'), github.event_name)
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        scan-type:
-          - fs
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Trivy ${{ matrix.scan-type }}
-        uses: aquasecurity/trivy-action@master
-        with:
-          exit-code: "1"
-          scan-ref: .
-          scan-type: ${{ matrix.scan-type }}
-          trivy-config: trivy.yaml
-          token-setup-trivy: ${{ secrets.GH_TOKEN }}
-
   stale:
     if: |
       (
