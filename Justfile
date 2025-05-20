@@ -56,3 +56,6 @@ create-tofu-stack dirname:
 
 delete-old-md-files:
   find docs/ -mindepth 3 -maxdepth 6 -name '*.md' -mtime +1 -delete
+
+deps:
+  uv sync -U --all-extras --dev
