@@ -35,6 +35,7 @@ donation out of love :hugging:, here are various ways you can do so:
 - :simple-patreon: Patreon: <https://patreon.com/meysam81>
 - :simple-digitalocean: DigitalOcean (get $200): <https://m.do.co/c/7de094ea6f0d>
 - :mailbox_with_mail: Maileroo (SMTP/Marketing/Verification): <https://maileroo.com/?r=developerfriendly>
+- :email: Postmark (Transactional Email): <https://www.postmarkapp.com/?via=0983a5>
 
 ## Should you sponsor?
 
