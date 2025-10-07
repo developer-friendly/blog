@@ -6,7 +6,7 @@ stages:
 
 build:
   stage: build
-  image: python:3.13
+  image: python:3.14
   variables:
     GIT_DEPTH: 0
     MKDOCS_GIT_COMMITTERS_APIKEY: $GH_TOKEN
