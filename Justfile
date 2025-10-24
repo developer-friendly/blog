@@ -5,7 +5,7 @@ reqs:
   pip install -U pip -r requirements.txt
 
 serve:
-  uv run mkdocs serve --no-strict
+  poetry run mkdocs serve --livereload
 
 prod-build:
   CI=true mkdocs build

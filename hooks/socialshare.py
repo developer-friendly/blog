@@ -29,12 +29,9 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
 
     _See any typos? [This blog is opensource](https://github.com/developer-friendly/blog). Consider [opening a PR]({page.edit_url})._ :heart_hands: :rose:
 
-    [Subscribe to Newsletter :material-email-newsletter:](https://newsletter.developer-friendly.blog/subscription/form){{ .md-button .md-button--primary }}
-    [Subscribe to RSS Feed :simple-rss:](/feed_rss_created.xml){{ .md-button .md-button--primary }}
-
+    [Subscribe to RSS :simple-rss:](/feed_rss_created.xml){{ .md-button .md-button--primary }}
     [Share on :simple-mastodon:]({mastodon}?text={url_and_title}){{ .md-button .md-button--primary }}
     [Share on :fontawesome-brands-bluesky:]({bsky}?text={url_and_title}){{ .md-button .md-button--primary }}
-    [Share on :simple-reddit:]({reddit_sharer}?url={page_url}&title={page_title}){{ .md-button .md-button--primary }}
     [Share on :simple-x:]({x_intent}?text={page_title_x}&url={page_url}){{ .md-button .md-button--primary }}
     """
     )

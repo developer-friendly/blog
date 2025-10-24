@@ -37,6 +37,7 @@ copyright: Copyright &copy; <a href="https://github.com/meysam81">Meysam Azad</a
 hooks:
   - hooks/socialshare.py
   # - hooks/totalviews.py
+  - hooks/subscription-form.py
   - hooks/rss-feed-description.py
   - hooks/canonical-url.py
 plugins:
@@ -254,6 +255,10 @@ markdown_extensions:
       combine_header_slug: true
   - pymdownx.tasklist:
       custom_checkbox: true
+extra_css:
+  - extra/newsletter.css
+extra_javascript:
+  - extra/newsletter.js
 nav:
   - index.md
   - Blog:
