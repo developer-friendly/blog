@@ -20,10 +20,6 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
 
       <form
         class="newsletter-form listmonk-form"
-        data-pirsch-event="subscribe"
-        data-pirsch-meta-page_url="{page_url}"
-        data-pirsch-meta-variant="footer"
-        data-pirsch-non-interactive
         action="https://newsletter.meysam.io/subscription/form"
         method="post"
       >
@@ -47,7 +43,14 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
           auto="onfocus"
         ></altcha-widget>
 
-        <button type="submit" class="btn btn-primary submit-button">
+        <button
+          data-pirsch-event="subscribe"
+          data-pirsch-meta-page_url="{page_url}"
+          data-pirsch-meta-variant="footer"
+          data-pirsch-non-interactive
+          type="submit"
+          class="btn btn-primary submit-button"
+        >
           <span class="button-text">Join 1,500+ Engineers</span>
           <span class="button-loader hidden">
             <svg class="spinner" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

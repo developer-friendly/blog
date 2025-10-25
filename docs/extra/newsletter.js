@@ -23,7 +23,8 @@ function subscribe(listener) {
 function updateFormScroll() {
   var forms = document.querySelectorAll('.newsletter-form');
   forms.forEach(function handleForm(form) {
-    form.setAttribute('data-pirsch-meta-scroll', String(scrollPercentage));
+    var submitButton = form.querySelector('.submit-button');
+    submitButton.setAttribute('data-pirsch-meta-scroll', String(scrollPercentage));
   });
 }
 
