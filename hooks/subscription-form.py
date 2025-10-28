@@ -24,7 +24,7 @@ def on_page_markdown(markdown, page, config, files, **kwargs):
         method="post"
       >
         <input type="hidden" name="nonce" />
-        <input type="hidden" name="l" value="00a2c2b8-467a-4d74-9c76-9c6472c91d06" />
+        <input id="82dfc" type="hidden" name="l" value="82dfc5e1-03a9-4dc3-8a07-d30036b6aeb3" />
 
         <div class="form-group">
           <input
