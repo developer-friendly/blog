@@ -6,27 +6,18 @@ extra:
     - icon: octicons/heart-fill-16
       link: https://github.com/sponsors/meysam81/
       name: Sponsor the author!
-    - icon: fontawesome/brands/mastodon
-      link: https://mastodon.social/@meysam81
-      name: Follow us on Mastodon!
-    - icon: fontawesome/brands/bluesky
-      link: https://bsky.app/profile/meysamazing.bsky.social
-      name: Follow us on BlueSky!
+    - icon: fontawesome/brands/slack
+      link: https://communityinviter.com/apps/developerfriendly/join-our-slack
+      name: Join our Slack community!
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/meysamazad
       name: Follow us on LinkedIn!
-    - icon: simple/zulip
-      link: https://developer-friendly.zulipchat.com/
-      name: Join our Slack community!
     - icon: fontawesome/brands/youtube
       link: https://youtube.com/@developer-friendly
       name: Subscribe to our YouTube channel!
     - icon: fontawesome/brands/x-twitter
       link: https://x.com/devfriendly_
       name: Follow us on Twitter!
-    - icon: simple/reddit
-      link: https://www.reddit.com/user/meysam81/
-      name: Follow us on Reddit!
     - icon: fontawesome/brands/hacker-news
       link: https://news.ycombinator.com/submitted?id=meysamazad
       name: Follow us on Hacker News!
