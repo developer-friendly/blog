@@ -70,3 +70,4 @@ terraform.rc
 ssh-private-key.pem*
 
 *~
+build.log
