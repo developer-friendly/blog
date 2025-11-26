@@ -72,7 +72,7 @@ Let's discuss how my experience can benefit your team.
 Book a call or drop me an email to get started.
 
 [Book a call :material-video:][book-call]{ .md-button .md-button--primary }
-[X :fontawesome-brands-x:][x]{ .md-button }
+[Follow me on :fontawesome-brands-x-twitter:][x]{ .md-button }
 [LinkedIn :fontawesome-brands-linkedin:][linkedin]{ .md-button }
 [Email :material-email:][email-me]{ .md-button }
 
