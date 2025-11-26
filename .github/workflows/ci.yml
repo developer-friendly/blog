@@ -19,7 +19,6 @@ permissions:
 env:
   NETLIFY_SITE_ID: developer-friendly
   NETLIFY_DEPLOY_TO_PROD: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-  PYTHON_VERSION: 3.x
   ADSENSE_PROPERTY: ${{ vars.ADSENSE_PROPERTY }}
   GA_PROPERTY: ${{ vars.GA_PROPERTY }}
   LOGROCKET_PROPERTY: ${{ vars.LOGROCKET_PROPERTY }}
@@ -37,8 +36,6 @@ jobs:
           fetch-depth: 0
       - name: Setup Python
         uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
       - env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         name: Install dependencies
@@ -103,8 +100,6 @@ jobs:
           fetch-depth: 0
       - name: Setup Python
         uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
       - env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         name: Install dependencies
