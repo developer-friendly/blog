@@ -450,7 +450,7 @@ are no longer maintained, now would you!? :wink:
 [^vlogs]: https://docs.victoriametrics.com/victorialogs/
 [^otel-collector]: https://opentelemetry.io/docs/collector/
 [^victoriametrics-benchmark]: https://victoriametrics.com/blog/opentelemetry-prometheus-and-more/
-[^gf-operator-datasource]: https://grafana.github.io/grafana-operator/docs/datasources/
+[^gf-operator-datasource]: https://grafana.github.io/grafana-operator/docs/examples/datasource/
 [^migrate-prom-to-vm]: https://docs.victoriametrics.com/operator/migration/
 [^vm-k8s-stack]: https://artifacthub.io/packages/helm/victoriametrics/victoria-metrics-k8s-stack/0.39.0
 [^vm-service-scrape]: https://docs.victoriametrics.com/operator/resources/vmservicescrape/

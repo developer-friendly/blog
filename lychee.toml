@@ -17,6 +17,14 @@ exclude = [
   "docs/blog/category/",
   # TODO: remove this when he takes back his account
   "https://medium.com/@seifeddinerajhi/victoriametrics-a-comprehensive-guide-comparing-it-to-prometheus-and-implementing-kubernetes-03eb8feb0cc2",
+  "https://github.com/developer-friendly/aws-lambda-opentofu-github-actions/actions/runs/.*",
+  # Network error: Connection reset by server. Server forcibly closed connection
+  # possibly some scraping/bot protection measures!
+  "https://gateway-api.sigs.k8s.io/",
+  "https://m.do.co/c/7de094ea6f0d",
+  "https://cleanly-quiet-doberman.azureedge.net/",
+  "https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html",
+  "https://unsplash.com/photos/man-wearing-white-top-using-macbook-1K9T5YiZ2WU",
 ]
 
 exclude_path = [
