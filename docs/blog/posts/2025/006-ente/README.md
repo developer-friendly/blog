@@ -339,7 +339,7 @@ subscribe to [the newsletter] or the [rss feed]. :wink:
 [^github]: https://github.com/
 [^opentofu]: https://github.com/opentofu/opentofu/releases/tag/v1.9.0
 [^museum-yaml]: https://github.com/ente-io/ente/blob/5806eb6e608dedc3713da1ebcab22f0cb87b7b23/server/pkg/utils/config/config.go#L59
-[^cnpg]: https://cloudnative-pg.io/documentation/current/installation_upgrade/
+[^cnpg]: https://cloudnative-pg.io/docs/1.28/installation_upgrade
 [^pgtune]: https://pgtune.leopard.in.ua/
 [^local-yaml]: https://github.com/ente-io/ente/blob/5806eb6e608dedc3713da1ebcab22f0cb87b7b23/server/configurations/local.yaml
 [^config-parsing]: https://github.com/ente-io/ente/blob/5806eb6e608dedc3713da1ebcab22f0cb87b7b23/server/pkg/utils/config/config.go#L35-L65

@@ -26,6 +26,7 @@ exclude = [
   "https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html",
   "https://unsplash.com/photos/man-wearing-white-top-using-macbook-1K9T5YiZ2WU",
   "https://patreon.com/meysam81",
+  "https://kubectl.docs.kubernetes.io/references/kustomize/kustomization/patches/",
 ]
 
 exclude_path = [
