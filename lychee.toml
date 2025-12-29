@@ -25,6 +25,7 @@ exclude = [
   "https://cleanly-quiet-doberman.azureedge.net/",
   "https://www.freedesktop.org/software/systemd/man/latest/systemd.timer.html",
   "https://unsplash.com/photos/man-wearing-white-top-using-macbook-1K9T5YiZ2WU",
+  "https://patreon.com/meysam81",
 ]
 
 exclude_path = [
