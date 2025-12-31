@@ -35,7 +35,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
       - env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         name: Install dependencies
@@ -100,7 +100,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
       - env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         name: Install dependencies
