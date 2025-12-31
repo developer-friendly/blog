@@ -106,7 +106,8 @@ jobs:
         name: Install dependencies
         run: |
           pip install -U pip -r requirements.txt
-          sudo apt-get install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
+          sudo apt update
+          sudo apt install -y libcairo2-dev libfreetype6-dev libffi-dev libjpeg-dev libpng-dev libz-dev pngquant
       - env:
           PLAUSIBLE_BEARER_TOKEN: ${{ secrets.PLAUSIBLE_BEARER_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
