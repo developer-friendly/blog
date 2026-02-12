@@ -52,7 +52,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          name: build-pr${{ github.event.pull_request.number }}
+          name: build-pr${{ github.event.pull_request.number }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: site
       - id: netlify
         name: Deploy to Netlify
@@ -116,13 +116,13 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          name: build-${{ github.ref_name }}-${{ github.run_id }}
+          name: build-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}}
           path: site
       - id: deployment
         name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
         with:
-          artifact_name: build-${{ github.ref_name }}-${{ github.run_id }}
+          artifact_name: build-${{ github.ref_name }}-${{ github.run_id }}-${{ github.run_attempt }}
       - if: ${{ github.repository == 'developer-friendly/blog' }}
         id: netlify
         name: Deploy to Netlify
