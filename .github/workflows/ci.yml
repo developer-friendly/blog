@@ -17,7 +17,7 @@ permissions:
   contents: write
 
 env:
-  NETLIFY_SITE_ID: developer-friendly
+  NETLIFY_SITE_ID: ${{ vars.NETLIFY_SITE_ID }}
   NETLIFY_DEPLOY_TO_PROD: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
   ADSENSE_PROPERTY: ${{ vars.ADSENSE_PROPERTY }}
   GA_PROPERTY: ${{ vars.GA_PROPERTY }}
