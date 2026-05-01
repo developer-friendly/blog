@@ -9,7 +9,11 @@
     {
       devShells = forAllSystems (pkgs: {
         default = pkgs.mkShell {
-          packages = [ pkgs.netlify-cli ];
+          packages = with pkgs; [
+            netlify-cli
+            poetry
+            uv
+          ];
         };
       });
     };

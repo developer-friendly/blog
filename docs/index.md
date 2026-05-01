@@ -61,6 +61,23 @@ Beyond my work:
 
 I believe in simplicity.
 
+## Things I'm Building
+
+When I'm not writing here, I'm shipping products from years of production pain:
+
+- :material-shield-check: **[DMARCguard][dmarcguard]** — DMARC monitoring & email
+  authentication for IT admins, MSPs & engineering teams. Catch spoofing, fix
+  deliverability, ship reports your CISO actually reads. SPF, DKIM, BIMI,
+  MTA-STS, TLS-RPT, all in   one place.
+- :material-rocket-launch: **[FindForce][findforce]** — Business email finder
+  Chrome extension for B2B teams. 95% accuracy, GDPR-compliant.
+- :material-source-branch: **[Parse DMARC][parse-dmarc]** — The open-source
+  predecessor to DMARCguard. Self-hosted, single binary, Go + Vue.js.
+
+[dmarcguard]: https://dmarcguard.io
+[findforce]: https://findforce.io
+[parse-dmarc]: https://github.com/dmarcguardhq/dmarcguard
+
 ---
 
 ## Let’s Connect

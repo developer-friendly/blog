@@ -71,3 +71,4 @@ ssh-private-key.pem*
 
 *~
 build.log
+.direnv
