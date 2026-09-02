@@ -15,7 +15,7 @@ dependencies = [
     "mkdocs-rss-plugin<2",
     "mkdocs-table-reader-plugin<4",
     "psycopg2-binary<3",
-    "pymdown-extensions<11",
+    "pymdown-extensions<12",
 ]
 
 [tool.uv.sources]
