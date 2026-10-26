@@ -10,4 +10,4 @@ mkdocs-rss-plugin<2
 mkdocs-table-reader-plugin<4
 pillow<12
 psycopg2-binary<3
-pymdown-extensions<11
+pymdown-extensions<12
