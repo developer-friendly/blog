@@ -8,6 +8,6 @@ mkdocs-material[imaging] @ git+https://${GH_TOKEN}@github.com/developer-friendly
 mkdocs-minify-plugin<1
 mkdocs-rss-plugin<2
 mkdocs-table-reader-plugin<4
-pillow<12
+pillow<13
 psycopg2-binary<3
 pymdown-extensions<11
