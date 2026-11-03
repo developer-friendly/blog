@@ -437,7 +437,7 @@ are no longer maintained, now would you!? :wink:
 [VictoriaLogs]: ../../../category/victorialogs.md
 
 [^promtail-homepage]: https://grafana.com/docs/loki/latest/send-data/promtail/
-[^promtail-journal]: https://grafana.com/docs/loki/latest/send-data/promtail/configuration/#journal
+[^promtail-journal]: https://grafana.com/docs/loki/v3.5.x/send-data/promtail/configuration/#journal
 [^alloy-docs]: https://grafana.com/docs/alloy/latest/
 [^fear-of-change]: https://www.medicalnewstoday.com/articles/fear-of-change-phobia
 [^alloy-intro]: https://grafana.com/docs/alloy/latest/introduction/

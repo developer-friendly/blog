@@ -27,6 +27,9 @@ exclude = [
   "https://unsplash.com/photos/man-wearing-white-top-using-macbook-1K9T5YiZ2WU",
   "https://patreon.com/meysam81",
   "https://kubectl.docs.kubernetes.io",
+  # AWS WAF answers non-browser clients with an empty 202 challenge; the page
+  # is alive in a browser.
+  "https://www.onelogin.com/learn/oidc-vs-saml",
 ]
 
 exclude_path = [
@@ -35,6 +38,8 @@ exclude_path = [
   ".ruff_cache",
   "secrets",
   "internal/newsletter/index.html",
+  # Sample app pages; their root-relative links resolve only when served.
+  "docs/blog/codes/2024/0012/",
 ]
 
 accept = [500, 429, 403, 200]
