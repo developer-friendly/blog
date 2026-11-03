@@ -333,7 +333,7 @@ subscribe to [the newsletter] or the [rss feed]. :wink:
 [this website]: https://developer-friendly.blog/
 
 [the newsletter]: https://newsletter.developer-friendly.blog/subscription/form
-[rss feed]: /feed_rss_created.xml
+[rss feed]: https://developer-friendly.blog/feed_rss_created.xml
 
 [^ente-selfhosting]: https://help.ente.io/self-hosting/
 [^github]: https://github.com/
@@ -344,5 +344,5 @@ subscribe to [the newsletter] or the [rss feed]. :wink:
 [^local-yaml]: https://github.com/ente-io/ente/blob/5806eb6e608dedc3713da1ebcab22f0cb87b7b23/server/configurations/local.yaml
 [^config-parsing]: https://github.com/ente-io/ente/blob/5806eb6e608dedc3713da1ebcab22f0cb87b7b23/server/pkg/utils/config/config.go#L35-L65
 [^ente-repo]: https://github.com/ente-io/ente
-[^ente-ghcr]: https://github.com/ente-io/ente/pkgs/container/server
+[^ente-ghcr]: https://github.com/ente/ente/pkgs/container/server
 [^ente-desktop]: https://help.ente.io/photos/troubleshooting/desktop-install/
