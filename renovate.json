@@ -5,5 +5,14 @@
   ],
   "extends": [
     "github>meysam81/.github"
+  ],
+  "packageRules": [
+    {
+      "description": "Code under docs/blog is shown in published articles: no image digests there, the snippets stay as written",
+      "matchFileNames": [
+        "docs/blog/**"
+      ],
+      "pinDigests": false
+    }
   ]
 }
